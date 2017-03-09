@@ -1,0 +1,126 @@
+/*input[type="submit"], input[type="reset"], input[type="button"],*/
+input[type="text"], select, button {
+ -webkit-appearance: none;
+ }/*去掉iphone中的默认样式,如input的内阴影等.*/
+/* -webkit-tap-highlight-color: rgba(0, 0, 0, 0); 点击高亮的颜色*/
+
+html, body {
+	height: 100%;
+	width: 100%;
+	margin:0px;
+	padding:0px;
+	background-color:#e8e8e8;
+	overflow:hidden;//避免e-lib产生的滚动条.
+}
+
+#header {position:relative;top:0;left:0; 
+width:100%; height: 32px;background:url('../image/titbg.gif') center top repeat-x; background-size:8px;
+border-bottom:1px solid #d0d0d0; z-index:12}
+
+#close{font-size:22px;float:left;}
+#close img{height:18px; width:18px; margin-top:7px;margin-left:10px;margin-right:10px;}
+
+#goback{font-size:22px;float:left;}
+#goback img{height:18px; width:24px; margin-top:7px;margin-left:10px;margin-right:10px;}
+
+#inputframe {
+float: left;
+//position:fixed; top:0;
+//height: 25px;
+//width: 85%;
+margin-left:4px;
+margin-top:3px;
+}
+#searchinputbox {	float:left;	
+color:gray;
+border: 1px solid #c8c8c8;	border-radius: 3px;
+height:24px; width: 80%; 	
+margin-left:5px; 
+padding:0px;
+padding-left: 5px;	padding-right: 5px;
+background:#ffffff;	
+outline:none;
+}
+
+#inputsubmit {float:right;	
+/*border:1px solid #c8c8c8;*/
+	border:1px solid #dddddd;
+	border-radius:3px;
+
+height: 21px;	
+width: 21px;	
+margin-left:10px;
+padding-top:2px;
+padding-left:2px;
+/*background-color: #FFFFFF;*/
+//outline:none;
+}
+
+#inputsubmit img {
+height:19px;width:19px
+
+}
+
+
+#dialog_box {font-size:14px; background-color: #ffffff; overflow-x:hidden; 
+//height:100%; 
+width:100%; border-bottom:1px solid #d8d8d8;}
+#zeroresult {position:relative; top:80px; left:50%; margin-left:-130px}
+
+.user-box {border-bottom:1px solid #bbbbbb; padding-bottom:35px}
+//.gap-betweenuser {height:25px; background-color:#eeeeee}
+.personal-info {margin-top:20px; padding-bottom:15px; margin-right:20px}
+	
+	.person-pic {position:relative; float:right; margin-right:9px}
+		.person-pic img {height:28px; width:28px; border-radius:13px}
+		.person-pic .link-qingting {position:absolute; left:-8px; top:-6px; width:10px; height:10px;font-size:14px; color:#444444;}
+	.nickname {float:right; font-size:14px; margin-right:15px; padding-top:8px; color:#444444; border-bottom:1px solid #dddddd; display:inline}
+
+.topic-box {margin-left:20px; margin-top:20px;  
+//border:0px solid #f0f0f0; border-radius:6px;
+}
+
+.title {font-size:14px; color:#666666; margin-right:55px; }
+
+.poster-list {margin-left:45px;  font-size:10px; margin-right:62px;}
+	.poster-box {width:100%; margin-top:5px;padding:3px;  background-color:#f0f0f0}
+		.content {color:#808080; margin-right: 110px}
+		.time {float:right; color:#888888}
+
+.click4moreposters{
+	float:right;
+	color:#808080;
+	background-color:#f8f8f8;
+	margin:4px;
+	//margin-top:2px;
+	border:1px solid #c0c0c0;
+	border-radius:3px;
+	padding-right:2px;
+	padding-left:2px;
+}
+
+
+.moretopics {
+padding:2px;
+border-radius:5px;
+margin-left: 40px;
+margin-top: 15px;
+color:#666666; 
+}
+
+#morepeople {
+position:relative;
+left:50%; 
+margin-left:-65px;
+font-size: 10px;
+padding:3px;
+border-radius:5px;
+margin-top: 15px;
+margin-bottom: 30px;
+background-color:#DFDAAA;
+}
+
+
+#e-lib {visibility:hidden;height:0px}//这个隐藏还是要占位.
+//#e-lib {display:none}
+

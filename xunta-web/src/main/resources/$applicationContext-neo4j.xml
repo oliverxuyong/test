@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:neo4j="http://www.springframework.org/schema/data/neo4j"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/data/neo4j
+        http://www.springframework.org/schema/data/neo4j/spring-neo4j.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/data/neo4j
+        http://www.springframework.org/schema/data/neo4j/spring-neo4j.xsd">
+
+	<neo4j:config base-package="so.xunta.neo4j.repository" graphDatabaseService="graphDatabaseService"/>
+	<neo4j:repositories base-package="so.xunta.neo4j.repository"></neo4j:repositories>
+	<context:property-placeholder ignore-unresolvable="true"  order="4" location="classpath:neo4jdb.properties"/>
+
+	<bean id="graphDatabaseService" class="org.springframework.data.neo4j.rest.SpringRestGraphDatabase">
+	   <!--  <constructor-arg index="0" value="http://localhost:7474/db/data"/> -->
+	    <constructor-arg index="0" value="${neo4j.dbUrl}"/>
+	    <constructor-arg index="1" value="${neo4j.username}"/>
+	    <constructor-arg index="2" value="${neo4j.password}"/>
+	</bean>
+	
+</beans>

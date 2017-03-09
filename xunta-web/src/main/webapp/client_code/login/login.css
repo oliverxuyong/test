@@ -1,0 +1,80 @@
+#mobilephone-login-container {
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: auto;
+	top: 10%;
+	height:auto;
+	width: 66%;
+	padding: 10px;
+	padding-top: 40px;
+	padding-bottom: 25px;
+background-color:#fff;
+border:1px solid #DDDDDD;
+border-radius: 5px;
+color:#666666;
+font-size: 10px;
+display:none
+box-shadow:0px 2px 4px rgba(34, 25, 25, 0.2);
+}
+
+#cancel_mobilelogin{position:absolute;left:0; top:0px; right:0; text-align:center;background:url('../image/titbg.gif') center top repeat-x;}
+
+input,button{
+color:#666666;display:none
+}
+
+.clear{clear:both}
+#countrycode{float:left;width:18px; margin-right:5px;padding-top:5px;margin-bottom:10px;//line-height:14px;}
+#inputbox_mobileno{float:left; width:50%;display:block;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
+#button_checkonmobileno{float:right; margin-right:1px;display:block;border-radius:10px;height:24px;width:65px;font-size:14px;background:#f1f2f4;}
+
+#inputbox_password2login{margin-left:23px; float:left;margin-top:10px;width:50%;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);}
+
+#graphcode{margin-left:23px; float:left; margin-top:18px;display:none;}
+#graphcode img{/*height:100%改为下面的固定高宽,这样图形码未显示时不会塌陷.;*/height:20px;width:90px; margin-right:8px;float:left}
+#changegraphcode{float:left}
+#inputbox_graphcode {margin-left:23px; margin-top:5px;width:87px;float:left;padding-top:2px;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
+#button_requestSendSMSCode,#button_requestSendSMSCode4Resetpassword{margin-top:5px;float:right;//padding-top:2px; margin-right:1px;background:#f1f2f4;border-radius:10px;width:90px;height:24px;margin-bottom:6px;}
+
+#inputbox_smscode{margin-left:23px; float:left;margin-top:18px; width:45%; padding-top:2px;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
+#inputbox_nickname{margin-left:23px; float:left;margin-top:5px;width:45%; padding-top:2px;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
+#inputbox_password2register,#inputbox_resetpassword{margin-left:23px; float:left;margin-top:5px;width:45%; padding-top:2px;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
+#forgetpassword{margin-top:15px;float:right; margin-right:23px;display:none}
+#button_registerbymobilephone,#button_resetandloginbymobilephone,#button_loginbymobilephone
+{margin-top:20px; width:100%; margin-top:53px;height:24px;border-radius:10px;background:#f1f2f4;}
+
+#button_font,#button_requestSendSMSCodefont,#button_requestSendSMSCode4Resetpasswordfont{
+	text-align: center;line-height: 24px;color: #889ba1;font-weight: bold;font-size:14px;
+}
+
+#login/*,#login-text*/{
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: auto;
+	top: 78%;
+	height:30%;
+	width: 88%;
+	font-size: 10px;
+	text-align: center;
+	display:none;
+}
+
+#login>div{
+	display: inline-block;
+	width: 50px;
+	height:50px;
+	margin:5%;
+	border:1px solid #888888;
+	border-radius: 8px;
+}
+
+/*登录按钮下的文字暂时取消.主要原因是手机按钮兼具登录和注册的功能,用文字更容易引起误解.
+#login-text{margin-top:55px}
+#login-text>div{	display: inline-block;	width: 50px;	height:20px;	margin: 22px;}
+*/
+
+#weixin_login img{padding-top:6px;width: 40px;height: 40px;}
+#qq_login img{padding-top:6px;	width: 40px;	height: 40px;}
+#mobilephone_login img{padding-top:6px;	width: 30px;	height: 40px;}

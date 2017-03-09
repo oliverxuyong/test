@@ -1,0 +1,314 @@
+body {
+position:fixed;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height:100%;
+	background-color: #ffffff;
+	cursor:auto;
+	//Verdana 字体 和 Tahoma
+	//font-family:Verdana;
+	//font-family:Tahoma;
+	//color:#191970;
+	overflow-y:hidden;
+	overflow-x:hidden;
+}
+
+#imageundertopiclist{width:60%;height:300px; position:fixed; right:0px; bottom:0px; z-index:-99;opacity:0.3;display:none;
+/*filter:alpha;*/
+}
+
+#showatloaded{
+//position:fixed;
+width:100%; 
+	display:none;
+	height:100%;
+	//overflow-y:scroll;
+	-webkit-overflow-scrolling: touch;
+	overflow-x:hidden;
+}
+
+.topic_list {
+	margin: 10px;
+	margin-right: 10px;
+	margin-left: 8px;
+	font-family: '微软雅黑', Arial;
+	//color: #303030;
+	z-index:-1;
+	padding-top:21px;
+}
+
+#createnewtopic {
+	//left: 11px;
+	width:33%;
+	height:100%;
+	//background:#f8f8f8;
+	border-radius:6px;
+	box-shadow:0px 2px 4px rgba(34, 25, 25, 0.2);
+	float:right;
+	margin-right:18px;
+}
+
+.topic_top{
+	left: 11px;
+	width:100%;
+	height:59px;
+	margin-bottom:9px;
+	margin-top:22px;
+}
+
+.userimg{
+	height:42px;
+	width:42px;
+	//background-color:red;
+	border-radius:50%;
+	float:right;
+	padding-top:4px;
+}
+
+.userimg>img {
+	position:relative;
+	height: 42px;
+	width: 42px;
+	border-radius: 50%;
+}
+
+.topictitle {
+	width:auto;
+	margin-bottom: 8px;
+	padding-top:2px;
+	padding-left:5px;
+	padding-right:23px;
+	margin-right:120px;
+	
+	border-left: 3px solid #e8e8e8;
+	//border-right: 2px solid #b0b0b0;
+	position: relative;
+	//float: left;
+	//display:inline;
+	//float: left;
+	background-color:#ffffff;
+	//border-radius:2px;
+	font-size: 14px;
+	z-index:-1;
+}
+
+.createtopiccontent{
+	color:#686868;
+	font-size:8px;
+	font-family:'宋体', Arial;
+	margin-left:13px;
+	margin-top:35px;
+	opacity:0.5;
+}
+
+.createtopicimg{
+	opacity:0.3;
+	float:left;
+	margin-left:-20px;
+	margin-top:3px;
+}
+.createtopicimg img{
+	width:18px;
+	height:18px;
+}
+
+.recentmsg {
+	//float:clear;
+	color: #686868;
+	font-size: 10px;
+	font-family: '宋体', Arial;
+	margin-top: 3px;
+	margin-left: 39px;
+	//margin-right:50px;因为下面的inline这个目前暂时不起作用.可以把recenmsg整个用div包起来;
+	display:inline;
+	background-color:#ffffff;
+	//border-radius: 4px;
+}
+
+.triangle{
+	width: 17px;
+	height: 28px;
+	position: relative;
+	top: -37px;
+	right: -17px;
+	//transform: rotate(45deg);
+	//background-color: #fff;
+	//box-shadow:-20px 0 20px rgba(34, 25, 25, 0.2);
+	//background:url('../image/triangle.png') no-repeat;
+	float:right;
+}
+
+.triangle img{
+	width: 13px;
+	height: 29px;
+}
+
+/**
+*  弹框搜索
+*/
+._searchDiv{
+	position:fixed;
+	top: 13px;
+	left: -150px;
+	height:18px;
+	padding: 5px 5px 5px 6px;
+	line-height:18px;
+}
+
+._searchImg{
+	width:20px;
+	height:20px;
+}
+.search-container{
+	position:fixed;
+	//top:0px;
+	//left:8px;
+	//right:1px;
+	//bottom:1px;
+	width:100%;
+	height:40px;
+	//min-width:100px;
+	//display: inline;
+	z-index:102;
+	//border-radius:8px;
+	background:url('../image/titbg.gif') center top repeat-x;
+	background-size:9px;
+}
+.search-head{
+	border:1px solid #ccc;
+	width:35%;
+	height:25px;
+	float:left;
+	//-webkit-transition: width 0.5s ease-in-out;
+    //-moz-transition: width 0.5s ease-in-out;
+    transition: width 0.5s ease-in-out;
+	position:relative;
+	border-radius:6px;
+	padding-left:3px;
+	top:5px;
+	background:#fff;
+	left:8px;
+}
+
+.h-close-img{
+	width:15px;
+	height:15px;
+	padding-left:10px;
+	padding-top:11px;
+	display: none;
+	opacity:0.7;
+}
+.h-input{
+	/*background:no-repeat 0 0 scroll #FFF;*/
+	border:none;
+	width:70%;
+	outline:none;
+	height:17px;
+	//line-height:30px;
+	padding-left:20px;
+	font-size:.8em;
+	padding-top:4px;
+}
+
+.h-search-img{
+	width:100%;
+	/*height:15px;
+	//position:absolute;
+	//left:6px;
+	//top:6px;*/
+	opacity:0.4;
+	margin-top:5px;
+}
+
+.h-return-img{
+	width:15px;
+	height:15px;
+	position:absolute;
+	right:8px;
+	top:6px;
+	display: none;
+	opacity:0.7;
+}
+
+#search-content{
+	position:fixed;
+	width:90%;
+	height:90%;
+	background:#dddddd;
+	//opacity:0.7;
+	border-top: 1px #666666 solid;
+	//display:none;
+	//padding-top:10%;
+}
+._search-content{
+	width:90%;
+	height:90%;
+	background:#FFF;
+	border-top: 1px #FFFFFF solid;
+}
+
+.search-list-container{
+	position:fixed;
+	//margin-top: 15%;
+	top:58px;
+	left:1px;
+	right:1px;
+	bottom:1px;
+	width:95%;
+	height:93%;
+	min-width:200px;
+	display: none;
+	z-index:102;
+	background:#FFF;
+}
+
+.topic-content{
+	padding:5px;
+}
+._titleDiv{
+	width: 100%;
+	border-top: 1px #dddddd solid;
+	margin-bottom: 5px;
+}
+.topic-Title{
+	/*width: 80%;*/
+	float: left;
+	font-size: 16px;
+	font-weight: 100;
+	padding-top: 5px;
+	padding-left: 5px;
+	border-left: 4px #dddddd solid;
+}
+._msgTime{
+	float:right;
+	padding-right: 5px;
+}
+._topicMsgDiv{
+	width: 100%;
+}
+.topicMsg{
+	padding-top: 2px;
+	padding-left: 45px;
+	font-size: 14px;
+}
+.topicMsgMoreDiv{
+	text-align: right;
+	padding: 5px;
+	font-size: 12px;
+}
+.topicMsgMoreText{
+	padding: 2px;
+	color:#8C8C8C;
+	border:1px #8C8C8C solid;
+	border-radius: 5px;
+}
+.topicMoreDiv{
+	margin: 5px;
+	padding: 5px;
+	text-align: center;
+	border-top: 1px #dddddd solid;
+}
+.topicMoreText{
+	font-size: 14px;
+}

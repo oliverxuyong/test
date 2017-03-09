@@ -1,0 +1,25 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+	    <property name="show_sql">false</property><!-- 配置显示sql语句 -->
+  		<property name="format_sql">true</property><!-- 让输出的sql语句格式化 -->
+  		
+		<mapping class="so.xunta.beans.User"/>
+		<mapping class="so.xunta.beans.ChatMessage"/>
+		<mapping class="so.xunta.beans.Topic"/>
+		<mapping class="so.xunta.beans.TopicRegister"/>
+		<mapping class="so.xunta.beans.PubTopic"/>
+		<mapping class="so.xunta.beans.TopicRegisterRecord"/>
+		<mapping class="so.xunta.beans.UnreadMsg"/>
+		<mapping class="so.xunta.beans.UserHasUnreadMsgTopic"/>
+		<mapping class="so.xunta.beans.TopicSetting"/>
+		<mapping class="so.xunta.beans.NewTopicRequest"/>
+		<mapping class="so.xunta.beans.UserVisitLogger"/>
+		<mapping class="so.xunta.beans.Dic"/>
+		<mapping class="so.xunta.beans.CommunicateTime"/>
+		<mapping class="so.xunta.beans.validate.MobilePhoneValidateCode"/>
+	</session-factory>
+</hibernate-configuration>
