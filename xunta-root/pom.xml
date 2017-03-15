@@ -10,13 +10,10 @@
 	<modules>
 		<module>../xunta-server</module>
 		<module>../xunta-web</module>
-		<module>../xunta-neo4j</module>
 		<module>../xunta-model</module>
-		<module>../xunta-zoie</module>
 		<module>../xunta-utils</module>
 		<module>../xunta-persist</module>
 		<module>../xunta-websocket</module>
-		<module>../xunta-cxf</module>
 		<!-- <module>../xunta-xfireclient</module> -->
 		<!-- <module>../xunta-xfireserver</module> -->
 	</modules>
