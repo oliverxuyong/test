@@ -150,8 +150,9 @@ line-height: 10px;
 	width: 88px;
 	text-align:center;
 	font-size:12px;
-	background-color:#DDDDDD;
+	background:url('../image/titbg.gif') center top repeat-x;
 	border-radius: 10px;
-	display:none
+	display:none;
+	background-size:8px;
 }
 

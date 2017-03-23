@@ -169,6 +169,7 @@ function show_mobilephoneloginform(){//打开手机登录/注册页面,先把不
     $("#inputbox_nickname").hide();
     $("#inputbox_nickname").val("输入昵称");
     $("#inputbox_password2login,#inputbox_password2register,#inputbox_resetpassword").hide();
+	$("#inputbox_password2login").attr('type','text');
     $("#inputbox_password2login").val("输入登录密码");
     $("#inputbox_resetpassword").val("重设登录密码");
     $("#inputbox_password2register").val("设置登录密码");
@@ -198,9 +199,14 @@ function callback_checkonmobileno(receivedData){
     console.log(receivedData.ifexist);//手机号已存在则返回yes,否则为no.
     if (receivedData.ifexist == "no"){//若手机号是新号,则显图形码输入框及短信码按钮.
         toast("该手机号为新号.请输入图形验证码,然后请求发送短信验证码.");
+
+		//new Toast({context:$('body'),message:'该手机号为新号.请输入图形验证码,然后请求发送短信验证码.'}).show(); 
+
         $("#graphcode,#graphcode img,#changegraphcode,#inputbox_graphcode,#button_requestSendSMSCode").show();
     }else{//如果已存在,显示密码输入框及登录大按钮.
         toast("该手机号已经注册,请输入密码,然后登录.");
+		//new Toast({context:$('body'),message:'该手机号已经注册,请输入密码,然后登录.'}).show(); 
+
         $("#inputbox_password2login,#forgetpassword,#button_loginbymobilephone").show();
     }
 }
@@ -469,4 +475,3 @@ function userInfoToJson(userType, userUid, userName, userImage, P_unionid) {
     };
     return userInfo;
 }
-

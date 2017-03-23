@@ -117,7 +117,16 @@ function changeAllNickNames(newNickname) {
 		console.log("正在所有页面中的昵称,目前修改的页面是pagename="+dialogPageArray[n]);
 		exec(dialogPageArray[n], scriptStr);
 	}//这个循环是修改聊天页的昵称.
-	exec("topics_page", scriptStr);//单独修改列表页昵称.
+	//exec("topics_page", scriptStr);//单独修改列表页昵称.
+	/**start:叶夷  2017年3月20日
+	 * 修改我的主页昵称,home_page的winName为userid
+	 * 修改topics_page中的username
+	 */
+	exec(""+userId, scriptStr);
+	exec("topics_page", scriptStr);
+	/**
+	 * end: 叶夷
+	 */
 	localStorage.setItem("name", newNickname);//更新本地文件，将更改后的昵称存储在本地，下次在登录时或凑个本地读取新昵称
 }//请求服务器改名后的返回状态，这个方法只针对不成功的状态，改名成功会在上面的方式里面去做。 10.9
 

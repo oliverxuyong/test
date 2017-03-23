@@ -42,7 +42,7 @@
 						<input id="_keywords" class="h-input" type="text" onkeypress="if(event.keyCode==13){Javascript:doSearch()}" autofocus placeholder="搜索我的话题"/>
 						<img src="../image/return9.png" class="h-return-img" onclick="doSearch()"/>
 					</div>
-					<img src="../image/close.png" class="h-close-img" onclick="closeSearch()"/>
+					<img src="../image/close1.png" class="h-close-img" onclick="closeSearch()"/>
 					<div id="showonlineoffline" ><img src="../image/signal-gray.png" onclick="wsConnect()" />
 					</div>
 
@@ -112,50 +112,18 @@
 			<div id="topspace">
 			</div>-->
 
-			<div id="topic_list"  class="topic_list">
-				
-				<!--提问分享块-->
+			<!--提问分享块-->
 				<div class="topic_top">
 					<!--头像-->
 					<div class="userimg">
-						<img src="" onclick="openHomePage()" />
-					</div>
-
-					<div class="createnewtopic" id="createnewtopic" onclick="enterDialogPage_NewTopic()">
-						<div class="createtopicimg"><img src="../image/create_topic.png" /></div>
-						<div style="opacity:0.5;padding-top:4px;float:left;font-size:13px;padding-left:8px;">我有话要说</div>
-						<div class="createtopiccontent">提问，分享，交易</div>
-						<!--气泡三角-->
-						<div class="triangle">
-							<img src="../image/triangle.png" >
-						</div>
+						<img id="topic_img" src="" onclick="openHomePage()" />
 					</div>
 					
 				</div>
-
-				<!-- 这段不要删! 将用于简化appendelement这部分代码,也用于样式调试: xu 10.15.2015-->
-				<!--div class="topic">
-				<div class="latesttime">10-02-22</div>
-				<div class="topictitle">标题title	<div class="unread">13asdff</div>
-				</div>
-				<div></div>
-				<div class="recentmsg">最新消息1</div>
-				<div></div>
-				<div class="recentmsg">最新消息2,最新消息2</div>
-				</div-->
-			</div>
-			<div class="getmoretopics cursor"onclick="getMoreTopicList()">
-				<div >
-					+
-				</div>
-				<div>
-					更多话题
-				</div>
-			</div>
 		</div>
 
 		<div id="search-list-container" class="search-list-container">
-		<div id="search_content" class="_search-content">
+			<div id="search_list" style="width: 100%">
 				<!--<div class="topic-content">-->
 					<!--<div class="_titleDiv">-->
 						<!--<div class="topic-Title">语擎开发讨论组</div>-->
@@ -166,9 +134,8 @@
 						<!--<div class="topicMsg"><a href="javascript:;">wsx123</a>：<span>人类首次11sqeqewqeqwe</span><span class="_msgTime">12-26 11:00</span></div>-->
 					<!--</div>-->
 					<!--<div class="topicMsgMoreDiv"><span class="topicMsgMoreText">1 more</span></div>-->
-				<!--</div>-->
+			</div>
 			<div id="_searchTopicMore" class="topicMoreDiv"><img src="" />&nbsp;<span id="topicMoreText"></span></div>
-		</div>
 		</div>
 	</body>
 	<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
@@ -217,11 +184,11 @@
 			prepareTopicsPage();
 			execRoot("setTopicsPageOpenMark()");//可能还有其它表示列表页打开的标志.
 			execRoot("setCurrentPageId('topics_page')");  
-			showTopicList(topicList);
+			showTopicList();
 			//web上不需任何侦听. addListeners(); //这个方法是空的,是为了让topics_page页面与app保持一致.
 			setTimeout(function() {
 				$("#showonlineoffline>img").attr("src","../image/signal-orange.png");
-				$("body").prepend("<img id='imageundertopiclist' src='../image/imageundertopiclist.jpg'/>");
+				//$("body").prepend("<img id='imageundertopiclist' src='../image/imageundertopiclist.jpg'/>");
 				$("#imageundertopiclist").fadeIn(1500);
 			}, 1000);
 			
@@ -252,7 +219,7 @@
 				return;
 			}
 			//console.log(pageParamsStr);
-			topicList = JSON.parse(pageParamsStr.topiclist);//注意不能直接parse(pageParamsStr),原因不明.必须parse下面一级的键值对.
+			//topicList = JSON.parse(pageParamsStr.topiclist);//注意不能直接parse(pageParamsStr),原因不明.必须parse下面一级的键值对.
 			//topicList = pageParamsStr.topiclist;
 			//注意不能直接parse(pageParamsStr),原因不明.必须parse下面一级的键值对.
 			//var publicVars = JSON.parse(pageParamsStr.publicVars);

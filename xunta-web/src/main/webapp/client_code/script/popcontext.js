@@ -25,7 +25,7 @@ function alertWin(_context,_title,_w,_h){
     var result = [];
     result.push('<div class="pop-title">');
     result.push('<div class="title-div"><span>'+_title+'</span></div>');
-    result.push('<div class="close-div" onclick="closePop()"> &times; </div>');
+    result.push('<div class="close-div" onclick="closePop()"><img src="../image/close1.png"></div>');
     result.push('</div>');
     
     result.push(_context);

@@ -14,28 +14,37 @@ border:1px solid #DDDDDD;
 border-radius: 5px;
 color:#666666;
 font-size: 10px;
-display:none
+display:none;
 box-shadow:0px 2px 4px rgba(34, 25, 25, 0.2);
 }
 
 #cancel_mobilelogin{position:absolute;left:0; top:0px; right:0; text-align:center;background:url('../image/titbg.gif') center top repeat-x;}
 
 input,button{
-color:#666666;display:none
+color:#666666;//display:none
 }
 
 .clear{clear:both}
-#countrycode{float:left;width:18px; margin-right:5px;padding-top:5px;margin-bottom:10px;//line-height:14px;}
+#countrycode{float:left;width:20px; margin-right:5px;padding-top:4px;//margin-bottom:10px;//line-height:14px;}
 #inputbox_mobileno{float:left; width:50%;display:block;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
-#button_checkonmobileno{float:right; margin-right:1px;display:block;border-radius:10px;height:24px;width:65px;font-size:14px;background:#f1f2f4;}
+#button_checkonmobileno{
+	float:right; 
+	//margin-right:1px;
+	//display:block;
+	border-radius:10px;
+	height:24px;
+	width:65px;
+	font-size:14px;
+	background:#f1f2f4;
+	//margin-top:-2px;}
 
-#inputbox_password2login{margin-left:23px; float:left;margin-top:10px;width:50%;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);}
+#inputbox_password2login{margin-left:26px; float:left;margin-top:10px;width:50%;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
 
 #graphcode{margin-left:23px; float:left; margin-top:18px;display:none;}
 #graphcode img{/*height:100%改为下面的固定高宽,这样图形码未显示时不会塌陷.;*/height:20px;width:90px; margin-right:8px;float:left}
 #changegraphcode{float:left}
 #inputbox_graphcode {margin-left:23px; margin-top:5px;width:87px;float:left;padding-top:2px;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
-#button_requestSendSMSCode,#button_requestSendSMSCode4Resetpassword{margin-top:5px;float:right;//padding-top:2px; margin-right:1px;background:#f1f2f4;border-radius:10px;width:90px;height:24px;margin-bottom:6px;}
+#button_requestSendSMSCode,#button_requestSendSMSCode4Resetpassword{margin-top:5px;float:right;//padding-top:2px; margin-right:1px;background:#f1f2f4;border-radius:10px;width:100px;height:24px;margin-bottom:6px;}
 
 #inputbox_smscode{margin-left:23px; float:left;margin-top:18px; width:45%; padding-top:2px;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
 #inputbox_nickname{margin-left:23px; float:left;margin-top:5px;width:45%; padding-top:2px;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
@@ -45,7 +54,7 @@ color:#666666;display:none
 {margin-top:20px; width:100%; margin-top:53px;height:24px;border-radius:10px;background:#f1f2f4;}
 
 #button_font,#button_requestSendSMSCodefont,#button_requestSendSMSCode4Resetpasswordfont{
-	text-align: center;line-height: 24px;color: #889ba1;font-weight: bold;font-size:14px;
+	text-align: center;line-height: 24px;color: #889ba1;font-weight: bold;font-size:14px;//background:none;//border:0;//margin-left:6px;
 }
 
 #login/*,#login-text*/{

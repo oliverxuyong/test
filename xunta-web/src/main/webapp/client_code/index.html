@@ -134,7 +134,7 @@
         window.onload = start;//window.onload = readyMethod();//后面加括号是不对的,但是会造成什么问题还待查.xu 1.28
 
 		function start(){ //0110 在body里的onload这个方法是什么意思? //qq微信登录成功后,会重新刷新index页面,再次从这里执行. 手机登录成功后,会在本地存储用户信息,然后回到这里.
-			console.log("现在运行的是312版本.");
+			console.log("现在运行的是wolf 1版本.");
 			
 			userAgent = checkUserAgent();//返回一个数组["PC"或"Mobile","Android"或"QQBrowser"或"IE11"等]
 			setBodyHeightWidth();
@@ -182,16 +182,16 @@
       	,10000);
       }
          	  
-	  function initOpenTopicsPage(topiclist){//获取topiclist成功后,将回调到这个方法.
+	  function initOpenTopicsPage(){//获取topiclist成功后,将回调到这个方法.
   			//deleteCookie();//到了这里登录过程才算完成了,这时删掉cookie.如果topiclist没有得到,刷新时cookie还能起作用.
 	  		//console.log("topiclist===="+topiclist);
 			var publicVars = publicVarsJson();
 			var pageparam = {//准备openwin时的跨页参数:
 				"publicVars":publicVars,
 				//"topiclist":JSON.parse(topiclist)//topiclist本身是字串.这里parse一下,到新页面里就不用parse了.
-				"topiclist":topiclist//topiclist本身是字串.这里parse一下,到新页面里就不用parse了.
 			}
-			//console.log("pageparam---"+JSON.stringify(pageparam)); 	  		
+			console.log("pageparam---"+JSON.stringify(pageparam)); 	 
+			console.log("打开topics_page========"); 	 
 			//pageparam = JSON.stringify(pageparam);
 			//pageparam = JSON.stringify(pageparam);
 			//pageparam = JSON.parse(pageparam);

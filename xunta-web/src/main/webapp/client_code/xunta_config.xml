@@ -2,17 +2,6 @@
 <public_param>
 	<projectType>WEB</projectType>
 	<web>		
-		<chninn>
-			<pageTitle>笃行客</pageTitle>
-			<groupName>笃行客</groupName>
-			<adminName>笃行客管理员</adminName>
-			<adminImageurl>duxingke.jpg</adminImageurl>
-			<faviconUrl>duxingke.ico</faviconUrl>
-			<wxappid>wx18d4b6814c1fb62a</wxappid>
-			<wxstate>1d226da4c01b7367486b0b477dc7343d</wxstate>
-			<qqappid>101309887</qqappid>
-			<qqappkey>ae6d3072f0ce9670e56279790948d31e</qqappkey>
-		</chninn>
 		<ainiweddingcloud>
 			<pageTitle>艾妮婚庆云</pageTitle>
 			<groupName>艾妮婚庆云</groupName>
@@ -24,17 +13,6 @@
 			<qqappid>101324902</qqappid>
 			<qqappkey>28050e2ea9b6cffa645ae441b6d46e51</qqappkey>
 		</ainiweddingcloud>
-		<apicloudhelp>
-			<pageTitle>ApiCloud互助平台</pageTitle>
-			<groupName>apicloud</groupName>
-			<adminName>管理员</adminName>
-			<adminImageurl>apicloud-logo.png</adminImageurl>
-			<faviconUrl>apicloud.ico</faviconUrl>
-			<wxappid>wx21bb67455f378f10</wxappid>
-			<wxstate>6cfd35dff4ff07214fa6ed096ac60417</wxstate>
-			<qqappid>101100198</qqappid>
-			<qqappkey>6f2b759b6c847f6d91b393cf89e1bd0a</qqappkey>
-		</apicloudhelp>
 		<xunta>
 			<pageTitle>寻Ta网</pageTitle>
 			<groupName>寻Ta网页公测版</groupName>
@@ -62,7 +40,7 @@
 			<groupName>寻Ta本地测试版</groupName>
 			<adminName>寻Ta测试员</adminName>
 			<adminImageurl>xun.jpg</adminImageurl>
-			<domain4test>www.mxunta.so</domain4test>
+			<domain4test>localhost:8080</domain4test>
 		</localhost>
 	</web>
 	<app>

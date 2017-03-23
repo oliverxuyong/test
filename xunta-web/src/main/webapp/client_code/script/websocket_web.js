@@ -1,15 +1,5 @@
 
-function checkNewTopicSuccess(tmpTopicId, tmpPid) {
-	//如果任务筐为空,则不作为.
-	//如果任务筐不为空,则设置感叹号:
-	if (doRequestCreateNewTopic[tmpTopicId]) {//如果仍为true,说明没成功.
-		console.log("延时检查  新创话题请求没成功: checkCreateNewTopicSuccess doRequestCreateNewTopic[tmpTopicId]" + doRequestCreateNewTopic[tmpTopicId]);
-		// 1.12 F
-        exec(tmpTopicId,"afterCheckedNewTopicSuccess("+tmpPid+", false)");
-	}
-}
-
-function modifyNickname(jsonObj) {
+/*function modifyNickname(jsonObj) {
 	if (jsonObj.status == '0') {//昵称修改成功
 		changeAllNickNames(jsonObj.new_name);//在index_page.js里.
 		exec("topics_page","toast('昵称在服务器上修改成功.')");
@@ -18,32 +8,23 @@ function modifyNickname(jsonObj) {
 	} else if (jsonObj.status == '2') {//服务器保存时出错
 		exec("topics_page","toast('昵称在服务器上的修改过程出现异常，请重试或向开发者求助.')");
 	}
-}
+}*/
 
-function initLastTopicTime() {
-	//注销时要结束ws连接并且重新初始化 话题列表分页参数的初始值
-	lastTopicTime = '-1';
-	ws_obj.close();
-	//xu注释掉的 11.18 因为在close里已有这句了. ws_obj = null;
-	//F 0118 注销下面的代码
-	//api.removeEventListener({//应用程序进入后台事件
-	//	name : 'pause'
-	//}, function(ret, err) {
-	//})
-	//api.removeEventListener({//应用程序进入前台事件
-	//	name : 'resume'
-	//}, function(ret, err) {
-	//});
+/*start:叶夷      2017年3月20日
+ *  修改昵称已经在home_page页面，所以exec页面参数修改，home_page的winName为userid
+ * */
+function modifyNickname(jsonObj) {
+	if (jsonObj.status == '0') {//昵称修改成功
+		changeAllNickNames(jsonObj.new_name);//在index_page.js里.
+		exec(""+userId,"toast('昵称在服务器上修改成功.')");
+	} else if (jsonObj.status == '1') {//昵称出现重复
+		exec(""+userId,"toast('该昵称已存在,请修改后再提交.')");
+	} else if (jsonObj.status == '2') {//服务器保存时出错
+		exec(""+userId,"toast('昵称在服务器上的修改过程出现异常，请重试或向开发者求助.')");
+	}
 }
+/*end：叶夷*/
 
-function byValueToDialogBoxHistory(content) {
-	var jsonObj = JSON.parse(content);
-    var topicid = jsonObj.topicid;
-    doRequestPostHist[topicid] = false;
-	//成功获得聊天历史,将任务标志清除.
-    exec(topicid,"showDialogHistory("+content+")")
-    //document.getElementById(topicid).contentWindow.showDialogHistory(content);
-}
 
 function checkPostHistSuccess(topicId) {
 	//console.log("历史消息请求 延时检查时间到了 doRequestPostHist[topicId]:" + doRequestPostHist[topicId] + " topicid:" + topicId);
