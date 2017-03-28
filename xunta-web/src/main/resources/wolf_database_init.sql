@@ -28,7 +28,7 @@ CREATE TABLE `tbl_communicatetime` (
   `totopicid` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_qxg0lhskexhsoyntvn0n9r6hk` (`fromtopicid`,`totopicid`)
-) ENGINE=InnoDB AUTO_INCREMENT=22184 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_dic` */
 
@@ -40,7 +40,7 @@ CREATE TABLE `tbl_dic` (
   `value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_b55eqlxqlwgrqskv9a30m62nn` (`_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_logger` */
 
@@ -54,7 +54,7 @@ CREATE TABLE `tbl_logger` (
   `userId` varchar(255) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49283 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_mobilephone_valicode` */
 
@@ -68,7 +68,7 @@ CREATE TABLE `tbl_mobilephone_valicode` (
   `mobile_phone_number` varchar(15) DEFAULT NULL,
   `validatecode` varchar(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=140 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 
@@ -93,7 +93,7 @@ CREATE TABLE `tbl_user` (
   `openid` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_37eqpe6xlhe06phctre5cl0b6` (`third_party_id`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=735 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
