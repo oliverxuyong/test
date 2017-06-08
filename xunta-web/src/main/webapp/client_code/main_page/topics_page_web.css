@@ -6,7 +6,7 @@ position:fixed;
 	height:100%;
 	background-color: #ffffff;
 	cursor:auto;
-	//Verdana 字体 和 Tahoma
+	//Verdana 瀛椾綋 鍜� Tahoma
 	//font-family:Verdana;
 	//font-family:Tahoma;
 	//color:#191970;
@@ -21,7 +21,7 @@ position:fixed;
 #showatloaded{
 //position:fixed;
 width:100%; 
-	display:none;
+	//display:none;
 	height:100%;
 	//overflow-y:scroll;
 	-webkit-overflow-scrolling: touch;
@@ -32,7 +32,7 @@ width:100%;
 	margin-top: 120px;
 	margin-right: 10px;
 	margin-left: 8px;
-	font-family: '微软雅黑', Arial;
+	font-family: '寰蒋闆呴粦', Arial;
 	//color: #303030;
 	z-index:100;
 	//padding-top:21px;
@@ -103,7 +103,7 @@ width:100%;
 .createtopiccontent{
 	color:#686868;
 	font-size:8px;
-	font-family:'宋体', Arial;
+	font-family:'瀹嬩綋', Arial;
 	margin-left:13px;
 	margin-top:31px;
 	opacity:0.5;
@@ -124,10 +124,10 @@ width:100%;
 	//float:clear;
 	color: #686868;
 	font-size: 10px;
-	font-family: '宋体', Arial;
+	font-family: '瀹嬩綋', Arial;
 	margin-top: 3px;
 	margin-left: 39px;
-	//margin-right:50px;因为下面的inline这个目前暂时不起作用.可以把recenmsg整个用div包起来;
+	//margin-right:50px;鍥犱负涓嬮潰鐨刬nline杩欎釜鐩墠鏆傛椂涓嶈捣浣滅敤.鍙互鎶妑ecenmsg鏁翠釜鐢╠iv鍖呰捣鏉�;
 	display:inline;
 	background-color:#ffffff;
 	//border-radius: 4px;
@@ -152,7 +152,7 @@ width:100%;
 }
 
 /**
-*  弹框搜索
+*  寮规鎼滅储
 */
 ._searchDiv{
 	position:fixed;
@@ -302,10 +302,10 @@ width:100%;
 	padding-top: 8px;
 	padding-left: 39px;
 	font-size: 10px;
-	/*start:叶夷
-		解决问题：在相连的人中每个人最后一个相连的话题打开始终遮盖下面的人，加上这个属性的作用是清除浮动*/
+	/*start:鍙跺し
+		瑙ｅ喅闂锛氬湪鐩歌繛鐨勪汉涓瘡涓汉鏈�鍚庝竴涓浉杩炵殑璇濋鎵撳紑濮嬬粓閬洊涓嬮潰鐨勪汉锛屽姞涓婅繖涓睘鎬х殑浣滅敤鏄竻闄ゆ诞鍔�*/
 	overflow-y:hidden;
-	/*end:叶夷*/
+	/*end:鍙跺し*/
 }
 .topicMsgMoreDiv{
 	text-align: right;

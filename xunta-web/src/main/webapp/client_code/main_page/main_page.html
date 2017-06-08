@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<title>话题列表页</title>
+		<link rel="stylesheet" type="text/css" href="topics_page.css"/>
+		<link rel="stylesheet" type="text/css" href="topics_page_web.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/popup.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/common_web.css"/>
+		<link rel="stylesheet" type="text/css" href="alter_userimage.css"/>
+
+		<!--让输入框的提示字颜色变淡-->
+		<style>
+		::-webkit-input-placeholder { /* WebKit, Blink, Edge */	opacity:  0.2;	}
+		:-moz-placeholder { /* Mozilla Firefox 4 to 18 */	opacity:  0.2;	}
+		::-moz-placeholder { /* Mozilla Firefox 19+ */	opacity:  0.2;	}
+		:-ms-input-placeholder { /* Internet Explorer 10-11 */	opacity:  0.2;	}
+		</style>
+
+	</head>
+<body>
+	<!--<img id="imageundertopiclist" src="image/windblowgrass-2.gif"/>-->
+
+	<div id="showatloaded" class="showatloaded">
+
+		<div id="search-container" class="search-container">
+			<div id="showonlineoffline">
+				<img src="../image/signal-gray.png" onclick="wsConnect()">
+			</div>
+			<div id="showouseroprate">
+				<img src="../image/exit.png" onclick="logOff()">
+			</div>
+		</div>
+
+		<!--提问分享块-->
+		<div class="topic_top">
+			<!--头像-->
+			<div class="userimg">
+				<img id="topic_img" src="" onclick="openHomePage()" />
+			</div>
+		</div>
+		<!-- CP容器的HTLM标范,不要删,用于css调试 -->
+		<div id="cp-container" style="position:fixed; top:150px; height:200px;">
+			<div class="cp" id="cpid1" class="selected">CP111111111	</div>
+			<div class="cp" id="cpid2" class="unselected">CP2222222222			</div>
+			<div class="cp" id="cpid3" class="unselected">CP3333333			</div>
+		</div> <!-- END of CP容器的HTLM标范,不要删,用于css调试 -->
+	</div> <!--End of <div id="showatloaded" class="showatloaded"> -->
+
+
+</body>
+<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../script/common-xunta.js"></script>
+	<script type="text/javascript" src="../script/common-xunta_web.js"></script>
+	<script type="text/javascript" src="../script/popup.js"></script>
+	<script type="text/javascript" src="topics_page.js"></script>
+	<script type="text/javascript" src="topics_page_web.js"></script>
+	<script type="text/javascript">
+		var userId;
+		//var unionid;//第三方原生ID
+		var userName;
+		var userImgUrl;
+		
+		var pageTitle;
+		var adminName;
+		var adminImageUrl;
+		
+		var projectType;
+		var domain;
+		var userAgent;
+		//var dialogPageName = 0;
+		//var currentOpenDialogPageId = 'null'; //记录当前打开聊天页面的ID，如果没有在聊天页面上则 = null; 10.13 FANG
+		//var countKeybacks = 0; //用于记录点击回退键的次数,超过30秒则清零. 达到10次,可以打开index.html页,以查看log信息.
+		var requestCPNum = 20; //每次请求话题数
+		var currentRequestedCPPage = 0; //page指第几次请求到的返回结果集.0表示还没有请求到.请求成功后,要加1. 
+		//$("#showatloaded").hide();//?0113 这三个hide改为在css中display:none
+		//$("#imageundertopiclist").hide();
+		//$(".getmoretopics").hide();
+		//		function readyMethod() {//?0112 取消这个方法,如果需要另用windows.ready来做. 隐藏的句子放在外面. 这样 获得更多 的加号就不会闪一下才消失. App上也需要同样的修改.
+		//		}
+		
+		//var _default_topics_num = 10;   //搜索的话题数，默认10条
+		//var _default_posters_num = 3;   //话题下消息数，默认3条
+		//var _search_page = 1;  //搜索话题页
+		//var _keywords;     //搜索内容
+
+		function start(pageParamsStr) {//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
+			//1。11 新增，   显示Log日志后点击return事件返回到话题列表页时是没有参数的，data为''，所以下面加个判断条件，为''就结束该方法  FANG
+			retrievePageParams(pageParamsStr); 
+			prepareTopicsPage();
+			setRootVars();
+			//showCP();
+			//wsConnect();
+			requestCP(userId,requestCPNum,currentRequestedCPPage+1);
+			
+			//$("#account").show();
+		}
+		
+		
+		function setRootVars(){
+			execRoot("setTopicsPageOpenMark()");//可能还有其它表示列表页打开的标志.
+			execRoot("setCurrentPageId('main_page')");  
+		}
+		
+		function prepareTopicsPage(){
+			/*这个地方要修改:允许微信和QQ登录下也可以修改头像.//?
+			if(userinfoObj.type!='mobilephone'){//只有手机登录时用户才能修改头像
+				$("#alterUserimage").hide();
+			}else{
+				$("#alterUserimage").show();
+			}*/
+			$(".userimg>img").attr("src", userImg);
+			//$("#username").text(userName);
+			
+			//if ( projectType == "WEB" ){
+			//	if ( userAgent[0] == "PC" ){
+			//		$("#userimage").css("right","32px");//向左让出右侧的滚动条.
+			//	}
+			//}
+			
+			//web上不需任何侦听. addListeners(); //这个方法是空的,是为了让topics_page页面与app保持一致.
+			
+			
+			setTimeout(function() {
+				//开始就显示桔黄色信息是不对的. 应该在ws成功连接后再显示.$("#showonlineoffline>img").attr("src","../image/signal-orange.png");
+				//$("body").prepend("<img id='imageundertopiclist' src='../image/imageundertopiclist.jpg'/>");
+				$("#imageundertopiclist").fadeIn(1500);//延迟并缓慢显示背景图片.
+			}, 1000);
+			
+			
+			
+			
+		}
+
+		function retrievePageParams(pageParamsStr){
+			if (pageParamsStr == '') {
+				toast("打开列表页时发现传递的参数为空.请与开发者联系.");
+				return;
+			}
+			//console.log(pageParamsStr);
+			//topicList = JSON.parse(pageParamsStr.topiclist);//注意不能直接parse(pageParamsStr),原因不明.必须parse下面一级的键值对.
+			//topicList = pageParamsStr.topiclist;
+			//注意不能直接parse(pageParamsStr),原因不明.必须parse下面一级的键值对.
+			//var publicVars = JSON.parse(pageParamsStr.publicVars);
+			var publicVars = pageParamsStr.publicVars;
+			domain = publicVars.domain;
+			projectType = publicVars.projectType;
+			userAgent = publicVars.userAgent;
+			//console.log(userAgent);	console.log(userAgent[0]);	console.log(userAgent[1]);
+			pageTitle = publicVars.pageTitle;
+		    adminName = publicVars.adminName;
+		    adminImageurl = publicVars.adminImageurl;
+		    console.log("adminName:"+adminName);
+			var userinfoObj = publicVars.userInfo;
+			userId = userinfoObj.uid;
+			userName = userinfoObj.name;
+			userImg = userinfoObj.image;
+			//unionid = userinfoObj.unionid;
+			//topicList = Parameter.topiclist;
+		}
+
+	</script>
+</html>

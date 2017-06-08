@@ -14,20 +14,12 @@
 		<link rel="prefetch" id="prefetch_userimage" href="" />
         <meta property="qc:admins" content="650003246763061666375" />
 
-		<!--让输入框的提示字颜色变淡-->
+		<!--让输入框的提示字颜色变淡 可以放到css里-->
 		<style>
-		::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-			opacity:  0.2;
-		}
-		:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-			opacity:  0.2;
-		}
-		::-moz-placeholder { /* Mozilla Firefox 19+ */
-			opacity:  0.2;
-		}
-		:-ms-input-placeholder { /* Internet Explorer 10-11 */
-			opacity:  0.2;
-		}
+		::-webkit-input-placeholder { /* WebKit, Blink, Edge */	opacity:  0.2;	}
+		:-moz-placeholder { /* Mozilla Firefox 4 to 18 */	opacity:  0.2;		}
+		::-moz-placeholder { /* Mozilla Firefox 19+ */	opacity:  0.2;			}
+		:-ms-input-placeholder { /* Internet Explorer 10-11 */	opacity:  0.2;	}
 		</style>
 
 	</head>
@@ -67,18 +59,19 @@
         		<div id="button_resetandloginbymobilephone" onclick="resetandloginbymobilephone()"><div id="button_font">重设密码并登录</div></div>
         		<div id="button_loginbymobilephone" onclick="loginbymobilephone()"><div id="button_font">登录</div></div>
         </div>
-            <div id="login">
-                <div>
+        
+        <div id="login">
+            <div>
                     <div title="微信" id="weixin_login" class="cursor" onclick="wx_login()"><img src="image/weixin-logo-gray2.png"/></div>
                 </div>
-                <div>
-                    <div title="QQ" id="qq_login" class="cursor" onclick="qq_login()"><img src="image/qq-logo-gray2.png"/></div>
-                </div>
-                <div>
-                    <div title="手机" id="mobilephone_login" class="cursor" onclick="show_mobilephoneloginform()"><img src="image/mobilephone1.jpg"/></div>
-                </div>
+            <div>
+                <div title="QQ" id="qq_login" class="cursor" onclick="qq_login()"><img src="image/qq-logo-gray2.png"/></div>
             </div>
-            <!--div id="login-text"> 这是登录按钮下面的文字,暂时备存.
+            <div>
+                <div title="手机" id="mobilephone_login" class="cursor" onclick="show_mobilephoneloginform()"><img src="image/mobilephone1.jpg"/></div>
+            </div>
+        </div>
+        <!--div id="login-text"> 这是登录按钮下面的文字,暂时备存.
                 <div>
                     <div id="weixin_login_text">微信登录</div>
                 </div>
@@ -88,13 +81,17 @@
                 <div>
                     <div id="mobilephone_login_text">手机登录</div>
                 </div>
-            </div-->
+        </div-->
 		<div id="logging" style="font-size:10px; display:none">
 			<div id="return">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</div>
 			<!--logging记录栏-->
 		</div>
+		
+		
+		
+		
 	</body>
 	<script type="text/javascript" src="script/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="script/sockjs-0.3.min.js"></script>
@@ -149,7 +146,7 @@
 			setPageTitle();//获得domain之后才能执行这一句.
 			setPageICO();//设置页面顶部的小图标.
 			setSpecialGroupReq();//只针对艾妮婚庆的主页面.
-			delayedCheckTopicListSuccess();//以是否成功获得topiclist为登录成功标志. 延时检查是否成功,如果不成功,则拖拉机停止.
+			//delayedCheckTopicListSuccess();//以是否成功获得topiclist为登录成功标志. 延时检查是否成功,如果不成功,则拖拉机停止.
 			loginBegin();//进入login.js,成功获得userinfo则执行下面的userInfoIsReady(),出现问题则停止拖拉机或报错.
 			/*
 			var userinfo = getUserInfo();//读取本地用户信息,如果没有则进入登录过程.模拟帐号也在这里调用.//这里是马上返回的,promise机制没有起作用.
@@ -168,21 +165,22 @@
       	createPublicParam4UserInfo(userInfoStr);//获得用户信息后,为相关的公共变量赋值.
       	$("#prefetch_adminimage").attr("href", "image/"+adminImageurl);//预载管理员头像.  
         $("#prefetch_userimage").attr("href", userImage);//预载管理员头像.
-			
-      	initToGetTopicList();//此时会自动创建ws连接. 获取话题列表成功后,将回调下面的initOpenTopicsPage()方法.
+      	//initToGetCP();//此时会自动创建ws连接. 获取话题列表成功后,将回调下面的initOpenTopicsPage()方法.
+      	initOpenMainPage();
+      	
       }
       
-      function delayedCheckTopicListSuccess(){//延时检查列表页是否成功,如果不成功,则中止拖拉机:
+      function delayedCheckCPRequestSuccess(){//延时检查列表页是否成功,如果不成功,则中止拖拉机:
       	console.log("现在设置延时检测...");
       	setTimeout(
-      		function(){	if(doRequestTopicList == true){//该变量在websocket.js中.等于true,说明列表页一直没有成功.
-      			console.log("15秒后检查发现doRequestTopicList=true,说明列表页数据没有成功获取,停止拖拉机.");
+      		function(){	if(doRequestCP == true){//该变量在websocket.js中.等于true,说明列表页一直没有成功.
+      			console.log("15秒后检查发现doRequestCP=true,说明列表页数据没有成功获取,停止拖拉机.");
 				clickLoadingtextEvent();}      		
       		}
       	,10000);
       }
          	  
-	  function initOpenTopicsPage(){//获取topiclist成功后,将回调到这个方法.
+	  function initOpenMainPage(){//获取topiclist成功后,将回调到这个方法.
   			//deleteCookie();//到了这里登录过程才算完成了,这时删掉cookie.如果topiclist没有得到,刷新时cookie还能起作用.
 	  		//console.log("topiclist===="+topiclist);
 			var publicVars = publicVarsJson();
@@ -191,12 +189,12 @@
 				//"topiclist":JSON.parse(topiclist)//topiclist本身是字串.这里parse一下,到新页面里就不用parse了.
 			}
 			console.log("pageparam---"+JSON.stringify(pageparam)); 	 
-			console.log("打开topics_page========"); 	 
+			console.log("打开main_page========"); 	 
 			//pageparam = JSON.stringify(pageparam);
 			//pageparam = JSON.stringify(pageparam);
 			//pageparam = JSON.parse(pageparam);
 			//pageparam = JSON.parse(pageparam);
-			openNewWin('topics_page', 'topics_page/topics_page.html', JSON.stringify(pageparam));//index.html暂时没移动
+			openNewWin('main_page', 'main_page/main_page.html', JSON.stringify(pageparam));//index.html暂时没移动
 			//openWin('topics_page', 'topics_page/topics_page.html', pageparam);//index.html暂时没移动
 				//1.11 新增 F
 				//hideIndexLogInfo();

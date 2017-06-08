@@ -21,7 +21,11 @@ function set_lastTopicTime(lasttopictime) {
 	lastTopicTime = lasttopictime;
 }
 
-var doRequestTopicList = false;
+var doRequestCP = false;
+var requestCPNum; //每次请求话题数//这两个变量由mainpage在请求cp时传过来,在这里保存,供执行任务筐的任务时使用.xu
+var currentRequestedCPPage; //这两个变量由mainpage在请求cp时传过来,在这里保存,供执行任务筐的任务时使用.xu
+
+
 //请求话题列表的任务筐. xu9.9
 var doRequestPostHist = new Array();
 //请求历史滔滔息的任务筐.
@@ -48,29 +52,57 @@ var tmptid2tmppid = new Array();
 var currentPageId = null;
 
 
-function initToGetTopicList() {
+function initToGetCP(userId,requestNum,currentPage) {
+	requestCPNum = requestNum;
+	currentRequestedCPPage = currentPage;
 	//$("#loadinganimation").css("display", "block");
 	//$(".login_container").css("display", "none");
-	//doRequestTopicList = true;
-	//任务筐中登记.
+	doRequestCP = true;	//任务筐中登记.
 	//先添加响应任务,同时作为请求进行中的状态标志.
-	//console.log("initToGetTopicList...userId=" + userId);
+	console.log("initToGetCP...userId=" + userId);
 	//$("#loadinganimation").click(initToGetTopicList(userId));//有时该方法会在请求失败时点击拖拉机来调用,所以这里先取消点击事件.
-	/*if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
-		requestTopicList();
-	}*/
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		requestCP();
+	}
+	/*
 	if (lastTopicTime == '-1') {//如果是第一次请求,需要返回到index.html里执行一次打开页面的操作.
-		initOpenTopicsPage();//该方法在index.html里.xu
+		initOpenMainPage();//该方法在index.html里.xu
 	} else {//如果话题列表页已经打开,则直接将数据显示出来:
 		//exec('showTopicList','topics_page',evnt.data);
-		exec("topics_page","showTopicList()");
+		exec("main_page","showCP()");
 		//document.getElementById("topics_page").contentWindow.showTopicList(evnt.data);
 	}
+	*/
+}
+
+function task_RequestCP() {//检查并执行话题列表请求任务.
+	if (doRequestCP) {//检查并执行 请求话题列表的任务.xu9.9
+		console.log("CP请求任务为true,现在执行请求...");
+		requestCP();
+	}
+}
+
+function requestCP(){//请一组CP.首次请求页号设为1.
+	console.log("真正请求一组CP:,userId="+userId+" 请求数量="+requestCPNum+" 请求的页面="+currentRequestedCPPage);
+	var json_obj = {
+			 _interface:"1101-1",
+			 interface_name: "requestCP",
+			 uid:userId,
+			 startpoint: currentRequestedCPPage,
+			 howmany:requestCPNum,//每次请求多少个标签
+			 timestamp:	"",//暂时无用.
+		};
+	WS_Send(json_obj);
 }
 
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
+	task_RequestCP();
+	//检查并执行话题列表请求任务.
+
 }
+
+
 
 
 function showSetupInfo(eventdata) {
@@ -105,6 +137,7 @@ function setSetupInfo(topicId, boolean_private, suspend) {
 	};
 	WS_Send(json_obj);
 }
+
 
 
 function setCurrentPageId(value) {
@@ -166,7 +199,7 @@ function websocketEvent() {
 		console.log("ws连接事件, 显示在线图标. |ws_obj=" + ws_obj + " |readyState=" + ws_obj.readyState);
 		logging("ws连接事件, 显示在线图标. |ws_obj=" + ws_obj + " |readyState=" + ws_obj.readyState);
 		if (topicsPageOpenMark == "yes") {//没有这个判断,启动时会报错.xu1113.
-			exec("topics_page", "showWebsocketStatus('ws_on')");
+			exec("main_page", "showWebsocketStatus('ws_on')");
 		}else{
 			console.log("ws建立,要显示在线图标,却发现列表页没有打开.topicsPageOpenMark == yes不成立.");
 		}

@@ -3,7 +3,7 @@ function wsConnect() {
 }
 
 
-function showTopicList() {//显示从服务器获得的话题列表:    这段代码出现在旧版本，因版本错乱出现在这里
+function showCP() {//显示从服务器获得的话题列表:    这段代码出现在旧版本，因版本错乱出现在这里
 	//$("#loadinganimation").remove();
 	$("#showatloaded").show();
 	console.log("进到空白页");
