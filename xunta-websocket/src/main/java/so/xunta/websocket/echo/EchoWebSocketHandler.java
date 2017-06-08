@@ -118,7 +118,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			}else{
 				logger.info("用户"+u.getUserId()+"  "+u.getName()+"恢复连接");
 				
-				re_sendMsg(userid,5);
+				//re_sendMsg(userid,5); //zheng 先取消，以后的更新任务还会有类似的功能
 			}
 		} else {
 		}

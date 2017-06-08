@@ -14,7 +14,7 @@ import java.util.jar.JarFile;
 public class FilePathUtil2 {
 
 	public static void main(String[] args) throws Exception {
-		String packageName = "so.xunta.websocket.controller";
+		String packageName = "so.xunta.utils";
 		// List<String> classNames = getClassName(packageName);
 		List<String> classNames = getClassName(packageName, false);
 		if (classNames != null) {
