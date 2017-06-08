@@ -14,7 +14,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name="concern_point")
-public class ConcernPointDO {
+public class ConcernPointDO{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private BigInteger id;

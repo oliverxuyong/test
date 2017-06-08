@@ -177,7 +177,9 @@ function checkMessageInterface(evnt) {
 	console.log("收到消息,类型=" + jsonObj._interface);
 	console.log("消息内容:" + JSON.stringify(jsonObj).substring(0,150)+"...(只显示150个字符)");
 	logging("收到消息,类型=" + jsonObj._interface);
-
+	if(jsonObj._interface == '1101-2'){
+		console.log(JSON.stringify(jsonObj.cp_wrap));
+	}
 }
 
 

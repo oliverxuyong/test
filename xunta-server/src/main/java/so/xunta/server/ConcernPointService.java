@@ -3,11 +3,10 @@ package so.xunta.server;
 import java.math.BigInteger;
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
 
 import so.xunta.beans.ConcernPointDO;
 
-@Repository
+
 public interface ConcernPointService {
 	public ConcernPointDO saveConcernPoint(ConcernPointDO cp);
 	public ConcernPointDO getConcernPoint(BigInteger id);

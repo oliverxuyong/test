@@ -3,7 +3,6 @@ package so.xunta.persist;
 import java.math.BigInteger;
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
 
 import so.xunta.beans.ConcernPointDO;
 
@@ -11,7 +10,7 @@ import so.xunta.beans.ConcernPointDO;
  * @author bright_zheng
  * 
  */
-@Repository
+
 public interface ConcernPointDao {
 	/**
 	 * @author bright_zheng
