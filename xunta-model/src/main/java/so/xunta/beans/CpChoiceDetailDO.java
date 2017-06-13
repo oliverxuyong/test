@@ -15,7 +15,7 @@ public class CpChoiceDetailDO {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private BigInteger id;
-	private Long userId;
+	private Long user_id;
 	private BigInteger cp_id;
 	private String is_selected;
 	private Timestamp create_time;
@@ -25,11 +25,12 @@ public class CpChoiceDetailDO {
 	public void setId(BigInteger id) {
 		this.id = id;
 	}
-	public Long getUserId() {
-		return userId;
+
+	public Long getUser_id() {
+		return user_id;
 	}
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setUser_id(Long user_id) {
+		this.user_id = user_id;
 	}
 	public BigInteger getCp_id() {
 		return cp_id;

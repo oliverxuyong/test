@@ -66,7 +66,7 @@ public class ConcernPointOperationWSController {
 		BigInteger cpid = BigInteger.valueOf(Long.valueOf(params.getString("cpid")));
 		String timestamp=params.getString("timestamp");
 		CpChoiceDetailDO cpChoiceDetailDO=new CpChoiceDetailDO();
-		cpChoiceDetailDO.setUserId(uid);
+		cpChoiceDetailDO.setUser_id(uid);
 		cpChoiceDetailDO.setCp_id(cpid);
 		cpChoiceDetailDO.setIs_selected("Y");
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
@@ -87,7 +87,7 @@ public class ConcernPointOperationWSController {
 		BigInteger cpid = BigInteger.valueOf(Long.valueOf(params.getString("cpid")));
 		String timestamp=params.getString("timestamp");
 		CpChoiceDetailDO cpChoiceDetailDO=new CpChoiceDetailDO();
-		cpChoiceDetailDO.setUserId(uid);
+		cpChoiceDetailDO.setUser_id(uid);
 		cpChoiceDetailDO.setCp_id(cpid);
 		cpChoiceDetailDO.setIs_selected("N");
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));

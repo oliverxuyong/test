@@ -41,7 +41,7 @@ public class ConcernPointDaoImpl implements ConcernPointDao {
 	@Override
 	public List<ConcernPointDO> listConcernPointsByCreator(Long uid,int startPoint,int howMany) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "select cp.* from concern_point as cp where cp.creator_uid = :uid order by cp.gmt_modified ";
+		String sql = "select cp.* from concern_point as cp where cp.creator_uid = :uid order by cp.modified_time ";
 		Query query = session.createSQLQuery(sql).addEntity(ConcernPointDO.class).setLong("uid", uid).setFirstResult(startPoint).setMaxResults(howMany);
 		return query.list();
 	}

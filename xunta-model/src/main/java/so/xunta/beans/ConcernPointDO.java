@@ -18,12 +18,12 @@ public class ConcernPointDO{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private BigInteger id;
-	private Long creatorId;
+	private Long creator_uid;
 	private String text;
 	@ColumnDefault(value="1.0")
-	private BigDecimal widget;
-	private Timestamp gmt_create;
-	private Timestamp gmt_modified;
+	private BigDecimal weight;
+	private Timestamp create_time;
+	private Timestamp modified_time;
 
 	public BigInteger getId() {
 		return id;
@@ -31,11 +31,29 @@ public class ConcernPointDO{
 	public void setId(BigInteger id) {
 		this.id = id;
 	}
-	public Long getCreatorId() {
-		return creatorId;
+	public Long getCreator_uid() {
+		return creator_uid;
 	}
-	public void setCreatorId(Long creatorId) {
-		this.creatorId = creatorId;
+	public void setCreator_uid(Long creator_uid) {
+		this.creator_uid = creator_uid;
+	}
+	public BigDecimal getWeight() {
+		return weight;
+	}
+	public void setWeight(BigDecimal weight) {
+		this.weight = weight;
+	}
+	public Timestamp getCreate_time() {
+		return create_time;
+	}
+	public void setCreate_time(Timestamp create_time) {
+		this.create_time = create_time;
+	}
+	public Timestamp getModified_time() {
+		return modified_time;
+	}
+	public void setModified_time(Timestamp modified_time) {
+		this.modified_time = modified_time;
 	}
 	public String getText() {
 		return text;
@@ -43,22 +61,5 @@ public class ConcernPointDO{
 	public void setText(String text) {
 		this.text = text;
 	}
-	public BigDecimal getWidget() {
-		return widget;
-	}
-	public void setWidget(BigDecimal widget) {
-		this.widget = widget;
-	}
-	public Timestamp getGmt_create() {
-		return gmt_create;
-	}
-	public void setGmt_create(Timestamp gmt_create) {
-		this.gmt_create = gmt_create;
-	}
-	public Timestamp getGmt_modified() {
-		return gmt_modified;
-	}
-	public void setGmt_modified(Timestamp gmt_modified) {
-		this.gmt_modified = gmt_modified;
-	}
+
 }

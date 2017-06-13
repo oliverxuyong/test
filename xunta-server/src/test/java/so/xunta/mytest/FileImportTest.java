@@ -15,6 +15,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import so.xunta.utils.dataimport.HelpDB;
 
+/**
+ * 用于excel的CP标签导入数据库
+ * @author Bright_Zheng 
+ * */
 public class FileImportTest {
 
 	public static void main(String[] args) throws InvalidFormatException, IOException, SQLException {
@@ -46,7 +50,7 @@ public class FileImportTest {
 			for (int j = y[0]-'A'; j <= y[1]-'A'; j++) {//得到第j列
 				XSSFCell cell=row_cells.getCell(j);
 				if(cell!=null){
-					pstmt.setLong(1,new Long((long)1));
+					pstmt.setLong(1,new Long((long)1));//默认创建者为管理员
 					pstmt.setString(2, cell+"");
 					pstmt.setBigDecimal(3,new BigDecimal(1.0));
 					pstmt.setTimestamp(4,new Timestamp(System.currentTimeMillis()));
