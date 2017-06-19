@@ -95,6 +95,33 @@ function requestCP(){//请一组CP.首次请求页号设为1.
 	WS_Send(json_obj);
 }
 
+//叶夷   2016.06.16 发送"标签选中"
+function sendSelectedCP(userId,cpid,currentRequestedCPPage){
+	//console.log("测试 3： "+typeof(userId));
+	console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
+	var json_obj = {
+			 _interface:"1102-1",
+			 interface_name: "sendSelectedCP",
+			 uid:userId.toString(),
+			 cpid:cpid.toString(),
+			 timestamp:"",
+		};
+	WS_Send(json_obj);
+}
+
+//叶夷   2016.06.16  发送"标签选中取消"
+function sendUnselectedCP(userId,cpid,currentRequestedCPPage){
+	console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
+	var json_obj = {
+			 _interface:"1103-1",
+			 interface_name: "sendUnselectedCP",
+			 uid:userId.toString(),
+			 cpid:cpid.toString(),
+			 timestamp:"",
+		};
+	WS_Send(json_obj);
+}
+
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
 	task_RequestCP();
@@ -179,7 +206,22 @@ function checkMessageInterface(evnt) {
 	logging("收到消息,类型=" + jsonObj._interface);
 	if(jsonObj._interface == '1101-2'){
 		console.log(JSON.stringify(jsonObj.cp_wrap));
+		
+		//叶夷 2017.06.15  获得数据之后将数据显示在页面上
+		exec("main_page","responseToCPRequest("+evnt.data+")");
 	}
+	
+	//叶夷 2017.06.16    发送"标签选中"
+	if(jsonObj._interface == '1102-2'){
+		console.log("发送'标签选中' :"+JSON.stringify(jsonObj.is_success));
+		
+	}
+	
+	//叶夷 2017.06.16    发送"标签选中取消"
+	if(jsonObj._interface == '1103-2'){
+		console.log("发送'标签选中取消' :"+JSON.stringify(jsonObj.is_success));
+	}
+	
 }
 
 

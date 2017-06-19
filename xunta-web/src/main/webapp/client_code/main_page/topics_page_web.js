@@ -2,11 +2,50 @@ function wsConnect() {
     execRoot("checkIfWSOnline4Signal()");
 }
 
-
-function showCP() {//显示从服务器获得的话题列表:    这段代码出现在旧版本，因版本错乱出现在这里
+//叶夷   2016.06.15  将从服务端的标签显示出来
+function responseToCPRequest(CP_list) {//显示从服务器获得的话题列表:    这段代码出现在旧版本，因版本错乱出现在这里
 	//$("#loadinganimation").remove();
 	$("#showatloaded").show();
-	console.log("进到空白页");
+	//console.log("进到空白页");
+	
+	//console.log("测试 ： "+JSON.stringify(CP_list));
+	var cpList=CP_list.cp_wrap;
+	for(var i=0;i<cpList.length;i++){
+		appendElement(i,cpList,CP_list);//叶夷   2016.06.16  如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
+	}
+}
+
+//叶夷   2016.06.16  通过服务器返回的标签添加到页面的方法
+function appendElement(i,cpList,CP_list){
+	var cp_container=$("#cp-container");
+	var cp_node = $("<div></div>").attr("class", "cp").attr("id", "cpid"+(i+1));
+	var cp=cpList[i];
+	cp_node.append("<span>"+cp.cptext+"</span>");
+	//console.log("测试： "+i);
+	cp_node.click(function(){
+		//console.log("测试点击1:"+i);
+		//点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
+		chooseOneCP(cp_node,cp,CP_list);
+		//cp_code.css("background-color","#FF0000");
+	});
+	cp_container.append(cp_node);
+}
+
+//叶夷   2016.06.16  点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
+function chooseOneCP(cp_node,cp,CP_list){
+	var userId=CP_list.uid.toString();
+	var cpid=cp.cpid;
+	var currentRequestedCPPage=CP_list.startpoint;
+	//console.log("测试1 ： "+typeof(userId));
+	if(cp_node.css("background-color")=="rgba(0, 0, 0, 0)"){//选中
+		console.log(cp_node.attr("id")+"-> 选中状态");
+		cp_node.css("background-color","#f00");//目前只是改变背景颜色为红色
+		sendSelectCP(userId,cpid,currentRequestedCPPage);
+	}else{//取消
+		console.log(cp_node.attr("id")+"-> 取消状态");
+		cp_node.css("background-color","rgba(0, 0, 0, 0)");
+		sendUnSelectCP(userId,cpid,currentRequestedCPPage);
+	}
 }
 
 
