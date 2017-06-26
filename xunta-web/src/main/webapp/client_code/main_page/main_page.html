@@ -42,15 +42,20 @@
 				<img id="topic_img" src="" onclick="openHomePage()" />
 			</div>
 		</div>
-		<!-- CP容器的HTLM标范,不要删,用于css调试 -->
-		<div id="cp-container" style="position:fixed; top:150px; height:200px;">
-			<div class="cp" id="cpid1" class="selected">CP111111111	</div>
-			<div class="cp" id="cpid2" class="unselected">CP2222222222			</div>
-			<div class="cp" id="cpid3" class="unselected">CP3333333			</div>
+		<!-- CP容器的HTLM标范,不要删,用于css调试 
+		<div id="cp-container" style="position:fixed; top:150px; height:200px;">-->
+		<div id="cp-container" style="position:fixed; top:150px; height:70%;width:100%;overflow-y:auto;">
+			<!-- <div class="cp" id="cpid1" class="selected">CP111111111	</div>-->
+			<!-- <div class="cp" id="cpid2" class="unselected">CP2222222222			</div>-->
+			<!-- <div class="cp" id="cpid3" class="unselected">CP3333333			</div>-->
 		</div> <!-- END of CP容器的HTLM标范,不要删,用于css调试 -->
+		
+		<!-- start: 叶夷  2017.06.15  添加一个按钮，点击后通过已定义的接口向后台请求一组标签，后台返回后将标签显示出来。点击后继续请求下一页。-->
+		<button id="test" type="button" onclick="requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)))" style="position:fixed; top:580px;left:300px;">请求标签</button>
+		<!-- end: 叶夷  -->
+		
 	</div> <!--End of <div id="showatloaded" class="showatloaded"> -->
-
-
+	
 </body>
 <script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="../script/common-xunta.js"></script>
@@ -94,7 +99,10 @@
 			setRootVars();
 			//showCP();
 			//wsConnect();
-			requestCP(userId,requestCPNum,currentRequestedCPPage+1);
+			
+			//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
+			//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
+			requestCP(userId,requestCPNum,currentRequestedCPPage++);
 			
 			//$("#account").show();
 		}

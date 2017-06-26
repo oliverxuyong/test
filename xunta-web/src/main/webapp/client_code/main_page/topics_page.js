@@ -30,7 +30,6 @@ function userInfoToJson(userType, userUid, userName, userImage, userOriginalUid,
 	};
 	return userInfo;
 }
-
 /**start:叶夷  2017年3月20日
  * topics_page中的username也必须修改
  */
@@ -47,5 +46,15 @@ function requestCP(userId,requestNum,currentPage){//调用根页面上的同名�
 	execRoot("initToGetCP("+ paraStr +")");
 }
 
+//叶夷   2016.06.16  发送"标签选中"
+function sendSelectCP(userId,cpid,currentPage){
+	var paraStr = userId + "," + cpid + "," + currentPage;
+	execRoot("sendSelectedCP("+ paraStr +")");
+}
 
+//叶夷   2016.06.16  发送"标签选中取消"
+function sendUnSelectCP(userId,cpid,currentPage){
+	var paraStr = userId + "," + cpid + "," + currentPage;
+	execRoot("sendUnselectedCP("+ paraStr +")");
+}
 
