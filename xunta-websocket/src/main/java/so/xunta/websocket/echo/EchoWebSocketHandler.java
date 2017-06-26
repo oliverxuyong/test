@@ -2,6 +2,7 @@ package so.xunta.websocket.echo;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
@@ -18,7 +19,9 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import so.xunta.beans.User;
+import so.xunta.persist.UserLastUpdateTimeDao;
 import so.xunta.server.LoggerService;
+import so.xunta.server.RecommendService;
 import so.xunta.server.UserService;
 import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
@@ -35,6 +38,9 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private RecommendService recommendService;
 	
 	@Autowired
 	private LoggerService loggerService;
@@ -112,18 +118,21 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		if (!checkExist(session)) {
 			users.add(session);
 			User u = userService.findUser(userid);
-			if(session.getAttributes().get("boot").equals("yes"))
+			
+			recommendService.initRecommendParm(u);
+			
+			/*if(session.getAttributes().get("boot").equals("yes"))
 			{
 				logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  打开应用上线");
 			}else{
 				logger.info("用户"+u.getUserId()+"  "+u.getName()+"恢复连接");
 				
-				//re_sendMsg(userid,5); //zheng 先取消，以后的更新任务还会有类似的功能
-			}
+				re_sendMsg(userid,5); //zheng 先取消，以后的更新任务还会有类似的功能
+			}*/
 		} else {
 		}
 	}
-
+	
 	private void re_sendMsg(Long userid, int i) {
 		
 		new Thread(new Runnable() {
@@ -158,7 +167,10 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		try {
 			Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 			User u = userService.findUser(userid);
+			recommendService.syncLastUpdateTime(u);
+			
 			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线");
+			
 			if (session.isOpen()) {
 				session.close();
 			}

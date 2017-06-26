@@ -1,5 +1,6 @@
 package so.xunta.beans;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -22,6 +23,7 @@ public class User extends IdEntity{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
+	@Column(unique=true)
 	private Long userId;//机器生成
 	private String third_party_id;//第三方唯一id
 	private String openid;
@@ -39,6 +41,8 @@ public class User extends IdEntity{
 	private String create_datetime_str;
 	@ColumnDefault(value="0")
 	private Integer ifInitedTopics = 0;
+	private Timestamp last_update_time;
+
 	/**
 	 * 用户名不能重复
 	 */
@@ -115,7 +119,7 @@ public class User extends IdEntity{
 		super();
 	}
 	public User(Long userId, String third_party_id, String name, String imgUrl, String type, 
-			String userGroup) {
+			String userGroup, Timestamp lastUpdateTime) {
 		super();
 		this.userId = userId;
 		this.third_party_id = third_party_id;
@@ -126,6 +130,7 @@ public class User extends IdEntity{
 		Date user_create_date = new Date();
 		this.create_datetime_long = user_create_date.getTime();
 		this.create_datetime_str = DateTimeUtils.getTimeStrFromDate(user_create_date);
+		this.last_update_time = lastUpdateTime;
 	}
 	@Override
 	public String toString() {
@@ -168,5 +173,11 @@ public class User extends IdEntity{
 	}
 	public void setOpenid(String openid) {
 		this.openid = openid;
+	}
+	public Timestamp getLast_update_time() {
+		return last_update_time;
+	}
+	public void setLast_update_time(Timestamp last_update_time) {
+		this.last_update_time = last_update_time;
 	}
 }

@@ -21,7 +21,7 @@ public class UserCURDTest {
 	
 	@RequestMapping("/addusertest")
 	public void addusertest(HttpServletRequest request,HttpServletResponse response){
-		User user1 = new User(2L, "a", "lily", "http://image.user", "QQ","徽州新移民");
+	/*	User user1 = new User(2L, "a", "lily", "http://image.user", "QQ","徽州新移民");
 		User user2 = new User(3L, "b", "易发宝", "http://image.user", "QQ","徽州新移民");
 		User user3 = new User(4L, "c", "寻Ta", "http://image.user", "QQ","徽州新移民");
 		User user4 = new User(5L, "d", "语擎", "http://image.user", "QQ","徽州新移民");
@@ -37,7 +37,7 @@ public class UserCURDTest {
 		 userService.addUser(user6);
 		 userService.addUser(user7);
 		 
-		res(response,"ok");
+		res(response,"ok");*/
 	}
 
 	private void res(HttpServletResponse response,String content) {

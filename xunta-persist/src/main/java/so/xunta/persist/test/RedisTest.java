@@ -1,17 +1,15 @@
-package so.xunta.persist;
+package so.xunta.persist.test;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 public class RedisTest {
 
 	public static void main(String[] args) {
 		//连接本地的 Redis 服务
-		new JedisPool();
 	      Jedis jedis = new Jedis("127.0.0.1");
 	      System.out.println("Connection to server sucessfully");
 	      //查看服务是否运行
@@ -29,8 +27,9 @@ public class RedisTest {
 		 }
 		 Set<String> keys = jedis.keys("*"); 
 		 Iterator<String> it=keys.iterator() ;   
-			while(it.hasNext()){   
-				String key = it.next();   
-			}
+		 while(it.hasNext()){   
+				it.next();   
+		 }
+		 jedis.close();
 	}
 }

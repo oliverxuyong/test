@@ -11,6 +11,7 @@
 		<mapping class="so.xunta.beans.UserVisitLogger"/>
 		<mapping class="so.xunta.beans.Dic"/>
 		<mapping class="so.xunta.beans.ConcernPointDO"/>
+		<mapping class="so.xunta.beans.CpChoiceDO"/>
 		<mapping class="so.xunta.beans.CpChoiceDetailDO"/>
 		<mapping class="so.xunta.beans.validate.MobilePhoneValidateCode"/>
 	</session-factory>

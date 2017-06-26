@@ -1,0 +1,72 @@
+package so.xunta.persist.impl;
+
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+
+import redis.clients.jedis.Jedis;
+import so.xunta.persist.U2uUpdateStatusDao;
+import so.xunta.utils.RedisUtil;
+
+@Repository
+public class U2uUpdateStatusDaoImp implements U2uUpdateStatusDao {
+
+	@Autowired
+	private RedisUtil redisUtil;
+	
+	@Value("$(redis.keyPrefixU2UUpdateStatus)")
+	private String keyPrefix;
+	
+	Logger logger =Logger.getLogger(U2uUpdateStatusDaoImp.class);
+	
+	
+	@Override
+	public Double updateDeltaRelationValue(String centerUid, String relateUid, double dValue) {
+		Jedis jedis = null;
+		double updateValue = 0;
+		centerUid = centerUid + keyPrefix;
+		try {
+			jedis = redisUtil.getJedis();
+			updateValue = jedis.hincrByFloat(centerUid, relateUid, dValue);
+		} catch (Exception e) {
+			logger.error("updateUserRelationValue error:", e);
+		}finally{
+			jedis.close();
+		}
+		return updateValue;
+	}
+
+	@Override
+	public Map<String, String> getUserUpdateStatus(String centerUid) {
+		Jedis jedis = null;
+		Map<String, String> updateStatus = null;
+		centerUid = centerUid + keyPrefix;
+		try {
+			jedis = redisUtil.getJedis();
+			updateStatus = jedis.hgetAll(centerUid);
+		} catch (Exception e) {
+			logger.error("getU2uUpdateStatus error:", e);
+		}finally{
+			jedis.close();
+		}
+		return updateStatus;
+	}
+
+	@Override
+	public void deleteU2uUpdateStatus(String centerUid) {
+		Jedis jedis = null;
+		centerUid = centerUid + keyPrefix;
+		try {
+			jedis = redisUtil.getJedis();
+			jedis.del(centerUid);
+		} catch (Exception e) {
+			logger.error("deleteU2uUpdateStatus error:", e);
+		}finally{
+			jedis.close();
+		}
+	}
+	
+}
