@@ -335,125 +335,21 @@ width:100%;
 /*叶夷  2017.06.19
 	标签的动画实现，是由jq的animate属性完成  */
 .cp{ 
-	position:absolute;  
-	top:-100px;
-	left:-70px;
-	float:left;
+	position:absolute; /*标签不用排列的时候不需要这个*/
+	top:0px;
+	left:0px;
+	border-radius:50%; 
+	border:1px solid #e5efff;
 	}
 
-.cp div{ 
-	/* 整个cp的宽*/
-	width:60px; 
-	/*整个cp的高*/
-	height:60px; 
+.incp{ 
+	position:absolute;
 	background:url(../image/cp.png) no-repeat center center;  
-	padding:15px 5px 0; 
-	text-align:center; 
-	margin:0 auto; 
 	background-size:100% auto;
 	font-family:'微软雅黑';
-	/*display:table-cell;
-	vertical-align:middle;*/
-	}
-
-/* .cp1{ 
-	bottom:300px; 
-	left:150px;
-	animation:myfirst 5s linear 1; 
-	animation-fill-mode: forwards;
-	z-index:2222;
-	animation-delay:0s;
-	-webkit-animation: myfirst 5s linear 1; 
-	z-index:2222;
-	-webkit-animation-delay:0s; 
-	Internet Explorer 10、Firefox 以及 Opera 支持 animation-delay 属性。
-		Safari 和 Chrome 支持替代的 -webkit-animation-delay 属性。
 	}
 	
-.cp2{ 
-	bottom:350px; 
-	left:100px;
-	animation: myfirst2 6s linear 1; 
-	animation-fill-mode: forwards;
-	z-index:2222;
-	animation-delay:0s;
-	-webkit-animation: myfirst2 6s linear 1; 
-	z-index:2222;
-	-webkit-animation-delay:0s; 
-	Internet Explorer 10、Firefox 以及 Opera 支持 animation-delay 属性。
-		Safari 和 Chrome 支持替代的 -webkit-animation-delay 属性。
-	}
-	
-.cp3{ 
-	bottom:300px; 
-	left:240px;
-	animation: myfirst3 4s linear 1; 
-	animation-fill-mode: forwards;
-	z-index:2222;
-	animation-delay:0s;
-	-webkit-animation: myfirst3 4s linear 1; 
-	z-index:2222;
-	-webkit-animation-delay:0s; 
-	Internet Explorer 10、Firefox 以及 Opera 支持 animation-delay 属性。
-		Safari 和 Chrome 支持替代的 -webkit-animation-delay 属性。
-	}
-	
-.cp4{ 
-	bottom:87%; 
-	left:260px;
-	animation: myfirst 7s linear 1; 
-	animation-fill-mode: forwards;
-	z-index:2222;
-	animation-delay:0s;
-	-webkit-animation: myfirst 7s linear 1; 
-	z-index:2222;
-	-webkit-animation-delay:0s; 
-	Internet Explorer 10、Firefox 以及 Opera 支持 animation-delay 属性。
-		Safari 和 Chrome 支持替代的 -webkit-animation-delay 属性。
-	}
-	
-.cp5{ 
-	bottom:87%; 
-	left:340px;
-	animation: myfirst 8s linear 1; 
-	animation-fill-mode: forwards;
-	z-index:2222;
-	animation-delay:0s;
-	-webkit-animation: myfirst 8s linear 1; 
-	z-index:2222;
-	-webkit-animation-delay:0s; 
-	Internet Explorer 10、Firefox 以及 Opera 支持 animation-delay 属性。
-		Safari 和 Chrome 支持替代的 -webkit-animation-delay 属性。
-	}
-	
-@keyframes myfirst
-{
-from {bottom: -0px;}
-to {bottom: 300px;}
+.incp div{
+	position:absolute;
+	text-align:center;
 }
-@-webkit-keyframes myfirst
-{
-from {bottom: -0px;}
-to {bottom: 300px;}
-}
-@keyframes myfirst2
-{
-from {bottom: -0px;}
-to {bottom: 350px;}
-}
-@-webkit-keyframes myfirst2
-{
-from {bottom: -0px;}
-to {bottom: 350px;}
-}
-@keyframes myfirst3
-{
-from {bottom: -0px;}
-to {bottom: 300px;}
-}
-@-webkit-keyframes myfirst3
-{
-from {bottom: -0px;}
-to {bottom: 300px;}
-} 
- */

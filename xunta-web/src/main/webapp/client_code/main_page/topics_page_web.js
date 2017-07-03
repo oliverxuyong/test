@@ -15,16 +15,10 @@ function responseToCPRequest(CP_list) {//显示从服务器获得的话题列表
 		appendElement(i,cpList,CP_list);//叶夷   2016.06.16  如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
 	}
 	
-	for(var i=0;i<cpList.length;i++){
-		cp_node=$("#cpid"+cpList[i].cpid);
-		var startTop;//动画还没开始的top位置,第一次起始位置从顶部开始，之后都是从每一批的底部开始
-		if(currentRequestedCPPage>1){
-			startTop=cpValue[cpValue.length-1].getCpTop();//动画还没开始的top位置
-		}
-		cp_node.css("top",startTop+"px");
-	}
-
-	document.getElementById('cp-container').scrollTop = document.getElementById('cp-container').scrollHeight;//让滚动条落底
+	//定义好位置之后开始动画,参数是需要动画的个数
+	startAnimate(cpList.length);
+	/*var content = document.getElementById("cp-show");
+	content.scrollTop =content.scrollHeight;*/
 }
 
 //叶夷   2017.06.16  通过服务器返回的标签添加到页面的方法
@@ -36,10 +30,25 @@ function appendElement(i,cpList,CP_list){
 	
 	var cp_container=$("#cp-container");
 	var cp=cpList[i];
-	var cp_node = $("<div></div>").attr("class", "cp").attr("id", "cpid"+cp.cpid);
+	var cp_node = $("<div></div>").attr("class", "cp").attr("id", "cpid"+cp.cpid);//外圆div
+	var cp_innode=$("<div></div>").attr("class","incp");//内圆div
+	cp_node.append(cp_innode);
 	//var cp_text="<div style='width:"+cp_width+"px;height:"+cp_height+"px;color:"+cp_color+";'>"+cp.cptext+"</div>";
-	var cp_text=$("<div></div>").text(cp.cptext);
-	cp_node.append(cp_text);
+	var cp_text=$("<div></div>")/*.text(cp.cptext)*/;//文字div
+	
+	//先随机cptext 字体的大小
+	var cpTextSize=Math.random()*8+12;
+	cpTextSize=parseInt(cpTextSize);
+	//先随机内圆 div的大小
+	var cpInNodeWidth=Math.random()*40+40;
+	cpInNodeWidth=parseInt(cpInNodeWidth);
+	
+	cp_innode.css("height",cpInNodeWidth);
+	cp_innode.css("width",cpInNodeWidth);
+	//调用字体大小匹配圆大小的方法
+	calCircle(cp_text, cpTextSize,cp.cptext,cp_node,cp_innode);
+	
+	cp_innode.append(cp_text);
 	
 	//console.log("测试： "+i);
 	cp_node.click(function(){
@@ -48,22 +57,126 @@ function appendElement(i,cpList,CP_list){
 		chooseOneCP(cp_node,cp,CP_list);
 		//cp_code.css("background-color","#FF0000");
 	});
+	
 	cp_container.append(cp_node);
-	
-	var second=Math.random()*3+2;
-	second=parseInt(second);
-	
-	cp_text.css("height",(second+4)*10+"px");
-	cp_text.css("width",(second+4)*10+"px");
-	
-	cpAnimation(cp_node,second*1000);
+	cpAnimationLocation(cp_node);
 }
 
-//通过标签字体和标签字数来算圆的大小和文字与圆的距离
-function calCircle(textSize,cpNumber){
-	if(cpNumber%2==0){//字数是双数
+var minCPSize=40;//最小内圆的大小
+var maxCPSize=80;//最大内圆的大小
+var minCPTextSize=12;//cp文字大小的最小值
+var maxCPTextSize=20;//cp文字大小的最大值
+var maxCPTextNumber=9;//cp文字最大的数量
+
+//叶夷   2017.06.30  cp圆的大小与文字匹配,在分级的情况下计算相应文字的面积，然后计算圆的面积(这里还没想好怎么做：然后比较内圆大小，如果内圆不能装下文字，则扩大外圆)
+function calCircle(cp_text,cpTextSize,cpText,cp_node,cp_innode){//传入的参数是：cp文字div,cp文字大小，cp文字，外圆div，内圆div
+	var cpTextLength=length(cpText);
+	
+	//控制cp文字的大小
+	if(cpTextSize>maxCPTextSize){
+		cpTextSize=20;
+	}else if(cpTextSize<minCPTextSize){
+		cpTextSize=12;
+	}
+	
+	//控制内圆div的大小
+	var cpInNodeWidth=cp_innode.width();//内圆div的宽
+	//var cpInNodeHeight=cp_innode.height();//内圆div的高
+	if(cpInNodeWidth<minCPSize){
+		cpInNodeWidth=minCPSize;
+	}else if(cpTextSize>maxCPSize){
+		cpInNodeWidth=maxCPSize;
+	}
+	
+	var cpTextWidth;//cp文字 div的宽
+	var cpTextHeight;//cp文字 div的高
+	if(cpTextLength>maxCPTextNumber){//控制cp文字显示的个数
+		cpText=subString(cpText,maxCPTextNumber,true);//为true就是字符截断之后加上"..."
+		cpTextLength=maxCPTextNumber+1;
+	}
+	//分级列出文字的情况，求出cp文字 div的宽和高
+	//1-3个字为一行
+	if(cpTextLength<=3){
+		cpTextWidth=cpTextSize*cpTextLength;
+		cpTextHeight=cpTextSize+5;
+	}else if(cpTextLength<=10 && cpTextLength>3){//4-10个字为两行
+		if(cpTextLength%2==0){
+			cpTextWidth=cpTextSize*(cpTextLength/2);
+		}else{
+			cpTextWidth=cpTextSize*(cpTextLength/2+1);
+		}
+		cpTextHeight=cpTextSize*2+(6*2);
+	}
+	//将cp文字div的大小设置
+	cp_text.css("height",cpTextHeight+"px");
+	cp_text.css("width",cpTextWidth+"px");
+	cp_text.css("font-size",cpTextSize);
+	cp_text.text(cpText);
+	
+	//计算cp div的斜边的大小，即容纳其外圆的直径
+	var hypotenuse=parseInt(Math.sqrt(Math.pow(cpTextHeight,2)+Math.pow(cpTextWidth,2)))+1;
+	//为了使文字居中，计算文字div 的top
+	var cpTextTop;
+	var cpTextLeft;
+	
+	//将内圆的width与cp div比较，如果内圆能装下cp div则外圆和内圆差不多大，如果装不下则外圆扩大
+	if(cpInNodeWidth>hypotenuse){//内圆能装下cp div则外圆和内圆差不多大
+		cp_node.css("height",cpInNodeWidth+"px");
+		cp_node.css("width",cpInNodeWidth+"px");
+	}else{//如果装不下则外圆扩大,内圆也需要调整位置
+		cp_node.css("height",hypotenuse+"px");
+		cp_node.css("width",hypotenuse+"px");
+
+		//内圆位置调整
+		var cpInNodeTop=(hypotenuse-cpInNodeWidth)/2;
+		cp_innode.css("top",cpInNodeTop);
+		cp_innode.css("left",cpInNodeTop);
 		
 	}
+	cpTextTop=(cpInNodeWidth-cpTextHeight)/2;
+	cpTextLeft=(cpInNodeWidth-cpTextWidth)/2;
+	cp_text.css("top",cpTextTop);
+	cp_text.css("left",cpTextLeft);
+}
+
+//叶夷   2017.06.30  判断字符串长度，中文=英文的两倍
+function length(cpText){    
+    var len = 0;    
+    for (var i=0; i<cpText.length; i++) {    
+        if (cpText.charCodeAt(i)>127 || cpText.charCodeAt(i)==94  || (cpText.charCodeAt(i)>=38&&cpText.charCodeAt(i)<=57)) {    
+             len ++;    
+         } else {    
+             len +=0.5;    
+         }    
+     }    
+    return len;    
+}    
+
+//叶夷   2017.06.30  中英文不同情况的字符串截取，中文=英文的两倍
+function subString(str, len, hasDot) {
+    var newLength = 0;
+    var newStr = "";
+    var chineseRegex = /[^\x00-\xff]/g;
+    var singleChar = "";
+    var strLength = str.replace(chineseRegex, "**").length;
+    for (var i = 0; i < strLength; i++) {
+        singleChar = str.charAt(i).toString();
+        if (singleChar.match(chineseRegex) != null) {
+            newLength ++;
+        }
+        else {
+            newLength+=0.5;
+        }
+        if (newLength > len) {
+            break;
+        }
+        newStr += singleChar;
+    }
+
+    if (hasDot && strLength > len) {
+        newStr += "...";
+    }
+    return newStr;
 }
 
 var cpValue=new Array();//定义一个数组，将可见屏幕的所有标签的left和top值存入数组中，这样可以直接对比
@@ -94,7 +207,7 @@ function CP(cpNode,cpLeft,cpRight,cpTop,cpBottom){//定义一个cp类
 }
 
 //叶夷   2017.06.27   实现圆切面的上升动画效果
-function cpAnimation(cp_node,second){
+function cpAnimationLocation(cp_node){
 	var cp_container=$("#cp-container");//装标签的容器
 	var cpWidth=cp_node.width();//要上升的标签宽
 	var cpHeight=cp_node.height();//要上升的标签高
@@ -188,11 +301,26 @@ function cpAnimation(cp_node,second){
 	var right=left+cpWidth;
 	var bottom=top+cpHeight;
 	cpValue.push(new CP(cp_node.attr("id"),left,right,top,bottom));
+	cp_container.height(bottom);
+}
 
-	cp_node.css("left",left+"px");
-	cp_node.animate({
-		top:top+"px"
-	},{duration:second});
+//叶夷   2017.06.28  定义好位置之后开始动画,参数是需要动画的个数
+function startAnimate(length){
+	for(var j=cpValue.length-1;j>cpValue.length-length-1;j--){
+		var cp_nodeId=cpValue[j].getCpNode();
+		var cp_node=$("#"+cp_nodeId);
+		var cp_start=$("#cp-container").height();//每次从一批标签的最后开始上升
+		var left=cpValue[j].getCpLeft();
+		var top=cpValue[j].getCpTop();
+		cp_node.css("top",cp_start+"px");
+		cp_node.css("left",left+"px");
+		
+		var second=Math.random()*2+2;
+		second=parseInt(second);
+		cp_node.animate({
+			top:top+"px"
+		},{duration:second*1000});
+	}
 }
 
 //计算与圆相切时的top值
