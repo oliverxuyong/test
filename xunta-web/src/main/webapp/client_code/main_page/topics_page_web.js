@@ -339,70 +339,6 @@ function calCPTangencyTop(cpObj,cpRadius,cpX){
 	return parseInt(cpTangencyTop);
 }
 
-/*// 叶夷  2017.06.20  实现上升的动画效果
-function cpAnimation(cp_node,second){
-	var cp_container=$("#cp-container");
-	var left=0;//初始化
-	var tempLeft=0;//用来获得对比冲突时的
-	var top=-1;//初始化
-	var cpWidth=cp_node.width();
-	var cpHeight=cp_node.height();
-	var right;
-	var bottom;
-	
-	var containerWidth=(cp_container.width());//装cp容器的宽度，即扫描轨迹的x轴的总数
-	
-	//console.log("测试 ： "+containerWidth);
-	for(var start=0;start<=containerWidth-cpWidth-5;start++){//横向循环
-		//cp-container的轨迹的右边边界为start+cp.width(),左边边界是start,遍历所有的已经显示在界面的cp，有哪个cp的最左边边界值在轨迹的两条线之间,或者最右边边界在轨迹的两条线之间,那这个cp就是在这条轨迹内
-		//var cps=$(".cp");//获得界面显示的所有的cp
-		var maxTop=-1;//这是在一条轨迹内阻碍的cp的最高点
-		
-		for(var j=0;j<cpValue.length;j++){
-			//console.log("测试2 ： "+cps.eq(j).attr("id")+"-->"+cps.eq(j).position().left);
-			var cpValueStr=new Array();
-			cpValueStr=cpValue[j].split(",");
-			var cpLeftValue=parseInt(cpValueStr[1]);//获得已有cp的最左边边界值
-			var cpRightValue=parseInt(cpValueStr[3]);//获得已有cp的最右边边界值
-			//if((cpLeftValue<=start+cpWidth && cpLeftValue>=start) || (cpRightValue>=start && cpRightValue<=start+cpWidth) || (cpLeftValue==start&&cpRightValue==start+cpWidth)){//这个cp在这个轨迹内
-			if(start<cpRightValue && start>=cpLeftValue && start+cpWidth<=containerWidth){
-				//获得在轨迹内的cp的最高点
-				var cpTopValue=parseInt(cpValueStr[2]);//数值越小越高
-				var cpBottomValue=parseInt(cpValueStr[4]);
-				if(maxTop==-1 || cpTopValue<=maxTop){//一开始的maxTop的值和一开始过后cp要上升的值取最小值
-					maxTop=cpBottomValue;
-				}
-			}
-		}
-		//一条轨迹扫描完毕之后，将获得的阻碍cp的最高点+自身的height=即将上升的cp的top,越小代表越高
-		var cpUpTop=maxTop;
-		if(cpUpTop<0){
-			cpUpTop=0;
-		}
-		if(top<0){
-			top=cpUpTop;
-			left=start;
-		}else{	
-			if(cpUpTop<top){//获取能上升的最高的上升点
-				top=cpUpTop;
-				//这条轨迹可以使cp达到与其他cp不重叠的最高点
-				left=start;
-			}
-		}
-	}
-	right=left+cpWidth;
-	bottom=top+cpHeight;
-	cpValue.push(cp_node.attr("id")+","+left+","+top+","+right+","+bottom);//一个cp的id和上下左右四条边界值
-	
-	//cp_node.css("margin-top",cp_container.height()+"px");
-	
-	cp_node.css("left",left+"px");
-	cp_node.animate({
-		top:top+"px"
-	},{duration:second});
-}
-*/
-
 //叶夷   2017.06.16  点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
 function chooseOneCP(cp_node,cp,CP_list){
 	var userId=CP_list.uid.toString();
@@ -631,5 +567,196 @@ function closeSearch(){
 	$("#search_list").empty();
 }
 
+//2017.07.04  叶夷    建立一个匹配人列表所需要的数据类，用来模拟数据
+function MatchPeople(mpId,mpImg){//有匹配人的ID，匹配人的头像图片
+	var obj = new Object();
+	obj.mpId=mpId;
+	obj.mpImg=mpImg;
+	obj.getMpId=function(){
+		return this.mpId;
+	};
+	obj.getMpImg=function(){
+		return this.mpImg;
+	};
+	return obj;
+}
 
+//2017.07.04 叶夷   模拟数据的产生
+function addMPData(){
+	var mpData=new Array();//装匹配人的数组
+	var mpId=new Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);//模拟的匹配人ID
+	var mpImg=new Array("#FFFF00","#FF0000","#0000CD","#20B2AA","#228B22","#FFD39B","#551A8B","#54FF9F",
+			"#68838B","#8B3A3A","#FF7256","#FF6347","#FF34B3","#EEC900","#000000");//模拟的匹配人头像，目前用颜色代替
+	for(var i=0;i<10;i++){
+		var temp=parseInt(Math.random()*15);
+		var exist=false;//不存在
+		if(mpData.length!=0){
+			for(var j=0;j<mpData.length;j++){
+				if(mpId[temp]==mpData[j].getMpId()){
+					exist=true;//存在
+					break;
+				}
+			}
+		}
+		if(!exist){
+			mpData.push(new MatchPeople(mpId[temp],mpImg[temp]));
+		}else{
+			i--;
+		}
+	}
+	showMatchPeople(mpData);
+}
+var mpNowData=new Array();
+//2017.07.04 叶夷  显示匹配人列表，没有数据的时候先用模拟数据
+function showMatchPeople(mpData){//传入的参数为：所需的匹配人列表数据(且排好了顺序)
+	var mp_container=$("#match_people");//获得装匹配人列表的容器；
+	var mpContainerWidth=mp_container.width();
+	
+	if(mpNowData.length==0){//如果是用户一开始上线，匹配人列表没有
+		for(var i=0;i<mpData.length;i++){
+			var mpId=mpData[i].getMpId();
+			var mp=$("<div></div>").attr("class","mp").attr("id",mpId);
+			var mpImg=mpData[i].getMpImg();
+			mp.css("background-color",mpImg);
+			mp_container.append(mp);
+			var mpNowDataWidth=mp.width();
+			var mpLeft=((mpContainerWidth/mpData.length)-mpNowDataWidth+mpNowDataWidth)*i;//这是每个头像之间的间隔
+			mp.css("left",mpLeft+"px");
+			mpNowData.push(mp);
+		}
+	}else{//用户在操作过程中匹配人列表发生改变
+		var i=0;
+		
+		//2017.07.05 叶夷  一一对比之后开始将排名改变的用户动画
+		circleAnimation(i,mpData);
+	}
+}
+var aniSecond=1;//动画的秒数
+var isTimeOut=0;//判断是否延时，让排名改变需要动画时才延时，isTimeOut=1,如果排名没有改变不需要延时，isTimeOut=0;
 
+//2017.07.05 叶夷  一一对比之后开始将排名改变的用户动画
+function circleAnimation(i,mpData){
+	//for(var i=0;i<mpData.length;i++){
+		if(mpData[i].getMpId()!=mpNowData[i].attr("id")){//排名改变
+			isTimeOut=1;//让排名改变需要动画时才延时
+			
+			var exist=false;//表示后台传来的数据是新数据
+			var mpNowPosition;//表示如果从后台新来的数据在前台存在但是排名有所改变时前台存在的排名
+			for(var j=i;j<mpNowData.length;j++){//遍历现有的头像
+				if(mpData[i].getMpId()==mpNowData[j].attr("id")){
+					exist=true;//表示后台传来的数据不是新数据，已经存在
+					mpNowPosition=j;
+					break;
+				}
+			}
+			if(exist){//存在,则原有位置的mp缩小，其左边的且没超过新排名名次的mp向右移动，原有位置的mp缩小之后移动到该有的位置
+				//1.需要变换位置的mp缩小
+				var changeMp=mpNowData[mpNowPosition];//需要移动的mp
+				animateForSize(changeMp, 10, aniSecond/3);//缩小
+				var moveLeft=mpNowData[i].css("left");//需要向左移动的目的地的位置,在这个位置移动之前先保存下来
+			
+				//2.首先判断在新排名和原有位置的mp之间的匹配人,这些匹配人移动
+				for(var k=i;k<mpNowPosition;k++){
+					var moveMp=mpNowData[k];//需要移动的mp
+					var moveEndLeft=mpNowData[k+1].css("left");//移动的目的地， 即下一个mp的位置
+					animateForLeft(moveMp, moveEndLeft, aniSecond);
+				}
+				
+				//3.需要变换位置的mp向左移动
+				animateForLeft(changeMp, moveLeft, aniSecond/3);
+				
+				//4.需要变换位置的mp到了位置之后再变大
+				animateForSize(changeMp,30, aniSecond/3);//扩大
+				//alert("动画完成了");
+				
+				//5.所有位置移动之后mpNowData数组的位置也要更新
+				var temp=mpNowData[mpNowPosition];//临时位置，用来保存
+				for(var k=mpNowPosition;k>=i;k--){
+					if(k==i){
+						mpNowData[k]=temp;
+					}else{
+						mpNowData[k]=mpNowData[k-1];
+					}
+				}
+			}else{//不存在
+				//2017.07.06  叶夷  
+				//1.将页面不存在的mp
+				var newMpId=mpData[i].getMpId();
+				var newMpImg=mpData[i].getMpImg();
+				var newMp=$("<div></div>").attr("class","mp").attr("id",newMpId);
+				$("#match_people").append(newMp);//产生一个新的mp
+				newMp.css("background-color",newMpImg);
+				//2.将新的mp定位到该有的位置且大小为0;
+				var newMpLeft=mpNowData[i].css("left");
+				newMp.css("left",newMpLeft);
+				newMp.css("width","0px");
+				newMp.css("height","0px");
+				
+				
+				//3.获得现有mp中应该去除的排名，则在新排名中没有的mp,且将它缩小
+				var mpNowPositionNewNotExist;//这个位置的前端匹配人在新排名里不存在
+				for(var index=i;index<mpNowData.length;index++){
+					var exist=false;//表示在前端的数据中在新排名里面没有
+					for(var j=i;j<mpData.length;j++){
+						if(mpNowData[index].attr("id")==mpData[j].getMpId()){//表示在前端的数据中在新排名里面有
+							exist=true;
+							break;
+						}
+					}
+					if(!exist){
+						mpNowPositionNewNotExist=index;
+						break;
+					}
+				}
+				animateForSize(mpNowData[mpNowPositionNewNotExist],0,aniSecond);//缩小
+				//mpNowData[mpNowPositionNewNotExist]=null;//数组里面去除
+				
+				//4.将新的mp位置与现有mp中应该去除的排名位置之间的mp向右移
+				for(var k=i;k<mpNowPositionNewNotExist;k++){
+					var moveMp=mpNowData[k];//需要移动的mp
+					var moveEndLeft=mpNowData[k+1].css("left");//移动的目的地， 即下一个mp的位置
+					animateForLeft(moveMp, moveEndLeft, aniSecond);
+				}
+				
+				//5.新的mp变大
+				animateForSize(newMp,30, aniSecond);//扩大
+			
+				//6.所有位置移动之后mpNowData数组的位置也要更新
+				for(var k=mpNowPositionNewNotExist;k>=i;k--){
+					if(k==i){
+						mpNowData[k]=newMp;
+					}else{
+						mpNowData[k]=mpNowData[k-1];
+					}
+				}
+				
+			}
+		}
+		
+		//这里是为了做延时操作
+		i+=1;
+		if(i>=mpData.length){
+			return ;
+		}else{
+			setTimeout(function(){
+				circleAnimation(i,mpData,mpNowData);
+			},(aniSecond+1)*1000*isTimeOut);
+		}
+		isTimeOut=0;//是否延时调整回最初状态;
+	//}
+}
+
+//匹配人头像移动
+function animateForLeft(mpDiv,mpLeft,second){//移动的物体，移动的目的地，移动的时间
+	mpDiv.animate({
+		left:mpLeft
+	},{duration:second*1000});
+}
+
+//匹配人头像缩小
+function animateForSize(mpDiv,mpSize,second){//移动的物体，变化的大小，移动的时间
+	mpDiv.animate({
+		width:mpSize+"px",
+		height:mpSize+"px"
+	},{duration:second*1000});
+}

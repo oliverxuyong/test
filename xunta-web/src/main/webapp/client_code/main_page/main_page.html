@@ -44,8 +44,11 @@
 			
 		</div>
 		
+		<!--2017.07.04  叶夷   匹配人列表变换测试按钮 -->
+		<button id="request_cp" type="button" onclick="addMPData()" style="width:100%;position:absolute;top:150px">匹配人更新</button>
+		
 		<!-- CP容器的HTLM标范,不要删,用于css调试 -->
-		<div id="cp-show" style="position:fixed; top:150px;height:60%; width:100%;overflow-x:hidden;">
+		<div id="cp-show" style="position:fixed; top:230px;height:60%; width:100%;overflow-x:hidden;">
 		<div id="cp-container" style="/*  position:fixed; */ width:100%;">
 			<!-- <div class="cp" id="cpid1" class="selected">CP111111111	</div>-->
 			<!-- <div class="cp" id="cpid2" class="unselected">CP2222222222			</div>-->
@@ -58,10 +61,10 @@
 		<!-- end: 叶夷  -->
 		</div>
 		
-		<!-- 这是标签可以排列的时候的按钮放置点 -->
-		<!-- start: 叶夷  2017.06.15  添加一个按钮，点击后通过已定义的接口向后台请求一组标签，后台返回后将标签显示出来。点击后继续请求下一页。
-		<button id="request_cp" type="button" onclick="requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)))" style="position:fixed;top:120px;">请求标签</button>-->
-		<!-- end: 叶夷  -->
+		<!--2017.07.04  叶夷   匹配人列表 -->
+			<div class="match_people" id="match_people">
+			
+			</div>
 		
 	</div> <!--End of <div id="showatloaded" class="showatloaded"> -->
 	
@@ -112,6 +115,9 @@
 			//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
 			//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
 			requestCP(userId,requestCPNum,currentRequestedCPPage++);
+			
+			//2017.07.04  叶夷  
+			addMPData();//匹配人列表
 			
 			//$("#account").show();
 		}
