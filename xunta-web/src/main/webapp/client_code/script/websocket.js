@@ -95,7 +95,7 @@ function requestCP(){//请一组CP.首次请求页号设为1.
 	WS_Send(json_obj);
 }
 
-//叶夷   2016.06.16 发送"标签选中"
+//叶夷   2017.06.16 发送"标签选中"
 function sendSelectedCP(userId,cpid,currentRequestedCPPage){
 	//console.log("测试 3： "+typeof(userId));
 	console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
@@ -109,7 +109,7 @@ function sendSelectedCP(userId,cpid,currentRequestedCPPage){
 	WS_Send(json_obj);
 }
 
-//叶夷   2016.06.16  发送"标签选中取消"
+//叶夷   2017.06.16  发送"标签选中取消"
 function sendUnselectedCP(userId,cpid,currentRequestedCPPage){
 	console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
 	var json_obj = {
@@ -117,6 +117,19 @@ function sendUnselectedCP(userId,cpid,currentRequestedCPPage){
 			 interface_name: "sendUnselectedCP",
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
+			 timestamp:"",
+		};
+	WS_Send(json_obj);
+}
+
+//叶夷   2017.07.07  请求用户匹配缩略表
+function requestTopMatchedUsers(userId,requestTopMUNum){
+	console.log("请求用户匹配:userId="+userId+" 请求的数量requestTopMUNum="+requestTopMUNum);
+	var json_obj = {
+			 _interface:"1104-1",
+			 interface_name: "requestTopMatchedUsers",
+			 uid:userId.toString(),
+			 top_num:requestTopMUNum.toString(),
 			 timestamp:"",
 		};
 	WS_Send(json_obj);
@@ -220,6 +233,18 @@ function checkMessageInterface(evnt) {
 	//叶夷 2017.06.16    发送"标签选中取消"
 	if(jsonObj._interface == '1103-2'){
 		console.log("发送'标签选中取消' :"+JSON.stringify(jsonObj.is_success));
+	}
+	
+	//叶夷 2017.07.07   获得请求的用户匹配缩略表
+	if(jsonObj._interface == '1104-2'){
+		console.log("获得请求的用户匹配缩略表 :"+JSON.stringify(jsonObj.cp_wrap));
+		exec("main_page","responseTopMatchedUsers("+evnt.data+")");
+	}
+	
+	//叶夷 2017.07.07   匹配用户改变
+	if(jsonObj._interface == '2106-1'){
+		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.cp_wrap));
+		exec("main_page","push_matched_user("+evnt.data+")");
 	}
 	
 }

@@ -357,7 +357,7 @@ width:100%;
 /*叶夷   2017.07.04
 	匹配人列表*/
 /*匹配人列表的容器*/
-.match_people{
+.match_users{
 	position:absolute;
 	top:95%;
 	left:0px;
@@ -366,7 +366,7 @@ width:100%;
 	//background-color:black;
 }
 /*各个匹配人头像的大小*/
-.mp{
+.mu{
 	position:absolute;
 	width:30px;
 	height:30px;

@@ -44,8 +44,8 @@
 			
 		</div>
 		
-		<!--2017.07.04  叶夷   匹配人列表变换测试按钮 -->
-		<button id="request_cp" type="button" onclick="addMPData()" style="width:100%;position:absolute;top:150px">匹配人更新</button>
+		<!--2017.07.04  叶夷   匹配人列表变换测试按钮
+		<button id="request_cp" type="button" onclick="addMPData()" style="width:100%;position:absolute;top:150px">匹配人更新</button> -->
 		
 		<!-- CP容器的HTLM标范,不要删,用于css调试 -->
 		<div id="cp-show" style="position:fixed; top:230px;height:60%; width:100%;overflow-x:hidden;">
@@ -62,7 +62,7 @@
 		</div>
 		
 		<!--2017.07.04  叶夷   匹配人列表 -->
-			<div class="match_people" id="match_people">
+			<div class="match_users" id="match_users">
 			
 			</div>
 		
@@ -92,6 +92,7 @@
 		//var currentOpenDialogPageId = 'null'; //记录当前打开聊天页面的ID，如果没有在聊天页面上则 = null; 10.13 FANG
 		//var countKeybacks = 0; //用于记录点击回退键的次数,超过30秒则清零. 达到10次,可以打开index.html页,以查看log信息.
 		var requestCPNum = 20; //每次请求话题数
+		var requestTopMUNum=10;//每次请求用户匹配排名数量
 		var currentRequestedCPPage = 0; //page指第几次请求到的返回结果集.0表示还没有请求到.请求成功后,要加1. 
 		//$("#showatloaded").hide();//?0113 这三个hide改为在css中display:none
 		//$("#imageundertopiclist").hide();
@@ -117,7 +118,8 @@
 			requestCP(userId,requestCPNum,currentRequestedCPPage++);
 			
 			//2017.07.04  叶夷  
-			addMPData();//匹配人列表
+			//addMPData();//匹配人列表测试
+			requestTopMatchedUsers(userId,requestTopMUNum);//请求用户匹配缩略表
 			
 			//$("#account").show();
 		}
