@@ -17,7 +17,7 @@ public class U2uUpdateStatusDaoImp implements U2uUpdateStatusDao {
 	@Autowired
 	private RedisUtil redisUtil;
 	
-	@Value("$(redis.keyPrefixU2UUpdateStatus)")
+	@Value("${redis.keyPrefixU2UUpdateStatus}")
 	private String keyPrefix;
 	
 	Logger logger =Logger.getLogger(U2uUpdateStatusDaoImp.class);
@@ -27,12 +27,12 @@ public class U2uUpdateStatusDaoImp implements U2uUpdateStatusDao {
 	public Double updateDeltaRelationValue(String centerUid, String relateUid, double dValue) {
 		Jedis jedis = null;
 		double updateValue = 0;
-		centerUid = centerUid + keyPrefix;
+		centerUid = keyPrefix + centerUid;
 		try {
 			jedis = redisUtil.getJedis();
 			updateValue = jedis.hincrByFloat(centerUid, relateUid, dValue);
 		} catch (Exception e) {
-			logger.error("updateUserRelationValue error:", e);
+			logger.error("updateDeltaRelationValue error:", e);
 		}finally{
 			jedis.close();
 		}
@@ -43,12 +43,12 @@ public class U2uUpdateStatusDaoImp implements U2uUpdateStatusDao {
 	public Map<String, String> getUserUpdateStatus(String centerUid) {
 		Jedis jedis = null;
 		Map<String, String> updateStatus = null;
-		centerUid = centerUid + keyPrefix;
+		centerUid = keyPrefix + centerUid;
 		try {
 			jedis = redisUtil.getJedis();
 			updateStatus = jedis.hgetAll(centerUid);
 		} catch (Exception e) {
-			logger.error("getU2uUpdateStatus error:", e);
+			logger.error("getUserUpdateStatus error:", e);
 		}finally{
 			jedis.close();
 		}
@@ -58,7 +58,7 @@ public class U2uUpdateStatusDaoImp implements U2uUpdateStatusDao {
 	@Override
 	public void deleteU2uUpdateStatus(String centerUid) {
 		Jedis jedis = null;
-		centerUid = centerUid + keyPrefix;
+		centerUid = keyPrefix + centerUid;
 		try {
 			jedis = redisUtil.getJedis();
 			jedis.del(centerUid);

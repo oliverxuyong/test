@@ -23,7 +23,7 @@
         <constructor-arg name="host" value="${redis.host}" />
         <constructor-arg name="port" value="${redis.port}" type="int" />
         <constructor-arg name="timeout" value="${redis.timeout}" type="int" />
-        <constructor-arg name="password" value="#{'${redis.password}'!=''?'${redis.password}':null}" />
+        <constructor-arg name="password" value="#{'${redis.auth}'!=''?'${redis.auth}':null}" />
         <constructor-arg name="database" value="${redis.db.index}" type="int" />
     </bean>
 </beans>

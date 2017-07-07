@@ -3,14 +3,11 @@ package so.xunta.utils;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class RecommendTaskPool {
-	@Value("$(recommendTaskPool.maxThreadSize)")
-	private int maxThreadSize;
-	private static RecommendTaskPool recommendTaskPool= new RecommendTaskPool();
+	//@Value("$(recommendTaskPool.maxThreadSize)")
+	private int maxThreadSize = 500;
+	private static RecommendTaskPool recommendTaskPool;
 	private ExecutorService threadPool;
 	
 	private RecommendTaskPool(){
@@ -19,6 +16,9 @@ public class RecommendTaskPool {
 	}
 	
 	public static RecommendTaskPool getInstance(){
+		if(recommendTaskPool == null){
+			recommendTaskPool = new RecommendTaskPool();
+		}
 		return recommendTaskPool;
 	}
 

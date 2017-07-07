@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import so.xunta.beans.User;
+import so.xunta.server.RecommendService;
 import so.xunta.server.UserService;
 import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
@@ -24,6 +25,8 @@ import so.xunta.utils.IdWorker;
 public class UserController {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private RecommendService recommendService;
 	
 	IdWorker idWorder = new IdWorker(1L, 1L);	
 	
@@ -123,8 +126,9 @@ public class UserController {
 			 */
 			if(user.getIfInitedTopics()==0){//代表没有初始化话题列表
 				System.out.println("开始初始化话题");
+				recommendService.initRecommendParm(user);
 				user.setIfInitedTopics(1);
-				userService.updateUser(user);
+				userService.updateUser(user);		
 				System.out.println("初始化话题成功");
 			}
 		} catch (Exception e) {

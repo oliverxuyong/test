@@ -58,7 +58,7 @@ public class ConcernPointOperationWSController {
 		}
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "1101-2");
-		returnJson.put("uid", uid);
+		returnJson.put("uid", uid+"");
 		returnJson.put("startpoint", startPoint);
 		returnJson.put("howmany", howMany);
 		returnJson.put("timestamp", timestamp);

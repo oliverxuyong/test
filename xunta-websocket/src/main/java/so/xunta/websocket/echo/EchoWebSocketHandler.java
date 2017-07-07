@@ -2,7 +2,6 @@ package so.xunta.websocket.echo;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
@@ -19,7 +18,6 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import so.xunta.beans.User;
-import so.xunta.persist.UserLastUpdateTimeDao;
 import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.UserService;
@@ -133,6 +131,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void re_sendMsg(Long userid, int i) {
 		
 		new Thread(new Runnable() {

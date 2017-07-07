@@ -27,7 +27,7 @@ public class U2cDaoImpl implements U2cDao {
 	@Autowired
 	private RedisUtil redisUtil;
 	
-	@Value("$(redis.keyPrefixU2C)")
+	@Value("${redis.keyPrefixU2C}")
 	private String keyPrefix;
 	
 	Logger logger =Logger.getLogger(U2cDaoImpl.class);
@@ -36,10 +36,10 @@ public class U2cDaoImpl implements U2cDao {
 	public Set<Tuple> getUserCpsByRank(String uid, int start, int stop) {
 		Jedis jedis=null;
 		Set<Tuple> cps = null;
-		uid = uid + keyPrefix;
+		uid = keyPrefix + uid;
 		try {
 			jedis = redisUtil.getJedis();
-			cps = jedis.zrangeWithScores(uid, start, stop);
+			cps = jedis.zrevrangeWithScores(uid, start, stop);
 		} catch (Exception e) {
 			logger.error("getUserCpsByRank error:", e);
 		}finally{
@@ -52,7 +52,7 @@ public class U2cDaoImpl implements U2cDao {
 	public double updateUserCpValue(String uid, String cpId,double dScore) {
 		Jedis jedis=null;
 		double score = 0;
-		uid = uid + keyPrefix;
+		uid = keyPrefix + uid;
 		try {
 			jedis = redisUtil.getJedis();
 			score = jedis.zadd(uid, dScore, cpId);
@@ -67,7 +67,7 @@ public class U2cDaoImpl implements U2cDao {
 	@Override
 	public void updateUserBatchCpValue(String uid, Map<String,Double> cps) {
 		Jedis jedis=null;
-		uid = uid + keyPrefix;
+		uid = keyPrefix + uid;
 		try {
 			jedis = redisUtil.getJedis();
 			for(Entry<String,Double> entry:cps.entrySet()){
@@ -85,10 +85,10 @@ public class U2cDaoImpl implements U2cDao {
 	@Override
 	public void setUserCpsPresented(String uid, List<String> cpIds) {
 		Jedis jedis=null;
-		uid = uid + keyPrefix;
+		uid = keyPrefix + uid;
 		Map<String,Double> cps = new HashMap<String,Double>();
 		for(String cpId:cpIds){
-			cps.put(cpId, -Double.MAX_VALUE);//给传入CP的score设为很小的一个数，使之排到末尾
+			cps.put(cpId, -Double.MAX_VALUE);//给传入CP的score设为很大的一个负数，使之排到末尾，就算后面再被加也没事
 		}
 		try {
 			jedis = redisUtil.getJedis();
@@ -98,5 +98,22 @@ public class U2cDaoImpl implements U2cDao {
 		}finally{
 			jedis.close();
 		}
+	}
+	
+	@Override
+	public Boolean ifUserCpInited(String uid){
+		Jedis jedis=null;
+		uid = keyPrefix + uid;
+		Boolean ifexist =null;
+
+		try {
+			jedis = redisUtil.getJedis();
+			ifexist = jedis.exists(uid);
+		} catch (Exception e) {
+			logger.error("ifUserCpInited error:", e);
+		}finally{
+			jedis.close();
+		}
+		return ifexist;
 	}
 }

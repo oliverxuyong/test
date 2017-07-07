@@ -13,6 +13,11 @@ public interface U2cDao {
 	public Set<Tuple> getUserCpsByRank(String uid, int start, int stop);
 	
 	/**
+	 * 检查用户的U2C是否存在
+	 * */
+	public Boolean ifUserCpInited(String uid);
+	
+	/**
 	 * 分数递增地添加CP
 	 * */
 	public double updateUserCpValue(String uid,String cpId, double dScore);

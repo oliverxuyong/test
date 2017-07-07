@@ -15,7 +15,7 @@ public class UserLastUpdateTimeDaoImpl implements UserLastUpdateTimeDao {
 	@Autowired
 	private RedisUtil redisUtil;
 	
-	@Value("$(redis.keyPrefixUserUpdateTime)")
+	@Value("${redis.keyPrefixUserUpdateTime}")
 	private String keyPrefix;
 	
 	Logger logger =Logger.getLogger(UserLastUpdateTimeDaoImpl.class);
@@ -24,7 +24,7 @@ public class UserLastUpdateTimeDaoImpl implements UserLastUpdateTimeDao {
 	public String getUserLastUpdateTime(String uid) {
 		Jedis jedis=null;
 		String updateTime = null;
-		uid = uid + keyPrefix;
+		uid = keyPrefix + uid;
 		try {
 			jedis = redisUtil.getJedis();
 			updateTime = jedis.get(uid);
@@ -32,14 +32,14 @@ public class UserLastUpdateTimeDaoImpl implements UserLastUpdateTimeDao {
 			logger.error("getUserLastUpdateTime error:", e);
 		}finally{
 			jedis.close();
-		}
+		}	
 		return updateTime;
 	}
 
 	@Override
 	public void setUserLastUpdateTime(String uid, String date) {
 		Jedis jedis=null;
-		uid = uid + keyPrefix;
+		uid = keyPrefix + uid;
 		try {
 			jedis = redisUtil.getJedis();
 			jedis.set(uid, date);
@@ -53,7 +53,7 @@ public class UserLastUpdateTimeDaoImpl implements UserLastUpdateTimeDao {
 	@Override
 	public void clearUserLastUpdateTime(String uid){
 		Jedis jedis=null;
-		uid = uid + keyPrefix;
+		uid = keyPrefix + uid;
 		try {
 			jedis = redisUtil.getJedis();
 			jedis.del(uid);

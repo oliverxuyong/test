@@ -14,6 +14,7 @@ public class RedisUtil {
 	@Autowired
 	private JedisPool jedisPool;
 	
+	/*通过这个无法获得Resource，暂时取消
 	private ThreadLocal<Jedis> conn = new ThreadLocal<Jedis>(){
 		@Override
 		protected Jedis initialValue() {	
@@ -24,9 +25,10 @@ public class RedisUtil {
 				return null;
 	        }
 		}	
-	};
+	};*/
 	
 	public Jedis getJedis(){
-		return conn.get();
+		//return conn.get();
+		return jedisPool.getResource();
 	}
 }

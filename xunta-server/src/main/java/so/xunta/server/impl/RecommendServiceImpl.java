@@ -2,17 +2,19 @@ package so.xunta.server.impl;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Tuple;
+import so.xunta.beans.ConcernPointDO;
 import so.xunta.beans.User;
 import so.xunta.persist.C2uDao;
 import so.xunta.persist.ConcernPointDao;
@@ -22,6 +24,7 @@ import so.xunta.persist.U2uRelationDao;
 import so.xunta.persist.U2uUpdateStatusDao;
 import so.xunta.persist.UserDao;
 import so.xunta.persist.UserLastUpdateTimeDao;
+import so.xunta.persist.impl.C2uDaoIml;
 import so.xunta.server.RecommendService;
 import so.xunta.utils.RecommendTaskPool;
 
@@ -44,6 +47,8 @@ public class RecommendServiceImpl implements RecommendService {
 	@Autowired
 	private UserDao userDao;
 	
+	Logger logger =Logger.getLogger(C2uDaoIml.class);
+	
 	private final double NO_CHANGE = 0.0;
 	
 	/**
@@ -59,15 +64,21 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public void recordU2UChange(String uid, String cpid, int selectType) {
-		//先更新C2U,这样在后面遍历时就不会把自己也包括进去
+		
+		logger.info("线程 "+Thread.currentThread().getName()+" recordU2UChange begin:"+" uid: "+
+						uid+"\t cpid: "+cpid+"\t selectType: "+selectType);
+		long startTime = System.currentTimeMillis();
+	
+		//新增时先查后更新C2U，删除时先更新后查C2U,这样在后面遍历时就不会把自己也包括进去
+		Set<String> usersSelectedSameCp = null;
 		if(selectType == RecommendService.SELECT_CP){
+			usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid);
 			c2uDao.saveCpOneUser(cpid, uid);
 		}else{
 			c2uDao.deleteUserInCp(cpid, uid);
+			usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid);
 		}
-		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid);
 		Double dValue = concernPointDao.getConcernPoint(new BigInteger(cpid)).getWeight().doubleValue();
-
 	
 		for(String relatedUid:usersSelectedSameCp){
 			switch(selectType){
@@ -93,6 +104,10 @@ public class RecommendServiceImpl implements RecommendService {
 			final double UPDATE_MARK = 0;
 			u2uUpdateStatusDao.updateDeltaRelationValue(relatedUid, uid, UPDATE_MARK);
 		}
+		long endTime = System.currentTimeMillis();
+		logger.info("线程 "+Thread.currentThread().getName()+" recordU2UChange end:"+"\t 选中相同CP的用户数: "+ 
+						usersSelectedSameCp.size() +"\t 其他产生推荐的用户数: "+ relatedUsers.size() +"\n 执行时间: "+
+						(endTime-startTime)+"毫秒");
 	}
 	
 	/**
@@ -112,7 +127,11 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public void updateU2C(String uid) {
+		logger.info("线程 "+Thread.currentThread().getName()+" updateU2C begin:"+"\t uid: "+ uid);
+		long startTime = System.currentTimeMillis();
+		
 		Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
+		logger.info("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了新状态");
 		Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
 		
 		for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
@@ -131,7 +150,11 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		
 		u2uUpdateStatusDao.deleteU2uUpdateStatus(uid);
-		userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Date().toString());
+		userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Timestamp(System.currentTimeMillis()).toString());
+		long endTime = System.currentTimeMillis();
+		
+		logger.info("线程 "+Thread.currentThread().getName()+" updateU2C end: 更新完毕"+ uid + 
+					"\n 执行时间: "+(endTime-startTime)+"毫秒");
 	}
 
 	/**
@@ -140,9 +163,27 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public void initRecommendParm(User u) {
+		logger.info("用户: "+ u.getName()+" 开始初始化推荐参数");
 		Timestamp lastUpdateTime = u.getLast_update_time();
 		userLastUpdateTimeDao.setUserLastUpdateTime(u.getUserId().toString(), lastUpdateTime.toString());
+		Boolean ifInited = u2cDao.ifUserCpInited(u.getUserId().toString());
+		if(!ifInited){
+			logger.info("用户: "+ u.getName()+" U2C列表不存在,初始化列表:");
+			
+			final Long SYSTEM_ADMIN = 1L; 
+			List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator(SYSTEM_ADMIN, 0, 200);
+			Map<String,Double> initCpsMap = new HashMap<String,Double>();
+			for(ConcernPointDO cp:initCps){
+				String cpId = cp.getId().toString();
+				Double cpWeight = cp.getWeight().doubleValue();
+				initCpsMap.put(cpId, cpWeight);
+			}
+			u2cDao.updateUserBatchCpValue(u.getUserId().toString(), initCpsMap);
+			
+			logger.info("用户: "+ u.getName()+" U2C列表初始化成功！");
+		}
 		
+		logger.info("初始化推荐参数完成，执行一次更新任务");
 		RecommendTaskPool.getInstance().getThreadPool().execute(new Runnable() {	
 			@Override
 			public void run() {
@@ -156,12 +197,14 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public void syncLastUpdateTime(User u) {
+		logger.info("用户: "+ u.getName()+" 下线，将更新时间同步到数据库");
 		Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(u.getUserId().toString()));
 		u.setLast_update_time(lastUpdateTime);
 		userDao.updateUser(u);
 	}
 	
 	private void updateU2CAfterLastUpdated(Map<BigInteger, String> newCps, String uid, String changedUid){
+		logger.info("CP新选更新：用户 "+changedUid);
 		for(Entry<BigInteger, String> selectedCp:newCps.entrySet()){
 			BigInteger selectedCpid = selectedCp.getKey();
 			String is_selected = selectedCp.getValue();
@@ -178,6 +221,7 @@ public class RecommendServiceImpl implements RecommendService {
 	}
 	
 	private void updateU2CBeforeLastUpdated(String uid,Long changedUid,Timestamp lastUpdateTime,double uDeltaValue){
+		logger.info("CP已选更新：用户 "+changedUid);
 		List<BigInteger> oldCps = cpChoiceDetailDao.getSelectedCpBeforeTime(changedUid, lastUpdateTime);
 		for(BigInteger oldCp:oldCps){
 			Double cpWeight = concernPointDao.getConcernPoint(oldCp).getWeight().doubleValue();

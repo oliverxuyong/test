@@ -50,7 +50,7 @@ public class CpChoiceDetailDaoImpl implements CpChoiceDetailDao {
 	@Override
 	public List<BigInteger> getSelectedCpBeforeTime(Long userid, Timestamp lastUpdateTime) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql="SELECT cp_id FROM cp_choice_detail WHERE user_id=:userid AND create_time<:lastUpdateTime GROUP BY cp_id HAVING MAX(create_time) AND is_selected='Y' ";
+		String sql="SELECT cp_id,is_selected FROM cp_choice_detail WHERE user_id=:userid AND create_time<:lastUpdateTime GROUP BY cp_id HAVING MAX(create_time) AND is_selected='Y' ";
 		@SuppressWarnings("unchecked")
 		List<Map<String,Object>> result = (List<Map<String,Object>>)session.createSQLQuery(sql).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).setLong("userid", userid).setDate("lastUpdateTime", lastUpdateTime).list();
 		
