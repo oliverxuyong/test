@@ -119,7 +119,7 @@
 			
 			//2017.07.04  叶夷  
 			//addMPData();//匹配人列表测试
-			requestTopMatchedUsers(userId,requestTopMUNum);//请求用户匹配缩略表
+			//requestTopMatchedUsers(userId,requestTopMUNum);//请求用户匹配缩略表,不能放在这里，因为不能同时请求,等请求cp返回且显示之后再请求这个方法，所以此方法放在responseToCPRequest(CP_list)中
 			
 			//$("#account").show();
 		}

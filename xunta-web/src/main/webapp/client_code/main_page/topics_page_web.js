@@ -4,6 +4,9 @@ function wsConnect() {
 
 //叶夷   2017.06.15  将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {//显示从服务器获得的话题列表:    这段代码出现在旧版本，因版本错乱出现在这里
+	//叶夷   2017.07.11  等请求cp返回之后再请求用户匹配缩略表
+	requestTopMatchedUsers(userId,requestTopMUNum);
+	
 	//$("#loadinganimation").remove();
 	$("#showatloaded").show();
 	//console.log("进到空白页");

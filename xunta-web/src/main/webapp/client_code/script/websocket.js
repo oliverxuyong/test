@@ -98,41 +98,47 @@ function requestCP(){//请一组CP.首次请求页号设为1.
 //叶夷   2017.06.16 发送"标签选中"
 function sendSelectedCP(userId,cpid,currentRequestedCPPage){
 	//console.log("测试 3： "+typeof(userId));
-	console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
-	var json_obj = {
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
+		var json_obj = {
 			 _interface:"1102-1",
 			 interface_name: "sendSelectedCP",
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
 			 timestamp:"",
 		};
-	WS_Send(json_obj);
+		WS_Send(json_obj);
+	}
 }
 
 //叶夷   2017.06.16  发送"标签选中取消"
 function sendUnselectedCP(userId,cpid,currentRequestedCPPage){
-	console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
-	var json_obj = {
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
+		var json_obj = {
 			 _interface:"1103-1",
 			 interface_name: "sendUnselectedCP",
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
 			 timestamp:"",
 		};
-	WS_Send(json_obj);
+		WS_Send(json_obj);
+	}
 }
 
 //叶夷   2017.07.07  请求用户匹配缩略表
-function requestTopMatchedUsers(userId,requestTopMUNum){
-	console.log("请求用户匹配:userId="+userId+" 请求的数量requestTopMUNum="+requestTopMUNum);
-	var json_obj = {
+function requestMatchedUsers(userId,requestTopMUNum){
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("请求用户匹配:userId="+userId+" 请求的数量requestTopMUNum="+requestTopMUNum);
+		var json_obj = {
 			 _interface:"1104-1",
 			 interface_name: "requestTopMatchedUsers",
 			 uid:userId.toString(),
 			 top_num:requestTopMUNum.toString(),
 			 timestamp:"",
 		};
-	WS_Send(json_obj);
+		WS_Send(json_obj);
+	}
 }
 
 function tasksOnWired() {//ws连接事件的响应执行方法:
