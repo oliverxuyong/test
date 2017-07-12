@@ -41,19 +41,25 @@ function updateNickname(newNickname){
  * end:叶夷
  */
 
+
+
 function requestCP(userId,requestNum,currentPage){//调用根页面上的同名方法.
 	var paraStr = userId + "','" + requestNum + "','" + currentPage;
 	execRoot("initToGetCP('"+ paraStr +"')");
 }
 
+
 //叶夷   2017.06.16  发送"标签选中"
 function sendSelectCP(userId,cpid,currentPage){
+
 	var paraStr = userId + "','" + cpid + "','" + currentPage;
 	execRoot("sendSelectedCP('"+ paraStr +"')");
 }
 
+
 //叶夷   2017.06.16  发送"标签选中取消"
 function sendUnSelectCP(userId,cpid,currentPage){
+
 	var paraStr = userId + "','" + cpid + "','" + currentPage;
 	execRoot("sendUnselectedCP('"+ paraStr +"')");
 }

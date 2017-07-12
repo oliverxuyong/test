@@ -19,7 +19,7 @@ public class ConcernPointServiceImpl implements ConcernPointService {
 	@Autowired
 	private ConcernPointDao concernPointDao;
 	
-	Logger logger = Logger.getLogger(UserServiceImpl.class);
+	Logger logger = Logger.getLogger(ConcernPointServiceImpl.class);
 	
 	@Override
 	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) {
