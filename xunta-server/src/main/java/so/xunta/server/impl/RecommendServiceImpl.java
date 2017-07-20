@@ -171,7 +171,7 @@ public class RecommendServiceImpl implements RecommendService {
 			logger.info("用户: "+ u.getName()+" U2C列表不存在,初始化列表:");
 			
 			final Long SYSTEM_ADMIN = 1L; 
-			List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator(SYSTEM_ADMIN, 0, 200);
+			List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator(SYSTEM_ADMIN, 0, 10000);
 			Map<String,Double> initCpsMap = new HashMap<String,Double>();
 			for(ConcernPointDO cp:initCps){
 				String cpId = cp.getId().toString();

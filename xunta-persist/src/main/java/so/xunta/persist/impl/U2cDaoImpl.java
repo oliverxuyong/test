@@ -55,7 +55,7 @@ public class U2cDaoImpl implements U2cDao {
 		uid = keyPrefix + uid;
 		try {
 			jedis = redisUtil.getJedis();
-			score = jedis.zadd(uid, dScore, cpId);
+			score = jedis.zincrby(uid, dScore, cpId);
 		} catch (Exception e) {
 			logger.error("updateUserCpValue error:", e);
 		}finally{

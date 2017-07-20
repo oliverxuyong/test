@@ -5,7 +5,7 @@ function wsConnect() {
 //叶夷   2017.06.15  将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {//显示从服务器获得的话题列表:    这段代码出现在旧版本，因版本错乱出现在这里
 	//叶夷   2017.07.11  等请求cp返回之后再请求用户匹配缩略表
-	requestTopMatchedUsers(userId,requestTopMUNum);
+	//requestTopMatchedUsers(userId,requestTopMUNum);
 	
 	//$("#loadinganimation").remove();
 	$("#showatloaded").show();
@@ -29,10 +29,11 @@ function appendElement(i,cpList,CP_list){
 	//叶夷   2017.06.20   控制cp的大小和字体颜色
 	var cp_width=60;
 	var cp_height=60;
-	var cp_color="black"
+	var cp_color="black";
 	
 	var cp_container=$("#cp-container");
 	var cp=cpList[i];
+	
 	var cp_node = $("<div></div>").attr("class", "cp").attr("id", "cpid"+cp.cpid);//外圆div
 	var cp_innode=$("<div></div>").attr("class","incp");//内圆div
 	cp_node.append(cp_innode);
@@ -52,6 +53,11 @@ function appendElement(i,cpList,CP_list){
 	calCircle(cp_text, cpTextSize,cp.cptext,cp_node,cp_innode);
 	
 	cp_innode.append(cp_text);
+	
+	if(cp.ifselectedbyme=="y"){
+		cp_node.css("background-color","#f00");
+	}
+	
 	
 	//console.log("测试： "+i);
 	cp_node.click(function(){
@@ -378,25 +384,31 @@ function clearLocalstoreUserInfo(){
     localStorage.clear();
 }
 
-function enterDialogPage(topicid,isqingting) {
-	var topictitle = $("#" + topicid + " .topictitle").attr("title");
-	topictitle = specialLettersCoding(topictitle);
+//2017.07.19  叶夷    测试聊天接口
+function dialogStart(){
+	enterDialogPage();
+}
+
+function enterDialogPage() {
+//	var topictitle = $("#" + topicid + " .topictitle").attr("title");
+//	topictitle = specialLettersCoding(topictitle);
 	var pageParam = {
-		"topicid" : topicid,
-		"title" : topictitle,
+		//"topicid" : topicid,
+		//"title" : topictitle,
 		"userid" : userId,
 		"userName" : userName,
 		"userImage" : userImg,
 		"server_domain" : domain,
-        "isqingting" : isqingting,
+        //"isqingting" : isqingting,
         "pageTitle":pageTitle,
 		"adminName": adminName,
 		"adminImageurl": adminImageurl,
 		"userAgent":userAgent,
 		"topicPageSign":"yes"
 	};
-	console.log("enterDialogPage topicid=" + topicid+"|topictitle="+topictitle);
-	openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
+	//console.log("enterDialogPage topicid=" + topicid+"|topictitle="+topictitle);
+//	openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
+	openWin(userId,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
 }
 
 /*start：叶夷     2017年3月20日
