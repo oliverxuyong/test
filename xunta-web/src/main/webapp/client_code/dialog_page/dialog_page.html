@@ -84,9 +84,13 @@
 	<script type="text/javascript" src="http://xunta.so:3000/javascripts/websocket.io.js"></script>
 
 	<script type="text/javascript">
-		var userId;
+		var userId;//发送的人，即自己
 		var userName;	//直接上屏用得着.
         var userImage;	//直接上屏时用得着.
+        
+        var toUserId;//发送给的人
+		var toUserName;	//直接上屏用得着.
+        var toUserImage;	//直接上屏时用得着.
         
 		var adminName;
 		var adminImageurl;
@@ -118,44 +122,43 @@
             userName = Parameter.userName;
             userImage = Parameter.userImage;
             
+            /* "toUserId" : toUserId,
+    		"toUserName" : toUserName,
+    		"toUserImage" : toUserImage, */
+    		toUserId = Parameter.toUserId;
+    		toUserName = Parameter.toUserName;
+    		toUserImage = Parameter.toUserImage;
+            
             adminName = Parameter.adminName;
             adminImageurl = Parameter.adminImageurl;
             userAgent = Parameter.userAgent;
 
 			_topicPageSign = Parameter.topicPageSign;
-            
-            //$("#prefetch_adminimage").attr("href", "../image/"+adminImageurl);//预载管理员头像.  
-        	//$("#prefetch_userimage").attr("href", userImage);//预载管理员头像.
-            
-            /* isqingting = Parameter.isqingting;
-            if(isqingting == 'yes'){
-     		   $("#mergeplussetup_wrap").hide();
-     		   $("#inputframe").remove();//倾听中取消输入框.
-    		} */
+         
     		//暂时取消,换成下面两句:prepareDialogPage();
-    		//adjustWidthsHeights();
+    		adjustWidthsHeights();
     		//showTitle();
     		sort = 'asc';
 			//这里没几句,暂时移到了上面.方法暂时注销.prepareDialogPage();//
-            //execRoot("setCurrentPageId('"+topicId+"')");
-            //console.log("preparePageVars userImage="+userImage);
-            //execRoot("initToLoadPostHist('"+userId+"','"+topicId+"','"+firstMsgId+"','"+requestMsgCounts+"','"+sort+"')");
-            
-            //调用通过域名判断按钮框的显示的方法
-            //moretodoboxDisplayFromDomain();
+            execRoot("setCurrentPageId('"+toUserId+"')");
+            console.log("preparePageVars userImage="+userImage);
+            execRoot("initToLoadPostHist('"+userId+"','"+toUserId+"','"+firstMsgId+"','"+requestMsgCounts+"','"+sort+"')");
             
 	    	chat.init(userName,recevier);//注册用户，及用记接收消息的函数
         }
 
         function recevier(obj) {
-        	user = obj.user;
-        	data = obj.data;
-        	showSelfPoster(user, data);
+        	user = JSON.stringify(obj.user.user);
+        	data = JSON.stringify(obj.data.msg);
+        	//去掉引号
+        	data = data.replace(/\"/g, "");
+        	user = user.replace(/\"/g, "");
+        	if (user === userName) {
+        		showSelfPoster(user, data,"my");
+            } else {
+            	showSelfPoster(user, data,"other");
+            }
     	};
-
-    	/* function $(flag) {
-        	return document.querySelector(flag);
-    	} */
 			
 		function inputSubmit() {//初步处理提交的发言.
 			var inputValue = verifyInputText();//如果输入内容不合法,将返回"invalidvalue".

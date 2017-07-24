@@ -68,4 +68,7 @@ function requestTopMatchedUsers(userId,requestTopMUNum){
 	execRoot("requestMatchedUsers('"+ paraStr +"')");
 }
 
+function removeUnreadNum(toUserId) {
+	$('#' + toUserId).find('.unread').remove()
+}
 

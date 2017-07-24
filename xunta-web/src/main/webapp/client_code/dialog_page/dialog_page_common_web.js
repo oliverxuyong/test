@@ -2,7 +2,7 @@
 function backBtn(){
 	if(_topicPageSign == 'yes'){
 		execRoot("setCurrentPageId('main_page')");
-		//exec('topics_page',"removeUnreadNum('"+topicId+"')");
+		exec('main_page',"removeUnreadNum('"+toUserId+"')");
 		openWin('main_page', 'main_page/main_page.html', '');
 	}else{
 		closeWin(_tmpPageId);

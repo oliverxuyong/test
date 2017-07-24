@@ -389,26 +389,36 @@ function dialogStart(){
 	enterDialogPage();
 }
 
+//进入聊天页，别人的uid和我的uid都需要
 function enterDialogPage() {
 //	var topictitle = $("#" + topicid + " .topictitle").attr("title");
 //	topictitle = specialLettersCoding(topictitle);
+	var toUserName;
+	if (userName ==="汉良") {
+		toUserName="婚礼司仪涛哥";
+		toUserId="745600342770716672";
+	}else{
+		toUserName="汉良";
+		toUserId="804622010041896960";
+	}
+	
 	var pageParam = {
-		//"topicid" : topicid,
-		//"title" : topictitle,
+		"toUserId" : toUserId,
+		"toUserName" : toUserName,//这里是为了测试
+		"toUserImage" : "",
 		"userid" : userId,
 		"userName" : userName,
 		"userImage" : userImg,
 		"server_domain" : domain,
-        //"isqingting" : isqingting,
         "pageTitle":pageTitle,
 		"adminName": adminName,
 		"adminImageurl": adminImageurl,
 		"userAgent":userAgent,
 		"topicPageSign":"yes"
 	};
-	//console.log("enterDialogPage topicid=" + topicid+"|topictitle="+topictitle);
+	console.log("enterDialogPage toUserId=" + toUserId+"|toUserName="+toUserName);
 //	openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
-	openWin(userId,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
+	openWin(toUserId,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
 }
 
 /*start：叶夷     2017年3月20日

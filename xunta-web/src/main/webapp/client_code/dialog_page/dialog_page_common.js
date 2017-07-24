@@ -14,16 +14,47 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
 	inputValue = specialLettersCoding(inputValue); 
 	console.log("afterinput - inputValue:"+inputValue);
 	
-    chat.sendMsg(inputValue);//发送消息
+    //chat.sendMsg(inputValue);//发送消息
+	//chat.sendMsgToAll(inputValue);//发送消息给全部的人
+	chat.sendPrivateMsg(toUserName,inputValue);//给单独的人发消息
+	
     document.getElementById("inputbox").value="";
 	
 	//$("#notification").text('刚刚的发言已发往服务器:' + inputValue);
 	console.log(' ExistedTopic 刚刚的发言已发往服务器:' + inputValue);
 }
 
+function showSelfPoster(name, content,myOrOther) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态
+	console.log(" showSelfPoster 发言上屏了.");
+	var content, senderId, senderName, dialog_box, senderName_P, content_P, senderImg, senderImg_Div, senderDiv,msgId;
+	senderId = userId;
+	content = content;
+	senderName = name;
+	senderName = cutStringIfTooLong(senderName,10);
+	senderName = " [" + senderName  +"]";//发言上屏也加上标题.	
 
+	senderImage = userImage;
+	dialog_box = $("#dialog_box");
+	content_P = $("<div class='detail'></div>").text(content);
+	senderName_P = $("<div class='nc'></div>").text(senderName);
+    if(typeof(replyOpptid) != "undefined" || replyOpptid != ''||replyOpptid != 'null'){
+        content_P.click(function() {
+			openPersonalDialog(this);
+		});
+    }
+	senderImg = $("<img />").attr("src", userImage);
+	////上面一句简化为这一句.那些属性目前没有用处.
+	senderImg_Div = $("<div class='user-pic'></div>").append(senderImg);
+	senderDiv = $("<div class='user "+myOrOther+"'></div>").attr("id", msgId);
+	//senderDiv.append(content_P).append(senderImg_Div);
+	senderDiv.append(senderName_P).append(content_P).append(senderImg_Div);
+	$("#msg_list").append(senderDiv);
+	setTimeout(function() {//将聊天框里的消息落底 - 8.12
+		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
+	}, 200);
+}
 
-function showSelfPoster(name, content) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态
+/*function showOtherPoster(name, content) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态
 	console.log(" showSelfPoster 发言上屏了.");
 	var content, senderId, senderName, dialog_box, senderName_P, content_P, senderImg, senderImg_Div, senderDiv,msgId;
 	senderId = userId;
@@ -43,13 +74,13 @@ function showSelfPoster(name, content) {//用户发言后先直接上屏并添�
 	senderImg = $("<img />").attr("src", userImage);
 	////上面一句简化为这一句.那些属性目前没有用处.
 	senderImg_Div = $("<div class='user-pic'></div>").append(senderImg);
-	senderDiv = $("<div class='user my'></div>").attr("id", msgId);
+	senderDiv = $("<div class='user other'></div>").attr("id", msgId);
 	senderDiv.append(content_P).append(senderImg_Div);
 	$("#msg_list").append(senderDiv);
 	setTimeout(function() {//将聊天框里的消息落底 - 8.12
 		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
 	}, 200);
-}
+}*/
 
 function verifyInputText(obj){//对输入框提交的字符串进行合法性预处理:	
 	var elementInputBox = document.getElementById("inputbox");
@@ -77,4 +108,13 @@ function verifyInputText(obj){//对输入框提交的字符串进行合法性预
 		elementInputBox.value = "";
 	}
 	return inputValue
+}
+
+function adjustWidthsHeights() {
+	if( userAgent[0] == "PC" ){//PC和手机浏览器在body宽度上不一致.暂时用这个判断来弥补:
+		document.getElementById("inputbox").style.width = $("#inputframe").width() - 50 + "px";
+	}else{
+		document.getElementById("inputbox").style.width = $("#inputframe").width() - 68 + "px";
+	}
+	document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
 }

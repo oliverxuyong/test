@@ -238,7 +238,7 @@ function openNewWin(winName, winUrl, data){
 //检查页面打开状态。
 function checkPageOpenStatus(winName){
     var pageOpenStatus;
-    if(winName == "topics_page"){//如果打开的是topics页面时，这个页面是不存储在队列里的，否则这个页面因一直存在会破坏队列的先进先出的机制
+    if(winName == "main_page"){//如果打开的是topics页面时，这个页面是不存储在队列里的，否则这个页面因一直存在会破坏队列的先进先出的机制
 		pageOpenStatus = checkTopicsPageOpenStatus();
 /*
         if(dialogPageArray.length == 0){// dialogPageArray.length == 0  表示是初次启动，这个时候要创建话题列表页面

@@ -253,6 +253,11 @@ function checkMessageInterface(evnt) {
 		exec("main_page","push_matched_user("+evnt.data+")");
 	}
 	
+	//叶夷 2017.07.24  获取聊天记录
+	if(jsonObj._interface == '/v1/history_msg'){
+		console.log("获取聊天记录:"+JSON.stringify(jsonObj.cp_wrap));
+	}
+	
 }
 
 
@@ -359,4 +364,30 @@ function stopFlashTitle(timerArr) {//去除闪烁提示，恢复初始title文�
 	}
 }
 
+function initToLoadPostHist(userId, toUserId, msgId,num, _sort) {
+	console.log("initToLoadPostHist-toUserId:" + toUserId);
+	console.log("每次请求的历史消息条数-num="+num+"_sort"+_sort);
+	firstMsgId = msgId;
+	//先将获取聊天框历史消息的消息ID保存起来，因为有任务框导致这个ID不能传到获取话题历史方法里面，这个ID是用来传给服务器判断从哪开始获取其他消息
+	sort = _sort;
+	requestMsgCounts = num;
+	//console.log("历史消息请求 initToLoadPostHist() - userId:" + userId + " topicId:" + topicId + "msgId:" + msgId);
+	doRequestPostHist[toUserId] = true;
+	//console.log("刚刚为它赋了值 doRequestPostHist[topicId]:" + doRequestPostHist[topicId]);
+	getPostHistory(toUserId);
+	setTimeout("checkPostHistSuccess('" + toUserId + "')", 10000);
+}
+
+function getPostHistory(toUserId) {
+	console.log(" toUserId:" + toUserId + "firstMsgId:" + firstMsgId + "sort:" + sort+ "requestMsgCounts:" + requestMsgCounts);
+	var json_obj = {
+		_interface : "/v1/history_msg",
+		userId:userId,
+		toUserId : toUserId,
+		//num : requestMsgCounts,//将每次获取历史消息的条数降为10,使接续点可见.xu.2016.4.29
+		msg_id : firstMsgId,
+		//sort : sort
+	};
+	WS_Send(json_obj);
+}
 
