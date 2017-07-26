@@ -252,12 +252,6 @@ function checkMessageInterface(evnt) {
 		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.cp_wrap));
 		exec("main_page","push_matched_user("+evnt.data+")");
 	}
-	
-	//叶夷 2017.07.24  获取聊天记录
-	if(jsonObj._interface == '/v1/history_msg'){
-		console.log("获取聊天记录:"+JSON.stringify(jsonObj.cp_wrap));
-	}
-	
 }
 
 
@@ -364,30 +358,43 @@ function stopFlashTitle(timerArr) {//去除闪烁提示，恢复初始title文�
 	}
 }
 
-function initToLoadPostHist(userId, toUserId, msgId,num, _sort) {
-	console.log("initToLoadPostHist-toUserId:" + toUserId);
-	console.log("每次请求的历史消息条数-num="+num+"_sort"+_sort);
-	firstMsgId = msgId;
-	//先将获取聊天框历史消息的消息ID保存起来，因为有任务框导致这个ID不能传到获取话题历史方法里面，这个ID是用来传给服务器判断从哪开始获取其他消息
-	sort = _sort;
-	requestMsgCounts = num;
-	//console.log("历史消息请求 initToLoadPostHist() - userId:" + userId + " topicId:" + topicId + "msgId:" + msgId);
-	doRequestPostHist[toUserId] = true;
-	//console.log("刚刚为它赋了值 doRequestPostHist[topicId]:" + doRequestPostHist[topicId]);
-	getPostHistory(toUserId);
-	setTimeout("checkPostHistSuccess('" + toUserId + "')", 10000);
+function sendPoster(toUserId,inputValue,tmpPid) {
+	var json_posterinfo = {
+			toUserId : toUserId,
+			inputValue : inputValue,
+			temp_msg_id : tmpPid
+	};
+	//var taskId_SendPoster = toUserId + "-" + msgId;
+	//doSendPoster[taskId_SendPoster] = json_posterinfo;
+	//登记入任务筐.查询的时候,也用toUserId+"-"+tmpPid来查询.
+	console.log("SendPoster tmpPid:" + tmpPid);
+	//chat.sendPrivateMsg(toUserId,inputValue);//给单独的人发消息
+	//这里有在线检查及再次创建方法.
+	setTimeout("checkSendPosterSuccess('" + taskId_SendPoster + "')", 7000);
 }
 
-function getPostHistory(toUserId) {
-	console.log(" toUserId:" + toUserId + "firstMsgId:" + firstMsgId + "sort:" + sort+ "requestMsgCounts:" + requestMsgCounts);
-	var json_obj = {
-		_interface : "/v1/history_msg",
-		userId:userId,
-		toUserId : toUserId,
-		//num : requestMsgCounts,//将每次获取历史消息的条数降为10,使接续点可见.xu.2016.4.29
-		msg_id : firstMsgId,
-		//sort : sort
-	};
-	WS_Send(json_obj);
+function checkSendPosterSuccess(taskId_SendPoster) {
+	console.log("checkSendPosterSuccess 延时已到...");
+	var json_posterinfo = doSendPoster[taskId_SendPoster];
+	var toUserId = json_posterinfo.toUserId;
+	if (json_posterinfo == "none") {
+		console.log("checkSendPosterSuccess 成功了,不作为!  toUserId:" + toUserId);
+		return
+	}//none表示已成功,不作为.
+	console.log("checkSendPosterSuccess 不成功!  toUserId:" + toUserId);
+	var tmpPid = json_posterinfo.temp_msg_id;
+	var pageName = getTmpTopicIdIfExisted(toUserId);//如果有临时topicid,就用临时的id.
+	var script = "afterCheckedSendPosterSuccess('" + tmpPid + "',false)";
+	exec(pageName, script);
+}
+
+function getTmpTopicIdIfExisted(toUserId) {
+	//console.log("要判断这个元素不存在时, 值是多少 下面的if判断是 != undefined topicId2tmpTopicId[topicid]="+topicId2tmpTopicId[topicid]);
+	if (topicId2tmpTopicId[toUserId] == undefined) {
+		return toUserId;
+	} else {
+		//console.log("topicId2tmpTopicId[topicid]已被判断为不是undefined");
+		return topicId2tmpTopicId[toUserId];
+	}
 }
 

@@ -89,8 +89,8 @@
         var userImage;	//直接上屏时用得着.
         
         var toUserId;//发送给的人
-		var toUserName;	//直接上屏用得着.
-        var toUserImage;	//直接上屏时用得着.
+		//var toUserName;	//直接上屏用得着.
+        //var toUserImage;	//直接上屏时用得着.
         
 		var adminName;
 		var adminImageurl;
@@ -99,7 +99,7 @@
 		var _topicPageSign;
         
         var lastPostTimeLongMinute = 0;
-        var requestMsgCounts = 10;
+        var requestMsgCounts = 7;
         var firstMsgId = '-1';//用来记录话题分页消息的界点，
         var replyTopic = 'null';//用来在发言时判断是否要发送给指定的用户， 如果是的话则有指定用户的话题ID，如果不是的话为null FANG 10.12
         var domain;
@@ -116,6 +116,8 @@
 		var replySenderNameWithTopic = "";
 		var replyOppuid =  "";
 		var replyOpptid = "";
+		var msgId = new Date().getTime();				//生成临时发言id.
+		
         function start(Parameter){//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
             domain = Parameter.server_domain;
             userId = Parameter.userid;
@@ -126,8 +128,8 @@
     		"toUserName" : toUserName,
     		"toUserImage" : toUserImage, */
     		toUserId = Parameter.toUserId;
-    		toUserName = Parameter.toUserName;
-    		toUserImage = Parameter.toUserImage;
+    		//toUserName = Parameter.toUserName;
+    		//toUserImage = Parameter.toUserImage;
             
             adminName = Parameter.adminName;
             adminImageurl = Parameter.adminImageurl;
@@ -141,30 +143,67 @@
     		sort = 'asc';
 			//这里没几句,暂时移到了上面.方法暂时注销.prepareDialogPage();//
             execRoot("setCurrentPageId('"+toUserId+"')");
-            console.log("preparePageVars userImage="+userImage);
-            execRoot("initToLoadPostHist('"+userId+"','"+toUserId+"','"+firstMsgId+"','"+requestMsgCounts+"','"+sort+"')");
-            
-	    	chat.init(userName,recevier);//注册用户，及用记接收消息的函数
+            //console.log("preparePageVars userImage="+userImage);
+            getHistoryMsg(userId,toUserId,firstMsgId);
+            //execRoot("initToLoadPostHist('"+userId+"','"+toUserId+"','"+firstMsgId+"','"+requestMsgCounts+"','"+sort+"')");
+            chat.init(userId,recevier);//注册用户，及用记接收消息的函数
         }
-
+		
+        //发送消息之后服务器返回的消息
         function recevier(obj) {
-        	user = JSON.stringify(obj.user.user);
-        	data = JSON.stringify(obj.data.msg);
+        	respondeUserId=JSON.stringify(obj.user.userId);
+        	user = JSON.stringify(obj.user.name);
+        	data = JSON.stringify(obj.data);
+        	imgUrl=JSON.stringify(obj.user.imgUrl);
         	//去掉引号
+        	respondeUserId= respondeUserId.replace(/\"/g, "");
         	data = data.replace(/\"/g, "");
         	user = user.replace(/\"/g, "");
-        	if (user === userName) {
-        		showSelfPoster(user, data,"my");
+        	imgUrl=imgUrl.replace(/\"/g, "");
+        	
+        	//var pagename = getTmpTopicIdIfExisted(respondeUserId);
+        	//var script;
+        	
+        	if (userId === respondeUserId) {
+        		/* var postTimeStr=new Date();
+        		var postTimeLong = postTimeStr.getTime();
+        		postTimeStr=postTimeStr.Format("yyyy-MM-dd hh:mm:ss");
+        		markSendPosterSuccess(msgId,postTimeLong,postTimeStr); */
+        		//exec(pageName, script);
+        		//var taskid_sendposter =  toUserId + "-" + msgId;
+        		//返回的消息是个数组,但目前只会有一个.
+        		//doSendPoster[taskid_sendposter] = "none";
+        		//取消任务筐里的任务.
+        		showSelfPoster(user, data,imgUrl,msgId,"my",false);
             } else {
-            	showSelfPoster(user, data,"other");
+            	showSelfPoster(user, data,imgUrl,msgId,"other",false);
             }
-    	};
-			
+        	var postTimeStr=new Date();
+        	var postTimeLong = postTimeStr.getTime();
+        	postTimeStr=postTimeStr.Format("yyyy-MM-dd hh:mm:ss");
+        	markSendPosterSuccess(msgId,postTimeLong,postTimeStr);
+        };
+        
+        Date.prototype.Format = function (fmt) { //author: meizz
+        	  var o = {
+        	    "M+": this.getMonth() + 1, //月份
+        	    "d+": this.getDate(), //日
+        	    "h+": this.getHours(), //小时
+        	    "m+": this.getMinutes(), //分
+        	    "s+": this.getSeconds(), //秒
+        	    "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        	    "S": this.getMilliseconds() //毫秒
+        	  };
+        	  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        	  for (var k in o)
+        	  if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        	  return fmt;
+        	}
+
 		function inputSubmit() {//初步处理提交的发言.
 			var inputValue = verifyInputText();//如果输入内容不合法,将返回"invalidvalue".
 			if (inputValue == "invalidvalue") return;
 			afterInput(inputValue, "none");	//第二个参数为tmpPid.从输入框提交时为none.点击感叹号再次提交时则为有效tmpPid.
-			
 		}
 		
 	 	function stopLoadingIcon_getPostHist(isSuccess) {
@@ -181,7 +220,7 @@
 //					alert("点击了");
 					$("#loading img").attr('src', '../image/threedotmoving.gif');//恢复动态图片.
 					$("#loadingtext").text("再次请求中...");
-                    window.parent.initToLoadPostHist(userId,topicId,firstMsgId,requestMsgCounts,sort);
+                    window.parent.initToLoadPostHist(userId,toUserId,firstMsgId,requestMsgCounts,sort);
 
 					$("#loadingwrap").unbind('click');//点击后马上取消这个事件绑定.
 				});

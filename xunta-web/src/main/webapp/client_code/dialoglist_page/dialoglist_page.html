@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<title>聊天页</title>
+		<link rel="stylesheet" type="text/css" href="dialoglist_page.css"/>
+		<link rel="stylesheet" type="text/css" href="dialoglist_page_web.css"/>
+        <link rel="prefetch" href="../image/acclaim-50x173.png" />
+        <link rel="prefetch" id="prefetch_adminimage" href="" />
+		<link rel="prefetch" id="prefetch_userimage" href="" />
+
+	</head>
+	<!--下面的为元素库,与代码直接相关,不要作任何变动,运行时会hide掉-->			
+		
+    <body>
+		<!--div id="notification">通知栏</div-->
+		<div id="header">
+			<div id="goback" onclick="backBtn()"><img src="../image/goback5.png" /></div>
+			<div class="_closeBtn" onclick="closeBtn()"><img src="../image/close.png" ></div>
+		</div>
+		
+
+
+		
+		
+		
+	</body>
+	<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../script/common-xunta.js"></script>
+    <script type="text/javascript" src="../script/common-xunta_web.js"></script>
+    <script type="text/javascript" src="dialoglist_page_common_web.js"></script>
+
+	<script type="text/javascript">
+		var userId;//发送的人，即自己
+        
+		var adminName;
+		var adminImageurl;
+		var _topicPageSign;
+
+        var requestListCounts = 7;
+        var domain;
+        var userAgent;
+            
+		
+        function start(Parameter){//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
+            domain = Parameter.server_domain;
+            userId = Parameter.userid;
+            
+            adminName = Parameter.adminName;
+            adminImageurl = Parameter.adminImageurl;
+            userAgent = Parameter.userAgent;
+            _topicPageSign = Parameter.topicPageSign;
+            execRoot("setCurrentPageId('dialoglist_page')");
+        }
+		
+	</script>
+</html>

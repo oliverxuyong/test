@@ -8,79 +8,61 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
 	}
 
 	/*if (tmpPid == 'none') {//如果tmpPid为none,则表示从输入框提交.如果不是none,则是发送失败后,点击感叹号再次提交的.
-		tmpPid = new Date().getTime();				//生成临时发言id.
-		showSelfPoster(inputValue, topicId, tmpPid);//消息直接上屏，并添加跳豆.
+		var tmpPid=msgId;
+		showSelfPoster(userName,inputValue,userImage,tmpPid,"my");//消息直接上屏，并添加跳豆.
 	}*/
+	
 	inputValue = specialLettersCoding(inputValue); 
 	console.log("afterinput - inputValue:"+inputValue);
 	
+	//var str = "sendPoster('" + toUserId + "','" + inputValue +"','" + tmpPid + "')";//tmpTopicId这个时候的tmpTopicId应该是没用的了.
+    //execRoot(str);
+	
     //chat.sendMsg(inputValue);//发送消息
 	//chat.sendMsgToAll(inputValue);//发送消息给全部的人
-	chat.sendPrivateMsg(toUserName,inputValue);//给单独的人发消息
+	chat.sendPrivateMsg(toUserId,inputValue);//给单独的人发消息
 	
     document.getElementById("inputbox").value="";
 	
-	//$("#notification").text('刚刚的发言已发往服务器:' + inputValue);
 	console.log(' ExistedTopic 刚刚的发言已发往服务器:' + inputValue);
 }
 
-function showSelfPoster(name, content,myOrOther) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态
-	console.log(" showSelfPoster 发言上屏了.");
-	var content, senderId, senderName, dialog_box, senderName_P, content_P, senderImg, senderImg_Div, senderDiv,msgId;
-	senderId = userId;
-	content = content;
-	senderName = name;
-	senderName = cutStringIfTooLong(senderName,10);
-	senderName = " [" + senderName  +"]";//发言上屏也加上标题.	
-
-	senderImage = userImage;
-	dialog_box = $("#dialog_box");
-	content_P = $("<div class='detail'></div>").text(content);
-	senderName_P = $("<div class='nc'></div>").text(senderName);
-    if(typeof(replyOpptid) != "undefined" || replyOpptid != ''||replyOpptid != 'null'){
-        content_P.click(function() {
-			openPersonalDialog(this);
+function afterCheckedSendPosterSuccess(tmpPid, SendPosterSuccess) {//一般发言,新创话题,移动新建的延时检查处理都用这个方法.
+	if (SendPosterSuccess) {
+		alert(SendPosterSuccess);
+		console.log("afterCheckedSendPosterSuccess 成功了,不作为");
+	} else {//取消跳豆,加上感叹号,并绑定点击再请求的事件:
+		console.log("afterCheckedSendPosterSuccess 失败, 取消跳豆,加上感叹号.");
+		var thePosterElement = $("#dialog_box").find("#" + tmpPid);
+		thePosterElement.find(".postsending").attr('src', "../image/acclaim-50x173.png");
+		thePosterElement.click(function() {
+			var thePosterElementObj = $("#dialog_box").find("#" + tmpPid);
+			thePosterElementObj.find(".postsending").attr('src', '../image/jumpingbean.gif');
+			afterInput(thePosterElement.find(".detail").text(), tmpPid);
+			//发言再次发送后, 后台要判断一下tmpPid是否已经发过了,如果有,,则返回原来的topicid和内容.否则会重复.
+			thePosterElement.unbind('click');
 		});
-    }
-	senderImg = $("<img />").attr("src", userImage);
-	////上面一句简化为这一句.那些属性目前没有用处.
-	senderImg_Div = $("<div class='user-pic'></div>").append(senderImg);
-	senderDiv = $("<div class='user "+myOrOther+"'></div>").attr("id", msgId);
-	//senderDiv.append(content_P).append(senderImg_Div);
-	senderDiv.append(senderName_P).append(content_P).append(senderImg_Div);
-	$("#msg_list").append(senderDiv);
-	setTimeout(function() {//将聊天框里的消息落底 - 8.12
-		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
-	}, 200);
+	}
 }
 
-/*function showOtherPoster(name, content) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态
-	console.log(" showSelfPoster 发言上屏了.");
-	var content, senderId, senderName, dialog_box, senderName_P, content_P, senderImg, senderImg_Div, senderDiv,msgId;
-	senderId = userId;
-	content = content;
-	senderName = name;
-	senderName = cutStringIfTooLong(senderName,10);
-	senderName = " [" + senderName  +"]";//发言上屏也加上标题.	
-
-	senderImage = userImage;
-	dialog_box = $("#dialog_box");
-	content_P = $("<div class='detail'></div>").text(content);
-    if(typeof(replyOpptid) != "undefined" || replyOpptid != ''||replyOpptid != 'null'){
-        content_P.click(function() {
-			openPersonalDialog(this);
-		});
-    }
-	senderImg = $("<img />").attr("src", userImage);
-	////上面一句简化为这一句.那些属性目前没有用处.
-	senderImg_Div = $("<div class='user-pic'></div>").append(senderImg);
-	senderDiv = $("<div class='user other'></div>").attr("id", msgId);
-	senderDiv.append(content_P).append(senderImg_Div);
-	$("#msg_list").append(senderDiv);
-	setTimeout(function() {//将聊天框里的消息落底 - 8.12
-		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
-	}, 200);
-}*/
+/**
+ *	服务器返回来的消息发送请求成功，替换掉临时的消息ID，并添加时间（并判断是否显示时间），由于是自己的消息则不需要添加事件 //修改发言时间,取消跳豆.
+ *  */
+function markSendPosterSuccess(tmpPid, postTimelong, postTimeStr) {//接受服务器收到消息的确认的方法 //msg是作为服务器返回的字符串传过来的,但是js好象是自动识别为json了.
+	console.log("afterSendPosterSuccess 消息成功了, 取消跳豆, 修改发言时间,第一条发言开关取消.tmpPid=" + tmpPid);
+	var element = $("#" + tmpPid);
+	//服务端发送消息请求成功状态后，客户端接下来要做的事情  9.15 FANG
+	//取消黑色跳豆
+	//console.log("这里有时候是undefined, 要查一下. element:"+element.html());
+	element.find(".detail .postsending").remove();
+	var postTimeLongMinute = postTimelong / 1000 / 60;
+	var intervalEnough = ((postTimeLongMinute - 2) > (lastPostTimeLongMinute)) || ((postTimeLongMinute + 2) < (lastPostTimeLongMinute))
+	if ((lastPostTimeLongMinute == 0) || intervalEnough) {//彬彬: 时间码是否显示的判断. //不论是滞后2分钟还是超前2分钟,都显示出.针对消息晚到的情况.xu
+		postTimeHtml = $("<time class='send-time'></time>").text(postTimeStr);
+		element.before(postTimeHtml);
+	}
+	lastPostTimeLongMinute = postTimeLongMinute;
+}
 
 function verifyInputText(obj){//对输入框提交的字符串进行合法性预处理:	
 	var elementInputBox = document.getElementById("inputbox");
@@ -118,3 +100,39 @@ function adjustWidthsHeights() {
 	}
 	document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
 }
+
+function  getHistoryMsg(userId,toUserId,firstMsgId){
+	var data;
+	if(firstMsgId=='-1'){
+		data={"from_user_id":userId,
+		      	  "to_user_id":toUserId/*,
+			  "last_msg_id":firstMsgId*/};
+	}else{
+		data={"from_user_id":userId,
+		      	  "to_user_id":toUserId,
+			  "last_msg_id":firstMsgId};
+	}
+	
+	$.ajax({
+        url:"http://xunta.so:3000/v1/history_msg",
+        type:"POST",
+        dataType:"jsonp",
+        jsonp:"callback",
+        contentType: "application/json; charset=utf-8",
+        data:data,
+        async:false,
+        success:function(data, textStatus) {
+        	console.log("聊天记录请求成功"+data);
+        	showDialogHistory(data);
+        },
+        error:function(data, textStatus) {
+            console.log("聊天记录请求错误"+data);
+        	return;
+        }
+    });
+}
+
+
+
+
+
