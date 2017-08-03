@@ -32,22 +32,33 @@ function showAllPosters(data) {
         } else {
         	showSelfPoster(name, content,userImage,msgId,"other",true);
         }
+		
     	var postTimeStr=data[msg].create_time;
-    	var postTimeLong =  new Date(postTimeStr.replace(new RegExp("-","gm"),"/")).getTime();
-    	markSendPosterSuccess(msgId,postTimeLong,postTimeStr);
+    	var postTimeLong =  new Date(postTimeStr.replace(new RegExp("-","gm"),"/").replace(/\"/g,"")).getTime();
+    	var postTimeLongMinute = postTimeLong / 1000 / 60;//long型时间戳,转换为分钟.
+    	var intervalEnough = ((postTimeLongMinute - 2) > (lastPostTimeLongMinute)) || ((postTimeLongMinute + 2) < (lastPostTimeLongMinute))
+    	var lastIndex = data.length - 1;
+		if (msg == lastIndex || (lastPostTimeLongMinute == 0 || intervalEnough)) {
+			var postTimeHtml = $("<time class='send-time'></time>").text(postTimeStr);
+			$("#msg_list").prepend(postTimeHtml);
+		}
+		lastPostTimeLongMinute = postTimeLongMinute;
+	}
+	if(sort == 'asc'){
+		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
+		sort =undefined;
 	}
 	firstMsgId=data[data.length-1].msg_id;
 }
 
 function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态
 	console.log(" showSelfPoster 发言上屏了.");
-	var senderName, dialog_box, senderName_P, content_P, senderImg, senderImg_Div, senderDiv;
+	var senderName, senderName_P, content_P, senderImg, senderImg_Div, senderDiv;
 	senderName = name;
 	senderName = cutStringIfTooLong(senderName,10);
 	senderName = " [" + senderName  +"]";//发言上屏也加上标题.	
 
 	senderImage = userImage;
-	dialog_box = $("#dialog_box");
 	content_P = $("<div class='detail'></div>").text(content);
 	senderName_P = $("<div class='nc'></div>").text(senderName);
     if(typeof(replyOpptid) != "undefined" || replyOpptid != ''||replyOpptid != 'null'){
@@ -64,9 +75,7 @@ function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory) {//�
 		$("#msg_list").prepend(senderDiv);
 	}else{
 		$("#msg_list").append(senderDiv);
-		setTimeout(function() {//将聊天框里的消息落底 - 8.12
-			document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
-		}, 200);
+		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
 	}
 	
 }
@@ -80,7 +89,6 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
 	});
 	var length = msgJson.length;
 	if (length < requestMsgCounts) {
-		showAllPosters(msgJson);
 		$("#loadingtext").attr("class", "");
 		$("#loading img").attr("src", "../image/threedotmoving.jpg");
 		$("#loadingtext").text("无更多消息");

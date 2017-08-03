@@ -72,3 +72,50 @@ function removeUnreadNum(toUserId) {
 	$('#' + toUserId).find('.unread').remove()
 }
 
+//标签搜索
+function responseSearchTag(text){
+	$.ajax({
+        url:"http://xunta.so:3000/v1/find/tag",
+        type:"POST",
+        dataType:"jsonp",
+        jsonp:"callback",
+        contentType: "application/json; charset=utf-8",
+        data:{text:text},
+        async:false,
+        success:function(data, textStatus) {
+        	//console.log("标签搜索请求成功"+data);
+        	sendKeyWordToBack(text,data);
+        },
+        error:function(data, textStatus) {
+            console.log("标签搜索请求错误"+data);
+        	return;
+        }
+    });
+}
+
+//标签添加
+function searchToAddTag(){
+	var suggestWrap = $('#gov_search_suggest');
+	var text = $("#pop_tagName").val();//获得输入框的值
+	$.ajax({
+        url:"http://xunta.so:3000/v1/add/tag",
+        type:"POST",
+        dataType:"jsonp",
+        jsonp:"callback",
+        contentType: "application/json; charset=utf-8",
+        data:{from_user_id:userId,
+        		text:text},
+        async:false,
+        success:function(data, textStatus) {
+        	console.log("添加标签成功");
+        	//添加标签框回复原样
+        	$("#htmlObj").css("height","100px");
+    		suggestWrap.hide();
+    		toast_popup("添加标签成功",2500)
+        },
+        error:function(data, textStatus) {
+            console.log("标签搜索请求错误"+data);
+        	return;
+        }
+    });
+}

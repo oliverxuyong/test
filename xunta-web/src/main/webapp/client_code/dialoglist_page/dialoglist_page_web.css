@@ -4,5 +4,39 @@ html, body {
 	margin:0px;
 	background-color: #fff;
 	//z-index:-99;
+	overflow-y:hidden;
 }
 
+.dialog{
+	height:10%;
+	width:100%;
+}
+
+.dialog >img{
+	width: 60px;
+	height: 60px;
+	float: left;
+}
+
+.dialog_content{
+	height: 100%;
+	float: right;
+	width: 300px;
+}
+
+.dialog_content_msg{
+	height: 50%;
+	width: 100%;
+}
+
+.dialog_content_name{
+	height: 100%;
+	width:70%;
+	float:left;
+}
+
+.dialog_content_time{
+	height: 100%;
+	width:30%;
+	float:right;
+}

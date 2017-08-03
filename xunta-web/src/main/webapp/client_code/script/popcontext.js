@@ -48,9 +48,9 @@ function closePop(){
     if($("#inputbox").val()){
         $("#inputbox").val("");
     }
-    if(replyOpptid){
+    /*if(replyOpptid){
         replyOpptid = null ;
-    }
+    }*/
 }
 
 /**

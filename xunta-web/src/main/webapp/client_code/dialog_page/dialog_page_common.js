@@ -132,6 +132,12 @@ function  getHistoryMsg(userId,toUserId,firstMsgId){
     });
 }
 
+/**
+ *	若标题字数过长则用省略号代替  9.14 FANG
+ *  */
+function showTitle() {
+	$('#title').text('[ ' + cutStringIfTooLong(toUserName,14) + ' ]')
+}
 
 
 

@@ -89,11 +89,8 @@
         var userImage;	//直接上屏时用得着.
         
         var toUserId;//发送给的人
-		//var toUserName;	//直接上屏用得着.
+		var toUserName;	//直接上屏用得着.
         //var toUserImage;	//直接上屏时用得着.
-        
-		var adminName;
-		var adminImageurl;
 
 		var _tmpPageId;
 		var _topicPageSign;
@@ -104,9 +101,7 @@
         var replyTopic = 'null';//用来在发言时判断是否要发送给指定的用户， 如果是的话则有指定用户的话题ID，如果不是的话为null FANG 10.12
         var domain;
         var sort;//记录上一次获取消息分页的排序，用在网络出现问题后接着获取用
-        var isqingting;
         var userAgent;
-        //adjustWidthsHeights();
 
 		var connpage = 0;//当前连接话题页数
 		var conncount = 20;//当前连接话题一页显示数据
@@ -116,7 +111,6 @@
 		var replySenderNameWithTopic = "";
 		var replyOppuid =  "";
 		var replyOpptid = "";
-		var msgId = new Date().getTime();				//生成临时发言id.
 		
         function start(Parameter){//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
             domain = Parameter.server_domain;
@@ -128,17 +122,16 @@
     		"toUserName" : toUserName,
     		"toUserImage" : toUserImage, */
     		toUserId = Parameter.toUserId;
-    		//toUserName = Parameter.toUserName;
+    		toUserName = Parameter.toUserName;
     		//toUserImage = Parameter.toUserImage;
-            
-            adminName = Parameter.adminName;
-            adminImageurl = Parameter.adminImageurl;
+    		
             userAgent = Parameter.userAgent;
 
 			_topicPageSign = Parameter.topicPageSign;
          
     		//暂时取消,换成下面两句:prepareDialogPage();
     		adjustWidthsHeights();
+    		showTitle();
     		//showTitle();
     		sort = 'asc';
 			//这里没几句,暂时移到了上面.方法暂时注销.prepareDialogPage();//
@@ -163,7 +156,7 @@
         	
         	//var pagename = getTmpTopicIdIfExisted(respondeUserId);
         	//var script;
-        	
+        	var msgId = new Date().getTime();				//生成临时发言id.
         	if (userId === respondeUserId) {
         		/* var postTimeStr=new Date();
         		var postTimeLong = postTimeStr.getTime();
@@ -178,13 +171,17 @@
             } else {
             	showSelfPoster(user, data,imgUrl,msgId,"other",false);
             }
-        	var postTimeStr=new Date();
-        	var postTimeLong = postTimeStr.getTime();
-        	postTimeStr=postTimeStr.Format("yyyy-MM-dd hh:mm:ss");
+        	var postTimeStr=JSON.stringify(obj.timestr).replace(/\"/g,"");
+        	//var temp=new Date(('2014/05/10 13:25:50').replace(new RegExp("-","gm"),"/")).getTime()
+        	//console.log("测试1： "+('2014/05/10 13:25:50').replace(new RegExp("-","gm"),"/"));
+        	//console.log("测试2： "+(postTimeStr).replace(new RegExp("-","gm"),"/").replace(/\"/g,""));
+        	var postTimeLong = new Date((postTimeStr).replace(new RegExp("-","gm"),"/")).getTime();
+        	//postTimeStr=postTimeStr.Format("yyyy-MM-dd hh:mm:ss");
         	markSendPosterSuccess(msgId,postTimeLong,postTimeStr);
         };
         
-        Date.prototype.Format = function (fmt) { //author: meizz
+        //data转换为字符串
+       /*  Date.prototype.Format = function (fmt) { //author: meizz
         	  var o = {
         	    "M+": this.getMonth() + 1, //月份
         	    "d+": this.getDate(), //日
@@ -198,7 +195,7 @@
         	  for (var k in o)
         	  if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
         	  return fmt;
-        	}
+        	} */
 
 		function inputSubmit() {//初步处理提交的发言.
 			var inputValue = verifyInputText();//如果输入内容不合法,将返回"invalidvalue".
