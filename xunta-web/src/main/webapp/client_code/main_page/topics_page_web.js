@@ -442,6 +442,23 @@ function EnterdialogList() {
 			.stringify(pageParam));
 }
 
+//2017.08.07 叶夷 进入匹配人列表详细信息页，需要UserId
+function enterMatchUsersPage(){
+	var pageParam = {
+			"userid" : userId,
+			"userName" : userName,
+			"userImage" : userImg,
+			"server_domain" : domain,
+			"adminName" : adminName,
+			"adminImageurl" : adminImageurl,
+			"userAgent" : userAgent,
+			"topicPageSign" : "yes"
+		};
+		console.log("enterMatchUsersPage userId=" + userId);
+		openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', JSON
+				.stringify(pageParam));
+}
+
 function closeSearch() {
 	document.getElementById("_keywords").value = "";
 	$("#search-list-container").hide();
@@ -741,11 +758,13 @@ function sendKeyWordToBack(input_value,data) {
 	}else{
 		$("#htmlObj").css("height","100px");
 		suggestWrap.hide();
+		$(".addtag-div").css("width","80%");
+		$(".btn-div").show();
 	}
 }
 
 function searchTag(suggestWrap,data){
-	var searchtag = $("<div></div>")/*.attr("id","searchtag" + data)*/.text(data);// 文字div
+	var searchtag = $("<div onclick='sendSelectCP("+userId+", "+cpid+", null);'></div>")/*.attr("id","searchtag" + data)*/.text(data);// 文字div
 	suggestWrap.append(searchtag);
 	
 	//点击事件
