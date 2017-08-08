@@ -233,7 +233,8 @@ function checkMessageInterface(evnt) {
 	//叶夷 2017.06.16    发送"标签选中"
 	if(jsonObj._interface == '1102-2'){
 		console.log("发送'标签选中' :"+JSON.stringify(jsonObj.is_success));
-		
+		//标签选中之后将结果返回判断是否成功
+		exec("main_page","selectTagResult("+jsonObj.is_success+")");
 	}
 	
 	//叶夷 2017.06.16    发送"标签选中取消"

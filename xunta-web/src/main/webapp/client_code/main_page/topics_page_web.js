@@ -21,10 +21,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 
 	// 定义好位置之后开始动画,参数是需要动画的个数
 	startAnimate(cpList.length);
-	/*
-	 * var content = document.getElementById("cp-show"); content.scrollTop
-	 * =content.scrollHeight;
-	 */
+	$("#request_cp").show();
 }
 
 // 叶夷 2017.06.16 通过服务器返回的标签添加到页面的方法
@@ -364,18 +361,48 @@ function calCPTangencyTop(cpObj, cpRadius, cpX) {
 function chooseOneCP(cp_node, cp, CP_list) {
 	var userId = CP_list.uid.toString();
 	var cpid = cp.cpid;
+	var text=cp.cptext;
 	var currentRequestedCPPage = CP_list.startpoint;
-	// console.log("测试1 ： "+typeof(userId));
-	if (cp_node.css("background-color") == "rgba(0, 0, 0, 0)") {// 选中
-		console.log(cp_node.attr("id") + "-> 选中状态");
-		cp_node.css("background-color", "#f00");// 目前只是改变背景颜色为红色
-		sendSelectCP(userId, cpid, currentRequestedCPPage);
-	} else {// 取消
-		console.log(cp_node.attr("id") + "-> 取消状态");
-		cp_node.css("background-color", "rgba(0, 0, 0, 0)");
-		sendUnSelectCP(userId, cpid, currentRequestedCPPage);
+	console.log(cp_node.attr("id") + "-> 选中状态");
+	cp_node.css("opacity", "0.2");// 目前只是改变背景颜色为红色
+	sendSelectCP(userId, cpid, currentRequestedCPPage);
+		
+	//显示所选的标签
+	showSelectTag(text,cpid,currentRequestedCPPage);
+}
+
+//叶夷  2017.08.08 选中的标签添加到我的标签框中
+function showSelectTag(text,cpid,currentRequestedCPPage){
+	var myTagContainer=$("#mytag-container");
+	var myTag = $("<div onclick='ShowUnSelectCP("+cpid+","+currentRequestedCPPage+")'></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
+	myTagContainer.append(myTag);
+	
+	var myTagTextLength = length(text);
+	var myTagWidth=myTagTextLength*16+10;
+	myTag.css("width", myTagWidth+"px");
+}
+
+//叶夷  2017.08.08 取消选中的标签
+function ShowUnSelectCP(cpid,currentRequestedCPPage){
+	console.log(cpid + "-> 取消选择");
+	$("#cpid"+cpid).css("opacity", "1");
+	$("#mytag"+cpid).remove();
+	sendUnSelectCP(userId, cpid, currentRequestedCPPage);
+}
+
+//判断是否添加成功
+//可以先放入 我的标签 框. 但同时要有一个延迟方法, 检查是否返回成功了. 
+//如果没有收到返回, 则需要在这个标签上加一个感叹号. 用户点击, 出一个对话框, 提示没有填加成功, 是否再次提交.
+function selectTagResult(is_success){
+	if(is_success=="true"){
+		//
+		//showSelectTag(data);
+	}else{
+		
 	}
 }
+
+
 
 /**
  * 注销功能，跳转到登录页面，修改本地文件logOff标识
@@ -502,22 +529,39 @@ function push_matched_user(newMuData) {
 	}
 }
 
-/*
- * //2017.07.04 叶夷 模拟数据的产生 function addMPData(){ var newMatchedUserArr=new
- * Array();//装后台发来的匹配人 var mpId=new
- * Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);//模拟的匹配人ID var mpImg=new
- * Array("#FFFF00","#FF0000","#0000CD","#20B2AA","#228B22","#FFD39B","#551A8B","#54FF9F",
- * "#68838B","#8B3A3A","#FF7256","#FF6347","#FF34B3","#EEC900","#000000");//模拟的匹配人头像，目前用颜色代替
- * for(var i=0;i<10;i++){ var temp=parseInt(Math.random()*15); var
- * exist=false;//不存在 if(newMatchedUserArr.length!=0){ for(var j=0;j<newMatchedUserArr.length;j++){
- * if(mpId[temp]==newMatchedUserArr[j].getMpId()){ exist=true;//存在 break; } } }
- * if(!exist){ newMatchedUserArr.push(new MatchPeople(mpId[temp],mpImg[temp]));
- * }else{ i--; } }
- * 
- * //如果有新数据，先判断动画有没有运行完 if(circleEnd){//如果运行完，则直接进入程序运行
- * showMatchPeople(newMatchedUserArr); }else{//如果没有运行完则将新数据放入队列中
- * muDataQueue.push(newMatchedUserArr); } }
- */
+//2017.07.04 叶夷 模拟数据的产生 
+function addMPData(){ 
+	var newMatchedUserArr=new Array();//装后台发来的匹配人 
+	var mpId=new Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);//模拟的匹配人ID 
+	var mpImg=new Array("#FFFF00","#FF0000","#0000CD","#20B2AA","#228B22","#FFD39B","#551A8B","#54FF9F",
+						"#68838B","#8B3A3A","#FF7256","#FF6347","#FF34B3","#EEC900","#000000");//模拟的匹配人头像，目前用颜色代替
+	for(var i=0;i<10;i++){ 
+		var temp=parseInt(Math.random()*15); 
+		var exist=false;//不存在 
+		if(newMatchedUserArr.length!=0){ 
+			for(var j=0;j<newMatchedUserArr.length;j++){
+				if(mpId[temp]==newMatchedUserArr[j].getMpId()){ 
+					exist=true;//存在
+					break; 
+				} 
+			} 
+		}
+		if(!exist){ 
+			newMatchedUserArr.push(new MatchPeople(mpId[temp],mpImg[temp]));
+		}else{ 
+			i--; 
+		} 
+	}
+  
+	//如果有新数据，先判断动画有没有运行完 
+	if(circleEnd){//如果运行完，则直接进入程序运行
+		showMatchPeople(newMatchedUserArr); 
+	}else{//如果没有运行完则将新数据放入队列中
+		muDataQueue.push(newMatchedUserArr); 
+	} 
+}
+
+ 
 
 var muNowData = new Array();// 前台目前显示的匹配人列表排名
 // 2017.07.04 叶夷 显示匹配人列表，没有数据的时候先用模拟数据
@@ -527,13 +571,13 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 
 	if (muNowData.length == 0) {// 如果是用户一开始上线，匹配人列表没有
 		for (var i = 0; i < matchedUserArr.length; i++) {
-			// var muId=matchedUserArr[i].getMpId();//获得匹配人列表的匹配人id,这是测试数据版
-			var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
+			 var muId=matchedUserArr[i].getMpId();//获得匹配人列表的匹配人id,这是测试数据版
+			//var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
 			var mu = $("<div></div>").attr("class", "mu").attr("id", +muId);
-			// var muImg=matchedUserArr[i].getMpImg();//获得匹配人列表的匹配人头像,这是测试版数据
-			var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
-			// mu.css("background-color",muImg);//这是测试版数据
-			mu.css("background", muImg);
+			 var muImg=matchedUserArr[i].getMpImg();//获得匹配人列表的匹配人头像,这是测试版数据
+			//var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
+			 mu.css("background-color",muImg);//这是测试版数据
+			//mu.css("background", muImg);
 			mu_container.append(mu);
 			var muNowDataWidth = mu.width();
 			var muLeft = ((muContainerWidth / matchedUserArr.length)
@@ -541,6 +585,12 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 					* i;// 这是每个头像之间的间隔
 			mu.css("left", muLeft + "px");
 			muNowData.push(mu);
+			
+			//点击事件
+			mu.click(function() {
+				//进入聊天页
+				enterDialogPage();
+			});
 		}
 	} else {// 用户在操作过程中匹配人列表发生改变
 		var i = 0;
@@ -610,6 +660,13 @@ function circleAnimation(i, matchedUserArr) {
 			var newMu = $("<div></div>").attr("class", "mu")
 					.attr("id", muserid);
 			mu_container.append(newMu);// 产生一个新的mp
+			
+			//点击事件
+			newMu.click(function() {
+				//进入聊天页
+				enterDialogPage();
+			});
+			
 			newMu.css("background", muserimg);
 			// newMu.css("background-color",muserimg);//这是测试数据
 			// 2.将新的mp定位最右端位置且大小为10;
@@ -737,13 +794,27 @@ function showSearchTag() {
 	var input_value = $("#pop_tagName").val();//获得输入框的值
 	responseSearchTag(input_value);//通过输入框获得匹配的数据
 }
+
+function searchTagData(id,text){
+	var obj = new Object();
+	obj.id= id;
+	obj.text= text;
+	obj.getId = function() {
+		return this.id;
+	};
+	obj.getText = function() {
+		return this.text;
+	};
+	return obj;
+}
+
 var aData = [];
 //通过输入框获得匹配的数据
 function sendKeyWordToBack(input_value,data) {
 	var suggestWrap = $('#gov_search_suggest');
 	
 	for(var i in data){
-		aData.push(data[i].text);
+		aData.push(searchTagData(data[i].id,data[i].text));
 	}
 	
 	//获得的搜索结果循环
@@ -758,19 +829,21 @@ function sendKeyWordToBack(input_value,data) {
 	}else{
 		$("#htmlObj").css("height","100px");
 		suggestWrap.hide();
-		$(".addtag-div").css("width","80%");
-		$(".btn-div").show();
 	}
 }
 
 function searchTag(suggestWrap,data){
-	var searchtag = $("<div onclick='sendSelectCP("+userId+", "+cpid+", null);'></div>")/*.attr("id","searchtag" + data)*/.text(data);// 文字div
+	var cpid=data.id;
+	var text=data.text;
+	
+	var searchtag = $("<div></div>")/*.attr("id","searchtag" + data)*/.text(text);// 文字div
 	suggestWrap.append(searchtag);
 	
 	//点击事件
 	searchtag.click(function() {
 		//点击搜索项之后将数据放入输入框中
-		var input_value = $("#pop_tagName").val(data);
+		var input_value = $("#pop_tagName").val(text);
+		$("#htmlObj").css("height","100px");
 		suggestWrap.hide();
 	});
 }

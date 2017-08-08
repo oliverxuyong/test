@@ -18,8 +18,10 @@
 #showonlineoffline {
 	position: relative;
 	left:-36px;
-	top:10px;
+	margin-top:10px;
 	float:right;
+	height:42px;
+	line-height:42px;
 }
 
 #showonlineoffline>img{
@@ -29,9 +31,11 @@
 #showouseroprate{
 	position: relative;
 	//left:508px;
-	top:10px;
+	margin-top:10px;
 	float:right;
 	opacity:0.5;
+	height:42px;
+	line-height:42px;
 }
 
 #showouseroprate>img{
@@ -168,7 +172,7 @@ line-height: 10px;
 	height: 40px;
 	margin: 0;
 	padding: 0;
-	width:100%;
+	width:80%;
 	float:left;
 }
 
