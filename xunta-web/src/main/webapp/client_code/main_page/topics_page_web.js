@@ -56,10 +56,6 @@ function appendElement(i, cpList, CP_list) {
 
 	cp_innode.append(cp_text);
 
-	if (cp.ifselectedbyme == "y") {
-		cp_node.css("background-color", "#f00");
-	}
-
 	// console.log("测试： "+i);
 	cp_node.click(function() {
 		// console.log("测试点击1:"+i);
@@ -360,23 +356,20 @@ function calCPTangencyTop(cpObj, cpRadius, cpX) {
 // 叶夷 2017.06.16 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
 function chooseOneCP(cp_node, cp) {
 	var cpid = cp.cpid;
-	chooseCP(cp_node,cpid);
+	var text=cp.cptext;
+	chooseCP(cp_node,cpid,text);
 }
 
-function chooseCP(cp_node,cpid){
-	console.log(cp_node.attr("id") + "-> 选中状态");
-	sendSelectCP(userId, cpid);
+function chooseCP(cp_node,cpid,text){
+	console.log(cp_node.attr("id") +":"+text+ "-> 选中状态");
+	sendSelectCP(userId, cpid,text);
 	cp_node.unbind();
 }
 
 //叶夷  2017.08.08 选中的标签添加到我的标签框中
-function showSelectTag(cpid){
-	var text;
-	if($("#cpid"+cpid).length==0){
-		text=$("#pop_tagName").val();
-	}else{
-		text=$("#cpid"+cpid).text();
-	}
+function showSelectTag(data){
+	var cpid=data.cpid;
+	var text=data.cptext;
 	addMyCp(cpid,text);
 }
 

@@ -377,13 +377,31 @@ width:100%;
 /*叶夷   2017.07.04
 	匹配人列表*/
 /*匹配人列表的容器*/
-.match_users{
+.matchUserList{
 	position:absolute;
 	top:90%;
 	left:0px;
 	width:100%;
 	height:40px;
 }
+
+.match_users{
+	position:absolute;
+	width:90%;
+	height:100%;
+}
+
+.enterMatchUserList{
+	width:10%;
+	height:100%;
+	float:right;
+}
+
+.enterMatchUserList img{
+	width:30px;
+	height:30px;
+}
+
 /*各个匹配人头像的大小*/
 .mu{
 	position:absolute;

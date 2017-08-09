@@ -50,8 +50,8 @@ function requestCP(userId,requestNum,currentPage){//调用根页面上的同名�
 
 
 //叶夷   2017.06.16  发送"标签选中"
-function sendSelectCP(userId,cpid){
-	var paraStr = userId + "','" + cpid ;
+function sendSelectCP(userId,cpid,text){
+	var paraStr = userId + "','" + cpid + "','" +text;
 	execRoot("sendSelectedCP('"+ paraStr +"')");
 }
 

@@ -96,7 +96,7 @@ function requestCP(){//请一组CP.首次请求页号设为1.
 }
 
 //叶夷   2017.06.16 发送"标签选中"
-function sendSelectedCP(userId,cpid){
+function sendSelectedCP(userId,cpid,text){
 	//console.log("测试 3： "+typeof(userId));
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
 		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid);
@@ -105,6 +105,7 @@ function sendSelectedCP(userId,cpid){
 			 interface_name: "sendSelectedCP",
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
+			 cptext:text,
 			 timestamp:"",
 		};
 		WS_Send(json_obj);
@@ -234,7 +235,7 @@ function checkMessageInterface(evnt) {
 	if(jsonObj._interface == '1102-2'){
 		console.log("发送'标签选中' :"+JSON.stringify(jsonObj.is_success));
 		//标签选中之后将结果返回判断是否成功
-		exec("main_page","showSelectTag("+jsonObj.cpid+")");
+		exec("main_page","showSelectTag("+evnt.data+")");
 	}
 	
 	//叶夷 2017.06.16    发送"标签选中取消"

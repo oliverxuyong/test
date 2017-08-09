@@ -72,6 +72,9 @@ public class ConcernPointOperationWSController {
 		Long uid = Long.valueOf(params.getString("uid"));
 		BigInteger cpid = BigInteger.valueOf(Long.valueOf(params.getString("cpid")));
 		String timestamp = params.getString("timestamp");
+		//2017.08.08 叶夷  前端请求的接口加上标签文字,为了返回数据里面需要text
+		String text=params.getString("cptext");
+		
 		CpChoiceDetailDO cpChoiceDetailDO = new CpChoiceDetailDO();
 		cpChoiceDetailDO.setUser_id(uid);
 		cpChoiceDetailDO.setCp_id(cpid);
@@ -86,6 +89,7 @@ public class ConcernPointOperationWSController {
 			returnJson.put("is_success", "true");
 			//2017.08.08 叶夷  在选中标签时返回的数据中加上cpid
 			returnJson.put("cpid", cpid);
+			returnJson.put("cptext", text);
 			returnJson.put("timestamp", timestamp);
 			socketService.chat2one(session, returnJson);
 		}	
