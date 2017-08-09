@@ -64,7 +64,7 @@ function appendElement(i, cpList, CP_list) {
 	cp_node.click(function() {
 		// console.log("测试点击1:"+i);
 		// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
-		chooseOneCP(cp_node, cp, CP_list);
+		chooseOneCP(cp_node, cp);
 		// cp_code.css("background-color","#FF0000");
 	});
 
@@ -358,13 +358,15 @@ function calCPTangencyTop(cpObj, cpRadius, cpX) {
 }
 
 // 叶夷 2017.06.16 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
-function chooseOneCP(cp_node, cp, CP_list) {
-	var userId = CP_list.uid.toString();
+function chooseOneCP(cp_node, cp) {
 	var cpid = cp.cpid;
-	var text=cp.cptext;
-	var currentRequestedCPPage = CP_list.startpoint;
+	chooseCP(cp_node,cpid);
+}
+
+function chooseCP(cp_node,cpid){
 	console.log(cp_node.attr("id") + "-> 选中状态");
 	sendSelectCP(userId, cpid);
+	cp_node.unbind();
 }
 
 //叶夷  2017.08.08 选中的标签添加到我的标签框中
@@ -393,10 +395,17 @@ function addMyCp(cpid,text){
 
 //叶夷  2017.08.08 取消选中的标签
 function ShowUnSelectCP(cpid){
+	var cp_node=$("#cpid"+cpid);
 	console.log(cpid + "-> 取消选择");
-	$("#cpid"+cpid).css("opacity", "1");
+	cp_node.css("opacity", "1");
 	$("#mytag"+cpid).remove();
 	sendUnSelectCP(userId, cpid);
+	
+	//将取消选择的标签重新绑定点击事件
+	cp_node.click(function() {
+		chooseCP(cp_node,cpid);
+	});
+	
 }
 
 /**
