@@ -16,7 +16,7 @@ function backBtn(){
 function closeBtn(){
 	execRoot("setCurrentPageId('main_page')");
 	//exec('main_page',"removeUnreadNum('"+topicId+"')");
-	openWin('main_page', 'main_page/topics_page.html', '');
+	openWin('main_page', 'main_page/main_page.html', '');
 	closeWin(_tmpPageId);
 }
 //显示历史信息

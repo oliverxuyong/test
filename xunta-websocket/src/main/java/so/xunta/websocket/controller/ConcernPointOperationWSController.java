@@ -84,6 +84,8 @@ public class ConcernPointOperationWSController {
 			JSONObject returnJson = new JSONObject();
 			returnJson.put("_interface", "1102-2");
 			returnJson.put("is_success", "true");
+			//2017.08.08 叶夷  在选中标签时返回的数据中加上cpid
+			returnJson.put("cpid", cpid);
 			returnJson.put("timestamp", timestamp);
 			socketService.chat2one(session, returnJson);
 		}	

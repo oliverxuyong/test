@@ -420,7 +420,7 @@ width:100%;
 
 .match_userstext{
 	text-align:center;
-	margin-top:100%;
+	margin-top:97%;
 }
 
 .enterdialogList{
@@ -432,9 +432,7 @@ width:100%;
 }
 
 .addtagimg{
-	//opacity:0.3;
-	margin-top:3px;
-	float:left;
+	position:absolute;
 }
 
 .addtagimg img{

@@ -3,9 +3,9 @@
  */
 
 function closeAndRedirect() {
-    openWin('topics_page', 'topics_page/topics_page.html', '');
-    execRoot("setCurrentPageId('topics_page')");
-    exec("topics_page","removeUnreadNum('null')");
+    openWin('main_page', 'main_page/main_page.html', '');
+    execRoot("setCurrentPageId('main_page')");
+    exec("main_page","removeUnreadNum('null')");
     closeWin(_tmpPageId);
 }
 

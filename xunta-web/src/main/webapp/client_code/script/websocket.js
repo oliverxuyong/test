@@ -96,10 +96,10 @@ function requestCP(){//请一组CP.首次请求页号设为1.
 }
 
 //叶夷   2017.06.16 发送"标签选中"
-function sendSelectedCP(userId,cpid,currentRequestedCPPage){
+function sendSelectedCP(userId,cpid){
 	//console.log("测试 3： "+typeof(userId));
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
-		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
+		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid);
 		var json_obj = {
 			 _interface:"1102-1",
 			 interface_name: "sendSelectedCP",
@@ -112,9 +112,9 @@ function sendSelectedCP(userId,cpid,currentRequestedCPPage){
 }
 
 //叶夷   2017.06.16  发送"标签选中取消"
-function sendUnselectedCP(userId,cpid,currentRequestedCPPage){
+function sendUnselectedCP(userId,cpid){
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
-		console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
+		console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid);
 		var json_obj = {
 			 _interface:"1103-1",
 			 interface_name: "sendUnselectedCP",
@@ -234,7 +234,7 @@ function checkMessageInterface(evnt) {
 	if(jsonObj._interface == '1102-2'){
 		console.log("发送'标签选中' :"+JSON.stringify(jsonObj.is_success));
 		//标签选中之后将结果返回判断是否成功
-		exec("main_page","selectTagResult("+jsonObj.is_success+")");
+		exec("main_page","showSelectTag("+jsonObj.cpid+")");
 	}
 	
 	//叶夷 2017.06.16    发送"标签选中取消"
@@ -291,7 +291,7 @@ function websocketEvent() {
 		logging("WS出错事件. ws_obj=" + ws_obj + "|readyState=" + ws_obj.readyState + " |然后显示为离线图标");
 		console.log("WS出错事件. ws_obj=" + ws_obj + "|readyState=" + ws_obj.readyState + "|然后显示为离线图标");
 		if (topicsPageOpenMark == "yes") {//没有这个判断,启动时会报错.xu1113.
-			exec("topics_page", "showWebsocketStatus('ws_closed')");
+			exec("main_page", "showWebsocketStatus('ws_closed')");
 		}else{
 			console.log("ws出错,要显示离线图标,却发现列表页没有打开.topicsPageOpenMark == yes不成立.");
 		}
@@ -304,7 +304,7 @@ function websocketEvent() {
 		logging('WS关闭事件.显示离线图标. ws_obj=' + ws_obj + "|readyState=" + ws_obj.readyState);
 		console.log("WS关闭事件.显示离线图标. ws_obj=" + ws_obj + "|readyState=" + ws_obj.readyState);
 		if (topicsPageOpenMark == "yes") {//没有这个判断,启动时会报错.xu1113.
-			exec("topics_page", "showWebsocketStatus('ws_closed')");
+			exec("main_page", "showWebsocketStatus('ws_closed')");
 		}else{
 			console.log("ws关闭,要显示离线图标,却发现列表页没有打开.topicsPageOpenMark == yes不成立.");
 		}

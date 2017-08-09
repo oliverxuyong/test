@@ -12,7 +12,7 @@ function backBtn(){
 //关闭当前页，返回主界面   2016/12/25 deng
 function closeBtn(){
 	execRoot("setCurrentPageId('main_page')");
-	openWin('main_page', 'main_page/topics_page.html', '');
+	openWin('main_page', 'main_page/main_page.html', '');
 	closeWin('dialoglist_page');
 }
 

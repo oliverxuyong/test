@@ -50,15 +50,15 @@ function requestCP(userId,requestNum,currentPage){//调用根页面上的同名�
 
 
 //叶夷   2017.06.16  发送"标签选中"
-function sendSelectCP(userId,cpid,currentPage){
-	var paraStr = userId + "','" + cpid + "','" + currentPage;
+function sendSelectCP(userId,cpid){
+	var paraStr = userId + "','" + cpid ;
 	execRoot("sendSelectedCP('"+ paraStr +"')");
 }
 
 
 //叶夷   2017.06.16  发送"标签选中取消"
-function sendUnSelectCP(userId,cpid,currentPage){
-	var paraStr = userId + "','" + cpid + "','" + currentPage;
+function sendUnSelectCP(userId,cpid){
+	var paraStr = userId + "','" + cpid ;
 	execRoot("sendUnselectedCP('"+ paraStr +"')");
 }
 
@@ -107,14 +107,32 @@ function searchToAddTag(){
         		text:text},
         async:false,
         success:function(data, textStatus) {
-        	console.log("添加标签成功");
-        	//添加标签框回复原样
-        	$("#htmlObj").css("height","100px");
-    		suggestWrap.hide();
-    		toast_popup("添加标签成功",2500)
+        	//2017.08.09  叶夷  添加标签之后的显示
+        	addCpShow(data);
         },
         error:function(data, textStatus) {
             console.log("标签搜索请求错误"+data);
+        	return;
+        }
+    });
+}
+
+//2017.08.09  叶夷  显示我的标签
+function requestMyCP(){
+	$.ajax({
+        url:"http://xunta.so:3000/v1/find/users/tags",
+        type:"POST",
+        dataType:"jsonp",
+        jsonp:"callback",
+        contentType: "application/json; charset=utf-8",
+        data:{from_user_id:userId},
+        async:false,
+        success:function(data, textStatus) {
+        	console.log("请求我的标签成功");
+        	showMyCp(data);
+        },
+        error:function(data, textStatus) {
+            console.log("请求我的标签成功");
         	return;
         }
     });

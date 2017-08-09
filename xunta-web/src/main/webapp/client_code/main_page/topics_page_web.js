@@ -364,45 +364,40 @@ function chooseOneCP(cp_node, cp, CP_list) {
 	var text=cp.cptext;
 	var currentRequestedCPPage = CP_list.startpoint;
 	console.log(cp_node.attr("id") + "-> 选中状态");
-	cp_node.css("opacity", "0.2");// 目前只是改变背景颜色为红色
-	sendSelectCP(userId, cpid, currentRequestedCPPage);
-		
-	//显示所选的标签
-	showSelectTag(text,cpid,currentRequestedCPPage);
+	sendSelectCP(userId, cpid);
 }
 
 //叶夷  2017.08.08 选中的标签添加到我的标签框中
-function showSelectTag(text,cpid,currentRequestedCPPage){
+function showSelectTag(cpid){
+	var text;
+	if($("#cpid"+cpid).length==0){
+		text=$("#pop_tagName").val();
+	}else{
+		text=$("#cpid"+cpid).text();
+	}
+	addMyCp(cpid,text);
+}
+
+function addMyCp(cpid,text){
 	var myTagContainer=$("#mytag-container");
-	var myTag = $("<div onclick='ShowUnSelectCP("+cpid+","+currentRequestedCPPage+")'></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
+	var myTag = $("<div onclick='ShowUnSelectCP("+cpid+")'></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
 	myTagContainer.append(myTag);
 	
 	var myTagTextLength = length(text);
 	var myTagWidth=myTagTextLength*16+10;
 	myTag.css("width", myTagWidth+"px");
+	$("#cpid"+cpid).css("opacity", "0.2");// 目前只是改变背景颜色为红色
+	
+	document.getElementById('mytag-container').scrollTop = document.getElementById('mytag-container').scrollHeight;
 }
 
 //叶夷  2017.08.08 取消选中的标签
-function ShowUnSelectCP(cpid,currentRequestedCPPage){
+function ShowUnSelectCP(cpid){
 	console.log(cpid + "-> 取消选择");
 	$("#cpid"+cpid).css("opacity", "1");
 	$("#mytag"+cpid).remove();
-	sendUnSelectCP(userId, cpid, currentRequestedCPPage);
+	sendUnSelectCP(userId, cpid);
 }
-
-//判断是否添加成功
-//可以先放入 我的标签 框. 但同时要有一个延迟方法, 检查是否返回成功了. 
-//如果没有收到返回, 则需要在这个标签上加一个感叹号. 用户点击, 出一个对话框, 提示没有填加成功, 是否再次提交.
-function selectTagResult(is_success){
-	if(is_success=="true"){
-		//
-		//showSelectTag(data);
-	}else{
-		
-	}
-}
-
-
 
 /**
  * 注销功能，跳转到登录页面，修改本地文件logOff标识
@@ -842,8 +837,53 @@ function searchTag(suggestWrap,data){
 	//点击事件
 	searchtag.click(function() {
 		//点击搜索项之后将数据放入输入框中
-		var input_value = $("#pop_tagName").val(text);
+		$("#pop_tagName").val(text);
 		$("#htmlObj").css("height","100px");
 		suggestWrap.hide();
 	});
+}
+
+function showMyCp(datas){
+	var myTagContainer=$("#mytag-container");
+	for(var i in datas){
+		var cpid=datas[i].cp_id;
+		var text=datas[i].text;
+		/*var myTag = $("<div onclick='ShowUnSelectCP("+cpid+")'></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
+		myTagContainer.append(myTag);*/
+		addMyCp(cpid,text);
+	}
+	
+	//加号位置
+	var addTagImg=$("#addtagimg");
+	var addWidth=addTagImg.css("width");
+	var addHeight=addTagImg.css("height");
+	
+	var myTagContainerWidth=myTagContainer.css("width");
+	var myTagContainerHeight=myTagContainer.css("height");
+	
+	var addMarginTop=parseInt(myTagContainerHeight)-parseInt(addHeight);
+	var addMarginLeft=parseInt(myTagContainerWidth)-parseInt(addWidth);
+	
+	addTagImg.css("margin-top",addMarginTop+"px");
+	addTagImg.css("margin-left",addMarginLeft+"px");
+}
+
+//2017.08.09  叶夷  添加标签之后的显示
+function addCpShow(data){
+	var suggestWrap=$("#gov_search_suggest")
+	
+	var cpid=data.msg.insertId;
+	var mgs2=data.msg2;//判断是否重复添加
+	if(mgs2==undefined){
+    	console.log("添加标签成功");
+    		//添加标签框回复原样
+    	toast_popup("添加标签成功",2500);
+	}else{
+		cpid=data.msg[0].id;
+		console.log("选中标签成功");
+		toast_popup("选中标签成功",2500);
+	}
+	sendSelectCP(userId, cpid);
+	$("#htmlObj").css("height","100px");
+	suggestWrap.hide();
 }
