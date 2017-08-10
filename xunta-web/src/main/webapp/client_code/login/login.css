@@ -25,8 +25,8 @@ color:#666666;//display:none
 }
 
 .clear{clear:both}
-#countrycode{float:left;width:20px; margin-right:5px;padding-top:4px;//margin-bottom:10px;//line-height:14px;}
-#inputbox_mobileno{float:left; width:50%;display:block;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
+#countrycode{float:left;width:20px; margin-right:5px;padding-top:4px;margin-top:15px;}
+#inputbox_mobileno{float:left; width:50%;display:block;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;margin-top:15px;}
 #button_checkonmobileno{
 	float:right; 
 	//margin-right:1px;
@@ -36,9 +36,9 @@ color:#666666;//display:none
 	width:65px;
 	font-size:14px;
 	background:#f1f2f4;
-	//margin-top:-2px;}
+	margin-top:15px;}
 
-#inputbox_password2login{margin-left:26px; float:left;margin-top:10px;width:50%;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
+#inputbox_password2login{margin-left:26px; float:left;margin-top:-17px;width:50%;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
 
 #graphcode{margin-left:23px; float:left; margin-top:18px;display:none;}
 #graphcode img{/*height:100%改为下面的固定高宽,这样图形码未显示时不会塌陷.;*/height:20px;width:90px; margin-right:8px;float:left}
@@ -49,9 +49,9 @@ color:#666666;//display:none
 #inputbox_smscode{margin-left:23px; float:left;margin-top:18px; width:45%; padding-top:2px;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
 #inputbox_nickname{margin-left:23px; float:left;margin-top:5px;width:45%; padding-top:2px;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
 #inputbox_password2register,#inputbox_resetpassword{margin-left:23px; float:left;margin-top:5px;width:45%; padding-top:2px;box-shadow:0px 0px 1px 2px rgba(236, 237, 239, 0.6);border-radius:5px;}
-#forgetpassword{margin-top:15px;float:right; margin-right:23px;display:none}
+#forgetpassword{margin-top:-14px;float:right; margin-right:23px;display:none}
 #button_registerbymobilephone,#button_resetandloginbymobilephone,#button_loginbymobilephone
-{margin-top:20px; width:100%; margin-top:53px;height:24px;border-radius:10px;background:#f1f2f4;}
+{margin-top:24px; width:100%; height:24px;border-radius:10px;background:#f1f2f4;}
 
 #button_font,#button_requestSendSMSCodefont,#button_requestSendSMSCode4Resetpasswordfont{
 	text-align: center;line-height: 24px;color: #889ba1;font-weight: bold;font-size:14px;//background:none;//border:0;//margin-left:6px;

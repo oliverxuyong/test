@@ -37,7 +37,7 @@
 		
         <div id="mobilephone-login-container" >
         <div id="cancel_mobilelogin"><img src="image/goback5.png" style="height: 20px;width: 20px;float:left;margin: 5px;"				onclick="showLogin()"></div>
-	        	<div id="countrycode">+86</div><input id="inputbox_mobileno"  value="请输入手机号" onfocus="if(this.value=='请输入手机号') {this.value=''}" onblur="if(this.value=='') {this.value='请输入手机号'}"/> 
+	        	<div id="countrycode">+86</div><input id="inputbox_mobileno"  value="请输入手机号" onfocus="if(this.value=='请输入手机号') {this.value=''}" onblur="if(this.value=='') {this.value='请输入手机号'}" onkeypress="inputMobile()"/> 
 	        	<div id="button_checkonmobileno" onclick="checkonmobileno()"><div id="button_font">下一步</div></div>
 	        	<div class="clear"></div>
 	        	<div id="graphcode"><img src=""/><div id="changegraphcode" onclick="changGraphCode()">换一张</div></div>
@@ -52,7 +52,7 @@
 	        	<input id="inputbox_smscode"  value="输入短信验证码" onfocus="if(this.value=='输入短信验证码') {this.value=''}" onblur="if(this.value=='') {this.value='输入短信验证码'}">
         		<input id="inputbox_nickname" value="输入昵称" onfocus="if(this.value=='输入昵称') {this.value=''}" onblur="if(this.value=='') {this.value='输入昵称'}">
         		<div class="clear"></div>
-        		<input id="inputbox_password2login" value="输入登录密码" onfocus="if(this.value=='输入登录密码') {this.value='';this.type='password'}" onblur="if(this.value=='') {this.value='输入登录密码';this.type='text'}" style="display: inline;">
+        		<input id="inputbox_password2login" value="输入登录密码" onfocus="if(this.value=='输入登录密码') {this.value='';this.type='password'}" onblur="if(this.value=='') {this.value='输入登录密码';this.type='text'}" style="display: inline;" onkeypress="if(event.keyCode==13){Javascript:loginbymobilephone()}">
         		<input id="inputbox_password2register" value="设置登录密码" onfocus="if(this.value=='设置登录密码') {this.value='';this.type='password'}" onblur="if(this.value=='') {this.value='设置登录密码';this.type='text'}" >
         		<input id="inputbox_resetpassword" value="重设登录密码" onfocus="if(this.value=='重设登录密码';type='password') {this.value=''}" onblur="if(this.value=='') {this.value='重设登录密码';this.type='text'}" >        		<div id="forgetpassword" onclick="forgetPassword()">忘了</div>
         		<div id="button_registerbymobilephone" onclick="registerbymobilephone()"><div id="button_font">注册并登录</div></div>
@@ -219,5 +219,16 @@
         });
     }, 5000);
 }
+	
+	//2017.08.10 叶夷  监听输入手机号框的回车键
+	function inputMobile(){
+		if(event.keyCode==13){
+			checkonmobileno();
+			/*$("#inputbox_mobileno").blur();
+			document.getElementById('inputbox_password2login').focus();
+			console.log("测试： "+$("#inputbox_password2login").length);
+			$("#inputbox_password2login").focus(); */
+		}
+	}
 	</script>
 </html>

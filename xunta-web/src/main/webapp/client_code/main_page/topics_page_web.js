@@ -772,7 +772,7 @@ function addTag() {
 	var contextresult = [];
 	contextresult.push('<div id="entrytag">');
 	contextresult
-			.push('<p class="addtag-div"><input type="text" class="tag-name" id="pop_tagName" onporpertychange="showSearchTag()" oninput="showSearchTag()"></p>');
+			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:searchToAddTag();}'></p>");
 	contextresult
 			.push('<div class="btn-div" onclick="searchToAddTag()">添加</div>');
 	contextresult.push('</div>');
