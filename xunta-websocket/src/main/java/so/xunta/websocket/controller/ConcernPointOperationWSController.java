@@ -11,12 +11,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import so.xunta.beans.ConcernPointDO;
+import so.xunta.beans.CpChoiceDO;
 import so.xunta.beans.CpChoiceDetailDO;
 import so.xunta.beans.RecommendCpBO;
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.persist.CpChoiceDetailDao;
 import so.xunta.server.CancelOneSelectedCP;
+import so.xunta.server.ConcernPointService;
+import so.xunta.server.CpChoiceService;
 import so.xunta.server.ResponseGroupCPsService;
 import so.xunta.server.SelectOneNewCPService;
 import so.xunta.server.SocketService;
@@ -36,6 +40,10 @@ public class ConcernPointOperationWSController {
 	private SelectOneNewCPService selectOneNewCPService;
 	@Autowired
 	private CancelOneSelectedCP cancelOneSelectedCP;
+	@Autowired
+	private CpChoiceService cpChoiceService;
+	@Autowired
+	private ConcernPointService concernPointService;
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1101-1")
 	public void responseGroupCPs(WebSocketSession session, TextMessage message){
@@ -118,4 +126,25 @@ public class ConcernPointOperationWSController {
 		}	
 	}
 	
+	//2017.08.11 叶夷  通过uid和cpid判断cp是否已经被选择
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1107-1")
+	public void ifSelectCP(WebSocketSession session, TextMessage message){
+		JSONObject params=new JSONObject(message.getPayload());
+		Long uid = Long.valueOf(params.getString("uid"));
+		BigInteger cpid = BigInteger.valueOf(Long.valueOf(params.getString("cpid")));
+		String timestamp = params.getString("timestamp");
+		
+		CpChoiceDO cpChoiceDO = cpChoiceService.getCpChoice(uid, cpid);
+		JSONObject returnJson = new JSONObject();
+		returnJson.put("_interface", "1107-2");
+		if(cpChoiceDO==null){//这是没有被选择的cp
+			returnJson.put("is_select", "false");
+		}else{
+			returnJson.put("is_select", "true");
+		}
+		returnJson.put("cpid", cpid);
+		returnJson.put("uid", uid);
+		returnJson.put("timestamp", timestamp);
+		socketService.chat2one(session, returnJson);
+	}
 }

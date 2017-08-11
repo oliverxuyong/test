@@ -384,6 +384,8 @@ function addMyCp(cpid,text){
 	$("#cpid"+cpid).css("opacity", "0.2");// 目前只是改变背景颜色为红色
 	
 	document.getElementById('mytag-container').scrollTop = document.getElementById('mytag-container').scrollHeight;
+	console.log("选中标签成功");
+	toast_popup("选中标签成功",2500);
 }
 
 //叶夷  2017.08.08 取消选中的标签
@@ -882,10 +884,8 @@ function addCpShow(data){
     	toast_popup("添加标签成功",2500);
 	}else{
 		cpid=data.msg[0].id;
-		console.log("选中标签成功");
-		toast_popup("选中标签成功",2500);
+		sendIfSelectedCP(userId,cpid);
 	}
-	sendSelectCP(userId, cpid);
 	$("#htmlObj").css("height","100px");
 	suggestWrap.hide();
 }

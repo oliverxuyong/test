@@ -137,3 +137,20 @@ function requestMyCP(){
         }
     });
 }
+
+//2017.08.11 叶夷    判断这个标签是否被选中过
+function sendIfSelectedCP(userId,cpid){
+	var paraStr = userId + "','" + cpid;
+	execRoot("sendIfSelectedCP('"+ paraStr +"')");
+}
+
+function return_sendIfSelectedCP(jsonObj){
+	var text = $("#pop_tagName").val();//获得输入框的值
+	var isSelect=jsonObj.is_select;
+	var cpid=jsonObj.cpid;
+	if(jsonObj.is_select=="false"){//没有被选择
+		sendSelectCP(userId,cpid,text);
+	}else{
+		toast_popup("这个标签被选中过",2500);
+	}
+}

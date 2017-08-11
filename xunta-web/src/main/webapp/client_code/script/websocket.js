@@ -142,6 +142,21 @@ function requestMatchedUsers(userId,requestTopMUNum){
 	}
 }
 
+//2017.08.11 叶夷    判断这个标签是否被选中过
+function sendIfSelectedCP(userId,cpid){
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		//console.log("请求用户匹配:userId="+userId+" 请求的数量requestTopMUNum="+requestTopMUNum);
+		var json_obj = {
+			 _interface:"1107-1",
+			 interface_name: "sendIfSelectedCP",
+			 uid:userId.toString(),
+			 cpid:cpid.toString(),
+			 timestamp:""
+		};
+		WS_Send(json_obj);
+	}
+}
+
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
 	task_RequestCP();
@@ -253,6 +268,12 @@ function checkMessageInterface(evnt) {
 	if(jsonObj._interface == '2106-1'){
 		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.cp_wrap));
 		exec("main_page","push_matched_user("+evnt.data+")");
+	}
+	
+	//2017.08.11 叶夷    判断这个标签是否被选中过
+	if(jsonObj._interface == '1107-2'){
+		console.log("判断这个标签是否被选中过:"+JSON.stringify(jsonObj.is_select));
+		exec("main_page","return_sendIfSelectedCP("+evnt.data+")");
 	}
 }
 
