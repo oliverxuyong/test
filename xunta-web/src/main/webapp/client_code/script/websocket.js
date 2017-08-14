@@ -421,3 +421,47 @@ function getTmpTopicIdIfExisted(toUserId) {
 	}
 }
 
+//下面四个方法为新消息通知功能.执行notifyNewMessage(),则发出一个短音,同时标题闪烁"新消息"20秒.
+function notifyNewMessage(originalPageTitle) {
+	//console.log("originalPageTitle:"+originalPageTitle); 
+	var audioE = loadSoundFile();
+	var timerArr = startFlashTitle(audioE,originalPageTitle, "【　　　】", "【新消息】");//【新消息】
+	setTimeout(function() {//此处是过一定时间后自动消失
+		stopFlashTitle(timerArr);
+	}, 20000);
+}
+
+function loadSoundFile() {//如果声音文件已存在,则直接返回它所在的elemment.如果不存在,则创建一个后返回.
+	var audioE = $('#audioFileE');
+	if (audioE[0] == undefined) {
+		audioE = $('<audio id="audioFileE"><source src="http://www.xunta.so/xunta-web/client_code/sound/youhaveamessage.wav" type="audio/wav"></audio>');
+		//audioE = $('<audio id="audioFileE"><source src="/client_code/sound/youhaveamessage.wav" type="audio/wav"></audio>');//服务器对client_code这个路径有时会加上,有时不加上.暂用上面的绝对路径.
+		audioE.appendTo('body');//载入声音文件
+		console.log("播放新消息所用的audio元素不存在,已新建了一个.");
+		
+	} else {
+		console.log("播放新消息所用的audio元素已存在,不再创建.");
+	}
+	return audioE;
+}
+
+function startFlashTitle(audioE,originalPageTitle, string1, string2) {//有新消息时在title处闪烁提示
+	console.log("正在播放新消息的短音..."); 
+	audioE[0].play();//播放声音
+	var step = 0, originalPageTitle;
+	var timer = setInterval(function() {
+		step++;
+		if (step == 3) {
+			step = 1
+		};
+		if (step == 1) {
+			document.title = string1 + originalPageTitle
+		};
+		if (step == 2) {
+			document.title = string2 + originalPageTitle
+		};
+	}, 600);
+	return [timer, originalPageTitle];
+	//通过数组返回两个变量.
+}
+

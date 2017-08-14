@@ -212,8 +212,10 @@
             		
             		//聊天列表未读消息提示
             		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
-            			exec("dialoglist_page", "unreadMsg('"+respondeUserId+"',1')");
+            			exec("dialoglist_page", "unreadMsg('"+respondeUserId+"','"+1+"')");
             		} 
+            		//提示音
+            		notifyNewMessage(pageTitle);
             	}
         		//showSelfPoster(user,data,imgUrl, msgId,myOrOther, false);
         		if(window.parent.document.getElementById(respondeToUserId)!=null ){//聊天列表打开过
