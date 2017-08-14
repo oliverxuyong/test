@@ -2,20 +2,34 @@
 function backBtn(){
 	if(_topicPageSign == 'yes'){
 		execRoot("setCurrentPageId('main_page')");
-		exec('main_page',"removeUnreadNum('"+toUserId+"')");
+		
+		/*//首页的未读消息数减去
+		var oneUnreadNum=$("#dialoglist_page").find("#"+toUserId).text();//一个人的未读数
+		exec('main_page',"removeUnreadNum('"+oneUnreadNum+"')");*/
+		
+		//聊天列表未读数去除
+		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
+			exec('dialoglist_page',"removeUnreadNum('"+toUserId+"')");
+		}
 		openWin('main_page', 'main_page/main_page.html', '');
 	}else{
 		closeWin(_tmpPageId);
 	}
-
-	//execRoot("closeWin("+_tmpPageId+")");
-	//closeWin(_tmpPageId);
 }
 
 //关闭当前页，返回主界面   2016/12/25 deng
 function closeBtn(){
 	execRoot("setCurrentPageId('main_page')");
 	//exec('main_page',"removeUnreadNum('"+topicId+"')");
+	//首页的未读消息数减去
+	var oneUnreadNum=$("#dialoglist_page").find("#"+toUserId).text();//一个人的未读数
+	exec('main_page',"removeUnreadNum('"+oneUnreadNum+"')");
+	
+	//聊天列表未读数去除
+	if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
+		exec('dialoglist_page',"removeUnreadNum('"+toUserId+"')");
+	}
+	
 	openWin('main_page', 'main_page/main_page.html', '');
 	closeWin(_tmpPageId);
 }
@@ -33,16 +47,19 @@ function showAllPosters(data) {
         	showSelfPoster(name, content,userImage,msgId,"other",true);
         }
 		
-    	var postTimeStr=data[msg].create_time;
+		//发言时间
+		var postTimeStr=data[msg].create_time;
     	var postTimeLong =  new Date(postTimeStr.replace(new RegExp("-","gm"),"/").replace(/\"/g,"")).getTime();
-    	var postTimeLongMinute = postTimeLong / 1000 / 60;//long型时间戳,转换为分钟.
+		markSendPosterSuccess(msgId, postTimeLong, postTimeStr);
+		
+    	/*var postTimeLongMinute = postTimeLong / 1000 / 60;//long型时间戳,转换为分钟.
     	var intervalEnough = ((postTimeLongMinute - 2) > (lastPostTimeLongMinute)) || ((postTimeLongMinute + 2) < (lastPostTimeLongMinute))
     	var lastIndex = data.length - 1;
 		if (msg == lastIndex || (lastPostTimeLongMinute == 0 || intervalEnough)) {
 			var postTimeHtml = $("<time class='send-time'></time>").text(postTimeStr);
 			$("#msg_list").prepend(postTimeHtml);
 		}
-		lastPostTimeLongMinute = postTimeLongMinute;
+		lastPostTimeLongMinute = postTimeLongMinute;*/
 	}
 	if(sort == 'asc'){
 		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
@@ -71,7 +88,7 @@ function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory) {//�
 	senderImg_Div = $("<div class='user-pic'></div>").append(senderImg);
 	senderDiv = $("<div class='user "+myOrOther+"'></div>").attr("id", msgId);
 	senderDiv.append(senderName_P).append(content_P).append(senderImg_Div);
-	if(isHistory){
+	if(isHistory=="true"){
 		$("#msg_list").prepend(senderDiv);
 	}else{
 		$("#msg_list").append(senderDiv);

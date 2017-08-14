@@ -108,8 +108,8 @@
 		</div>
 		
 		<!-- "聊天"文字容器 -->
-		<div class="enterdialogList" onclick="EnterdialogList()">
-			聊天(4条未读)
+		<div class="enterdialogList" id="enterdialogList" onclick="EnterdialogList()">
+			聊天
 		</div>
 		
 	</div> <!--End of <div id="showatloaded" class="showatloaded"> -->
@@ -123,6 +123,7 @@
 	<script type="text/javascript" src="topics_page_web.js"></script>
 	<script type="text/javascript" src="../script/popup.js"></script>
 	<script type="text/javascript" src="../script/popcontext.js"></script>
+	
 	
 	<script type="text/javascript">
 		var userId;
@@ -173,7 +174,6 @@
 			//2017.08.09  叶夷  显示我的标签
 			requestMyCP();
 		}
-		
 		
 		function setRootVars(){
 			execRoot("setTopicsPageOpenMark()");//可能还有其它表示列表页打开的标志.

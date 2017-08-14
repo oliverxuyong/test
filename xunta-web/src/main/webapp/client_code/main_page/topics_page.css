@@ -132,6 +132,21 @@ padding-right:2px;
 line-height: 10px;
 //text-align:center;
 }
+.selectTagNum{
+position:absolute; top:2px;
+height:11px; 
+//width: 10px;
+display:inline;
+border:1px solid #f08080; border-radius:4px;
+font-size:8px;
+color:#B22222;
+background-color:#f8f8f8;
+//padding:1px;
+padding-left:2px;
+padding-right:2px;
+line-height: 10px;
+//text-align:center;
+}
 
 .latesttime {
 	float: right;

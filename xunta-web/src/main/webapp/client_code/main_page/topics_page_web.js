@@ -55,6 +55,13 @@ function appendElement(i, cpList, CP_list) {
 	calCircle(cp_text, cpTextSize, cp.cptext, cp_node, cp_innode);
 
 	cp_innode.append(cp_text);
+	
+	//2017.08.14 叶夷  标签的选择人数
+	var selectTagNum =cp.howmanypeople_selected;
+	if(selectTagNum>0){
+		var selectTagNumNode= $("<div></div>").attr("class", "selectTagNum").text(selectTagNum);
+		cp_innode.append(selectTagNumNode);
+	}
 
 	// console.log("测试： "+i);
 	cp_node.click(function() {
@@ -889,3 +896,23 @@ function addCpShow(data){
 	$("#htmlObj").css("height","100px");
 	suggestWrap.hide();
 }
+
+function unreadMsg(){
+	var unreadParent=$("#enterdialogList");
+	if (unreadParent.find('.unread').length==0) {//如果没有未读消息,则加上一个1;
+		var unreadNum = $("<div></div>").attr("class", "unread").text("1");
+		unreadParent.append(unreadNum);
+	} else {//如果已有未读消息,则加上1:
+		var num = unreadParent.find('.unread').text();
+		num++;
+		unreadParent.find('.unread').text(num);
+	}
+}
+
+//2017.08.14 叶夷   标签的选择人数发生变化,需要cpid，选择的人数
+function selectTagNumChange(cpid,selectTagNum){
+	if(selectTagNum>0){
+		$("#cpid"+cpid).find(".selectTagNum").text(selectTagNum);
+	}
+}
+

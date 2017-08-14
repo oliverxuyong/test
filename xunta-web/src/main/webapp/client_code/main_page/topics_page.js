@@ -68,8 +68,16 @@ function requestTopMatchedUsers(userId,requestTopMUNum){
 	execRoot("requestMatchedUsers('"+ paraStr +"')");
 }
 
-function removeUnreadNum(toUserId) {
-	$('#' + toUserId).find('.unread').remove()
+//首页未读消息减去
+function removeUnreadNum(num) {
+	var unreadParent=$("#enterdialogList");
+	var allNum = unreadParent.find('.unread').text();
+	allNum=allNum-num;
+	if(allNum==0){
+		unreadParent.find('.unread').remove();
+	}else{
+		unreadParent.find('.unread').text(num);
+	}
 }
 
 //标签搜索
