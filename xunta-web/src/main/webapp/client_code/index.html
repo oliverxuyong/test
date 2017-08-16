@@ -105,7 +105,6 @@
     <script type="text/javascript" src="index_page/index_web.js"></script>
      <script type="text/javascript" src="index_page/index.js"></script>
      <script type="text/javascript" src="script/popup.js"></script>
-     <script type="text/javascript" src="http://xunta.so:3000/javascripts/websocket.io.js"></script>
      
      
 <!--body以上完全相同-->
@@ -162,77 +161,8 @@
 			$(window).resize(function(){
 				setBodyHeightWidth();
 			}); 
-			
-			chat.init(userId,recevier);//注册用户，及用记接收消息的函数
 		}
         
-		//发送消息之后服务器返回的消息
-        function recevier(obj) {
-        		respondeUserId=JSON.stringify(obj.user.userId);
-        		user = JSON.stringify(obj.user.name);
-        		data = JSON.stringify(obj.data);
-        		imgUrl=JSON.stringify(obj.user.imgUrl);
-        		//去掉引号
-        		respondeUserId= respondeUserId.replace(/\"/g, "");
-        		data = data.replace(/\"/g, "");
-        		user = user.replace(/\"/g, "");
-        		imgUrl=imgUrl.replace(/\"/g, "");
-        		
-        		var respondeToUserId;
-        		if(userId=="804622010041896960"){
-        			respondeToUserId="745600342770716672";
-        		}else{
-        			respondeToUserId="804622010041896960";
-        		}
-        	
-        		//var pagename = getTmpTopicIdIfExisted(respondeUserId);
-        		//var script;
-        		var msgId = new Date().getTime();				//生成临时发言id.
-        		var myOrOther;
-        		if (userId === respondeUserId) {
-        			myOrOther="my";
-        			/* var postTimeStr=new Date();
-        			var postTimeLong = postTimeStr.getTime();
-        			postTimeStr=postTimeStr.Format("yyyy-MM-dd hh:mm:ss");
-        			markSendPosterSuccess(msgId,postTimeLong,postTimeStr); */
-        			//exec(pageName, script);
-        			//var taskid_sendposter =  toUserId + "-" + msgId;
-        			//返回的消息是个数组,但目前只会有一个.
-        			//doSendPoster[taskid_sendposter] = "none";
-        			//取消任务筐里的任务.
-        			//showSelfPoster(user, data,imgUrl,msgId,"my",false);
-            	} else {
-            		myOrOther="other";
-            		//showSelfPoster(user, data,imgUrl,msgId,"other",false);
-            		
-            		//别人发送的消息才需要提示未读
-            		//首页未读消息提示
-            		//var unreadParent=$("#enterdialogList");
-            		//exec("main_page", "unreadMsg('"+unreadParent+"')");
-            		
-            		//聊天列表未读消息提示
-            		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
-            			exec("dialoglist_page", "unreadMsg('"+respondeUserId+"','"+1+"')");
-            		} 
-            		//提示音
-            		notifyNewMessage(pageTitle);
-            	}
-        		//showSelfPoster(user,data,imgUrl, msgId,myOrOther, false);
-        		if(window.parent.document.getElementById(respondeToUserId)!=null ){//聊天列表打开过
-        			exec(respondeToUserId, "showSelfPoster('" + user + "','" + data +"','" +imgUrl+"','" + msgId+"','" + myOrOther+ "','" + false+"')");
-        			//加上时间 
-        			var postTimeStr=JSON.stringify(obj.timestr).replace(/\"/g,"");
-            		var postTimeLong = new Date((postTimeStr).replace(new RegExp("-","gm"),"/")).getTime();
-            		exec(respondeToUserId, "markSendPosterSuccess('" + msgId + "','" + postTimeLong +"','" +postTimeStr+"')");
-            		//markSendPosterSuccess(msgId, postTimeLong ,postTimeStr);
-        		} 
-        };
-        
-        function sendmsg(toUserId,inputValue){
-        	chat.sendPrivateMsg(toUserId,inputValue);
-        }
-
-		 
       function userInfoIsReady(userInfoStr){//本地已有用户信息,经服务器验证用户存在后,回到这里.
       	createPublicParam4UserInfo(userInfoStr);//获得用户信息后,为相关的公共变量赋值.
       	$("#prefetch_adminimage").attr("href", "image/"+adminImageurl);//预载管理员头像.  

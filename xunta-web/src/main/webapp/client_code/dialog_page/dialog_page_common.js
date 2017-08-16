@@ -21,8 +21,8 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
     //chat.sendMsg(inputValue);//发送消息
 	//chat.sendMsgToAll(inputValue);//发送消息给全部的人
 	//chat.sendPrivateMsg(toUserId,inputValue);
-	execRoot("sendmsg('"+toUserId+"','"+inputValue+"')");//给单独的人发消息
-	//exec("main_page", "chat.sendPrivateMsg('" + toUserId + "','" + inputValue +"')");
+	//execRoot("sendmsg('"+toUserId+"','"+inputValue+"')");//给单独的人发消息
+	exec("main_page","sendmsg('"+toUserId+"','"+inputValue+"')");
 	
     document.getElementById("inputbox").value="";
 	

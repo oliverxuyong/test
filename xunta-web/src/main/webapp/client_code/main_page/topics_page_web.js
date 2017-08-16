@@ -468,11 +468,14 @@ function EnterdialogList() {
 		"adminName" : adminName,
 		"adminImageurl" : adminImageurl,
 		"userAgent" : userAgent,
-		"topicPageSign" : "yes"
+		"topicPageSign" : "yes",
+		"unreadObjList":unreadObjList
 	};
 	console.log("enterDialogListPage userId=" + userId);
 	openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', JSON
 			.stringify(pageParam));
+	//进入聊天列表页聊天未读信息清空
+	unreadObjList.splice(0,unreadObjList.length);
 }
 
 //2017.08.07 叶夷 进入匹配人列表详细信息页，需要UserId
@@ -909,10 +912,11 @@ function unreadMsg(){
 	}
 }
 
-//2017.08.14 叶夷   标签的选择人数发生变化,需要cpid，选择的人数
-function selectTagNumChange(cpid,selectTagNum){
-	if(selectTagNum>0){
-		$("#cpid"+cpid).find(".selectTagNum").text(selectTagNum);
+function showUnreadNum(){
+	var unreadNum=parseInt(Math.random() * 10) ;
+	if(unreadNum>0){
+		var unreadParent=$("#enterdialogList");
+		var unreadNum = $("<div></div>").attr("class", "unread").text("1");
+		unreadParent.append(unreadNum);
 	}
 }
-

@@ -2,7 +2,12 @@
 function backBtn(){
 /*	if(_topicPageSign == 'yes'){
 		execRoot("setCurrentPageId('main_page')");*/
-	exec('main_page',"removeUnreadNum('dialoglist_page')");
+	//退出聊天列表时首页的未读消息数去除
+	exec('main_page',"removeUnreadNum()");
+	
+	//聊天列表未读数去除
+	exec('dialoglist_page',"changeUnreadColor()");
+	
 	//openWin('main_page', 'main_page/main_page.html', '');
 	closeWin('dialoglist_page');
 }
@@ -27,6 +32,12 @@ function showDialogList(data){
 		
 		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName,unreadNum);
 	}
+	//从首页传过来的聊天列表的未读信息
+	if(unreadObjList.length>0){
+		for(var i in unreadObjList){
+			unreadMsg(unreadObjList[i].touserId,unreadObjList[i].unreadNum);
+		}
+	}
 }
 
 function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName,unreadNum){
@@ -44,9 +55,6 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 	dialogContent.append(dialogContentTop).append(dialogContentMsg);
 	dialog.append(toUserImg).append(dialogContent);
 	
-	if(unreadNum>0){
-		unreadMsg(toUserId,unreadNum);
-	}
 	$("#dialog_list").append(dialog);
 	dialog.click(function() {//绑定点击事件.
 		enterDialogPage(toUserId,toUserName);
@@ -64,3 +72,11 @@ function unreadMsg(respondeUserId,unreadNum){
 		unreadParent.find('.unread').text(num);
 	}
 }
+
+//2017.08.15 叶夷目前首页未读消息提示的显示方案是这样的：
+//如果A给我发了3条未读消息，B给我发了2条未读消息，首页显示的是5条未读消息，我打开和A的聊天页面，聊天列表里B的未读提示还存在，不过颜色变暗，首页的未读提示消失
+//这里是使聊天列表没打开过有未读提示的聊天页未读提示颜色变暗
+function changeUnreadColor(){
+	$(".unread").css("cpacity","0.7");
+}
+

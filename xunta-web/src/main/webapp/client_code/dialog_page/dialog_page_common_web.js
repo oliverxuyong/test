@@ -3,13 +3,13 @@ function backBtn(){
 	if(_topicPageSign == 'yes'){
 		execRoot("setCurrentPageId('main_page')");
 		
-		/*//首页的未读消息数减去
-		var oneUnreadNum=$("#dialoglist_page").find("#"+toUserId).text();//一个人的未读数
-		exec('main_page',"removeUnreadNum('"+oneUnreadNum+"')");*/
+		//退出聊天列表时首页的未读消息数去除
+		exec('main_page',"removeUnreadNum()");
 		
 		//聊天列表未读数去除
 		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
 			exec('dialoglist_page',"removeUnreadNum('"+toUserId+"')");
+			exec('dialoglist_page',"changeUnreadColor()");
 		}
 		openWin('main_page', 'main_page/main_page.html', '');
 	}else{
@@ -20,10 +20,9 @@ function backBtn(){
 //关闭当前页，返回主界面   2016/12/25 deng
 function closeBtn(){
 	execRoot("setCurrentPageId('main_page')");
-	//exec('main_page',"removeUnreadNum('"+topicId+"')");
-	//首页的未读消息数减去
-	var oneUnreadNum=$("#dialoglist_page").find("#"+toUserId).text();//一个人的未读数
-	exec('main_page',"removeUnreadNum('"+oneUnreadNum+"')");
+	
+	//退出聊天列表时首页的未读消息数去除
+	exec('main_page',"removeUnreadNum()");
 	
 	//聊天列表未读数去除
 	if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
@@ -88,7 +87,7 @@ function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory) {//�
 	senderImg_Div = $("<div class='user-pic'></div>").append(senderImg);
 	senderDiv = $("<div class='user "+myOrOther+"'></div>").attr("id", msgId);
 	senderDiv.append(senderName_P).append(content_P).append(senderImg_Div);
-	if(isHistory=="true"){
+	if(isHistory==true){
 		$("#msg_list").prepend(senderDiv);
 	}else{
 		$("#msg_list").append(senderDiv);
