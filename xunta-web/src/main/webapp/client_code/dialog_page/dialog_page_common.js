@@ -7,26 +7,31 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
 		return;
 	}
 
-	/*if (tmpPid == 'none') {//如果tmpPid为none,则表示从输入框提交.如果不是none,则是发送失败后,点击感叹号再次提交的.
-		var tmpPid=msgId;
+	if (tmpPid == 'none') {//如果tmpPid为none,则表示从输入框提交.如果不是none,则是发送失败后,点击感叹号再次提交的.
+		var tmpPid=new Date().getTime();				//生成临时发言id
 		showSelfPoster(userName,inputValue,userImage,tmpPid,"my");//消息直接上屏，并添加跳豆.
-	}*/
+	}
 	
 	inputValue = specialLettersCoding(inputValue); 
 	console.log("afterinput - inputValue:"+inputValue);
-	
-	//var str = "sendPoster('" + toUserId + "','" + inputValue +"','" + tmpPid + "')";//tmpTopicId这个时候的tmpTopicId应该是没用的了.
-    //execRoot(str);
 	
     //chat.sendMsg(inputValue);//发送消息
 	//chat.sendMsgToAll(inputValue);//发送消息给全部的人
 	//chat.sendPrivateMsg(toUserId,inputValue);
 	//execRoot("sendmsg('"+toUserId+"','"+inputValue+"')");//给单独的人发消息
-	exec("main_page","sendmsg('"+toUserId+"','"+inputValue+"')");
+	exec("main_page","sendmsg('"+toUserId+"','"+inputValue+"','"+tmpPid+"')");
+	
+	//装入任务框且判断是否发送成功
+	var str = "sendPoster('" + toUserId + "','" + inputValue + "','" + tmpPid + "')";
+    execRoot(str);
 	
     document.getElementById("inputbox").value="";
 	
 	console.log(' ExistedTopic 刚刚的发言已发往服务器:' + inputValue);
+}
+
+function handler(){
+	
 }
 
 function afterCheckedSendPosterSuccess(tmpPid, SendPosterSuccess) {//一般发言,新创话题,移动新建的延时检查处理都用这个方法.

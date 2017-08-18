@@ -387,11 +387,10 @@ function sendPoster(toUserId,inputValue,tmpPid) {
 			inputValue : inputValue,
 			temp_msg_id : tmpPid
 	};
-	//var taskId_SendPoster = toUserId + "-" + msgId;
-	//doSendPoster[taskId_SendPoster] = json_posterinfo;
+	var taskId_SendPoster = toUserId + "-" + tmpPid;
+	doSendPoster[taskId_SendPoster] = json_posterinfo;
 	//登记入任务筐.查询的时候,也用toUserId+"-"+tmpPid来查询.
 	console.log("SendPoster tmpPid:" + tmpPid);
-	//chat.sendPrivateMsg(toUserId,inputValue);//给单独的人发消息
 	//这里有在线检查及再次创建方法.
 	setTimeout("checkSendPosterSuccess('" + taskId_SendPoster + "')", 7000);
 }
@@ -463,5 +462,14 @@ function startFlashTitle(audioE,originalPageTitle, string1, string2) {//有新�
 	}, 600);
 	return [timer, originalPageTitle];
 	//通过数组返回两个变量.
+}
+
+function judgeSelfPosterReturnOrOthers(window_id,tmpPid,postTimeLong,postTimeStr) {//判断自己的发言是否成功
+	var script="markSendPosterSuccess('" + tmpPid + "','"+ postTimeLong + "','" + postTimeStr + "')";
+	exec(window_id, script);
+    //只是准备一些调用前的参数变量.
+	var taskid_sendposter =window_id + "-" + tmpPid;
+	//返回的消息是个数组,但目前只会有一个.
+	doSendPoster[taskid_sendposter] = "none";
 }
 

@@ -50,15 +50,6 @@ function showAllPosters(data) {
 		var postTimeStr=data[msg].create_time;
     	var postTimeLong =  new Date(postTimeStr.replace(new RegExp("-","gm"),"/").replace(/\"/g,"")).getTime();
 		markSendPosterSuccess(msgId, postTimeLong, postTimeStr);
-		
-    	/*var postTimeLongMinute = postTimeLong / 1000 / 60;//long型时间戳,转换为分钟.
-    	var intervalEnough = ((postTimeLongMinute - 2) > (lastPostTimeLongMinute)) || ((postTimeLongMinute + 2) < (lastPostTimeLongMinute))
-    	var lastIndex = data.length - 1;
-		if (msg == lastIndex || (lastPostTimeLongMinute == 0 || intervalEnough)) {
-			var postTimeHtml = $("<time class='send-time'></time>").text(postTimeStr);
-			$("#msg_list").prepend(postTimeHtml);
-		}
-		lastPostTimeLongMinute = postTimeLongMinute;*/
 	}
 	if(sort == 'asc'){
 		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
@@ -76,12 +67,13 @@ function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory) {//�
 
 	senderImage = userImage;
 	content_P = $("<div class='detail'></div>").text(content);
+	
+	if(myOrOther=="my"){
+		var postsending = $("<img class='postsending' src='../image/jumpingbean.gif'/>");
+		content_P.append(postsending);
+	}
+	
 	senderName_P = $("<div class='nc'></div>").text(senderName);
-    if(typeof(replyOpptid) != "undefined" || replyOpptid != ''||replyOpptid != 'null'){
-        content_P.click(function() {
-			openPersonalDialog(this);
-		});
-    }
 	senderImg = $("<img />").attr("src", senderImage);
 	////上面一句简化为这一句.那些属性目前没有用处.
 	senderImg_Div = $("<div class='user-pic'></div>").append(senderImg);

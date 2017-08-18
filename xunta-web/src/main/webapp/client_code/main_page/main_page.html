@@ -181,29 +181,21 @@
         		user = user.replace(/\"/g, "");
         		imgUrl=imgUrl.replace(/\"/g, "");
         		
-        		var respondeToUserId;
-        		if(userId=="804622010041896960"){
-        			respondeToUserId="745600342770716672";
-        		}else{
-        			respondeToUserId="804622010041896960";
-        		}
+        		var postTimeStr=JSON.stringify(obj.timestr).replace(/\"/g,"");
+        		var postTimeLong = new Date((postTimeStr).replace(new RegExp("-","gm"),"/")).getTime();
+        		
+        		var window_id;//和我聊天的人的id，用来定位聊天页面，后面字段名要变成window_id
         	
         		var msgId = new Date().getTime();				//生成临时发言id.
         		var myOrOther;
         		if (userId === respondeUserId) {
-        			myOrOther="my";
-        			/* var postTimeStr=new Date();
-        			var postTimeLong = postTimeStr.getTime();
-        			postTimeStr=postTimeStr.Format("yyyy-MM-dd hh:mm:ss");
-        			markSendPosterSuccess(msgId,postTimeLong,postTimeStr); */
-        			//exec(pageName, script);
-        			//var taskid_sendposter =  toUserId + "-" + msgId;
-        			//返回的消息是个数组,但目前只会有一个.
-        			//doSendPoster[taskid_sendposter] = "none";
-        			//取消任务筐里的任务.
-        			//showSelfPoster(user, data,imgUrl,msgId,"my",false);
-            	} else {
+        			window_id=obj.to_user_info;
+        			var msgId=1;
+        			var str = "judgeSelfPosterReturnOrOthers('" + window_id + "','" + msgId + "','" + postTimeLong +"','" +postTimeStr +"')";
+        		    execRoot(str);
+            	} else { 
             		myOrOther="other";
+            		window_id=respondeUserId;
             		//showSelfPoster(user, data,imgUrl,msgId,"other",false);
             		
             		//聊天列表未读消息提示
@@ -226,32 +218,28 @@
             				var unReadObj=unreadObjList[j];
             				if(unReadObj.getTouserId()==respondeToUserId){//这个用户已经存在，未读数加1
             					unreadNum++;
-            					unreadObjList[j]=new unreadObj(respondeToUserId,unreadNum);
+            					unreadObjList[j]=new unreadObj(respondeUserId,unreadNum);
             					isExit=true;
             					break;
             				}
             			}
             			if(isExit=false){
-            				unreadObjList.push(new unreadObj(respondeToUserId,unreadNum));
+            				unreadObjList.push(new unreadObj(respondeUserId,unreadNum));
             			}
             		}else{
-            			unreadObjList.push(new unreadObj(respondeToUserId,unreadNum));
+            			unreadObjList.push(new unreadObj(respondeUserId,unreadNum));
             		}
             		
+            		if(window.parent.document.getElementById(window_id)!=null ){//聊天列表打开过
+            			exec(window_id, "showSelfPoster('" + user + "','" + data +"','" +imgUrl+"','" + msgId+"','" + myOrOther+ "','" + false+"')");
+            			//加上时间 
+                		exec(window_id, "markSendPosterSuccess('" + msgId + "','" + postTimeLong +"','" +postTimeStr+"')");
+            		} 
             	}
-        		//showSelfPoster(user,data,imgUrl, msgId,myOrOther, false);
-        		if(window.parent.document.getElementById(respondeToUserId)!=null ){//聊天列表打开过
-        			exec(respondeToUserId, "showSelfPoster('" + user + "','" + data +"','" +imgUrl+"','" + msgId+"','" + myOrOther+ "','" + false+"')");
-        			//加上时间 
-        			var postTimeStr=JSON.stringify(obj.timestr).replace(/\"/g,"");
-            		var postTimeLong = new Date((postTimeStr).replace(new RegExp("-","gm"),"/")).getTime();
-            		exec(respondeToUserId, "markSendPosterSuccess('" + msgId + "','" + postTimeLong +"','" +postTimeStr+"')");
-            		//markSendPosterSuccess(msgId, postTimeLong ,postTimeStr);
-        		} 
         };
         
-        function sendmsg(toUserId,inputValue){
-        	chat.sendPrivateMsg(toUserId,inputValue);
+        function sendmsg(toUserId,inputValue,handler){
+        	chat.sendPrivateMsg(toUserId,inputValue,handler);
         }
 		
 		function setRootVars(){
