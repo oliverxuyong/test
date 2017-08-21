@@ -189,8 +189,8 @@
         		var msgId = new Date().getTime();				//生成临时发言id.
         		var myOrOther;
         		if (userId === respondeUserId) {
-        			window_id=obj.to_user_info;
-        			var msgId=1;
+        			window_id=obj.window_id;
+        			var msgId=obj.handler;
         			var str = "judgeSelfPosterReturnOrOthers('" + window_id + "','" + msgId + "','" + postTimeLong +"','" +postTimeStr +"')";
         		    execRoot(str);
             	} else { 
