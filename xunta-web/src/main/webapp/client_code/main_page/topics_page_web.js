@@ -51,6 +51,10 @@ function appendElement(i, cpList, CP_list) {
 
 	cp_innode.css("height", cpInNodeWidth);
 	cp_innode.css("width", cpInNodeWidth);
+	
+	//将标签的文字设置为字母和数字，为了匹配文字和数字和原型
+	//calCircle(cp_text, cpTextSize, "CaraDelev...", cp_node, cp_innode);
+	
 	// 调用字体大小匹配圆大小的方法
 	calCircle(cp_text, cpTextSize, cp.cptext, cp_node, cp_innode);
 
@@ -60,7 +64,7 @@ function appendElement(i, cpList, CP_list) {
 	var selectTagNum =cp.howmanypeople_selected;
 	if(selectTagNum>0){
 		var selectTagNumNode= $("<div></div>").attr("class", "selectTagNum").text(selectTagNum);
-		cp_innode.append(selectTagNumNode);
+		cp_node.append(selectTagNumNode);
 	}
 
 	// console.log("测试： "+i);
@@ -85,6 +89,7 @@ var maxCPTextNumber = 9;// cp文字最大的数量
 // cp圆的大小与文字匹配,在分级的情况下计算相应文字的面积，然后计算圆的面积(这里还没想好怎么做：然后比较内圆大小，如果内圆不能装下文字，则扩大外圆)
 function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode) {// 传入的参数是：cp文字div,cp文字大小，cp文字，外圆div，内圆div
 	var cpTextLength = length(cpText);
+	//var cpTextLength = cpText.length;
 
 	// 控制cp文字的大小
 	if (cpTextSize > maxCPTextSize) {
@@ -105,12 +110,13 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode) {// 传入�
 	var cpTextWidth;// cp文字 div的宽
 	var cpTextHeight;// cp文字 div的高
 	if (cpTextLength > maxCPTextNumber) {// 控制cp文字显示的个数
-		cpText = subString(cpText, maxCPTextNumber, true);// 为true就是字符截断之后加上"..."
+		//cpText = subString(cpText, maxCPTextNumber, true);// 为true就是字符截断之后加上"..."
+		cpText = cpText.substring(0,maxCPTextNumber)+"...";// 字符截断之后加上"..."
 		cpTextLength = maxCPTextNumber + 1;
 	}
 	// 分级列出文字的情况，求出cp文字 div的宽和高
-	// 1-3个字为一行
-	if (cpTextLength <= 3) {
+	// 1-3个字为一行  //标签内容全为数字或者字母的情况，则为一行
+	if (cpTextLength <= 3 || (isLetterOrNumber(cpText)==true)) {
 		cpTextWidth = cpTextSize * cpTextLength;
 		cpTextHeight = cpTextSize + 5;
 	} else if (cpTextLength <= 10 && cpTextLength > 3) {// 4-10个字为两行
@@ -121,6 +127,7 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode) {// 传入�
 		}
 		cpTextHeight = cpTextSize * 2 + (6 * 2);
 	}
+	
 	// 将cp文字div的大小设置
 	cp_text.css("height", cpTextHeight + "px");
 	cp_text.css("width", cpTextWidth + "px");
@@ -154,15 +161,35 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode) {// 传入�
 	cp_text.css("left", cpTextLeft);
 }
 
+//叶夷 2017.08.22 判断标签是否全为数字或者字母
+function isLetterOrNumber(cpText) {
+	var isLetterOrNumber=true;
+	var cpLength=cpText.length;
+	for (var i = 0; i <cpLength; i++) {
+		if ((cpText.charCodeAt(i) >=97 && cpText.charCodeAt(i) <=122)//小写字母
+				|| (cpText.charCodeAt(i) >= 48 && cpText.charCodeAt(i) <= 57)//数字
+				|| (cpText.charCodeAt(i) >= 65 && cpText.charCodeAt(i) <= 90)) {//大写字母
+			isLetterOrNumber=true;
+		} else {
+			isLetterOrNumber=false;
+			break;
+		}
+	}
+	return isLetterOrNumber;
+}
+
 // 叶夷 2017.06.30 判断字符串长度，中文=英文的两倍
 function length(cpText) {
 	var len = 0;
-	for (var i = 0; i < cpText.length; i++) {
-		if (cpText.charCodeAt(i) > 127 || cpText.charCodeAt(i) == 94
-				|| (cpText.charCodeAt(i) >= 38 && cpText.charCodeAt(i) <= 57)) {
+	var cpLength=cpText.length;
+	for (var i = 0; i <cpLength; i++) {
+		if (cpText.charCodeAt(i) >=97 && cpText.charCodeAt(i) <=122) {//数字和字母
+			len+=0.6;
+		} else if((cpText.charCodeAt(i) >= 65 && cpText.charCodeAt(i) <= 90)
+			       || (cpText.charCodeAt(i) >= 48 && cpText.charCodeAt(i) <= 57)){
+			len+=0.7;
+		}else {
 			len++;
-		} else {
-			len += 0.5;
 		}
 	}
 	return len;
@@ -399,7 +426,7 @@ function addMyCp(cpid,text){
 function showUnSelectCP(data){
 	var cpid=data.cpid;
 	var cp_node=$("#cpid"+cpid);
-	var text=cp_node.text();
+	var text=cp_node.find(".incp").text();
 	console.log(cpid + "-> 取消选择");
 	cp_node.css("opacity", "1");
 	$("#mytag"+cpid).remove();
