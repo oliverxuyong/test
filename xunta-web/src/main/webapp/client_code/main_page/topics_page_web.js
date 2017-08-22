@@ -382,7 +382,7 @@ function showSelectTag(data){
 
 function addMyCp(cpid,text){
 	var myTagContainer=$("#mytag-container");
-	var myTag = $("<div onclick='ShowUnSelectCP("+cpid+")'></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
+	var myTag = $("<div onclick='sendUnSelectCP("+cpid+")'></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
 	myTagContainer.append(myTag);
 	
 	var myTagTextLength = length(text);
@@ -396,16 +396,17 @@ function addMyCp(cpid,text){
 }
 
 //叶夷  2017.08.08 取消选中的标签
-function ShowUnSelectCP(cpid){
+function showUnSelectCP(data){
+	var cpid=data.cpid;
 	var cp_node=$("#cpid"+cpid);
+	var text=cp_node.text();
 	console.log(cpid + "-> 取消选择");
 	cp_node.css("opacity", "1");
 	$("#mytag"+cpid).remove();
-	sendUnSelectCP(userId, cpid);
 	
 	//将取消选择的标签重新绑定点击事件
 	cp_node.click(function() {
-		chooseCP(cp_node,cpid);
+		chooseCP(cp_node,cpid,text);
 	});
 	
 }

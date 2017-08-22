@@ -57,7 +57,7 @@ function sendSelectCP(userId,cpid,text){
 
 
 //叶夷   2017.06.16  发送"标签选中取消"
-function sendUnSelectCP(userId,cpid){
+function sendUnSelectCP(cpid){
 	var paraStr = userId + "','" + cpid ;
 	execRoot("sendUnselectedCP('"+ paraStr +"')");
 }

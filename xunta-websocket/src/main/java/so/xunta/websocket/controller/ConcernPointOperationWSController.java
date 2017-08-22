@@ -114,13 +114,13 @@ public class ConcernPointOperationWSController {
 		cpChoiceDetailDO.setCp_id(cpid);
 		cpChoiceDetailDO.setIs_selected(CpChoiceDetailDao.UNSELECTED);
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
-		
 		cpChoiceDetailDO = cancelOneSelectedCP.deleteSelectedCP(cpChoiceDetailDO);
-		
 		if(cpChoiceDetailDO !=null){
 			JSONObject returnJson = new JSONObject();
 			returnJson.put("_interface", "1103-2");
 			returnJson.put("is_success", "true");
+			//2017.08.08 叶夷  在选中标签时返回的数据中加上cpid
+			returnJson.put("cpid", cpid);
 			returnJson.put("timestamp", timestamp);
 			socketService.chat2one(session, returnJson);
 		}	

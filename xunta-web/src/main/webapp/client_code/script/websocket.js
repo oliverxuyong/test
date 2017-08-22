@@ -249,13 +249,23 @@ function checkMessageInterface(evnt) {
 	//叶夷 2017.06.16    发送"标签选中"
 	if(jsonObj._interface == '1102-2'){
 		console.log("发送'标签选中' :"+JSON.stringify(jsonObj.is_success));
-		//标签选中之后将结果返回判断是否成功
-		exec("main_page","showSelectTag("+evnt.data+")");
+		if(JSON.stringify(jsonObj.is_success)=='"true"'){
+			//标签选中之后将结果返回判断是否成功
+			exec("main_page","showSelectTag("+evnt.data+")");
+		}else{
+			toast_popup("选中标签失败",2500);
+		}
 	}
 	
 	//叶夷 2017.06.16    发送"标签选中取消"
 	if(jsonObj._interface == '1103-2'){
 		console.log("发送'标签选中取消' :"+JSON.stringify(jsonObj.is_success));
+		if(JSON.stringify(jsonObj.is_success)=='"true"'){
+			//标签选中之后将结果返回判断是否成功
+			exec("main_page","showUnSelectCP("+evnt.data+")");
+		}else{
+			toast_popup("取消选中标签失败",2500);
+		}
 	}
 	
 	//叶夷 2017.07.07   获得请求的用户匹配缩略表
