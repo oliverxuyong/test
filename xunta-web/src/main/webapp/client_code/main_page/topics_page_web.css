@@ -64,21 +64,21 @@ width:100%;
 }
 
 .userimg{
-	height:42px;
-	width:30%;
-	//background-color:red;
-	border-radius:50%;
-	//float:right;
-	padding-top:3px;
-	margin:10px;
+	height: 65%;
+	width: 22%;
+	background-color:#f2f2f2;
+	margin-left:10px;
 	float:left;
+	border-radius: 10px 10px 0px 0px;
 }
 
 .userimg>img {
-	position:relative;
-	height: 42px;
-	width: 42px;
+	height: 91%;
+	width: 91%;
+	//height: 80px;
+	//width: 80px;
 	border-radius: 50%;
+	margin:5%;
 }
 
 .topictitle {
@@ -169,21 +169,16 @@ width:100%;
 	height:20px;
 }
 .top-container{
-	//position:fixed;
 	width:100%;
-	//height:40px;
-	height:20%;
+	height:33.5%;
 	z-index:102;
-	//background:url('../image/titbg.gif') center top repeat-x;
-	//background-color:#fffff0;
-	//background-size:9px;
-	border-bottom:1px solid #f1f1f1;
+	//border-bottom:1px solid #f1f1f1;
 }
 
 .tag-container{
 	position:relative;
 	width:100%;
-	height:73%;
+	height:60%;
 	z-index:102;
 	//background-color:#fffacd;
 	border-bottom:1px solid #f1f1f1;
@@ -192,16 +187,27 @@ width:100%;
 /*装头像和名字的容器*/
 .header-container{
 	width:100%;
-	height:50%;
+	height:58%;
 	z-index:102;
 }
 
 /*我的标签容器*/
 .mytag-container{
-	width:100%;
-	height:50%;
-	z-index:102;
+	width: 90%;
+	height: 80%;
+	background-color: #fff;
+	margin: 2% 5% 2% 5%;
+	float: left;
 	overflow-y:auto;
+}
+/*我的标签最外层容器*/
+.mytag-outer{
+	width: 96%;
+	height: 39%;
+	z-index:102;
+	background-color: #f1f1f1;
+	margin-left: 10px;
+	border-radius: 0px 10px 10px 10px;
 }
 
 .search-head{
@@ -407,10 +413,11 @@ width:100%;
 /*各个匹配人头像的大小*/
 .mu{
 	position:absolute;
-	width:30px;
-	height:30px;
 	border-radius:50%;
-	left:6px;
+}
+
+.mu img{
+	border-radius:50%;
 }
 
 /*网站名*/
@@ -426,7 +433,7 @@ width:100%;
 
 .othertag{
 	position:absolute; 
-	height:70%; 
+	height:90%; 
 	width:100%;
 	overflow-x:hidden;
 	top:40px;
@@ -445,10 +452,10 @@ width:100%;
 
 .enterdialogList{
 	width:100%;
-	height:7%;
+	height:6%;
 	background-color:#fffff0;
 	text-align:center;
-	line-height:40px;
+	//line-height:220%;
 }
 
 .addtagimg{
@@ -470,7 +477,7 @@ width:100%;
     border-radius: 5px;
     margin-left: 5px;
     color: #ffffff;
-    margin-bottom:5px;
+    margin-top:5px;
 }
 
 .mytag img{
