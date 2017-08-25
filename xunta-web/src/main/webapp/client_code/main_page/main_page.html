@@ -29,6 +29,15 @@
 
 		<div id="top-container" class="top-container">
 			<div class="header-container">
+				<!-- 重新登录-->
+				<div id="showouseroprate">
+					<img src="../image/exit.png" onclick="logOff()">
+				</div>
+				<!-- 信号 -->
+				<div id="showonlineoffline">
+					<img src="../image/signal-gray.png" onclick="wsConnect()">
+				</div>
+				
 				<!--头像-->
 				<div class="userimg">
 					<img id="topic_img" src="" onclick="" />
@@ -56,10 +65,6 @@
 		</div>
 		
 		<div class="tag-container">
-		
-			<!-- 装"推荐标签"四个字的容器 -->
-			<div class="othertagtext">推荐标签</div>
-		
 			<!-- CP容器的HTLM标范,不要删,用于css调试 -->
 			<div id="cp-show" class="othertag">
 				<div id="cp-container" style="/*  position:fixed; */ width:100%;">
@@ -176,7 +181,7 @@
             		
             		//聊天列表未读消息提示
             		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
-            			exec("dialoglist_page", "unreadMsg('"+respondeUserId+"','"+1+"')");
+            			exec("dialoglist_page", "unreadMsg('"+user+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"')");
             		} 
             		
             		//首页未读消息提示
@@ -192,18 +197,18 @@
             			var isExit=false;
             			for(var j in unreadObjList){
             				var unReadObj=unreadObjList[j];
-            				if(unReadObj.getTouserId()==respondeToUserId){//这个用户已经存在，未读数加1
+            				if(unReadObj.getTouserId()==respondeUserId){//这个用户已经存在，未读数加1
             					unreadNum++;
-            					unreadObjList[j]=new unreadObj(respondeUserId,unreadNum);
+            					unreadObjList[j]=new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum);
             					isExit=true;
             					break;
             				}
             			}
             			if(isExit=false){
-            				unreadObjList.push(new unreadObj(respondeUserId,unreadNum));
+            				unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
             			}
             		}else{
-            			unreadObjList.push(new unreadObj(respondeUserId,unreadNum));
+            			unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
             		}
             		
             		if(window.parent.document.getElementById(window_id)!=null ){//聊天列表打开过
@@ -289,10 +294,22 @@
 		}
 		
 		//2017.08.16 叶夷   创建跟我聊天的人的id和未读消息数一一对应的对象，为了保存数组
-		function unreadObj(touserId,unreadNum){
+		function unreadObj(user,data,postTimeStr,touserId,unreadNum){
 			var obj = new Object();
+			obj.user=user;
+			obj.data=data;
+			obj.postTimeStr=postTimeStr;
 			obj.touserId=touserId;
 			obj.unreadNum=unreadNum;
+			obj.getUser = function() {
+				return this.touserId;
+			};
+			obj.getData = function() {
+				return this.touserId;
+			};
+			obj.getPostTimeStr = function() {
+				return this.touserId;
+			};
 			obj.getTouserId = function() {
 				return this.touserId;
 			};

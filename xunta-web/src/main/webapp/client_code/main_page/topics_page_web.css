@@ -67,18 +67,16 @@ width:100%;
 	height: 65%;
 	width: 22%;
 	background-color:#f2f2f2;
-	margin-left:10px;
+	margin-left:6px;
 	float:left;
 	border-radius: 10px 10px 0px 0px;
 }
 
 .userimg>img {
-	height: 91%;
-	width: 91%;
-	//height: 80px;
-	//width: 80px;
+	height: 85%;
+	width: 85%;
 	border-radius: 50%;
-	margin:5%;
+	margin:10%;
 }
 
 .topictitle {
@@ -177,11 +175,12 @@ width:100%;
 
 .tag-container{
 	position:relative;
-	width:100%;
+	width:96%;
 	height:60%;
 	z-index:102;
-	//background-color:#fffacd;
-	border-bottom:1px solid #f1f1f1;
+	background-color:#f1f1f1;
+	margin-left:6px;
+	top:-10px;
 }
 
 /*装头像和名字的容器*/
@@ -193,10 +192,10 @@ width:100%;
 
 /*我的标签容器*/
 .mytag-container{
-	width: 90%;
+	width: 94%;
 	height: 80%;
 	background-color: #fff;
-	margin: 2% 5% 2% 5%;
+	margin: 2% 3% 2% 3%;
 	float: left;
 	overflow-y:auto;
 }
@@ -206,8 +205,8 @@ width:100%;
 	height: 39%;
 	z-index:102;
 	background-color: #f1f1f1;
-	margin-left: 10px;
-	border-radius: 0px 10px 10px 10px;
+	margin-left: 6px;
+	border-radius: 0px 10px 0px 0px;
 }
 
 .search-head{
@@ -433,10 +432,11 @@ width:100%;
 
 .othertag{
 	position:absolute; 
-	height:90%; 
-	width:100%;
+	height:95%; 
+	width:94%;
 	overflow-x:hidden;
-	top:40px;
+	margin:2% 3% 2% 3%;
+	background-color:white;
 }
 
 .othertagtext{
@@ -451,11 +451,13 @@ width:100%;
 }
 
 .enterdialogList{
-	width:100%;
+	width:96%;
 	height:6%;
-	background-color:#fffff0;
+	background-color:#f1f1f1;
 	text-align:center;
-	//line-height:220%;
+	margin-top:-10px;
+	margin-left:6px;
+	border-radius:0px 0px 10px 10px;
 }
 
 .addtagimg{
@@ -469,15 +471,17 @@ width:100%;
 
 .mytag{
 	float: left;
-    height: 30px;
-    line-height: 30px;
+    //height: 30px;
+    //line-height: 30px;
     background-color: #FFE7BA;
-    width: 50px;
+    //width: 50px;
     text-align: center;
     border-radius: 5px;
     margin-left: 5px;
     color: #ffffff;
     margin-top:5px;
+    font-size:0.8em;
+    letter-spacing:1px;
 }
 
 .mytag img{

@@ -35,7 +35,7 @@ function showDialogList(data){
 	//从首页传过来的聊天列表的未读信息
 	if(unreadObjList.length>0){
 		for(var i in unreadObjList){
-			unreadMsg(unreadObjList[i].touserId,unreadObjList[i].unreadNum);
+			unreadMsg(unreadObjList[i].user,unreadObjList[i].data,unreadObjList[i].postTimeStr,unreadObjList[i].touserId,unreadObjList[i].unreadNum);
 		}
 	}
 }
@@ -49,28 +49,151 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 	var dialogContentMsg=$("<div></div>").attr("class", "dialog_content_msg").text(msg);
 	
 	var dialogContentName=$("<div></div>").attr("class", "dialog_content_name").text(toUserName);
-	var dialogContentTime=$("<div></div>").attr("class", "dialog_content_time").text(createTime);
+	var dialogContentTime=$("<div></div>").attr("class", "dialog_content_time").text(showDialogListTime(createTime));
 	
 	dialogContentTop.append(dialogContentName).append(dialogContentTime);
 	dialogContent.append(dialogContentTop).append(dialogContentMsg);
 	dialog.append(toUserImg).append(dialogContent);
 	
 	$("#dialog_list").append(dialog);
+	
+	//聊天列表动态布局
+	setDialogListNode(dialog,dialogContent);
+	
 	dialog.click(function() {//绑定点击事件.
 		enterDialogPage(toUserId,toUserName);
 	});
 }
 
-function unreadMsg(respondeUserId,unreadNum){
+//聊天列表动态布局
+function setDialogListNode(dialog,dialogContent){
+	var dialogHeight=parseInt(dialog.css("height"));//获得聊天列表单个的高度
+	var dialogWidth=parseInt(dialog.css("width"));//获得聊天列表单个的高度
+	
+	//头像css设置
+	var toUserImgHeight=dialogHeight*0.8;//图片的高度是聊天列表单个高度的80%
+	var toUserImgMargin=(dialogHeight-toUserImgHeight)/2;
+	var toUserImg=dialog.find("img");
+	toUserImg.css("height",toUserImgHeight);
+	toUserImg.css("width",toUserImgHeight);
+	toUserImg.css("margin",toUserImgMargin);
+	
+	//文字css设置
+	var dialogContentWidth=dialogWidth-toUserImgHeight-toUserImgMargin*4;
+	var dialogContentLeft=toUserImgHeight+toUserImgMargin*2;
+	dialogContent.css("height",toUserImgHeight);
+	dialogContent.css("width",dialogContentWidth);
+	dialogContent.css("margin",toUserImgMargin);
+	dialogContent.css("left",dialogContentLeft);
+	
+	//设置文字内容的line-height
+	var dialogContentNameHeight=$(".dialog_content_name").css("height");
+	$(".dialog_content_name").css("line-height",(parseInt(dialogContentNameHeight)+10)+"px");
+	$(".dialog_content_name").css("font-size",parseInt(dialogContentNameHeight)*0.7+"px");
+	
+	var dialogContentTimeHeight=$(".dialog_content_time").css("height");
+	$(".dialog_content_time").css("line-height",dialogContentTimeHeight);
+	$(".dialog_content_time").css("font-size",parseInt(dialogContentTimeHeight)*0.5+"px");
+	
+	var dialogContentMsgHeight=$(".dialog_content_msg").css("height");
+	$(".dialog_content_msg").css("line-height",dialogContentMsgHeight);
+	$(".dialog_content_msg").css("font-size",parseInt(dialogContentMsgHeight)*0.65+"px");
+}
+ 
+//2017.08.25  叶夷   通过传入的时间判断之后显示(传入的时间格式为 2017-08-25 16:35:00 转换的效果如  下午4:30)
+function showDialogListTime(time){
+	var dialogTime;//最后返回的时间
+	
+	//这是传入的时间
+	var splitTime=time.split(" ");//将时间字符串分成年月日和时分秒两部分
+	var onePartTime=splitTime[0];//年月日部分
+	var twoPartTime=splitTime[1];//时分秒部分
+	var hourTime=twoPartTime.split(":")[0];//这是小时
+	var minuteTime=twoPartTime.split(":")[1];//这是分钟
+	
+	//这是今天的时间
+	var todayTime = new Date();
+	var nowYearTime=todayTime.getFullYear();//这是年份
+	var nowMonthTime=todayTime.getMonth()+1;//这是月份，月份是从0开始的
+	var nowDayTime=todayTime.getDate();
+	
+	var betweenDayNumber=daysBetween(onePartTime,nowYearTime+"-"+nowMonthTime+"-"+nowDayTime);//天数差
+	
+	//进行对比
+	//1.先对比是否是今天
+	if(betweenDayNumber==0){//是今天
+		//2.是上午还是下午
+		if(hourTime<12){//上午
+			dialogTime="上午 "+hourTime+":"+minuteTime;
+		}else{//下午
+			dialogTime="下午 "+(hourTime-12)+":"+minuteTime;
+		}
+	}else if(betweenDayNumber<=7){//一个星期内
+		dialogTime=getWeek(new Date(onePartTime));
+	}else{//超过一个星期
+		dialogTime=onePartTime;
+	}
+	return dialogTime;
+}
+
+//2017.08.25  叶夷    求两个时间的天数差 日期格式为 YYYY-MM-dd 
+function daysBetween(DateOne,DateTwo) 
+{ 
+	var OneMonth = DateOne.substring(5,DateOne.lastIndexOf ('-')); 
+	var OneDay = DateOne.substring(DateOne.length,DateOne.lastIndexOf ('-')+1); 
+	var OneYear = DateOne.substring(0,DateOne.indexOf ('-')); 
+
+	var TwoMonth = DateTwo.substring(5,DateTwo.lastIndexOf ('-')); 
+	var TwoDay = DateTwo.substring(DateTwo.length,DateTwo.lastIndexOf ('-')+1); 
+	var TwoYear = DateTwo.substring(0,DateTwo.indexOf ('-')); 
+
+	var cha=((Date.parse(OneMonth+'/'+OneDay+'/'+OneYear)- Date.parse(TwoMonth+'/'+TwoDay+'/'+TwoYear))/86400000); 
+	return Math.abs(cha); 
+} 
+
+//2017.08.25  叶夷 获得星期  传入的data为:  new Date("2017-8-25")
+function getWeek(date){
+	var week;
+	if(date.getDay()==0) week="星期日"
+	if(date.getDay()==1) week="星期一"
+	if(date.getDay()==2) week="星期二"
+	if(date.getDay()==3) week="星期三"
+	if(date.getDay()==4) week="星期四"
+	if(date.getDay()==5) week="星期五"
+	if(date.getDay()==6) week="星期六"
+	return week;
+}
+
+//未读消息数提示，最新消息内容和最新时间更新
+function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 	var unreadParent=$("#"+respondeUserId);
 	if (unreadParent.find('.unread').length==0) {//如果没有未读消息,则加上一个1;
-		var unreadNum = $("<div></div>").attr("class", "unread").text(unreadNum);
-		unreadParent.append(unreadNum);
+		var unreadNumNode = $("<div></div>").attr("class", "unread").text(unreadNum);
+		unreadParent.append(unreadNumNode);
+		//未读消息的位置
+		//头像的位置
+		var dialogImg=$(".dialog").find("img");
+		var dialogImgWidth=parseInt(dialogImg.css("width"));
+		var dialogImgMargin=parseInt(dialogImg.css("margin"));
+		
+		var unreadLeft=dialogImgWidth+parseInt(unreadNumNode.css("width"))/2;
+		unreadNumNode.css("left",unreadLeft+"px");
+		unreadNumNode.css("top",dialogImgMargin/2+"px");
+		
+		
 	} else {//如果已有未读消息,则加上1:
-		var num = unreadParent.find('.unread').text();
-		num++;
-		unreadParent.find('.unread').text(num);
+		unreadNum  = unreadParent.find('.unread').text();
+		unreadNum++;
+		unreadParent.find('.unread').text(unreadNum);
 	}
+	
+	//内容
+	var dialog_content_msg=$(".dialog_content_msg");
+	dialog_content_msg.text(user+"："+data);
+	
+	//把时间更新
+	var dialog_content_time=$(".dialog_content_time");
+	dialog_content_time.text(showDialogListTime(postTimeStr));
 }
 
 //2017.08.15 叶夷目前首页未读消息提示的显示方案是这样的：

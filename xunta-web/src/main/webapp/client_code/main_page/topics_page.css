@@ -16,12 +16,10 @@
 
 
 #showonlineoffline {
-	position: relative;
-	left:-36px;
+	position: absolute;
+	left:33px;
 	margin-top:10px;
-	float:right;
-	height:42px;
-	line-height:42px;
+	float:left;
 }
 
 #showonlineoffline>img{
@@ -29,13 +27,11 @@
 }
 
 #showouseroprate{
-	position: relative;
-	//left:508px;
+	position: absolute;
+	left:12px;
 	margin-top:10px;
-	float:right;
+	float:left;
 	opacity:0.5;
-	height:42px;
-	line-height:42px;
 }
 
 #showouseroprate>img{

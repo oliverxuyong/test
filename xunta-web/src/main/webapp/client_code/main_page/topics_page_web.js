@@ -7,58 +7,50 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	// 叶夷 2017.07.11 等请求cp返回之后再请求用户匹配缩略表
 	// requestTopMatchedUsers(userId,requestTopMUNum);
 
-	// $("#loadinganimation").remove();
-	$("#showatloaded").show();
-	// console.log("进到空白页");
+	$("#showatloaded").show();//首页开始显示
 
-	// console.log("测试 ： "+JSON.stringify(CP_list));
+	//获得一批推荐标签数据进行位置，大小和动画的设置
 	var cpList = CP_list.cp_wrap;
-	// 定义cp动画开始之前的位置
 	for (var i = 0; i < cpList.length; i++) {
-		appendElement(i, cpList, CP_list);// 叶夷 2016.06.16
+		appendElement(i, cpList);// 叶夷 2016.06.16
 		// 如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
 	}
 
 	// 定义好位置之后开始动画,参数是需要动画的个数
 	startAnimate(cpList.length);
+	//推荐标签动画开始之后再将"请求下一批"的按钮显现
 	$("#request_cp").show();
 }
 
-// 叶夷 2017.06.16 通过服务器返回的标签添加到页面的方法
-function appendElement(i, cpList, CP_list) {
-	// 叶夷 2017.06.20 控制cp的大小和字体颜色
-	var cp_width = 60;
-	var cp_height = 60;
-	var cp_color = "black";
-
-	var cp_container = $("#cp-container");
-	var cp = cpList[i];
-
-	var cp_node = $("<div></div>").attr("class", "cp").attr("id",
-			"cpid" + cp.cpid);// 外圆div
-	var cp_innode = $("<div></div>").attr("class", "incp");// 内圆div
-	cp_node.append(cp_innode);
-	// var cp_text="<div
-	// style='width:"+cp_width+"px;height:"+cp_height+"px;color:"+cp_color+";'>"+cp.cptext+"</div>";
-	var cp_text = $("<div></div>")/* .text(cp.cptext) */;// 文字div
-
-	// 先随机cptext 字体的大小
+//叶夷 2017.06.16 通过服务器返回的标签添加到页面的方法
+//i表示一批推荐标签的第几个标签，cpList一批推荐标签
+function appendElement(i, cpList) {
+	var cp_container = $("#cp-container");//装推荐标签的容器
+	
+	// 先随机推荐标签字体的大小，在这里留一个可以控制字体大小的入口
 	var cpTextSize = Math.random() * 8 + 12;
 	cpTextSize = parseInt(cpTextSize);
-	// 先随机内圆 div的大小
+	
+	var cp = cpList[i];//每个推荐标签
+	var cpid=cp.cpid;//每个推荐标签id
+
+	var cp_node = $("<div></div>").attr("class", "cp").attr("id",
+			"cpid" + cpid);// 外圆div
+	var cp_innode = $("<div></div>").attr("class", "incp");// 内圆div
+	cp_node.append(cp_innode);
+	var cp_text = $("<div></div>");// 文字div
+	cp_innode.append(cp_text);
+	
+	// 先随机内圆 div的大小,在这里留一个可以控制内圆div大小的入口
 	var cpInNodeWidth = Math.random() * 40 + 40;
 	cpInNodeWidth = parseInt(cpInNodeWidth);
-
 	cp_innode.css("height", cpInNodeWidth);
 	cp_innode.css("width", cpInNodeWidth);
 	
-	//将标签的文字设置为字母和数字，为了匹配文字和数字和原型
+	//将标签的文字设置为字母和数字，为了测试匹配文字和数字和原型
 	//calCircle(cp_text, cpTextSize, "CaraDelev...", cp_node, cp_innode);
-	
 	// 调用字体大小匹配圆大小的方法
 	calCircle(cp_text, cpTextSize, cp.cptext, cp_node, cp_innode);
-
-	cp_innode.append(cp_text);
 	
 	//2017.08.14 叶夷  标签的选择人数
 	var selectTagNum =cp.howmanypeople_selected;
@@ -67,16 +59,16 @@ function appendElement(i, cpList, CP_list) {
 		cp_node.append(selectTagNumNode);
 	}
 
-	// console.log("测试： "+i);
 	cp_node.click(function() {
-		// console.log("测试点击1:"+i);
 		// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
 		chooseOneCP(cp_node, cp);
-		// cp_code.css("background-color","#FF0000");
 	});
-
+	
+	//标签圆大小确定之后将标签放在标签容器中
 	cp_container.append(cp_node);
-	cpAnimationLocation(cp_node);
+	
+	//标签大小设置之后将设置标签动画的轨迹且将前端出现过的标签位置全部保存下来
+	cpAnimationLocation(cp_container,cp_node);
 }
 
 var minCPSize = 40;// 最小内圆的大小
@@ -85,35 +77,41 @@ var minCPTextSize = 12;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
 var maxCPTextNumber = 9;// cp文字最大的数量
 
+//控制范围的方法
+function sizeInMaxAndMin(size,max,min){
+	var size;
+	if (size > max) {
+		size = max;
+	} else if (size < min) {
+		size = min;
+	}
+	return size;
+}
+
 // 叶夷 2017.06.30
 // cp圆的大小与文字匹配,在分级的情况下计算相应文字的面积，然后计算圆的面积(这里还没想好怎么做：然后比较内圆大小，如果内圆不能装下文字，则扩大外圆)
-function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode) {// 传入的参数是：cp文字div,cp文字大小，cp文字，外圆div，内圆div
+//传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div
+function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode) {
+	//获得cp文字字符的长度
 	var cpTextLength = length(cpText);
-	//var cpTextLength = cpText.length;
 
-	// 控制cp文字的大小
-	if (cpTextSize > maxCPTextSize) {
-		cpTextSize = 20;
-	} else if (cpTextSize < minCPTextSize) {
-		cpTextSize = 12;
-	}
+	// 控制cp文字的大小,范围在最小和最大之间
+	cpTextSize=sizeInMaxAndMin(cpTextSize,maxCPTextSize,minCPTextSize);
 
-	// 控制内圆div的大小
+	// 控制内圆div的大小,范围在最小和最大之间
 	var cpInNodeWidth = cp_innode.width();// 内圆div的宽
-	// var cpInNodeHeight=cp_innode.height();//内圆div的高
-	if (cpInNodeWidth < minCPSize) {
-		cpInNodeWidth = minCPSize;
-	} else if (cpTextSize > maxCPSize) {
-		cpInNodeWidth = maxCPSize;
-	}
+	cpInNodeWidth=sizeInMaxAndMin(cpInNodeWidth,maxCPSize,minCPSize);
 
-	var cpTextWidth;// cp文字 div的宽
-	var cpTextHeight;// cp文字 div的高
-	if (cpTextLength > maxCPTextNumber) {// 控制cp文字显示的个数
+	// 控制cp文字显示的个数,超过最大个数则截断且加上"..."
+	if (cpTextLength > maxCPTextNumber) {
 		//cpText = subString(cpText, maxCPTextNumber, true);// 为true就是字符截断之后加上"..."
 		cpText = cpText.substring(0,maxCPTextNumber)+"...";// 字符截断之后加上"..."
 		cpTextLength = maxCPTextNumber + 1;
 	}
+	
+	var cpTextWidth;// cp文字 div的宽
+	var cpTextHeight;// cp文字 div的高
+	
 	// 分级列出文字的情况，求出cp文字 div的宽和高
 	// 1-3个字为一行  //标签内容全为数字或者字母的情况，则为一行
 	if (cpTextLength <= 3 || (isLetterOrNumber(cpText)==true)) {
@@ -248,20 +246,19 @@ function CP(cpNode, cpLeft, cpRight, cpTop, cpBottom) {// 定义一个cp类
 	return obj;
 }
 
-// 叶夷 2017.06.27 实现圆切面的上升动画效果
-function cpAnimationLocation(cp_node) {
-	var cp_container = $("#cp-container");// 装标签的容器
+// 叶夷 2017.06.27 实现圆切面的上升动画效果,cp_container是装所有推荐标签的容器，cp_node是一个推荐标签
+function cpAnimationLocation(cp_container,cp_node) {
 	var cpWidth = cp_node.width();// 要上升的标签宽
 	var cpHeight = cp_node.height();// 要上升的标签高
 	var containerWidth = cp_container.width();// 装cp容器的宽度，即扫描轨迹的x轴的总数
 
-	var top = -1;// 用来和不同轨迹对比，将数值最大的赋值给top
-	var left = 0;//
+	var top = -1;// 标签的top,用来和不同轨迹对比，将数值最大的赋值给top,可以知道标签可上升的最大高度
+	var left = 0;// 得到标签可上升的最大高度时left位置
 
 	// 1.遍历装cp容器的宽度,每次+1px
-	for (var start = 0; start <= containerWidth - cpWidth; start++) {// start是要上升的cp的left的值，所以终点必须空出上升cp的width
-
-		// 2.从便利开始获得上升cp的圆心坐标和半径，以cp_container的左下点为(0,0)
+	// start是要上升的cp的left的值，所以终点必须空出上升cp的width
+	for (var start = 0; start <= containerWidth - cpWidth; start++) {
+		// 2.从开始获得上升cp的圆心坐标和半径，以cp_container的左下点为(0,0)
 		var cpRadius = cpWidth / 2;// 半径就是要上升的cp的宽除以2
 		var cpX = start + cpRadius;// 一开始圆心的x为start+cpRadius
 		var cpY = 0;// 一开始圆心的y为0
@@ -275,9 +272,8 @@ function cpAnimationLocation(cp_node) {
 
 		// 4.遍历所有已经存在的cp，判断哪些cp在这条轨迹范围内
 		for (var j = 0; j < cpValue.length; j++) {// 遍历已经存在的所有cp
-
-			var cpObj = cpValue[j];
-			var cpNode = cpObj.getCpNode();
+			var cpObj = cpValue[j];//存在的cp
+			var cpNode = cpObj.getCpNode();//存在的cpid
 			var cpLeftValue = cpObj.getCpLeft();// 获得已有cp的最左边边界值
 			var cpRightValue = cpObj.getCpRight();// 获得已有cp的最右边边界值
 			var cpTopValue = cpObj.getCpTop();// 获得已有cp的最上边边界值
@@ -291,37 +287,34 @@ function cpAnimationLocation(cp_node) {
 						cpTopValue, cpBottomValue));
 			}
 		}
-
+		// bottom值越大越低，要从大到小排序，获得轨迹内已经存在的cp中两个最低的圆
 		cpTwo.sort(function(a, b) {
-			return b.getCpBottom() - a.getCpBottom();// bottom值越大越低，要从大到小排序
+			return b.getCpBottom() - a.getCpBottom();
 		});
 
-		var maxTop;
-		// var cpFirstTangencyTop;
-		// var cpSecondTangencyTop;
+		var maxTop;//可以上升的Top值
 		var isOverLay = false;// 判断是否重叠
 		if (cpTwo.length > 0) {
 			// 5.拿出轨迹内cp最低的圆,即cpTwo数组中的第一个
 			var cpFirstObj = cpTwo[0];
-			if (cpTwo.length != null) {
-				// 6.计算与cpFirstObj能够相切时的位置
-				maxTop = calCPTangencyTop(cpFirstObj, cpRadius, cpX);// 可以上升的Top值
-				for (var k = 0; k < cpTwo.length; k++) {
-					var cpSecondObj = cpTwo[k];
-					cpY = maxTop + cpRadius;// 上升点模拟轨迹中最高点的y轴点
+			// 6.计算与cpFirstObj能够相切时的位置,cpRadius是上升的cp半径，cpX是上升的cp圆心的x值
+			maxTop = calCPTangencyTop(cpFirstObj, cpRadius, cpX);// 在不和轨迹中最低点重合的情况下可以上升的Top值
+			//遍历轨迹中所有的圆，一旦会跟标的圆重合，则这条轨迹放弃
+			for (var k = 0; k < cpTwo.length; k++) {
+				var cpSecondObj = cpTwo[k];
+				cpY = maxTop + cpRadius;// 上升点模拟轨迹中最高点的y轴点
 
-					var cpLeftValue = cpSecondObj.getCpLeft();
-					var cpTopValue = cpSecondObj.getCpTop();
-					var cpRightValue = cpSecondObj.getCpRight();
-					var nowCpRadius = (cpRightValue - cpLeftValue) / 2;// 第二个最低点半径
-					var nowCpX = cpLeftValue + nowCpRadius;// 第二个最低点的圆心x轴
-					var nowCpY = cpTopValue + nowCpRadius;// 第二个最低点的圆心y轴
+				var cpLeftValue = cpSecondObj.getCpLeft();
+				var cpTopValue = cpSecondObj.getCpTop();
+				var cpRightValue = cpSecondObj.getCpRight();
+				var nowCpRadius = (cpRightValue - cpLeftValue) / 2;// 第二个最低点半径
+				var nowCpX = cpLeftValue + nowCpRadius;// 第二个最低点的圆心x轴
+				var nowCpY = cpTopValue + nowCpRadius;// 第二个最低点的圆心y轴
 
-					if (Math.sqrt(Math.pow((cpX - nowCpX), 2)
-							+ Math.pow((cpY - nowCpY), 2)) < (cpRadius + nowCpRadius)) {// 如果与第一个最低点相切的时候与第二个最低点重合
-						isOverLay = true;
-						break;
-					}
+				if (Math.sqrt(Math.pow((cpX - nowCpX), 2)
+						+ Math.pow((cpY - nowCpY), 2)) < (cpRadius + nowCpRadius)) {// 如果与第一个最低点相切的时候与第二个最低点重合
+					isOverLay = true;
+					break;
 				}
 			}
 		} else {
@@ -331,7 +324,7 @@ function cpAnimationLocation(cp_node) {
 		if (isOverLay) {
 			continue;
 		}
-
+		//console.log("测试 1："+top+"->"+maxTop);
 		if (top == -1) {// 如果一开始=-1，则top直接赋值
 			top = maxTop;
 		} else {
@@ -345,6 +338,7 @@ function cpAnimationLocation(cp_node) {
 	var right = left + cpWidth;
 	var bottom = top + cpHeight;
 	cpValue.push(new CP(cp_node.attr("id"), left, right, top, bottom));
+	//cp容器的高度调整
 	cp_container.height(bottom);
 }
 
@@ -369,20 +363,23 @@ function startAnimate(length) {
 	}
 }
 
-// 计算与圆相切时的top值
+// 计算与圆相切时的top值，上升轨迹下最低的标签,cpRadius是上升的cp半径，cpX是上升的cp圆心的x值
 function calCPTangencyTop(cpObj, cpRadius, cpX) {
 	// 6.计算与cpFirstObj能够相切时的位置
 	var cpObjNode = cpObj.getCpNode();
+	//console.log("测试4："+cpObjNode);
 	var cpObjRadius = $("#" + cpObjNode).width() / 2;// 已有cp的半径
 	var cpObjLeftValue = cpObj.getCpLeft();// 获得已有cp的最左边边界值
 	var cpObjTopValue = cpObj.getCpTop();
 	var cpObjX = cpObjLeftValue + cpObjRadius;// 圆心的x轴
 	var cpObjY = cpObjTopValue + cpObjRadius;// 圆心的y轴
-
+	//console.log("测试 3："+cpObjY+"->"+cpRadius+"->"+cpObjRadius+"->"+cpX+"->"+cpObjX);
+	//371.5->34->46.5->195->113.5
+	
 	// 上升的cp在轨迹内可以与其相切的y值
 	var cpTangencyY = cpObjY
-			+ Math.sqrt(Math.pow((cpRadius + cpObjRadius), 2)
-					- Math.pow((cpX - cpObjX), 2));
+			+ parseInt(Math.sqrt(parseInt(Math.pow((cpRadius + cpObjRadius), 2))
+					- parseInt(Math.pow((cpX - cpObjX), 2))));
 	var cpTangencyTop = cpTangencyY - cpRadius + 1;// 可以上升的Top值
 	return parseInt(cpTangencyTop);
 }
@@ -413,8 +410,13 @@ function addMyCp(cpid,text){
 	myTagContainer.append(myTag);
 	
 	var myTagTextLength = length(text);
-	var myTagWidth=myTagTextLength*16+10;
+	var myTagTextSize = parseInt(myTag.css("font-size"))+1;
+	var myTagWidth=myTagTextLength*myTagTextSize+10;
+	var myTagHeight=myTagTextSize*2-4;
+	
 	myTag.css("width", myTagWidth+"px");
+	myTag.css("height", myTagHeight+"px");
+	myTag.css("line-height", myTagHeight+"px");
 	$("#cpid"+cpid).css("opacity", "0.2");// 目前只是改变背景颜色为红色
 	
 	document.getElementById('mytag-container').scrollTop = document.getElementById('mytag-container').scrollHeight;
