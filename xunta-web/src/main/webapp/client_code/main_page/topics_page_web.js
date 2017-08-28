@@ -11,29 +11,43 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 
 	//获得一批推荐标签数据进行位置，大小和动画的设置
 	var cpList = CP_list.cp_wrap;
+	var notRepeatCpCount=0;//不重复的可以上升的cp个数
 	for (var i = 0; i < cpList.length; i++) {
-		appendElement(i, cpList);// 叶夷 2016.06.16
-		// 如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
+		var cp = cpList[i];//每个推荐标签
+		var cpid=cp.cpid;//每个推荐标签id
+		
+		//加上一个过滤，前端出现过的cp不应该再出现
+		var isRepeat=false;
+		for(var j in cpValue){
+			if(cpValue[j].getCpNode()==("cpid"+cpid)){//出现过
+				isRepeat=true;
+				break;
+			}
+		}
+		if(isRepeat==true){//cp重复出现则下一个
+			continue;
+		}else{//不是重复的cp则下一步
+			notRepeatCpCount++;
+			appendElement(i,cpid,cp);// 叶夷 2017.06.16
+			// 如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
+		}
 	}
 
-	// 定义好位置之后开始动画,参数是需要动画的个数
-	startAnimate(cpList.length);
+	// 定义好位置之后开始动画,参数是需要动画的不重复的可以上升的cp个数
+	startAnimate(notRepeatCpCount);
 	//推荐标签动画开始之后再将"请求下一批"的按钮显现
 	$("#request_cp").show();
 }
 
 //叶夷 2017.06.16 通过服务器返回的标签添加到页面的方法
-//i表示一批推荐标签的第几个标签，cpList一批推荐标签
-function appendElement(i, cpList) {
+//i表示一批推荐标签的第几个标签
+function appendElement(i, cpid,cp) {
 	var cp_container = $("#cp-container");//装推荐标签的容器
 	
 	// 先随机推荐标签字体的大小，在这里留一个可以控制字体大小的入口
 	var cpTextSize = Math.random() * 8 + 12;
 	cpTextSize = parseInt(cpTextSize);
 	
-	var cp = cpList[i];//每个推荐标签
-	var cpid=cp.cpid;//每个推荐标签id
-
 	var cp_node = $("<div></div>").attr("class", "cp").attr("id",
 			"cpid" + cpid);// 外圆div
 	var cp_innode = $("<div></div>").attr("class", "incp");// 内圆div
@@ -220,8 +234,8 @@ function subString(str, len, hasDot) {
 }
 
 var cpValue = new Array();// 定义一个数组，将可见屏幕的所有标签的left和top值存入数组中，这样可以直接对比
-
-function CP(cpNode, cpLeft, cpRight, cpTop, cpBottom) {// 定义一个cp类
+/**定义一个cp类  cpid,cp位置left，cp位置right...*/
+function CP(cpNode, cpLeft, cpRight, cpTop, cpBottom) {
 	var obj = new Object();
 	obj.cpNode = cpNode;
 	obj.cpLeft = cpLeft;// 用来判断轨迹范围,最后定位上升cp的动画位置
@@ -324,7 +338,7 @@ function cpAnimationLocation(cp_container,cp_node) {
 		if (isOverLay) {
 			continue;
 		}
-		console.log("测试 1："+top+"->"+maxTop);
+		//console.log("测试 1："+top+"->"+maxTop);
 		if (top == -1) {// 如果一开始=-1，则top直接赋值
 			top = maxTop;
 		} else {
@@ -344,7 +358,7 @@ function cpAnimationLocation(cp_container,cp_node) {
 
 /**叶夷 2017.06.28 定义好位置之后开始动画,参数是需要动画的个数*/
 function startAnimate(length) {
-	for (var j = cpValue.length - 1; j > cpValue.length - length - 1; j--) {
+	for (var j = cpValue.length - 1; j > cpValue.length - length - 1; j--) {//只需要从需要动画的cp个数开始上升，已经在前端的cp不动
 		var cp_nodeId = cpValue[j].getCpNode();
 		var cp_node = $("#" + cp_nodeId);
 		var cp_start = $("#cp-container").height();// 每次从一批标签的最后开始上升
@@ -367,13 +381,13 @@ function startAnimate(length) {
 function calCPTangencyTop(cpObj, cpRadius, cpX) {
 	// 6.计算与cpFirstObj能够相切时的位置
 	var cpObjNode = cpObj.getCpNode();
-	console.log("测试4："+cpObjNode);
+	//console.log("测试4："+cpObjNode);
 	var cpObjRadius = $("#" + cpObjNode).width() / 2;// 已有cp的半径
 	var cpObjLeftValue = cpObj.getCpLeft();// 获得已有cp的最左边边界值
 	var cpObjTopValue = cpObj.getCpTop();
 	var cpObjX = cpObjLeftValue + cpObjRadius;// 圆心的x轴
 	var cpObjY = cpObjTopValue + cpObjRadius;// 圆心的y轴
-	console.log("测试 3："+cpObjY+"->"+cpRadius+"->"+cpObjRadius+"->"+cpX+"->"+cpObjX);
+	//console.log("测试 3："+cpObjY+"->"+cpRadius+"->"+cpObjRadius+"->"+cpX+"->"+cpObjX);
 	//371.5->34->46.5->195->113.5
 	
 	// 上升的cp在轨迹内可以与其相切的y值
@@ -457,8 +471,6 @@ function logOff() {
 function clearLocalstoreUserInfo() {
 	localStorage.clear();
 }
-
-
 
 function closeSearch() {
 	document.getElementById("_keywords").value = "";
