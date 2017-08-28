@@ -126,7 +126,7 @@ public class ConcernPointOperationWSController {
 		}	
 	}
 	
-	//2017.08.11 叶夷  通过uid和cpid判断cp是否已经被选择
+	/**2017.08.11 叶夷  通过uid和cpid判断cp是否已经被选择*/
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1107-1")
 	public void ifSelectCP(WebSocketSession session, TextMessage message){
 		JSONObject params=new JSONObject(message.getPayload());

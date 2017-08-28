@@ -324,7 +324,7 @@ function cpAnimationLocation(cp_container,cp_node) {
 		if (isOverLay) {
 			continue;
 		}
-		//console.log("测试 1："+top+"->"+maxTop);
+		console.log("测试 1："+top+"->"+maxTop);
 		if (top == -1) {// 如果一开始=-1，则top直接赋值
 			top = maxTop;
 		} else {
@@ -342,7 +342,7 @@ function cpAnimationLocation(cp_container,cp_node) {
 	cp_container.height(bottom);
 }
 
-// 叶夷 2017.06.28 定义好位置之后开始动画,参数是需要动画的个数
+/**叶夷 2017.06.28 定义好位置之后开始动画,参数是需要动画的个数*/
 function startAnimate(length) {
 	for (var j = cpValue.length - 1; j > cpValue.length - length - 1; j--) {
 		var cp_nodeId = cpValue[j].getCpNode();
@@ -367,13 +367,13 @@ function startAnimate(length) {
 function calCPTangencyTop(cpObj, cpRadius, cpX) {
 	// 6.计算与cpFirstObj能够相切时的位置
 	var cpObjNode = cpObj.getCpNode();
-	//console.log("测试4："+cpObjNode);
+	console.log("测试4："+cpObjNode);
 	var cpObjRadius = $("#" + cpObjNode).width() / 2;// 已有cp的半径
 	var cpObjLeftValue = cpObj.getCpLeft();// 获得已有cp的最左边边界值
 	var cpObjTopValue = cpObj.getCpTop();
 	var cpObjX = cpObjLeftValue + cpObjRadius;// 圆心的x轴
 	var cpObjY = cpObjTopValue + cpObjRadius;// 圆心的y轴
-	//console.log("测试 3："+cpObjY+"->"+cpRadius+"->"+cpObjRadius+"->"+cpX+"->"+cpObjX);
+	console.log("测试 3："+cpObjY+"->"+cpRadius+"->"+cpObjRadius+"->"+cpX+"->"+cpObjX);
 	//371.5->34->46.5->195->113.5
 	
 	// 上升的cp在轨迹内可以与其相切的y值
@@ -458,72 +458,7 @@ function clearLocalstoreUserInfo() {
 	localStorage.clear();
 }
 
-// 进入聊天页，别人的uid和我的uid都需要
-function enterDialogPage() {
-	// var topictitle = $("#" + topicid + " .topictitle").attr("title");
-	// topictitle = specialLettersCoding(topictitle);
-	var toUserName;
-	if (userName === "婚礼司仪涛哥") {
-		toUserName = "汉良";
-		toUserId = "804622010041896960";
-	} else {
-		toUserName = "婚礼司仪涛哥";
-		toUserId = "745600342770716672";
-	}
 
-	var pageParam = {
-		"toUserId" : toUserId,
-		"toUserName" : toUserName,// 这里是为了测试
-		// "toUserImage" : "",
-		"userid" : userId,
-		"userName" : userName,
-		"userImage" : userImg,
-		"server_domain" : domain,
-		"userAgent" : userAgent,
-		"topicPageSign" : "yes"
-	};
-	console.log("enterDialogPage toUserId=" + toUserId + "|toUserName="
-			+ toUserName);
-	// openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
-	openWin(toUserId, 'dialog_page/dialog_page.html', JSON.stringify(pageParam));
-}
-
-// 2017.07.26 叶夷 进入聊天列表页，需要我的id
-function EnterdialogList() {
-	var pageParam = {
-		"userid" : userId,
-		"userName" : userName,
-		"userImage" : userImg,
-		"server_domain" : domain,
-		"adminName" : adminName,
-		"adminImageurl" : adminImageurl,
-		"userAgent" : userAgent,
-		"topicPageSign" : "yes",
-		"unreadObjList":unreadObjList
-	};
-	console.log("enterDialogListPage userId=" + userId);
-	openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', JSON
-			.stringify(pageParam));
-	//进入聊天列表页聊天未读信息清空
-	unreadObjList.splice(0,unreadObjList.length);
-}
-
-//2017.08.07 叶夷 进入匹配人列表详细信息页，需要UserId
-function enterMatchUsersPage(){
-	var pageParam = {
-			"userid" : userId,
-			"userName" : userName,
-			"userImage" : userImg,
-			"server_domain" : domain,
-			"adminName" : adminName,
-			"adminImageurl" : adminImageurl,
-			"userAgent" : userAgent,
-			"topicPageSign" : "yes"
-		};
-		console.log("enterMatchUsersPage userId=" + userId);
-		openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', JSON
-				.stringify(pageParam));
-}
 
 function closeSearch() {
 	document.getElementById("_keywords").value = "";
@@ -550,23 +485,6 @@ function MatchPeople(mpId, mpImg) {// 有匹配人的ID，匹配人的头像图�
 // 2.匹配人交换位置动画运行完毕现将自己这份数据在队列中删除，然后查看队列里面有没数据，有则接着运行,没有则运行完毕
 var muDataQueue = new Array();
 var circleEnd = true;// 判断动画是否运行完
-
-// 2017.07.07 叶夷 这是用户刚开始打开网页的时候请求的后端返回的匹配人列表
-function responseTopMatchedUsers(muData) {
-	var matchedUserArr = muData.matched_user_arr;// 获得后台发送的匹配人排名信息数组
-	showMatchPeople(matchedUserArr);// 显示匹配人列表
-}
-
-// 2017.07.07 叶夷 匹配用户改变
-function push_matched_user(newMuData) {
-	var newMatchedUserArr = newMuData.new_user_arr;// 获得后台发送的匹配人排名信息数组
-	// 如果有新数据，先判断动画有没有运行完
-	if (circleEnd) {// 如果运行完，则直接进入程序运行
-		showMatchPeople(newMatchedUserArr);
-	} else {// 如果没有运行完则将新数据放入队列中
-		mpDataQueue.push(newMatchedUserArr);
-	}
-}
 
 //2017.07.04 叶夷 模拟数据的产生 
 function addMPData(){ 

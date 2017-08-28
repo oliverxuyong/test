@@ -16,7 +16,7 @@ public class CpChoiceServiceImpl implements CpChoiceService{
 	@Autowired
 	private CpChoiceDao cpChoiceDao;
 	
-	//2017.08.11 叶夷  通过uid和cpid查找cp是否存在
+	/**2017.08.11 叶夷  通过uid和cpid查找cp是否存在*/
 	@Override
 	public CpChoiceDO getCpChoice(Long userid, BigInteger cpId){
 		return cpChoiceDao.getCpChoice(userid, cpId);
