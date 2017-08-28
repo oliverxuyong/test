@@ -20,6 +20,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 		var isRepeat=false;
 		for(var j in cpValue){
 			if(cpValue[j].getCpNode()==("cpid"+cpid)){//出现过
+				console.log("cpid->"+cpid+" 标签重复出现")
 				isRepeat=true;
 				break;
 			}
@@ -425,13 +426,19 @@ function addMyCp(cpid,text){
 	
 	var myTagTextLength = length(text);
 	var myTagTextSize = parseInt(myTag.css("font-size"))+1;
-	var myTagWidth=myTagTextLength*myTagTextSize+10;
+	var myTagWidth=myTagTextLength*myTagTextSize+20;
 	var myTagHeight=myTagTextSize*2-4;
 	
 	myTag.css("width", myTagWidth+"px");
 	myTag.css("height", myTagHeight+"px");
 	myTag.css("line-height", myTagHeight+"px");
-	$("#cpid"+cpid).css("opacity", "0.2");// 目前只是改变背景颜色为红色
+	$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
+	$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
+	
+	//随时在我的标签后面加上“+”
+	$("#addtag").remove();
+	var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+myTagHeight+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
+	myTagContainer.append(addTag);
 	
 	document.getElementById('mytag-container').scrollTop = document.getElementById('mytag-container').scrollHeight;
 	console.log("选中标签成功");
@@ -445,6 +452,7 @@ function showUnSelectCP(data){
 	var text=cp_node.find(".incp").text();
 	console.log(cpid + "-> 取消选择");
 	cp_node.css("opacity", "1");
+	cp_node.css("cursor", "pointer");
 	$("#mytag"+cpid).remove();
 	
 	//将取消选择的标签重新绑定点击事件
@@ -874,20 +882,6 @@ function showMyCp(datas){
 		myTagContainer.append(myTag);*/
 		addMyCp(cpid,text);
 	}
-	
-	//加号位置
-	var addTagImg=$("#addtagimg");
-	var addWidth=addTagImg.css("width");
-	var addHeight=addTagImg.css("height");
-	
-	var myTagContainerWidth=myTagContainer.css("width");
-	var myTagContainerHeight=myTagContainer.css("height");
-	
-	var addMarginTop=parseInt(myTagContainerHeight)-parseInt(addHeight);
-	var addMarginLeft=parseInt(myTagContainerWidth)-parseInt(addWidth);
-	
-	addTagImg.css("margin-top",addMarginTop+"px");
-	addTagImg.css("margin-left",addMarginLeft+"px");
 }
 
 //2017.08.09  叶夷  添加标签之后的显示

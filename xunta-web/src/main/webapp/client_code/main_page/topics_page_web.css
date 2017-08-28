@@ -198,6 +198,7 @@ width:100%;
 	margin: 2% 3% 2% 3%;
 	float: left;
 	overflow-y:auto;
+	overflow-x:hidden;
 }
 /*我的标签最外层容器*/
 .mytag-outer{
@@ -367,6 +368,7 @@ width:100%;
 	left:0px;
 	border-radius:50%; 
 	border:1px solid #e5efff;
+	cursor:pointer;
 	}
 
 .incp{ 
@@ -413,6 +415,7 @@ width:100%;
 .mu{
 	position:absolute;
 	border-radius:50%;
+	cursor:pointer;
 }
 
 .mu img{
@@ -460,30 +463,17 @@ width:100%;
 	border-radius:0px 0px 10px 10px;
 }
 
-.addtagimg{
-	position:absolute;
-}
-
-.addtagimg img{
-	width:25px;
-	height:25px;
-}
-
 .mytag{
 	float: left;
-    //height: 30px;
-    //line-height: 30px;
-    background-color: #FFE7BA;
-    //width: 50px;
     text-align: center;
-    border-radius: 5px;
+    border-radius: 25px;
     margin-left: 5px;
-    color: #ffffff;
     margin-top:5px;
     font-size:0.8em;
     letter-spacing:1px;
+    border:1px solid #d6e5f5;
 }
 
-.mytag img{
-	width:5px;
+.add{
+	//color:#fccf63;
 }
