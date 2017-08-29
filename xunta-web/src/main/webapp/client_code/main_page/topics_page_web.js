@@ -62,18 +62,15 @@ function appendElement(i, cpid,cp) {
 	cp_innode.css("height", cpInNodeWidth);
 	cp_innode.css("width", cpInNodeWidth);
 	
+	//这是cp的选择人数
+//	var selectTagNum =cp.howmanypeople_selected;
+	var selectTagNum =parseInt(Math.random()*999)+1;
+	
 	//将标签的文字设置为字母和数字，为了测试匹配文字和数字和原型
 	//calCircle(cp_text, cpTextSize, "CaraDelev...", cp_node, cp_innode);
 	// 调用字体大小匹配圆大小的方法
-	calCircle(cp_text, cpTextSize, cp.cptext, cp_node, cp_innode);
+	calCircle(cp_text, cpTextSize, cp.cptext, cp_node, cp_innode,selectTagNum);
 	
-	//2017.08.14 叶夷  标签的选择人数
-	var selectTagNum =cp.howmanypeople_selected;
-	if(selectTagNum>0){
-		var selectTagNumNode= $("<div></div>").attr("class", "selectTagNum").text(selectTagNum);
-		cp_node.append(selectTagNumNode);
-	}
-
 	cp_node.click(function() {
 		// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
 		chooseOneCP(cp_node, cp);
@@ -106,7 +103,7 @@ function sizeInMaxAndMin(size,max,min){
 // 叶夷 2017.06.30
 // cp圆的大小与文字匹配,在分级的情况下计算相应文字的面积，然后计算圆的面积(这里还没想好怎么做：然后比较内圆大小，如果内圆不能装下文字，则扩大外圆)
 //传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div
-function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode) {
+function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNum) {
 	//获得cp文字字符的长度
 	var cpTextLength = length(cpText);
 
@@ -146,10 +143,27 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode) {
 	cp_text.css("width", cpTextWidth + "px");
 	cp_text.css("font-size", cpTextSize);
 	cp_text.text(cpText);
-
+	
 	// 计算cp div的斜边的大小，即容纳其外圆的直径
 	var hypotenuse = parseInt(Math.sqrt(Math.pow(cpTextHeight, 2)
 			+ Math.pow(cpTextWidth, 2))) + 1;
+	
+	/*//2017.08.14 叶夷  加上标签的选择人数
+	var selectTagNumNode;
+	if(selectTagNum>0){
+		selectTagNumNode= $("<div></div>").attr("class", "selectTagNum").text(selectTagNum);
+		cp_node.append(selectTagNumNode);
+		
+		selectTagNumNode.css("font-size",cpTextSize+"px");
+		selectTagNumNode.css("height", (cpTextSize+5) + "px");
+		//加上了标签的选择人数外圆的大小增大
+		if (cpInNodeWidth > hypotenuse){
+			cpInNodeWidth=cpInNodeWidth+cpTextSize+5;
+		}else{
+			hypotenuse=hypotenuse+cpTextSize+5;
+		}
+	}*/
+	
 	// 为了使文字居中，计算文字div 的top
 	var cpTextTop;
 	var cpTextLeft;
@@ -168,10 +182,16 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode) {
 		cp_innode.css("left", cpInNodeTop);
 
 	}
+	//文字位置调整
 	cpTextTop = (cpInNodeWidth - cpTextHeight) / 2;
 	cpTextLeft = (cpInNodeWidth - cpTextWidth) / 2;
 	cp_text.css("top", cpTextTop);
 	cp_text.css("left", cpTextLeft);
+	
+	/*if(selectTagNumNode!=undefined){
+		var cpTextNodeTop=parseInt(cp_innode.css("top"));
+		selectTagNumNode.css("top", (cpTextNodeTop+cpTextHeight) + "px");
+	}*/
 }
 
 //叶夷 2017.08.22 判断标签是否全为数字或者字母
@@ -429,6 +449,7 @@ function addMyCp(cpid,text){
 	var myTagWidth=myTagTextLength*myTagTextSize+20;
 	var myTagHeight=myTagTextSize*2-4;
 	
+	//每个我选择的标签的大小适配
 	myTag.css("width", myTagWidth+"px");
 	myTag.css("height", myTagHeight+"px");
 	myTag.css("line-height", myTagHeight+"px");
@@ -440,7 +461,20 @@ function addMyCp(cpid,text){
 	var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+myTagHeight+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
 	myTagContainer.append(addTag);
 	
-	document.getElementById('mytag-container').scrollTop = document.getElementById('mytag-container').scrollHeight;
+	//装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
+	var myTagMarginTop=parseInt(myTag.css("margin-top"));
+	var myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
+	myTagContainer.css("height",myTagContainerHeight+"px");
+	var headerContainerHeight=parseInt($("#header-container").css("height"));
+	$("#header-container").css("height",headerContainerHeight+"px");
+	$("#top-container").css("height",(headerContainerHeight+myTagContainerHeight)+"px");
+	var showatloadedHeight=parseInt($("#showatloaded").css("height"));
+	$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight)+"px");
+	
+	//2017.08.29  叶夷   如果我的标签显示超过两行，装我选择的标签的容器高度增加
+	//console.log("测试："+myTag.css("bottom"));
+	
+	
 	console.log("选中标签成功");
 	toast_popup("选中标签成功",2500);
 }
@@ -582,7 +616,7 @@ function muAddImg(i,matchedUserArr){
 	muNode.append(muNodeImg);
 	
 	muNowData.push(muNode);
-	muNode.attr("id",muId);
+	muNode.attr("id","mu"+muId);
 	
 	//点击事件
 	muNode.click(function() {
@@ -594,7 +628,7 @@ function muAddImg(i,matchedUserArr){
 
 //2017.08.23 叶夷  生成一个新的匹配人div
 function muDiv(id,muImg,top,left){
-	var muNode=$("<div></div>").attr("id",id).attr("class","mu");//这是页面的匹配人头像div
+	var muNode=$("<div></div>").attr("id","mu"+id).attr("class","mu");//这是页面的匹配人头像div
 	var muNodeImg=$("<img src='"+muImg+"' style='width:0px;height:0px;'/>");
 	muNode.append(muNodeImg);
 	$(".header-container").append(muNode);
@@ -952,4 +986,24 @@ function showMatchedUsers(){
 		muNode.css("width",changeMuWidth+"px");
 		muNode.css("height",changeMuWidth+"px");
 	}
+}
+
+function showEnterMatchedUsers(){
+	var mu1=$("#mu1");
+	var mu7=$("#mu7");
+	var mu5=$("#mu5");
+	var enterMatchUserList=$("#enterMatchUserList");
+	
+	var enterMatchedUserListLeft=parseInt(mu1.css("left"))+parseInt(mu1.css("width"))/2;
+	var enterMatchedUserListTop=parseInt(mu7.css("top"))+5;
+	enterMatchUserList.css("left",enterMatchedUserListLeft+"px");
+	enterMatchUserList.css("top",enterMatchedUserListTop+"px");
+	
+	var enterMatchedUserListHeight=parseInt(mu7.css("height"))+parseInt(mu7.css("height"))/3;
+	enterMatchUserList.css("height",enterMatchedUserListHeight+"px");
+	enterMatchUserList.css("line-height",enterMatchedUserListHeight+"px");
+	
+	var enterMatchedUserListWidth=parseInt(mu5.css("left"))-enterMatchedUserListLeft;
+	enterMatchUserList.css("width",enterMatchedUserListWidth+"px");
+	
 }

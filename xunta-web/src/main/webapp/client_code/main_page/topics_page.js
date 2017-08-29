@@ -41,8 +41,6 @@ function updateNickname(newNickname){
  * end:叶夷
  */
 
-
-
 function requestCP(userId,requestNum,currentPage){//调用根页面上的同名方法.
 	var paraStr = userId + "','" + requestNum + "','" + currentPage;
 	execRoot("initToGetCP('"+ paraStr +"')");

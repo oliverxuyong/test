@@ -28,7 +28,7 @@
 	<div id="showatloaded" class="showatloaded">
 
 		<div id="top-container" class="top-container">
-			<div class="header-container">
+			<div class="header-container" id="header-container">
 				<!-- 重新登录-->
 				<div id="showouseroprate">
 					<img src="../image/exit.png" onclick="logOff()">
@@ -41,26 +41,29 @@
 				<!--头像-->
 				<div class="userimg">
 					<img id="topic_img" src="" onclick="" />
+					<div class="username" id="username"></div>
 				</div>
+				
+				<!-- 进入匹配人列表 -->
+				<div class="enterMatchUserList" id="enterMatchUserList">为你匹配了18个人</div>
+				
 				<!--2017.07.04  叶夷   匹配人列表 -->
-				<div class="mu" id="mu1" style="left: 186px;width: 35px;height: 35px;top: 76px;"></div>
-    			<div class="mu" id="mu2" style="left: 225px;width: 33px;height: 33px;top: 84px;"></div>
-    			<div class="mu" id="mu3" style="left: 262px;width: 31px;height: 31px;top: 86px;"></div>
-    			<div class="mu" id="mu4" style="left: 297px;width: 29px;height: 29px;top: 84px;"></div>
-    			<div class="mu" id="mu5" style="left: 328px;width: 27px;height: 27px;top: 74px;"></div>
-    			<div class="mu" id="mu6" style="left: 342px;width: 25px;height: 25px;top: 48px;"></div>
-    			<div class="mu" id="mu7" style="left: 345px;width: 23px;height: 23px;top: 22px;"></div>
-    			<div class="mu" id="mu8" style="left: 329px;width: 21px;height: 21px;top: 4px;"></div>
-    			<div class="mu" id="mu9" style="left: 306px;width: 19px;height: 19px;top: 1px;"></div>
-    			<div class="mu" id="mu10" style="left: 286px;width: 17px;height: 17px;top: 4px;"></div>
+				<div class="mu" id="mu1" style="left: 145px;width: 40px;height: 40px;top: 80px;"></div>
+    			<div class="mu" id="mu2" style="left: 193px;width: 37px;height: 37px;top: 83px;"></div>
+    			<div class="mu" id="mu3" style="left: 240px;width: 34px;height: 34px;top: 85px;"></div>
+    			<div class="mu" id="mu4" style="left: 281px;width: 31px;height: 31px;top: 84px;"></div>
+    			<div class="mu" id="mu5" style="left: 318px;width: 28px;height: 28px;top: 79px;"></div>
+    			<div class="mu" id="mu6" style="left: 342px;width: 25px;height: 25px;top: 57px;"></div>
+    			<div class="mu" id="mu7" style="left: 346px;width: 22px;height: 22px;top: 31px;"></div>
+    			<div class="mu" id="mu8" style="left: 332px;width: 19px;height: 19px;top: 13px;"></div>
+    			<div class="mu" id="mu9" style="left: 313px;width: 16px;height: 16px;top: 5px;"></div>
+    			<div class="mu" id="mu10" style="left: 296px;width: 13px;height: 13px;top: 2px;"></div>
 			</div>
 			
 			<!-- 我的标签 -->
-			<div class="mytag-outer">
-				<div class="mytag-container" id="mytag-container">
+			<div class="mytag-container" id="mytag-container">
 				<div class="mytag add" id="addtag" onclick="addTag()">+</div>
 				<!--  <div class="mytag"><img src="../image/acclaim-50x173.png"><span>90后</span></div>-->
-				</div>
 			</div>
 		</div>
 		
@@ -90,10 +93,10 @@
 			
 		</div>
 		
-		<!-- "聊天"文字容器 -->
+		<!-- "聊天"文字容器
 		<div class="enterdialogList" id="enterdialogList" onclick="EnterdialogList()">
 			聊天
-		</div>
+		</div> -->
 		
 	</div> <!--End of <div id="showatloaded" class="showatloaded"> -->
 	
@@ -139,6 +142,8 @@
 			
 			//2017.08.23 叶夷   匹配人位置根据屏幕调整
 			showMatchedUsers();
+			//这是进入匹配人详细列列表的按钮位置
+			showEnterMatchedUsers();
 			
 			//2017.07.04  叶夷  
 			addMPData();//匹配人列表测试
@@ -235,8 +240,10 @@
 			}else{
 				$("#alterUserimage").show();
 			}*/
-			$(".userimg>img").attr("src", userImg);
-			//$("#username").text(userName);
+			var userimg=$(".userimg>img");
+			userimg.attr("src", userImg);
+			var username=$("#username");
+			username.text(userName);
 			
 			//if ( projectType == "WEB" ){
 			//	if ( userAgent[0] == "PC" ){
@@ -253,17 +260,20 @@
 				$("#imageundertopiclist").fadeIn(1500);//延迟并缓慢显示背景图片.
 			}, 1000);
 			
-			//2017.08.23 叶夷   我的头像位置适配
+			//2017.08.23 叶夷   我的头像和昵称框位置
 			var headerContainerHeight=$(".header-container").css("height");
 			var userImgHeight=$(".userimg").css("height");
+			var userImgWidth=$(".userimg").css("width");
 			var userImgMarginTop=parseInt(headerContainerHeight)-parseInt(userImgHeight);
 			$(".userimg").css("margin-top", userImgMarginTop+"px");
-			
-			//2017.08.23 叶夷   "聊天"二字垂直居中
-			var enterdialogList=$(".enterdialogList");
-			var enterdialogListHeight=parseInt(enterdialogList.css("height"));
-			enterdialogList.css("line-height",enterdialogListHeight+"px");
-			
+			//头像大小位置和用户昵称大小位置
+			var userimgHeight=userimg.css("height");
+			var userimgMarginLeft=(parseInt(userImgWidth)-parseInt(userimgHeight))/2;
+			userimg.css("width",userimgHeight);//图片高宽一致
+			userimg.css("margin-left",userimgMarginLeft);//图片高宽一致
+			usernameHeight=parseInt(userImgHeight)-parseInt(userimgHeight);
+			username.css("height",usernameHeight+"px");
+			//username.css("line-height",usernameHeight+"px");
 		}
 
 		function retrievePageParams(pageParamsStr){
