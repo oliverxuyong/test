@@ -30,10 +30,6 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
 	console.log(' ExistedTopic 刚刚的发言已发往服务器:' + inputValue);
 }
 
-function handler(){
-	
-}
-
 function afterCheckedSendPosterSuccess(tmpPid, SendPosterSuccess) {//一般发言,新创话题,移动新建的延时检查处理都用这个方法.
 	if (SendPosterSuccess) {
 		alert(SendPosterSuccess);

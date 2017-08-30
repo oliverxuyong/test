@@ -136,6 +136,10 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNum)
 			cpTextWidth = cpTextSize * (cpTextLength / 2 + 1);
 		}
 		cpTextHeight = cpTextSize * 2 + (6 * 2);
+		
+		//分行情况下减小行之间的间距
+		var cpTextLineHeight=cpTextHeight/2-3;
+		cp_text.css("line-height", cpTextLineHeight + "px");
 	}
 	
 	// 将cp文字div的大小设置
@@ -436,7 +440,23 @@ function chooseCP(cp_node,cpid,text){
 function showSelectTag(data){
 	var cpid=data.cpid;
 	var text=data.cptext;
-	addMyCp(cpid,text);
+	
+	//2017.08.29   叶夷    选择标签加上动画效果，标签上升到“我的标签”容器中
+	var animateCp=$("#cpid"+cpid).clone();
+	$("#showatloaded").append(animateCp);
+	var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
+	animateCp.css("top",animateCpStartTop);
+	var animateCpEndTop=parseInt($("#top-container").height())-parseInt(animateCp.width());
+	animateCp.animate({
+		top : animateCpEndTop+"px"
+	}, {
+		duration :1000
+	});
+	
+	timeOutSuccess = setTimeout(function() {
+		animateCp.remove();
+		addMyCp(cpid,text);
+	},1000);
 }
 
 function addMyCp(cpid,text){
@@ -453,6 +473,7 @@ function addMyCp(cpid,text){
 	myTag.css("width", myTagWidth+"px");
 	myTag.css("height", myTagHeight+"px");
 	myTag.css("line-height", myTagHeight+"px");
+	
 	$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
 	$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
 	
@@ -473,7 +494,6 @@ function addMyCp(cpid,text){
 	
 	//2017.08.29  叶夷   如果我的标签显示超过两行，装我选择的标签的容器高度增加
 	//console.log("测试："+myTag.css("bottom"));
-	
 	
 	console.log("选中标签成功");
 	toast_popup("选中标签成功",2500);
