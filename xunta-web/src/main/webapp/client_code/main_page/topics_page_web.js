@@ -415,8 +415,8 @@ function chooseOneCP(cp_node, cp) {
 
 function chooseCP(cp_node,cpid,text){
 	console.log(cp_node.attr("id") +":"+text+ "-> 选中状态");
-	sendSelectCP(userId, cpid,text);
 	cp_node.unbind();
+	sendSelectCP(userId, cpid,text);
 }
 
 //叶夷  2017.08.08 选中的标签添加到我的标签框中
@@ -425,6 +425,31 @@ function showSelectTag(data){
 	var text=data.cptext;
 	
 	addMyCp(cpid,text);
+	
+	//2017.08.29   叶夷    选择标签加上动画效果，标签上升到“我的标签”容器中
+	var myTag=$("#mytag"+cpid);
+	var animateCp=$("#cpid"+cpid).clone();
+	$("#showatloaded").append(animateCp);
+	var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
+	animateCp.css("top",animateCpStartTop);
+	var animateCpEndTop=myTag.offset().top;
+	var animateCpEndLeft=myTag.offset().left;
+	myTag.hide();
+	animateCp.animate({
+		left:animateCpEndLeft+"px",
+		top : animateCpEndTop+"px"
+	}, {
+		duration :500
+	});
+	timeOutSuccess = setTimeout(function() {
+		animateCp.remove();
+		myTag.show();
+		$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
+		$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
+	},500);
+	
+	console.log("选中标签成功");
+	toast_popup("选中标签成功",2500);
 }
 
 //判断选择过的标签有多少行，从而判断选择过标签的框的height
@@ -470,28 +495,6 @@ function addMyCp(cpid,text){
 	
 	//我的标签框高度改变了之后影响其他部分的高度
 	myTagContainerHeightChange(myTagContainer,myTagContainerHeight);
-	
-	//2017.08.29   叶夷    选择标签加上动画效果，标签上升到“我的标签”容器中
-	var animateCp=$("#cpid"+cpid).clone();
-	$("#showatloaded").append(animateCp);
-	var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
-	animateCp.css("top",animateCpStartTop);
-	var animateCpEndTop=myTag.offset().top;
-	var animateCpEndLeft=myTag.offset().left;
-	animateCp.animate({
-		left:animateCpEndLeft+"px",
-		top : animateCpEndTop+"px"
-	}, {
-		duration :500
-	});
-	timeOutSuccess = setTimeout(function() {
-		animateCp.remove();
-		$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
-		$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
-	},500);
-	
-	console.log("选中标签成功");
-	toast_popup("选中标签成功",2500);
 }
 /**
  * 我的标签框高度改变了之后影响其他部分的高度

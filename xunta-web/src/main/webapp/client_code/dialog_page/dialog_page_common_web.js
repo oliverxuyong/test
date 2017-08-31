@@ -115,9 +115,9 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
  * @param data
  */
 function showSameSelectCp(data){
-	for(var i in data){
-		var cpid=data[i].cp_id;
-		var text=data[i].text;
+	for(var i in data.msg){
+		var cpid=data.msg[i].cp_id;
+		var text=data.msg[i].text;
 		appendSameSelectCp(cpid,text);
 	}
 }

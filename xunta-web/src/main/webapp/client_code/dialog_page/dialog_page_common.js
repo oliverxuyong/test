@@ -149,12 +149,13 @@ function showTitle() {
  */
 function requestSelectCP(){
 	$.ajax({
-        url:"http://xunta.so:3000/v1/find/users/tags",
+        url:"http://xunta.so:3000/v1/find/users/same/tags/",
         type:"POST",
         dataType:"jsonp",
         jsonp:"callback",
         contentType: "application/json; charset=utf-8",
-        data:{from_user_id:userId},
+        data:{my_user_id:userId,
+        	matched_user_id:toUserId},
         async:false,
         success:function(data, textStatus) {
         	console.log("请求共同选择的标签成功");
