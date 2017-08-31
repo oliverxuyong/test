@@ -197,7 +197,7 @@ width:100%;
 	float: left;
 	border-bottom:5px solid #f9f8f9;
 	border-top:5px solid #f9f8f9;
-	overflow-y:auto;
+	//overflow-y:auto;
 }
 /*我的标签最外层容器*/
 .search-head{

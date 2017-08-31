@@ -28,6 +28,11 @@
 			<div class="_closeBtn" onclick="closeBtn()"><img src="../image/close.png" ></div>
 		</div>
 		
+		<!-- 共同选择过的cp -->
+		<div class="selectCp-container" id="selectCp-container">
+			<div style="text-align:center;color:#f9f8f9;height:20px;line-height:20px;">共同选择的标签</div>
+		</div>
+		
 		<div id="dialog_box">
 			<div id="loadingwrap">
 				<div id="loading"><img src="../image/threedotmoving.gif" />
@@ -127,9 +132,11 @@
             userAgent = Parameter.userAgent;
 
 			_topicPageSign = Parameter.topicPageSign;
+			
+			//2017.08.30 叶夷  请求共同选择的标签
+			requestSelectCP();
          
     		//暂时取消,换成下面两句:prepareDialogPage();
-    		adjustWidthsHeights();
     		showTitle();
     		//showTitle();
     		sort = 'asc';

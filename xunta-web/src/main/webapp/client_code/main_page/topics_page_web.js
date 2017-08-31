@@ -215,23 +215,6 @@ function isLetterOrNumber(cpText) {
 	return isLetterOrNumber;
 }
 
-// 叶夷 2017.06.30 判断字符串长度，中文=英文的两倍
-function length(cpText) {
-	var len = 0;
-	var cpLength=cpText.length;
-	for (var i = 0; i <cpLength; i++) {
-		if (cpText.charCodeAt(i) >=97 && cpText.charCodeAt(i) <=122) {//数字和字母
-			len+=0.6;
-		} else if((cpText.charCodeAt(i) >= 65 && cpText.charCodeAt(i) <= 90)
-			       || (cpText.charCodeAt(i) >= 48 && cpText.charCodeAt(i) <= 57)){
-			len+=0.7;
-		}else {
-			len++;
-		}
-	}
-	return len;
-}
-
 // 叶夷 2017.06.30 中英文不同情况的字符串截取，中文=英文的两倍
 function subString(str, len, hasDot) {
 	var newLength = 0;
@@ -441,23 +424,11 @@ function showSelectTag(data){
 	var cpid=data.cpid;
 	var text=data.cptext;
 	
-	//2017.08.29   叶夷    选择标签加上动画效果，标签上升到“我的标签”容器中
-	var animateCp=$("#cpid"+cpid).clone();
-	$("#showatloaded").append(animateCp);
-	var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
-	animateCp.css("top",animateCpStartTop);
-	var animateCpEndTop=parseInt($("#top-container").height())-parseInt(animateCp.width());
-	animateCp.animate({
-		top : animateCpEndTop+"px"
-	}, {
-		duration :1000
-	});
-	
-	timeOutSuccess = setTimeout(function() {
-		animateCp.remove();
-		addMyCp(cpid,text);
-	},1000);
+	addMyCp(cpid,text);
 }
+
+//判断选择过的标签有多少行，从而判断选择过标签的框的height
+var lineNumber=2;
 
 function addMyCp(cpid,text){
 	var myTagContainer=$("#mytag-container");
@@ -474,9 +445,6 @@ function addMyCp(cpid,text){
 	myTag.css("height", myTagHeight+"px");
 	myTag.css("line-height", myTagHeight+"px");
 	
-	$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
-	$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
-	
 	//随时在我的标签后面加上“+”
 	$("#addtag").remove();
 	var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+myTagHeight+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
@@ -484,19 +452,60 @@ function addMyCp(cpid,text){
 	
 	//装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
 	var myTagMarginTop=parseInt(myTag.css("margin-top"));
-	var myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
-	myTagContainer.css("height",myTagContainerHeight+"px");
-	var headerContainerHeight=parseInt($("#header-container").css("height"));
-	$("#header-container").css("height",headerContainerHeight+"px");
-	$("#top-container").css("height",(headerContainerHeight+myTagContainerHeight)+"px");
-	var showatloadedHeight=parseInt($("#showatloaded").css("height"));
-	$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight)+"px");
 	
-	//2017.08.29  叶夷   如果我的标签显示超过两行，装我选择的标签的容器高度增加
-	//console.log("测试："+myTag.css("bottom"));
+	//通过添加标签按钮是否超过容器的高度，超过则将容器扩大一行
+	var topContainerHeight=$("#top-container").height();
+	//console.log("测试:"+$("#addtag").offset().top);
+	var addTagBottom=$("#addtag").offset().top+myTagHeight;
+	if((topContainerHeight-addTagBottom)<0){//超过空间
+		++lineNumber;
+	}
+	
+	var myTagContainerHeight;
+	if(lineNumber<=2){//小于两行
+		myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
+	}else{
+		myTagContainerHeight=(myTagHeight+myTagMarginTop)*lineNumber+10;
+	}
+	
+	//我的标签框高度改变了之后影响其他部分的高度
+	myTagContainerHeightChange(myTagContainer,myTagContainerHeight);
+	
+	//2017.08.29   叶夷    选择标签加上动画效果，标签上升到“我的标签”容器中
+	var animateCp=$("#cpid"+cpid).clone();
+	$("#showatloaded").append(animateCp);
+	var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
+	animateCp.css("top",animateCpStartTop);
+	var animateCpEndTop=myTag.offset().top;
+	var animateCpEndLeft=myTag.offset().left;
+	animateCp.animate({
+		left:animateCpEndLeft+"px",
+		top : animateCpEndTop+"px"
+	}, {
+		duration :500
+	});
+	timeOutSuccess = setTimeout(function() {
+		animateCp.remove();
+		$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
+		$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
+	},500);
 	
 	console.log("选中标签成功");
 	toast_popup("选中标签成功",2500);
+}
+/**
+ * 我的标签框高度改变了之后影响其他部分的高度
+ * @param myTagContainer   我的标签框
+ * @param headerContainerHeight  改变的高度
+ */
+function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
+	var headerContainerHeight=parseInt($("#header-container").css("height"));
+	$("#header-container").css("height",headerContainerHeight+"px");
+	myTagContainer.css("height",myTagContainerHeight+"px");
+	$("#top-container").css("height",(headerContainerHeight+myTagContainerHeight+20)+"px");
+	var showatloadedHeight=parseInt($("#showatloaded").css("height"));
+	var tagContaiderTop=parseInt($("#tag-container").css("top"));
+	$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight-tagContaiderTop)+"px");
 }
 
 //叶夷  2017.08.08 取消选中的标签
@@ -508,6 +517,18 @@ function showUnSelectCP(data){
 	cp_node.css("opacity", "1");
 	cp_node.css("cursor", "pointer");
 	$("#mytag"+cpid).remove();
+	
+	//取消的时候将高度还原
+	var addtag=$("#addtag");
+	var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
+	var myTagContainer=$("#mytag-container");
+	var myTagContainerHeight=myTagContainer.height();
+	var myTagHeight=addtag.height();
+	var myTagMarginTop=parseInt(addtag.css("margin-top"));
+	if(myTagContainerHeight>(myTagHeight*2+myTagMarginTop*3)){//我的标签框要留出两行
+		//我的标签框高度改变了之后影响其他部分的高度
+		myTagContainerHeightChange($("#mytag-container"),addTagBottom);
+	}
 	
 	//将取消选择的标签重新绑定点击事件
 	cp_node.click(function() {
@@ -641,8 +662,8 @@ function muAddImg(i,matchedUserArr){
 	//点击事件
 	muNode.click(function() {
 		//进入聊天页
-		//enterDialogPage();
-		addMPData();//测试匹配人动画
+		enterDialogPage();
+		//addMPData();//测试匹配人动画
 	});
 }
 
@@ -660,8 +681,8 @@ function muDiv(id,muImg,top,left){
 	//点击事件
 	muNode.click(function() {
 		//进入聊天页
-		//enterDialogPage();
-		addMPData();//测试匹配人动画
+		enterDialogPage();
+		//addMPData();//测试匹配人动画
 	});
 }
 

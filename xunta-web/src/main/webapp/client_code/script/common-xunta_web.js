@@ -47,3 +47,21 @@ function toast(info) {
 	toast_popup(info,2500);//定义在popup.js里
 }
 
+/**
+ * 叶夷 2017.06.30 判断字符串长度，中文=英文的两倍
+ */
+function length(cpText) {
+	var len = 0;
+	var cpLength=cpText.length;
+	for (var i = 0; i <cpLength; i++) {
+		if (cpText.charCodeAt(i) >=97 && cpText.charCodeAt(i) <=122) {//数字和字母
+			len+=0.6;
+		} else if((cpText.charCodeAt(i) >= 65 && cpText.charCodeAt(i) <= 90)
+			       || (cpText.charCodeAt(i) >= 48 && cpText.charCodeAt(i) <= 57)){
+			len+=0.7;
+		}else {
+			len++;
+		}
+	}
+	return len;
+}

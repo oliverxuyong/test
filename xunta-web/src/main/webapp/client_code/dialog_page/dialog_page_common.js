@@ -101,7 +101,9 @@ function adjustWidthsHeights() {
 	}else{
 		document.getElementById("inputbox").style.width = $("#inputframe").width() - 68 + "px";
 	}
-	document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
+	//2017.08.30 叶夷  聊天页加上了共同选择的标签，聊天信息框的高度还需要减去共同选择标签框的高度
+	//document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
+	document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height()-$("#selectCp-container").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
 }
 
 function  getHistoryMsg(userId,toUserId,firstMsgId){
@@ -142,6 +144,27 @@ function showTitle() {
 	$('#title').text('[ ' + cutStringIfTooLong(toUserName,14) + ' ]')
 }
 
-
+/**
+ * 2017.08.30 叶夷  请求共同选择的标签
+ */
+function requestSelectCP(){
+	$.ajax({
+        url:"http://xunta.so:3000/v1/find/users/tags",
+        type:"POST",
+        dataType:"jsonp",
+        jsonp:"callback",
+        contentType: "application/json; charset=utf-8",
+        data:{from_user_id:userId},
+        async:false,
+        success:function(data, textStatus) {
+        	console.log("请求共同选择的标签成功");
+        	showSameSelectCp(data);
+        },
+        error:function(data, textStatus) {
+            console.log("请求共同选择的标签成功");
+        	return;
+        }
+    });
+}
 
 

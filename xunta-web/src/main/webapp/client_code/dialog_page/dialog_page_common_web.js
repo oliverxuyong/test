@@ -109,3 +109,50 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
 		$("#loadingtext").text("查看更多消息");
 	}
 }
+
+/**
+ * 2017.08.30 将请求的共同选择标签放好
+ * @param data
+ */
+function showSameSelectCp(data){
+	for(var i in data){
+		var cpid=data[i].cp_id;
+		var text=data[i].text;
+		appendSameSelectCp(cpid,text);
+	}
+}
+
+//选择过标签的width一个个相加，超过选择过标签的框则另起一行
+var sameSelectCpsWidth=0;
+//判断选择过的标签有多少行，从而判断选择过标签的框的height
+var lineNumber=1;
+
+function appendSameSelectCp(cpid,text){
+	var selectCpContainer=$("#selectCp-container");
+	var selectCp = $("<div></div>").attr("class", "selectCp").text(text);
+	selectCpContainer.append(selectCp);
+	
+	var selectCpTextLength = length(text);
+	var selectCpTextSize = parseInt(selectCp.css("font-size"))+1;
+	var selectCpWidth=selectCpTextLength*selectCpTextSize+20;
+	var selectCpHeight=selectCpTextSize*2-4;
+	
+	//每个我选择的标签的大小适配
+	selectCp.css("width",selectCpWidth+"px");
+	selectCp.css("height",selectCpHeight+"px");
+	selectCp.css("line-height",selectCpHeight+"px");
+	
+	//判断选择的标签是否另起一行
+	sameSelectCpsWidth=sameSelectCpsWidth+selectCpWidth+parseInt(selectCp.css("margin-left"));
+	var selectCpContainerWidth=parseInt(selectCpContainer.width());
+	if(sameSelectCpsWidth>selectCpContainerWidth){//需要另起一行
+		sameSelectCpsWidth=selectCpWidth+parseInt(selectCp.css("margin-left"));
+		++lineNumber;
+	}
+	//通过选择过的标签计算选择标签框的高度
+	var selectCpContainerHeight=(selectCpHeight+parseInt(selectCp.css("margin-top")))*lineNumber+30;
+	selectCpContainer.css("height",selectCpContainerHeight+"px");
+	
+	//选择标签框大小调整好之后调整下面的大小
+	adjustWidthsHeights();
+}
