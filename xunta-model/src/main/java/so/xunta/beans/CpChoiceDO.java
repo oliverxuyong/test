@@ -17,7 +17,7 @@ public class CpChoiceDO {
 	private BigInteger id;
 	private Long user_id;
 	private BigInteger cp_id;
-	private String is_selected;
+//	private String is_selected;
 	private Long tmp_id;
 	private Timestamp create_time;
 	private Timestamp update_time;
@@ -40,12 +40,12 @@ public class CpChoiceDO {
 	public void setCp_id(BigInteger cp_id) {
 		this.cp_id = cp_id;
 	}
-	public String getIs_selected() {
+	/*public String getIs_selected() {
 		return is_selected;
 	}
 	public void setIs_selected(String is_selected) {
 		this.is_selected = is_selected;
-	}
+	}*/
 	public Long getTmp_id() {
 		return tmp_id;
 	}
