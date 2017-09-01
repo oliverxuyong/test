@@ -54,7 +54,7 @@
         var requestListCounts = 7;
         var domain;
         var userAgent;
-            
+        var unreadObjList;//2017.08.16 从首页传过来的未读信息
 		
         function start(Parameter){//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
             domain = Parameter.server_domain;
@@ -66,6 +66,7 @@
             adminImageurl = Parameter.adminImageurl;
             userAgent = Parameter.userAgent;
             _topicPageSign = Parameter.topicPageSign;
+            unreadObjList=Parameter.unreadObjList;
             
             //显示聊天列表
             requestDialogList();

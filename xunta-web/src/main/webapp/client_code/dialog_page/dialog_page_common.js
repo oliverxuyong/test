@@ -7,20 +7,23 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
 		return;
 	}
 
-	/*if (tmpPid == 'none') {//如果tmpPid为none,则表示从输入框提交.如果不是none,则是发送失败后,点击感叹号再次提交的.
-		var tmpPid=msgId;
+	if (tmpPid == 'none') {//如果tmpPid为none,则表示从输入框提交.如果不是none,则是发送失败后,点击感叹号再次提交的.
+		var tmpPid=new Date().getTime();				//生成临时发言id
 		showSelfPoster(userName,inputValue,userImage,tmpPid,"my");//消息直接上屏，并添加跳豆.
-	}*/
+	}
 	
 	inputValue = specialLettersCoding(inputValue); 
 	console.log("afterinput - inputValue:"+inputValue);
 	
-	//var str = "sendPoster('" + toUserId + "','" + inputValue +"','" + tmpPid + "')";//tmpTopicId这个时候的tmpTopicId应该是没用的了.
-    //execRoot(str);
-	
     //chat.sendMsg(inputValue);//发送消息
 	//chat.sendMsgToAll(inputValue);//发送消息给全部的人
-	chat.sendPrivateMsg(toUserId,inputValue);//给单独的人发消息
+	//chat.sendPrivateMsg(toUserId,inputValue);
+	//execRoot("sendmsg('"+toUserId+"','"+inputValue+"')");//给单独的人发消息
+	exec("main_page","sendmsg('"+toUserId+"','"+inputValue+"','"+tmpPid+"')");
+	
+	//装入任务框且判断是否发送成功
+	var str = "sendPoster('" + toUserId + "','" + inputValue + "','" + tmpPid + "')";
+    execRoot(str);
 	
     document.getElementById("inputbox").value="";
 	
@@ -98,7 +101,9 @@ function adjustWidthsHeights() {
 	}else{
 		document.getElementById("inputbox").style.width = $("#inputframe").width() - 68 + "px";
 	}
-	document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
+	//2017.08.30 叶夷  聊天页加上了共同选择的标签，聊天信息框的高度还需要减去共同选择标签框的高度
+	//document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
+	document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height()-$("#selectCp-container").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
 }
 
 function  getHistoryMsg(userId,toUserId,firstMsgId){
@@ -139,6 +144,28 @@ function showTitle() {
 	$('#title').text('[ ' + cutStringIfTooLong(toUserName,14) + ' ]')
 }
 
-
+/**
+ * 2017.08.30 叶夷  请求共同选择的标签
+ */
+function requestSelectCP(){
+	$.ajax({
+        url:"http://xunta.so:3000/v1/find/users/same/tags/",
+        type:"POST",
+        dataType:"jsonp",
+        jsonp:"callback",
+        contentType: "application/json; charset=utf-8",
+        data:{my_user_id:userId,
+        	matched_user_id:toUserId},
+        async:false,
+        success:function(data, textStatus) {
+        	console.log("请求共同选择的标签成功");
+        	showSameSelectCp(data);
+        },
+        error:function(data, textStatus) {
+            console.log("请求共同选择的标签成功");
+        	return;
+        }
+    });
+}
 
 

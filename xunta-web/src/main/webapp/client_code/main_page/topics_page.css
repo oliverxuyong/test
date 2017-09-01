@@ -16,12 +16,10 @@
 
 
 #showonlineoffline {
-	position: relative;
-	left:-36px;
+	position: absolute;
+	left:33px;
 	margin-top:10px;
-	float:right;
-	height:42px;
-	line-height:42px;
+	float:left;
 }
 
 #showonlineoffline>img{
@@ -29,13 +27,11 @@
 }
 
 #showouseroprate{
-	position: relative;
-	//left:508px;
+	position: absolute;
+	left:12px;
 	margin-top:10px;
-	float:right;
+	float:left;
 	opacity:0.5;
-	height:42px;
-	line-height:42px;
 }
 
 #showouseroprate>img{
@@ -56,11 +52,11 @@
 	display: none;
 }
 
-#username {
-	text-align: right;
-	height: 22px;
-	font-size: 14px;
-	border-bottom: 1px solid #cccccc
+.username {
+	text-align: center;
+	//height: 22px;
+	font-size: 1em;
+	background-color:#f9f8f9;
 }
 
 #alterUserimage {
@@ -131,6 +127,12 @@ padding-left:2px;
 padding-right:2px;
 line-height: 10px;
 //text-align:center;
+}
+.selectTagNum{
+	position:absolute;
+	top: 54.5px;
+	width: 100%;
+	text-align: center;
 }
 
 .latesttime {

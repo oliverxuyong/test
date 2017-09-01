@@ -96,15 +96,16 @@ function requestCP(){//请一组CP.首次请求页号设为1.
 }
 
 //叶夷   2017.06.16 发送"标签选中"
-function sendSelectedCP(userId,cpid,currentRequestedCPPage){
+function sendSelectedCP(userId,cpid,text){
 	//console.log("测试 3： "+typeof(userId));
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
-		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
+		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid);
 		var json_obj = {
 			 _interface:"1102-1",
 			 interface_name: "sendSelectedCP",
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
+			 cptext:text,
 			 timestamp:"",
 		};
 		WS_Send(json_obj);
@@ -112,9 +113,9 @@ function sendSelectedCP(userId,cpid,currentRequestedCPPage){
 }
 
 //叶夷   2017.06.16  发送"标签选中取消"
-function sendUnselectedCP(userId,cpid,currentRequestedCPPage){
+function sendUnselectedCP(userId,cpid){
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
-		console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
+		console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid);
 		var json_obj = {
 			 _interface:"1103-1",
 			 interface_name: "sendUnselectedCP",
@@ -136,6 +137,21 @@ function requestMatchedUsers(userId,requestTopMUNum){
 			 uid:userId.toString(),
 			 top_num:requestTopMUNum.toString(),
 			 timestamp:"",
+		};
+		WS_Send(json_obj);
+	}
+}
+
+//2017.08.11 叶夷    判断这个标签是否被选中过
+function sendIfSelectedCP(userId,cpid){
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		//console.log("请求用户匹配:userId="+userId+" 请求的数量requestTopMUNum="+requestTopMUNum);
+		var json_obj = {
+			 _interface:"1107-1",
+			 interface_name: "sendIfSelectedCP",
+			 uid:userId.toString(),
+			 cpid:cpid.toString(),
+			 timestamp:""
 		};
 		WS_Send(json_obj);
 	}
@@ -233,13 +249,23 @@ function checkMessageInterface(evnt) {
 	//叶夷 2017.06.16    发送"标签选中"
 	if(jsonObj._interface == '1102-2'){
 		console.log("发送'标签选中' :"+JSON.stringify(jsonObj.is_success));
-		//标签选中之后将结果返回判断是否成功
-		exec("main_page","selectTagResult("+jsonObj.is_success+")");
+		if(JSON.stringify(jsonObj.is_success)=='"true"'){
+			//标签选中之后将结果返回判断是否成功
+			exec("main_page","showSelectTag("+evnt.data+")");
+		}else{
+			toast_popup("选中标签失败",2500);
+		}
 	}
 	
 	//叶夷 2017.06.16    发送"标签选中取消"
 	if(jsonObj._interface == '1103-2'){
 		console.log("发送'标签选中取消' :"+JSON.stringify(jsonObj.is_success));
+		if(JSON.stringify(jsonObj.is_success)=='"true"'){
+			//标签选中之后将结果返回判断是否成功
+			exec("main_page","showUnSelectCP("+evnt.data+")");
+		}else{
+			toast_popup("取消选中标签失败",2500);
+		}
 	}
 	
 	//叶夷 2017.07.07   获得请求的用户匹配缩略表
@@ -252,6 +278,12 @@ function checkMessageInterface(evnt) {
 	if(jsonObj._interface == '2106-1'){
 		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.cp_wrap));
 		exec("main_page","push_matched_user("+evnt.data+")");
+	}
+	
+	//2017.08.11 叶夷    判断这个标签是否被选中过
+	if(jsonObj._interface == '1107-2'){
+		console.log("判断这个标签是否被选中过:"+JSON.stringify(jsonObj.is_select));
+		exec("main_page","return_sendIfSelectedCP("+evnt.data+")");
 	}
 }
 
@@ -291,7 +323,7 @@ function websocketEvent() {
 		logging("WS出错事件. ws_obj=" + ws_obj + "|readyState=" + ws_obj.readyState + " |然后显示为离线图标");
 		console.log("WS出错事件. ws_obj=" + ws_obj + "|readyState=" + ws_obj.readyState + "|然后显示为离线图标");
 		if (topicsPageOpenMark == "yes") {//没有这个判断,启动时会报错.xu1113.
-			exec("topics_page", "showWebsocketStatus('ws_closed')");
+			exec("main_page", "showWebsocketStatus('ws_closed')");
 		}else{
 			console.log("ws出错,要显示离线图标,却发现列表页没有打开.topicsPageOpenMark == yes不成立.");
 		}
@@ -304,7 +336,7 @@ function websocketEvent() {
 		logging('WS关闭事件.显示离线图标. ws_obj=' + ws_obj + "|readyState=" + ws_obj.readyState);
 		console.log("WS关闭事件.显示离线图标. ws_obj=" + ws_obj + "|readyState=" + ws_obj.readyState);
 		if (topicsPageOpenMark == "yes") {//没有这个判断,启动时会报错.xu1113.
-			exec("topics_page", "showWebsocketStatus('ws_closed')");
+			exec("main_page", "showWebsocketStatus('ws_closed')");
 		}else{
 			console.log("ws关闭,要显示离线图标,却发现列表页没有打开.topicsPageOpenMark == yes不成立.");
 		}
@@ -365,11 +397,10 @@ function sendPoster(toUserId,inputValue,tmpPid) {
 			inputValue : inputValue,
 			temp_msg_id : tmpPid
 	};
-	//var taskId_SendPoster = toUserId + "-" + msgId;
-	//doSendPoster[taskId_SendPoster] = json_posterinfo;
+	var taskId_SendPoster = toUserId + "-" + tmpPid;
+	doSendPoster[taskId_SendPoster] = json_posterinfo;
 	//登记入任务筐.查询的时候,也用toUserId+"-"+tmpPid来查询.
 	console.log("SendPoster tmpPid:" + tmpPid);
-	//chat.sendPrivateMsg(toUserId,inputValue);//给单独的人发消息
 	//这里有在线检查及再次创建方法.
 	setTimeout("checkSendPosterSuccess('" + taskId_SendPoster + "')", 7000);
 }
@@ -397,5 +428,58 @@ function getTmpTopicIdIfExisted(toUserId) {
 		//console.log("topicId2tmpTopicId[topicid]已被判断为不是undefined");
 		return topicId2tmpTopicId[toUserId];
 	}
+}
+
+//下面四个方法为新消息通知功能.执行notifyNewMessage(),则发出一个短音,同时标题闪烁"新消息"20秒.
+function notifyNewMessage(originalPageTitle) {
+	//console.log("originalPageTitle:"+originalPageTitle); 
+	var audioE = loadSoundFile();
+	var timerArr = startFlashTitle(audioE,originalPageTitle, "【　　　】", "【新消息】");//【新消息】
+	setTimeout(function() {//此处是过一定时间后自动消失
+		stopFlashTitle(timerArr);
+	}, 20000);
+}
+
+function loadSoundFile() {//如果声音文件已存在,则直接返回它所在的elemment.如果不存在,则创建一个后返回.
+	var audioE = $('#audioFileE');
+	if (audioE[0] == undefined) {
+		audioE = $('<audio id="audioFileE"><source src="http://www.xunta.so/xunta-web/client_code/sound/youhaveamessage.wav" type="audio/wav"></audio>');
+		//audioE = $('<audio id="audioFileE"><source src="/client_code/sound/youhaveamessage.wav" type="audio/wav"></audio>');//服务器对client_code这个路径有时会加上,有时不加上.暂用上面的绝对路径.
+		audioE.appendTo('body');//载入声音文件
+		console.log("播放新消息所用的audio元素不存在,已新建了一个.");
+		
+	} else {
+		console.log("播放新消息所用的audio元素已存在,不再创建.");
+	}
+	return audioE;
+}
+
+function startFlashTitle(audioE,originalPageTitle, string1, string2) {//有新消息时在title处闪烁提示
+	console.log("正在播放新消息的短音..."); 
+	audioE[0].play();//播放声音
+	var step = 0, originalPageTitle;
+	var timer = setInterval(function() {
+		step++;
+		if (step == 3) {
+			step = 1
+		};
+		if (step == 1) {
+			document.title = string1 + originalPageTitle
+		};
+		if (step == 2) {
+			document.title = string2 + originalPageTitle
+		};
+	}, 600);
+	return [timer, originalPageTitle];
+	//通过数组返回两个变量.
+}
+
+function judgeSelfPosterReturnOrOthers(window_id,tmpPid,postTimeLong,postTimeStr) {//判断自己的发言是否成功
+	var script="markSendPosterSuccess('" + tmpPid + "','"+ postTimeLong + "','" + postTimeStr + "')";
+	exec(window_id, script);
+    //只是准备一些调用前的参数变量.
+	var taskid_sendposter =window_id + "-" + tmpPid;
+	//返回的消息是个数组,但目前只会有一个.
+	doSendPoster[taskid_sendposter] = "none";
 }
 

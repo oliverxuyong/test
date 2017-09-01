@@ -30,4 +30,19 @@ public class CpChoiceDaoImpl implements CpChoiceDao {
 		Session session = sessionFactory.getCurrentSession();
 		session.update(cpChoice);
 	}
+
+	/**
+	 * 2017.08.11 叶夷  通过uid和cpid查找cp是否存在
+	 */
+	@Override
+	public CpChoiceDO getCpChoice(Long userid, BigInteger cpId) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql="SELECT cp.* FROM cp_choice cp WHERE user_id=:userId AND cp_id =:cpId";
+		Object obj = session.createSQLQuery(sql).addEntity(CpChoiceDO.class).setLong("userId", userid).setBigInteger("cpId", cpId).uniqueResult();
+		if(obj != null){
+			return (CpChoiceDO)obj;
+		}else{
+			return null;
+		}
+	}
 }

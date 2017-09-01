@@ -52,7 +52,7 @@ function checkPostHistSuccess(topicId) {
 
 function checkIfWSOnline4Signal(){//用户点击列表页右上角的信息图标时,会执行到这里.信号为桔黄色时点击,会提示"网络连接正常".
 	if(checkIfWSOnline()){
-		exec("topics_page", "showWebsocketStatus('ws_on')");
+		exec("main_page", "showWebsocketStatus('ws_on')");
 		toast("当前网络连接正常.");
 	}
 }

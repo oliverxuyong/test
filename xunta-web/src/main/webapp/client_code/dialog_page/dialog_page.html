@@ -28,6 +28,11 @@
 			<div class="_closeBtn" onclick="closeBtn()"><img src="../image/close.png" ></div>
 		</div>
 		
+		<!-- 共同选择过的cp -->
+		<div class="selectCp-container" id="selectCp-container">
+			<div style="text-align:center;color:#f9f8f9;height:20px;line-height:20px;">共同选择的标签</div>
+		</div>
+		
 		<div id="dialog_box">
 			<div id="loadingwrap">
 				<div id="loading"><img src="../image/threedotmoving.gif" />
@@ -81,7 +86,6 @@
     <script type="text/javascript" src="../script/common-xunta_web.js"></script>
     <script type="text/javascript" src="../script/popup.js"></script>
 	<script type="text/javascript" src="../script/popcontext.js"></script>
-	<script type="text/javascript" src="http://xunta.so:3000/javascripts/websocket.io.js"></script>
 
 	<script type="text/javascript">
 		var userId;//发送的人，即自己
@@ -128,9 +132,11 @@
             userAgent = Parameter.userAgent;
 
 			_topicPageSign = Parameter.topicPageSign;
+			
+			//2017.08.30 叶夷  请求共同选择的标签
+			requestSelectCP();
          
     		//暂时取消,换成下面两句:prepareDialogPage();
-    		adjustWidthsHeights();
     		showTitle();
     		//showTitle();
     		sort = 'asc';
@@ -139,46 +145,8 @@
             //console.log("preparePageVars userImage="+userImage);
             getHistoryMsg(userId,toUserId,firstMsgId);
             //execRoot("initToLoadPostHist('"+userId+"','"+toUserId+"','"+firstMsgId+"','"+requestMsgCounts+"','"+sort+"')");
-            chat.init(userId,recevier);//注册用户，及用记接收消息的函数
+            //chat.init(userId,recevier);//注册用户，及用记接收消息的函数
         }
-		
-        //发送消息之后服务器返回的消息
-        function recevier(obj) {
-        	respondeUserId=JSON.stringify(obj.user.userId);
-        	user = JSON.stringify(obj.user.name);
-        	data = JSON.stringify(obj.data);
-        	imgUrl=JSON.stringify(obj.user.imgUrl);
-        	//去掉引号
-        	respondeUserId= respondeUserId.replace(/\"/g, "");
-        	data = data.replace(/\"/g, "");
-        	user = user.replace(/\"/g, "");
-        	imgUrl=imgUrl.replace(/\"/g, "");
-        	
-        	//var pagename = getTmpTopicIdIfExisted(respondeUserId);
-        	//var script;
-        	var msgId = new Date().getTime();				//生成临时发言id.
-        	if (userId === respondeUserId) {
-        		/* var postTimeStr=new Date();
-        		var postTimeLong = postTimeStr.getTime();
-        		postTimeStr=postTimeStr.Format("yyyy-MM-dd hh:mm:ss");
-        		markSendPosterSuccess(msgId,postTimeLong,postTimeStr); */
-        		//exec(pageName, script);
-        		//var taskid_sendposter =  toUserId + "-" + msgId;
-        		//返回的消息是个数组,但目前只会有一个.
-        		//doSendPoster[taskid_sendposter] = "none";
-        		//取消任务筐里的任务.
-        		showSelfPoster(user, data,imgUrl,msgId,"my",false);
-            } else {
-            	showSelfPoster(user, data,imgUrl,msgId,"other",false);
-            }
-        	var postTimeStr=JSON.stringify(obj.timestr).replace(/\"/g,"");
-        	//var temp=new Date(('2014/05/10 13:25:50').replace(new RegExp("-","gm"),"/")).getTime()
-        	//console.log("测试1： "+('2014/05/10 13:25:50').replace(new RegExp("-","gm"),"/"));
-        	//console.log("测试2： "+(postTimeStr).replace(new RegExp("-","gm"),"/").replace(/\"/g,""));
-        	var postTimeLong = new Date((postTimeStr).replace(new RegExp("-","gm"),"/")).getTime();
-        	//postTimeStr=postTimeStr.Format("yyyy-MM-dd hh:mm:ss");
-        	markSendPosterSuccess(msgId,postTimeLong,postTimeStr);
-        };
         
         //data转换为字符串
        /*  Date.prototype.Format = function (fmt) { //author: meizz

@@ -123,7 +123,7 @@ function changeAllNickNames(newNickname) {
 	 * 修改topics_page中的username
 	 */
 	exec(""+userId, scriptStr);
-	exec("topics_page", scriptStr);
+	exec("main_page", scriptStr);
 	/**
 	 * end: 叶夷
 	 */
