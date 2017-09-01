@@ -585,7 +585,7 @@ var muDataQueue = new Array();
 var circleEnd = true;// 判断动画是否运行完
 
 //2017.07.04 叶夷 模拟数据的产生 
-function addMPData(){ 
+/*function addMPData(){ 
 	var newMatchedUserArr=new Array();//装后台发来的匹配人 
 	var mpId=new Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);//模拟的匹配人ID 
 	var mpImg=new Array("http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40",
@@ -627,7 +627,7 @@ function addMPData(){
 		muDataQueue.push(newMatchedUserArr); 
 	} 
 }
-
+*/
 
 
 var muNowData = new Array();// 前台目前显示的匹配人列表排名
@@ -649,11 +649,12 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 function muAddImg(i,matchedUserArr){
 	var muNode=$("#mu"+(i+1));//这是已经放在页面的匹配人头像div
 	
-	var muId=matchedUserArr[i].getMpId();//获得匹配人列表的匹配人id,这是测试数据版
-	//var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
+	//var muId=matchedUserArr[i].getMpId();//获得匹配人列表的匹配人id,这是测试数据版
+	var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
 	 
-	var muImg=matchedUserArr[i].getMpImg();//获得匹配人列表的匹配人头像,这是测试版数据
-	//var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
+	//var muImg=matchedUserArr[i].getMpImg();//获得匹配人列表的匹配人头像,这是测试版数据
+	var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
+	var muUserName=matchedUserArr[i].username;
 	
 	var muWidth=muNode.css("width");
 	var muNodeImg=$("<img src='"+muImg+"'/>").css("width",muWidth).css("height",muWidth);
@@ -665,13 +666,13 @@ function muAddImg(i,matchedUserArr){
 	//点击事件
 	muNode.click(function() {
 		//进入聊天页
-		enterDialogPage();
+		enterDialogPage(muId,muUserName);
 		//addMPData();//测试匹配人动画
 	});
 }
 
 //2017.08.23 叶夷  生成一个新的匹配人div
-function muDiv(id,muImg,top,left){
+function muDiv(id,muImg,muUserName,top,left){
 	var muNode=$("<div></div>").attr("id","mu"+id).attr("class","mu");//这是页面的匹配人头像div
 	var muNodeImg=$("<img src='"+muImg+"' style='width:0px;height:0px;'/>");
 	muNode.append(muNodeImg);
@@ -684,7 +685,7 @@ function muDiv(id,muImg,top,left){
 	//点击事件
 	muNode.click(function() {
 		//进入聊天页
-		enterDialogPage();
+		enterDialogPage(id,muUserName);
 		//addMPData();//测试匹配人动画
 	});
 }
@@ -748,11 +749,12 @@ var isTimeOut = 0;// 判断是否延时，让排名改变需要动画时才延�
 
 // 2017.07.05 叶夷 一一对比之后开始将排名改变的用户动画
 function circleAnimation(i, matchedUserArr) {
-	//var muserid = matchedUserArr[i].userid;// 这是匹配人id
-	var muserid=matchedUserArr[i].getMpId();//这是匹配人id,这是测试版数据
+	var muserid = matchedUserArr[i].userid;// 这是匹配人id
+	//var muserid=matchedUserArr[i].getMpId();//这是匹配人id,这是测试版数据
 
-	var muserimg=matchedUserArr[i].getMpImg();//这是匹配人头像,这是测试数据
-	//var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
+	//var muserimg=matchedUserArr[i].getMpImg();//这是匹配人头像,这是测试数据
+	var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
+	var muUserName=matchedUserArr[i].username;
 
 	if (muserid != muNowData[i].attr("id")) {// 排名改变
 		circleEnd = false;// 只要动画开始执行则动画没有完成
@@ -795,7 +797,7 @@ function circleAnimation(i, matchedUserArr) {
 		} else {// 不存在
 			// 2017.07.06 叶夷
 			// 1.将页面不存在的mp
-			muDiv(muserid,muserimg,moveTop,moveLeft);
+			muDiv(muserid,muserimg,muUserName,moveTop,moveLeft);
 			var newMu=$("#"+muserid);
 
 			// 2.获得现有mp中应该去除的排名，则在新排名中没有的mp,且将它缩小
