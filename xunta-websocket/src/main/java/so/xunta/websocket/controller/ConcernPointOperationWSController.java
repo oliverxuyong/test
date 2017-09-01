@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import so.xunta.beans.ConcernPointDO;
 import so.xunta.beans.CpChoiceDO;
 import so.xunta.beans.CpChoiceDetailDO;
 import so.xunta.beans.PushMatchedUserDTO;
@@ -24,7 +23,6 @@ import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.persist.CpChoiceDetailDao;
 import so.xunta.server.CancelOneSelectedCP;
-import so.xunta.server.ConcernPointService;
 import so.xunta.server.CpChoiceService;
 import so.xunta.server.RecommendService;import so.xunta.server.SelectOneNewCPService;
 import so.xunta.server.SocketService;
@@ -47,8 +45,8 @@ public class ConcernPointOperationWSController {
 	@Autowired
 	private CpChoiceService cpChoiceService;
 	@Autowired
-	private ConcernPointService concernPointService;	@Autowired
 	private RecommendService recommendService;	
+	
 	Logger logger =Logger.getLogger(RecommendServiceImpl.class);
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1102-1")
@@ -130,7 +128,7 @@ public class ConcernPointOperationWSController {
 	
 /**2017.08.11 叶夷  通过uid和cpid判断cp是否已经被选择*/
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1107-1")
-	public void ifSelectCP(WebSocketSession session, TextMessage message){
+	public void ifCPSelected(WebSocketSession session, TextMessage message){
 		JSONObject params=new JSONObject(message.getPayload());
 		Long uid = Long.valueOf(params.getString("uid"));
 		BigInteger cpid = BigInteger.valueOf(Long.valueOf(params.getString("cpid")));
@@ -148,7 +146,9 @@ public class ConcernPointOperationWSController {
 		returnJson.put("uid", uid);
 		returnJson.put("timestamp", timestamp);
 		socketService.chat2one(session, returnJson);
-	}private void filterOffLineUsers(Set<String> userids) {
+	}
+	
+	private void filterOffLineUsers(Set<String> userids) {
 		Iterator<String> iterator = userids.iterator();
 		while(iterator.hasNext()){
 			String userid = iterator.next();
