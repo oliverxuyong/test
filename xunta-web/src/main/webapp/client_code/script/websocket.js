@@ -95,31 +95,50 @@ function requestCP(){//请一组CP.首次请求页号设为1.
 	WS_Send(json_obj);
 }
 
-//叶夷   2016.06.16 发送"标签选中"
+//叶夷   2017.06.16 发送"标签选中"
 function sendSelectedCP(userId,cpid,currentRequestedCPPage){
 	//console.log("测试 3： "+typeof(userId));
-	console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
-	var json_obj = {
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
+		var json_obj = {
 			 _interface:"1102-1",
 			 interface_name: "sendSelectedCP",
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
 			 timestamp:"",
 		};
-	WS_Send(json_obj);
+		WS_Send(json_obj);
+	}
 }
 
-//叶夷   2016.06.16  发送"标签选中取消"
+//叶夷   2017.06.16  发送"标签选中取消"
 function sendUnselectedCP(userId,cpid,currentRequestedCPPage){
-	console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
-	var json_obj = {
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid+" 请求的页面="+currentRequestedCPPage);
+		var json_obj = {
 			 _interface:"1103-1",
 			 interface_name: "sendUnselectedCP",
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
 			 timestamp:"",
 		};
-	WS_Send(json_obj);
+		WS_Send(json_obj);
+	}
+}
+
+//叶夷   2017.07.07  请求用户匹配缩略表
+function requestMatchedUsers(userId,requestTopMUNum){
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("请求用户匹配:userId="+userId+" 请求的数量requestTopMUNum="+requestTopMUNum);
+		var json_obj = {
+			 _interface:"1104-1",
+			 interface_name: "requestTopMatchedUsers",
+			 uid:userId.toString(),
+			 top_num:requestTopMUNum.toString(),
+			 timestamp:"",
+		};
+		WS_Send(json_obj);
+	}
 }
 
 function tasksOnWired() {//ws连接事件的响应执行方法:
@@ -214,7 +233,8 @@ function checkMessageInterface(evnt) {
 	//叶夷 2017.06.16    发送"标签选中"
 	if(jsonObj._interface == '1102-2'){
 		console.log("发送'标签选中' :"+JSON.stringify(jsonObj.is_success));
-		
+		//标签选中之后将结果返回判断是否成功
+		exec("main_page","selectTagResult("+jsonObj.is_success+")");
 	}
 	
 	//叶夷 2017.06.16    发送"标签选中取消"
@@ -222,6 +242,17 @@ function checkMessageInterface(evnt) {
 		console.log("发送'标签选中取消' :"+JSON.stringify(jsonObj.is_success));
 	}
 	
+	//叶夷 2017.07.07   获得请求的用户匹配缩略表
+	if(jsonObj._interface == '1104-2'){
+		console.log("获得请求的用户匹配缩略表 :"+JSON.stringify(jsonObj.cp_wrap));
+		exec("main_page","responseTopMatchedUsers("+evnt.data+")");
+	}
+	
+	//叶夷 2017.07.07   匹配用户改变
+	if(jsonObj._interface == '2106-1'){
+		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.cp_wrap));
+		exec("main_page","push_matched_user("+evnt.data+")");
+	}
 }
 
 
@@ -328,4 +359,43 @@ function stopFlashTitle(timerArr) {//去除闪烁提示，恢复初始title文�
 	}
 }
 
+function sendPoster(toUserId,inputValue,tmpPid) {
+	var json_posterinfo = {
+			toUserId : toUserId,
+			inputValue : inputValue,
+			temp_msg_id : tmpPid
+	};
+	//var taskId_SendPoster = toUserId + "-" + msgId;
+	//doSendPoster[taskId_SendPoster] = json_posterinfo;
+	//登记入任务筐.查询的时候,也用toUserId+"-"+tmpPid来查询.
+	console.log("SendPoster tmpPid:" + tmpPid);
+	//chat.sendPrivateMsg(toUserId,inputValue);//给单独的人发消息
+	//这里有在线检查及再次创建方法.
+	setTimeout("checkSendPosterSuccess('" + taskId_SendPoster + "')", 7000);
+}
+
+function checkSendPosterSuccess(taskId_SendPoster) {
+	console.log("checkSendPosterSuccess 延时已到...");
+	var json_posterinfo = doSendPoster[taskId_SendPoster];
+	var toUserId = json_posterinfo.toUserId;
+	if (json_posterinfo == "none") {
+		console.log("checkSendPosterSuccess 成功了,不作为!  toUserId:" + toUserId);
+		return
+	}//none表示已成功,不作为.
+	console.log("checkSendPosterSuccess 不成功!  toUserId:" + toUserId);
+	var tmpPid = json_posterinfo.temp_msg_id;
+	var pageName = getTmpTopicIdIfExisted(toUserId);//如果有临时topicid,就用临时的id.
+	var script = "afterCheckedSendPosterSuccess('" + tmpPid + "',false)";
+	exec(pageName, script);
+}
+
+function getTmpTopicIdIfExisted(toUserId) {
+	//console.log("要判断这个元素不存在时, 值是多少 下面的if判断是 != undefined topicId2tmpTopicId[topicid]="+topicId2tmpTopicId[topicid]);
+	if (topicId2tmpTopicId[toUserId] == undefined) {
+		return toUserId;
+	} else {
+		//console.log("topicId2tmpTopicId[topicid]已被判断为不是undefined");
+		return topicId2tmpTopicId[toUserId];
+	}
+}
 

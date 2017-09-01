@@ -41,20 +41,81 @@ function updateNickname(newNickname){
  * end:叶夷
  */
 
-function requestCP(requestNum,currentPage){//调用根页面上的同名方法.
+
+
+function requestCP(userId,requestNum,currentPage){//调用根页面上的同名方法.
 	var paraStr = userId + "','" + requestNum + "','" + currentPage;
 	execRoot("initToGetCP('"+ paraStr +"')");
 }
 
-//叶夷   2016.06.16  发送"标签选中"
+
+//叶夷   2017.06.16  发送"标签选中"
 function sendSelectCP(userId,cpid,currentPage){
 	var paraStr = userId + "','" + cpid + "','" + currentPage;
 	execRoot("sendSelectedCP('"+ paraStr +"')");
 }
 
-//叶夷   2016.06.16  发送"标签选中取消"
+
+//叶夷   2017.06.16  发送"标签选中取消"
 function sendUnSelectCP(userId,cpid,currentPage){
 	var paraStr = userId + "','" + cpid + "','" + currentPage;
 	execRoot("sendUnselectedCP('"+ paraStr +"')");
 }
 
+//叶夷   2017.07.07  请求用户匹配缩略表
+function requestTopMatchedUsers(userId,requestTopMUNum){
+	var paraStr = userId + "','" + requestTopMUNum;
+	execRoot("requestMatchedUsers('"+ paraStr +"')");
+}
+
+function removeUnreadNum(toUserId) {
+	$('#' + toUserId).find('.unread').remove()
+}
+
+//标签搜索
+function responseSearchTag(text){
+	$.ajax({
+        url:"http://xunta.so:3000/v1/find/tag",
+        type:"POST",
+        dataType:"jsonp",
+        jsonp:"callback",
+        contentType: "application/json; charset=utf-8",
+        data:{text:text},
+        async:false,
+        success:function(data, textStatus) {
+        	//console.log("标签搜索请求成功"+data);
+        	sendKeyWordToBack(text,data);
+        },
+        error:function(data, textStatus) {
+            console.log("标签搜索请求错误"+data);
+        	return;
+        }
+    });
+}
+
+//标签添加
+function searchToAddTag(){
+	var suggestWrap = $('#gov_search_suggest');
+	var text = $("#pop_tagName").val();//获得输入框的值
+	$.ajax({
+        url:"http://xunta.so:3000/v1/add/tag",
+        type:"POST",
+        dataType:"jsonp",
+        jsonp:"callback",
+        contentType: "application/json; charset=utf-8",
+        data:{from_user_id:userId,
+        		text:text},
+        async:false,
+        success:function(data, textStatus) {
+        	console.log("添加标签成功");
+        	//添加标签框回复原样
+        	$("#htmlObj").css("height","100px");
+    		suggestWrap.hide();
+    		toast_popup("添加标签成功",2500)
+        },
+        error:function(data, textStatus) {
+            console.log("标签搜索请求错误"+data);
+        	return;
+        }
+    });
+}

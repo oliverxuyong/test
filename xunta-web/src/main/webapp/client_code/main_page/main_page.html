@@ -8,9 +8,10 @@
 		<title>话题列表页</title>
 		<link rel="stylesheet" type="text/css" href="topics_page.css"/>
 		<link rel="stylesheet" type="text/css" href="topics_page_web.css"/>
-		<link rel="stylesheet" type="text/css" href="../css/popup.css"/>
 		<link rel="stylesheet" type="text/css" href="../css/common_web.css"/>
 		<link rel="stylesheet" type="text/css" href="alter_userimage.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/popup.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/popcontext.css"/>
 
 		<!--让输入框的提示字颜色变淡-->
 		<style>
@@ -26,33 +27,78 @@
 
 	<div id="showatloaded" class="showatloaded">
 
-		<div id="search-container" class="search-container">
-			<div id="showonlineoffline">
-				<img src="../image/signal-gray.png" onclick="wsConnect()">
+		<div id="top-container" class="top-container">
+			<div class="header-container">
+				<!--头像-->
+				<div class="userimg">
+					<img id="topic_img" src="" onclick="openHomePage()" />
+				</div>
+				
+				<!-- 名字 -->
+				<div class="webname">
+				wolf
+				</div>
+				<!-- 信号 -->
+				<div id="showonlineoffline">
+					<img src="../image/signal-gray.png" onclick="wsConnect()">
+				</div>
+				<!-- 重新登录-->
+				<div id="showouseroprate">
+					<img src="../image/exit.png" onclick="logOff()">
+				</div>
 			</div>
-			<div id="showouseroprate">
-				<img src="../image/exit.png" onclick="logOff()">
+			
+			<!-- 我的标签 -->
+			<div class="mytag-container" id="mytag-container">
+				<div class="addtagimg" onclick="addTag()"><img src="../image/add_tag.png"></div>
+				<!--  <div class="mytag"><img src="../image/acclaim-50x173.png"><span>90后</span></div>-->
 			</div>
 		</div>
-
-		<!--提问分享块-->
-		<div class="topic_top">
-			<!--头像-->
-			<div class="userimg">
-				<img id="topic_img" src="" onclick="openHomePage()" />
-			</div>
-		</div>
-		<!-- CP容器的HTLM标范,不要删,用于css调试 
-		<div id="cp-container" style="position:fixed; top:150px; height:200px;">-->
-		<div id="cp-container" style="position:fixed; top:150px; height:70%;width:100%;overflow-y:auto;">
-			<!-- <div class="cp" id="cpid1" class="selected">CP111111111	</div>-->
-			<!-- <div class="cp" id="cpid2" class="unselected">CP2222222222			</div>-->
-			<!-- <div class="cp" id="cpid3" class="unselected">CP3333333			</div>-->
-		</div> <!-- END of CP容器的HTLM标范,不要删,用于css调试 -->
 		
-		<!-- start: 叶夷  2017.06.15  添加一个按钮，点击后通过已定义的接口向后台请求一组标签，后台返回后将标签显示出来。点击后继续请求下一页。-->
-		<button id="test" type="button" onclick="requestCP(requestCPNum,(requestCPNum*(currentRequestedCPPage++)))" style="position:fixed; top:580px;left:300px;">请求标签</button>
-		<!-- end: 叶夷  -->
+		<!--2017.07.19  叶夷  聊天按钮
+		<button type="button" onclick="enterDialogPage()" style="width:100%;position:absolute;top:150px">聊天</button> -->
+		
+		<!--2017.07.26  叶夷  聊天列表
+		<button type="button" onclick="EnterdialogList()" style="width:100%;position:absolute;top:175px">聊天列表页</button> -->
+		
+		<!--2017.07.27  叶夷  添加标签按钮
+		<button type="button" onclick="addTag()" style="width:100%;position:absolute;top:200px">添加标签按钮</button>-->
+		
+		<!--2017.08.07  叶夷  匹配人列表
+		<button type="button" onclick="enterMatchUsersPage()" style="width:100%;position:absolute;top:125px">匹配人列表</button> --> 
+		
+		<div class="tag-container">
+		
+			<!-- 装"推荐标签"四个字的容器 -->
+			<div class="othertagtext">推荐标签</div>
+		
+			<!-- CP容器的HTLM标范,不要删,用于css调试 -->
+			<div id="cp-show" class="othertag">
+				<div id="cp-container" style="/*  position:fixed; */ width:100%;">
+				<!-- <div class="cp" id="cpid1" class="selected">CP111111111	</div>-->
+				<!-- <div class="cp" id="cpid2" class="unselected">CP2222222222			</div>-->
+				<!-- <div class="cp" id="cpid3" class="unselected">CP3333333			</div>-->
+				</div> <!-- END of CP容器的HTLM标范,不要删,用于css调试 -->
+		
+				<div style="width:100%;height:23%;"></div>
+				<!-- start: 叶夷  2017.06.15  添加一个按钮，点击后通过已定义的接口向后台请求一组标签，后台返回后将标签显示出来。点击后继续请求下一页。-->
+				<button id="request_cp" type="button" onclick="requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)))" style="width:100%;display:none;">请求标签</button>
+				<!-- end: 叶夷  -->
+			</div>
+		
+			<!-- 装"为你匹配的人"文字的容器 -->
+			<div class="match_userstext">为你匹配的人</div>
+		
+			<!--2017.07.04  叶夷   匹配人列表 -->
+			<div class="match_users" id="match_users">
+			
+			</div>
+		</div>
+		
+		<!-- "聊天"文字容器 -->
+		<div class="enterdialogList" onclick="EnterdialogList()">
+			聊天(4条未读)
+		</div>
 		
 	</div> <!--End of <div id="showatloaded" class="showatloaded"> -->
 	
@@ -63,6 +109,9 @@
 	<script type="text/javascript" src="../script/popup.js"></script>
 	<script type="text/javascript" src="topics_page.js"></script>
 	<script type="text/javascript" src="topics_page_web.js"></script>
+	<script type="text/javascript" src="../script/popup.js"></script>
+	<script type="text/javascript" src="../script/popcontext.js"></script>
+	
 	<script type="text/javascript">
 		var userId;
 		//var unionid;//第三方原生ID
@@ -80,6 +129,7 @@
 		//var currentOpenDialogPageId = 'null'; //记录当前打开聊天页面的ID，如果没有在聊天页面上则 = null; 10.13 FANG
 		//var countKeybacks = 0; //用于记录点击回退键的次数,超过30秒则清零. 达到10次,可以打开index.html页,以查看log信息.
 		var requestCPNum = 20; //每次请求话题数
+		var requestTopMUNum=10;//每次请求用户匹配排名数量
 		var currentRequestedCPPage = 0; //page指第几次请求到的返回结果集.0表示还没有请求到.请求成功后,要加1. 
 		//$("#showatloaded").hide();//?0113 这三个hide改为在css中display:none
 		//$("#imageundertopiclist").hide();
@@ -102,7 +152,11 @@
 			
 			//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
 			//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
-			requestCP(requestCPNum,currentRequestedCPPage++);
+			requestCP(userId,requestCPNum,++currentRequestedCPPage);
+			
+			//2017.07.04  叶夷  
+			addMPData();//匹配人列表测试
+			//requestTopMatchedUsers(userId,requestTopMUNum);//请求用户匹配缩略表,不能放在这里，因为不能同时请求,等请求cp返回且显示之后再请求这个方法，所以此方法放在responseToCPRequest(CP_list)中
 			
 			//$("#account").show();
 		}
@@ -169,6 +223,6 @@
 			//unionid = userinfoObj.unionid;
 			//topicList = Parameter.topiclist;
 		}
-
+		
 	</script>
 </html>

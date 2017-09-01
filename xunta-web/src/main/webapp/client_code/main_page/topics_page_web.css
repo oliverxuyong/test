@@ -6,7 +6,7 @@ position:fixed;
 	height:100%;
 	background-color: #ffffff;
 	cursor:auto;
-	//Verdana 瀛椾綋 鍜� Tahoma
+	//Verdana 鐎涙ぞ缍� 閸滐拷 Tahoma
 	//font-family:Verdana;
 	//font-family:Tahoma;
 	//color:#191970;
@@ -25,14 +25,14 @@ width:100%;
 	height:100%;
 	//overflow-y:scroll;
 	-webkit-overflow-scrolling: touch;
-	overflow-x:hidden;
+	overflow:hidden;
 }
 
 .topic_list {
 	margin-top: 120px;
 	margin-right: 10px;
 	margin-left: 8px;
-	font-family: '寰蒋闆呴粦', Arial;
+	font-family: '瀵邦喛钂嬮梿鍛寸拨', Arial;
 	//color: #303030;
 	z-index:100;
 	//padding-top:21px;
@@ -65,12 +65,13 @@ width:100%;
 
 .userimg{
 	height:42px;
-	width:42px;
+	width:30%;
 	//background-color:red;
 	border-radius:50%;
-	float:right;
+	//float:right;
 	padding-top:3px;
-	margin-right:15px;
+	margin:10px;
+	float:left;
 }
 
 .userimg>img {
@@ -103,7 +104,7 @@ width:100%;
 .createtopiccontent{
 	color:#686868;
 	font-size:8px;
-	font-family:'瀹嬩綋', Arial;
+	font-family:'鐎瑰缍�', Arial;
 	margin-left:13px;
 	margin-top:31px;
 	opacity:0.5;
@@ -124,10 +125,10 @@ width:100%;
 	//float:clear;
 	color: #686868;
 	font-size: 10px;
-	font-family: '瀹嬩綋', Arial;
+	font-family: '鐎瑰缍�', Arial;
 	margin-top: 3px;
 	margin-left: 39px;
-	//margin-right:50px;鍥犱负涓嬮潰鐨刬nline杩欎釜鐩墠鏆傛椂涓嶈捣浣滅敤.鍙互鎶妑ecenmsg鏁翠釜鐢╠iv鍖呰捣鏉�;
+	//margin-right:50px;閸ョ姳璐熸稉瀣桨閻ㄥ埇nline鏉╂瑤閲滈惄顔煎閺嗗倹妞傛稉宥堟崳娴ｆ粎鏁�.閸欘垯浜掗幎濡慹cenmsg閺佺繝閲滈悽鈺爄v閸栧懓鎹ｉ弶锟�;
 	display:inline;
 	background-color:#ffffff;
 	//border-radius: 4px;
@@ -152,7 +153,7 @@ width:100%;
 }
 
 /**
-*  寮规鎼滅储
+*  瀵顢嬮幖婊呭偍
 */
 ._searchDiv{
 	position:fixed;
@@ -167,21 +168,40 @@ width:100%;
 	width:20px;
 	height:20px;
 }
-.search-container{
-	position:fixed;
-	//top:0px;
-	//left:8px;
-	//right:1px;
-	//bottom:1px;
+.top-container{
+	//position:fixed;
 	width:100%;
-	height:40px;
-	//min-width:100px;
-	//display: inline;
+	//height:40px;
+	height:20%;
 	z-index:102;
-	//border-radius:8px;
-	background:url('../image/titbg.gif') center top repeat-x;
-	background-size:9px;
+	//background:url('../image/titbg.gif') center top repeat-x;
+	background-color:#fffff0;
+	//background-size:9px;
 }
+
+.tag-container{
+	position:relative;
+	width:100%;
+	height:73%;
+	z-index:102;
+	background-color:#fffacd;
+}
+
+/*装头像和名字的容器*/
+.header-container{
+	width:100%;
+	height:50%;
+	z-index:102;
+}
+
+/*我的标签容器*/
+.mytag-container{
+	width:100%;
+	height:50%;
+	z-index:102;
+	overflow-y:auto;
+}
+
 .search-head{
 	border:1px solid #ccc;
 	width:35%;
@@ -302,10 +322,10 @@ width:100%;
 	padding-top: 8px;
 	padding-left: 39px;
 	font-size: 10px;
-	/*start:鍙跺し
-		瑙ｅ喅闂锛氬湪鐩歌繛鐨勪汉涓瘡涓汉鏈�鍚庝竴涓浉杩炵殑璇濋鎵撳紑濮嬬粓閬洊涓嬮潰鐨勪汉锛屽姞涓婅繖涓睘鎬х殑浣滅敤鏄竻闄ゆ诞鍔�*/
+	/*start:閸欒泛銇�
+		鐟欙絽鍠呴梻顕�顣介敍姘躬閻╂瓕绻涢惃鍕眽娑擃厽鐦℃稉顏冩眽閺堬拷閸氬簼绔存稉顏嗘祲鏉╃偟娈戠拠婵嬵暯閹垫挸绱戞慨瀣矒闁喚娲婃稉瀣桨閻ㄥ嫪姹夐敍灞藉娑撳﹨绻栨稉顏勭潣閹呮畱娴ｆ粎鏁ら弰顖涚闂勩倖璇為崝锟�*/
 	overflow-y:hidden;
-	/*end:鍙跺し*/
+	/*end:閸欒泛銇�*/
 }
 .topicMsgMoreDiv{
 	text-align: right;
@@ -330,4 +350,111 @@ width:100%;
 }
 .topicMoreText{
 	font-size: 14px;
+}
+
+/*叶夷  2017.06.19
+	标签的动画实现，是由jq的animate属性完成  */
+.cp{ 
+	position:absolute; /*标签不用排列的时候不需要这个*/
+	top:0px;
+	left:0px;
+	border-radius:50%; 
+	border:1px solid #e5efff;
+	}
+
+.incp{ 
+	position:absolute;
+	background:url(../image/cp.png) no-repeat center center;  
+	background-size:100% auto;
+	font-family:'微软雅黑';
+	}
+	
+.incp div{
+	position:absolute;
+	text-align:center;
+}
+
+/*叶夷   2017.07.04
+	匹配人列表*/
+/*匹配人列表的容器*/
+.match_users{
+	position:absolute;
+	top:90%;
+	left:0px;
+	width:100%;
+	height:40px;
+}
+/*各个匹配人头像的大小*/
+.mu{
+	position:absolute;
+	width:30px;
+	height:30px;
+	border-radius:50%;
+	left:6px;
+}
+
+/*网站名*/
+.webname{
+	height:42px;
+	width:30%;
+	float:left;
+	line-height:42px;
+	text-align:center;
+	margin-top:10px;
+	font-size:20px;
+}
+
+.othertag{
+	position:absolute; 
+	height:70%; 
+	width:100%;
+	overflow-x:hidden;
+	top:40px;
+}
+
+.othertagtext{
+	color:#2e2d35;
+	margin-left:5px;
+	margin-top:5px;
+}
+
+.match_userstext{
+	text-align:center;
+	margin-top:100%;
+}
+
+.enterdialogList{
+	width:100%;
+	height:7%;
+	background-color:#fffff0;
+	text-align:center;
+	line-height:40px;
+}
+
+.addtagimg{
+	//opacity:0.3;
+	margin-top:3px;
+	float:left;
+}
+
+.addtagimg img{
+	width:25px;
+	height:25px;
+}
+
+.mytag{
+	float: left;
+    height: 30px;
+    line-height: 30px;
+    background-color: #FFE7BA;
+    width: 50px;
+    text-align: center;
+    border-radius: 5px;
+    margin-left: 5px;
+    color: #ffffff;
+    margin-bottom:5px;
+}
+
+.mytag img{
+	width:5px;
 }

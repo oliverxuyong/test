@@ -1,0 +1,22 @@
+html, body {
+	height: 100%;
+	width: 100%;
+	margin:0px;
+	background-color: #e8e8e8;
+	//z-index:-99;
+}
+
+#wholetitlebox{position:fixed; top: 38px; left:52px; width:60%; padding:5px; 
+	border:1px solid #b8b8b8; border-radius:4px;font-size:14px; background-color:#F0f0f0;z-index:14;display:none;}
+	
+#setupbox {position:fixed;top: 45px; right:15px; width: 80px;
+	font-size: 10px; padding: 5px;
+	border:#191970 1px solid;border-radius:5px;
+	background-color:#FFFFFF;z-index:11;
+	display:none;}
+	
+#submit_setup_button,#cancel_setup_button {width:24px;height: 14px; border:#191970 1px solid; border-radius:3px; 
+	float:right; font-size: 10px; padding:2px;background-color:#cccccc}
+
+#cancel_setup_button {float:left}
+

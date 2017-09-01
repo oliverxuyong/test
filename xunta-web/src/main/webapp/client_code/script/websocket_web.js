@@ -25,6 +25,10 @@ function modifyNickname(jsonObj) {
 }
 /*end：叶夷*/
 
+function initLastTopicTime() {
+	lastTopicTime = '-1';
+	ws_obj.close();
+}
 
 function checkPostHistSuccess(topicId) {
 	//console.log("历史消息请求 延时检查时间到了 doRequestPostHist[topicId]:" + doRequestPostHist[topicId] + " topicid:" + topicId);
