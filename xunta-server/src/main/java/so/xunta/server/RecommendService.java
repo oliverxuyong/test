@@ -1,5 +1,8 @@
 package so.xunta.server;
 
+import java.util.Set;
+
+import so.xunta.beans.RecommendPushDTO;
 import so.xunta.beans.User;
 
 public interface RecommendService {
@@ -11,14 +14,14 @@ public interface RecommendService {
 	 * 在用户选中或取消一个CP后率先触发
 	 * 记录用户选择或删除一个CP后U2U的变化状态
 	 * */
-	public void recordU2UChange(String uid, String cpid, int selectType);
+	public Set<String> recordU2UChange(String uid, String cpid, int selectType);
 	
 	/**
 	 * 更新任务
 	 * 在用户上线，请求一组CP列表后，和选中或取消一个CP的纪录任务后触发
 	 * 通过用户的U2U变化状态更新推荐列表
 	 * */
-	public void updateU2C(String uid);
+	public RecommendPushDTO updateU2C(String uid);
 
 	/**
 	 * 用户每次上线的初始化任务，包括

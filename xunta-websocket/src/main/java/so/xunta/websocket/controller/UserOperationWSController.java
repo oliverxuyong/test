@@ -1,6 +1,7 @@
 package so.xunta.websocket.controller;
 
-import java.io.IOException;import org.json.JSONException;
+import java.io.IOException;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

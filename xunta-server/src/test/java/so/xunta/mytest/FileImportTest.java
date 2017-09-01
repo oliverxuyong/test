@@ -36,7 +36,7 @@ public class FileImportTest {
 		int y[] = new int[]{'A','J'};
 		
 		//数据
-		String[] data = new String[10];
+		//String[] data = new String[10];
 		
 		System.out.println("行："+(x[1]-x[0]+1));
 		System.out.println("列："+(y[1]-y[0]+1));

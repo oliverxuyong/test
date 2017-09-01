@@ -15,10 +15,8 @@ import so.xunta.beans.RecommendCpBO;
 import so.xunta.persist.C2uDao;
 import so.xunta.persist.ConcernPointDao;
 import so.xunta.persist.U2cDao;
-import so.xunta.persist.impl.C2uDaoIml;
-import so.xunta.server.RecommendService;
 import so.xunta.server.ResponseGroupCPsService;
-import so.xunta.utils.RecommendTaskPool;
+
 
 @Service
 public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
@@ -32,10 +30,11 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 	@Autowired
 	private C2uDao c2uDao;
 	
-	@Autowired
+	/*@Autowired
 	private RecommendService recommandService;
+	*/
 	
-	Logger logger =Logger.getLogger(C2uDaoIml.class);
+	Logger logger =Logger.getLogger(ResponseGroupCPsSerivceImpl.class);
 	
 	@Override
 	public List<RecommendCpBO> getRecommendCPs(Long uid, int startPoint, int howMany) {
@@ -68,12 +67,14 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 		
 		u2cDao.setUserCpsPresented(uid.toString(), cpIds);
 		
+		/* 如果别人的操作对我形成触发，那不需要更新
 		RecommendTaskPool.getInstance().getThreadPool().execute(new Runnable() {
 			@Override
 			public void run() {
 				recommandService.updateU2C(uid+"");
 			}
 		});
+		*/
 		
 		long endTime = System.currentTimeMillis();
 		logger.info("getRecommendCPs success，执行时间："+(startTime-endTime)+"毫秒");
