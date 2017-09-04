@@ -429,26 +429,28 @@ function showSelectTag(data){
 	//2017.08.29   叶夷    选择标签加上动画效果，标签上升到“我的标签”容器中
 	var myTag=$("#mytag"+cpid);
 	var animateCp=$("#cpid"+cpid).clone();
-	$("#showatloaded").append(animateCp);
-	//var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
-	//console.log("测试："+$("#cp-show").scrollTop());
-	var animateCpStartTop=parseInt($("#top-container").height())+animateCp.offset().top-$("#cp-show").scrollTop()+10;
-	animateCp.css("top",animateCpStartTop);
-	var animateCpEndTop=myTag.offset().top;
-	var animateCpEndLeft=myTag.offset().left;
-	myTag.hide();
-	animateCp.animate({
-		left:animateCpEndLeft+"px",
-		top : animateCpEndTop+"px"
-	}, {
-		duration :1000
-	});
-	timeOutSuccess = setTimeout(function() {
-		animateCp.remove();
-		myTag.show();
-		$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
-		$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
-	},1000);
+	if(animateCp.length>0){//这是点击选中添加标签
+		$("#showatloaded").append(animateCp);
+		//var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
+		//console.log("测试："+$("#cp-show").scrollTop());
+		var animateCpStartTop=parseInt($("#top-container").height())+animateCp.offset().top-$("#cp-show").scrollTop()+10;
+		animateCp.css("top",animateCpStartTop);
+		var animateCpEndTop=myTag.offset().top;
+		var animateCpEndLeft=myTag.offset().left;
+		myTag.hide();
+		animateCp.animate({
+			left:animateCpEndLeft+"px",
+			top : animateCpEndTop+"px"
+		}, {
+			duration :1000
+		});
+		timeOutSuccess = setTimeout(function() {
+			animateCp.remove();
+			myTag.show();
+			$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
+			$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
+		},1000);
+	}
 	
 	console.log("选中标签成功");
 	toast_popup("选中标签成功",2500);
@@ -765,7 +767,7 @@ function circleAnimation(i, matchedUserArr) {
 		var exist = false;// 表示后台传来的数据是新数据
 		var muNowPosition;// 表示如果从后台新来的数据在前台存在但是排名有所改变时前台存在的排名
 		for (var j = i; j < muNowData.length; j++) {// 遍历现有的头像
-			if (muserid == muNowData[j].attr("id")) {
+			if (("mu"+muserid) == muNowData[j].attr("id")) {
 				exist = true;// 表示后台传来的数据不是新数据，已经存在
 				muNowPosition = j;
 				break;
@@ -800,7 +802,7 @@ function circleAnimation(i, matchedUserArr) {
 			// 2017.07.06 叶夷
 			// 1.将页面不存在的mp
 			muDiv(muserid,muserimg,muUserName,moveTop,moveLeft);
-			var newMu=$("#"+muserid);
+			var newMu=$("#mu"+muserid);
 
 			// 2.获得现有mp中应该去除的排名，则在新排名中没有的mp,且将它缩小
 			var muNowPositionNewNotExist=getMuNowPositionNewNotExist(i,matchedUserArr);// 这个位置的前端匹配人在新排名里不存在
