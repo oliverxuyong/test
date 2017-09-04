@@ -430,7 +430,9 @@ function showSelectTag(data){
 	var myTag=$("#mytag"+cpid);
 	var animateCp=$("#cpid"+cpid).clone();
 	$("#showatloaded").append(animateCp);
-	var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
+	//var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
+	//console.log("测试："+$("#cp-show").scrollTop());
+	var animateCpStartTop=parseInt($("#top-container").height())+animateCp.offset().top-$("#cp-show").scrollTop()+10;
 	animateCp.css("top",animateCpStartTop);
 	var animateCpEndTop=myTag.offset().top;
 	var animateCpEndLeft=myTag.offset().left;
@@ -439,14 +441,14 @@ function showSelectTag(data){
 		left:animateCpEndLeft+"px",
 		top : animateCpEndTop+"px"
 	}, {
-		duration :500
+		duration :1000
 	});
 	timeOutSuccess = setTimeout(function() {
 		animateCp.remove();
 		myTag.show();
 		$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
 		$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
-	},500);
+	},1000);
 	
 	console.log("选中标签成功");
 	toast_popup("选中标签成功",2500);
