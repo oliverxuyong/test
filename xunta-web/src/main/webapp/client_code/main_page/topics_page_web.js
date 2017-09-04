@@ -517,6 +517,10 @@ function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 
 //叶夷  2017.08.08 取消选中的标签
 function showUnSelectCP(data){
+	var addtag=$("#addtag");
+	//获得点击取消选择标签时位置变化之前的添加标签的top值
+	var addTagBottom1=addtag.offset().top
+	
 	var cpid=data.cpid;
 	var cp_node=$("#cpid"+cpid);
 	var text=cp_node.find(".incp").text();
@@ -526,16 +530,23 @@ function showUnSelectCP(data){
 	$("#mytag"+cpid).remove();
 	
 	//取消的时候将高度还原
-	var addtag=$("#addtag");
-	var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
-	var myTagContainer=$("#mytag-container");
-	var myTagContainerHeight=myTagContainer.height();
-	var myTagHeight=addtag.height();
+	//获得点击取消选择标签时位置变化之后的添加标签的top值
+	var addTagBottom2=addtag.offset().top
 	var myTagMarginTop=parseInt(addtag.css("margin-top"));
-	if(myTagContainerHeight>(myTagHeight*2+myTagMarginTop*3)){//我的标签框要留出两行
-		//我的标签框高度改变了之后影响其他部分的高度
-		myTagContainerHeightChange($("#mytag-container"),addTagBottom);
+	var myTagHeight=addtag.height();
+	var tagChangeHeight=myTagHeight+myTagMarginTop;
+	var myTagContainerHeight;
+	if(lineNumber<=2){//小于两行
+		myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
+	}else{
+		if(addTagBottom1-addTagBottom2>=tagChangeHeight){//已经少了一行
+			--lineNumber;
+		}
+		myTagContainerHeight=(myTagHeight+myTagMarginTop)*lineNumber+10;
 	}
+	var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
+	//我的标签框高度改变了之后影响其他部分的高度
+	myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
 	
 	//将取消选择的标签重新绑定点击事件
 	cp_node.click(function() {
@@ -1038,6 +1049,7 @@ function showMatchedUsers(){
 	}
 }
 
+/**显示"为你匹配xx个人"位置设置*/
 function showEnterMatchedUsers(){
 	var mu1=$("#mu1");
 	var mu7=$("#mu7");
