@@ -148,8 +148,8 @@ public class RecommendServiceImpl implements RecommendService {
 		
 		//记录更新前用户的匹配用户列表和推荐CP列表
 		final int U_LISTEN_NUM = 5;  //前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
-		final int CP_THRESHOLD = 3; //如果一个cp原先推荐值从CP_TOP_NUM名之外一下跳到前CP_TOP_NUM的位置，就推送
-		final int CP_LISTEN_NUM = 10;
+		final int CP_THRESHOLD = 100; //如果一个cp原先推荐值从CP_TOP_NUM名之外一下跳到前CP_TOP_NUM的位置，就推送
+		final int CP_LISTEN_NUM = 1000;
 		List<Long> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);
 		List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
 		
