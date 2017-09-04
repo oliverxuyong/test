@@ -133,6 +133,9 @@
 
 			_topicPageSign = Parameter.topicPageSign;
 			
+			//2017.09.04 叶夷  万一出现和我聊天的人没有共同选择过的标签的情况,共同选择过的标签框去除
+			adjustWidthsHeights();
+			
 			//2017.08.30 叶夷  请求共同选择的标签
 			requestSelectCP();
          

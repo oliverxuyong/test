@@ -233,7 +233,6 @@ function WS_Send(json_obj) {//抽出这个通用发送方法,发送前都检查w
 }
 
 function checkMessageInterface(evnt) {
-	
 	var jsonObj = JSON.parse(evnt.data);
 	//把字符串转换成json对象.
 	console.log("收到消息,类型=" + jsonObj._interface);
@@ -270,13 +269,13 @@ function checkMessageInterface(evnt) {
 	
 	//叶夷 2017.07.07   获得请求的用户匹配缩略表
 	if(jsonObj._interface == '1104-2'){
-		console.log("获得请求的用户匹配缩略表 :"+JSON.stringify(jsonObj.cp_wrap));
+		console.log("获得请求的用户匹配缩略表 :"+JSON.stringify(jsonObj.matched_user_arr));
 		exec("main_page","responseTopMatchedUsers("+evnt.data+")");
 	}
 	
 	//叶夷 2017.07.07   匹配用户改变
 	if(jsonObj._interface == '2106-1'){
-		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.cp_wrap));
+		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.matched_user_arr));
 		exec("main_page","push_matched_user("+evnt.data+")");
 	}
 	
@@ -284,6 +283,12 @@ function checkMessageInterface(evnt) {
 	if(jsonObj._interface == '1107-2'){
 		console.log("判断这个标签是否被选中过:"+JSON.stringify(jsonObj.is_select));
 		exec("main_page","return_sendIfSelectedCP("+evnt.data+")");
+	}
+	
+	//2017.09.04 叶夷    CP推荐
+	if(jsonObj._interface == '2105-1'){
+		console.log("CP推荐:"+JSON.stringify(jsonObj.cp_wrap));
+		exec("main_page","pushCP("+evnt.data+")");
 	}
 }
 

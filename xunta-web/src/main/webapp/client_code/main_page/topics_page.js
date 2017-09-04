@@ -226,3 +226,8 @@ function push_matched_user(newMuData) {
 		mpDataQueue.push(newMatchedUserArr);
 	}
 }
+
+//2017.09.04 叶夷    CP推荐
+function pushCP(data){
+	responseToCPRequest(data);
+}

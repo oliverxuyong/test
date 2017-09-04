@@ -5,7 +5,7 @@ function wsConnect() {
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
 	// 叶夷 2017.07.11 等请求cp返回之后再请求用户匹配缩略表
-	// requestTopMatchedUsers(userId,requestTopMUNum);
+	requestTopMatchedUsers(userId,requestTopMUNum);
 
 	$("#showatloaded").show();//首页开始显示
 
@@ -730,8 +730,8 @@ function getMuNowPositionNewNotExist(i,matchedUserArr){
 	for (var index = i; index < muNowData.length; index++) {
 		var exist = false;// 表示在前端的数据中在新排名里面没有
 		for (var j = i; j < matchedUserArr.length; j++) {
-			if(muNowData[index].attr("id")==matchedUserArr[j].getMpId()){//表示在前端的数据中在新排名里面有,这是测试版
-			//if (muNowData[index].attr("id") == matchedUserArr[j].userid) {// 表示在前端的数据中在新排名里面有
+			//if(muNowData[index].attr("id")==matchedUserArr[j].getMpId()){//表示在前端的数据中在新排名里面有,这是测试版
+			if (muNowData[index].attr("id") == matchedUserArr[j].userid) {// 表示在前端的数据中在新排名里面有
 				exist = true;
 				break;
 			}
@@ -756,7 +756,7 @@ function circleAnimation(i, matchedUserArr) {
 	var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
 	var muUserName=matchedUserArr[i].username;
 
-	if (muserid != muNowData[i].attr("id")) {// 排名改变
+	if (("mu"+muserid) != muNowData[i].attr("id")) {// 排名改变
 		circleEnd = false;// 只要动画开始执行则动画没有完成
 		isTimeOut = 1;// 让排名改变需要动画时才延时
 
