@@ -62,6 +62,7 @@ function sendUnSelectCP(cpid){
 
 //叶夷   2017.07.07  请求用户匹配缩略表
 function requestTopMatchedUsers(userId,requestTopMUNum){
+	firstRequestTopMatchedUsers=false;//第一次请求匹配列表完毕
 	var paraStr = userId + "','" + requestTopMUNum;
 	execRoot("requestMatchedUsers('"+ paraStr +"')");
 }
