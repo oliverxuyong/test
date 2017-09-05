@@ -28,6 +28,11 @@ public class U2uRelationDaoImp implements U2uRelationDao {
 	
 	@Override
 	public void updateUserRelationValue(String centerUid, String relateUid, double dRelationValue) {
+		if(centerUid==null || relateUid==null) {
+			return;
+		}else if(centerUid.equals(relateUid)){
+			return;
+		}
 		Jedis jedis=null;
 		centerUid = keyPrefix + centerUid;
 		try {

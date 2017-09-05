@@ -40,7 +40,7 @@ public class MatchedUsersController {
 		JSONArray matchedUserArr = new JSONArray();
 		for(User matchedUser:matchedUsers){
 			JSONObject userJson = new JSONObject();
-			userJson.put("userid",matchedUser.getUserId());
+			userJson.put("userid",matchedUser.getUserId()+"");
 			userJson.put("username",matchedUser.getName());
 			userJson.put("img_src",matchedUser.getImgUrl());
 			matchedUserArr.put(userJson);

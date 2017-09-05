@@ -25,6 +25,11 @@ public class U2uUpdateStatusDaoImp implements U2uUpdateStatusDao {
 	
 	@Override
 	public Double updateDeltaRelationValue(String centerUid, String relateUid, double dValue) {
+		if(centerUid==null||relateUid==null){
+			return 0.0;
+		}else if(centerUid.equals(relateUid)){
+			return 0.0;
+		}
 		Jedis jedis = null;
 		double updateValue = 0;
 		centerUid = keyPrefix + centerUid;
