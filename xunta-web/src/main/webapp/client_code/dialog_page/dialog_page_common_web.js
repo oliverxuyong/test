@@ -129,6 +129,7 @@ var lineNumber=1;
 
 function appendSameSelectCp(cpid,text){
 	var selectCpContainer=$("#selectCp-container");
+	selectCpContainer.show();
 	var selectCp = $("<div></div>").attr("class", "selectCp").text(text);
 	selectCpContainer.append(selectCp);
 	

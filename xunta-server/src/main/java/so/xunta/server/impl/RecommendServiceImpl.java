@@ -145,6 +145,7 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		
 		//记录更新前用户的匹配用户列表和推荐CP列表
+
 		final int U_TOP_NUM = 1;  //前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
 		final int U_LISTEN_NUM = 15;  //匹配列表长度
 		final int CP_THRESHOLD = 10; //如果一个cp原先推荐值从CP_LISTEN_NUM名之外一下跳到前CP_THRESHOLD的位置，就推送

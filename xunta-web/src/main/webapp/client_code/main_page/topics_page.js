@@ -62,6 +62,7 @@ function sendUnSelectCP(cpid){
 
 //叶夷   2017.07.07  请求用户匹配缩略表
 function requestTopMatchedUsers(userId,requestTopMUNum){
+	firstRequestTopMatchedUsers=false;//第一次请求匹配列表完毕
 	var paraStr = userId + "','" + requestTopMUNum;
 	execRoot("requestMatchedUsers('"+ paraStr +"')");
 }
@@ -149,6 +150,7 @@ function return_sendIfSelectedCP(jsonObj){
 	var cpid=jsonObj.cpid;
 	if(jsonObj.is_select=="false"){//没有被选择
 		sendSelectCP(userId,cpid,text);
+		closePop();//添加标签框关掉
 	}else{
 		toast_popup("这个标签被选中过",2500);
 	}
@@ -225,4 +227,9 @@ function push_matched_user(newMuData) {
 	} else {// 如果没有运行完则将新数据放入队列中
 		mpDataQueue.push(newMatchedUserArr);
 	}
+}
+
+//2017.09.04 叶夷    CP推荐
+function pushCP(data){
+	responseToCPRequest(data);
 }
