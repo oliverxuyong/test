@@ -5,7 +5,9 @@ function wsConnect() {
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
 	// 叶夷 2017.07.11 等请求cp返回之后再请求用户匹配缩略表
-	// requestTopMatchedUsers(userId,requestTopMUNum);
+	if(firstRequestTopMatchedUsers==true){
+		requestTopMatchedUsers(userId,requestTopMUNum);
+	}
 
 	$("#showatloaded").show();//首页开始显示
 
@@ -429,24 +431,28 @@ function showSelectTag(data){
 	//2017.08.29   叶夷    选择标签加上动画效果，标签上升到“我的标签”容器中
 	var myTag=$("#mytag"+cpid);
 	var animateCp=$("#cpid"+cpid).clone();
-	$("#showatloaded").append(animateCp);
-	var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
-	animateCp.css("top",animateCpStartTop);
-	var animateCpEndTop=myTag.offset().top;
-	var animateCpEndLeft=myTag.offset().left;
-	myTag.hide();
-	animateCp.animate({
-		left:animateCpEndLeft+"px",
-		top : animateCpEndTop+"px"
-	}, {
-		duration :500
-	});
-	timeOutSuccess = setTimeout(function() {
-		animateCp.remove();
-		myTag.show();
-		$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
-		$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
-	},500);
+	if(animateCp.length>0){//这是点击选中添加标签
+		$("#showatloaded").append(animateCp);
+		//var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
+		//console.log("测试："+$("#cp-show").scrollTop());
+		var animateCpStartTop=parseInt($("#top-container").height())+animateCp.offset().top-$("#cp-show").scrollTop()+10;
+		animateCp.css("top",animateCpStartTop);
+		var animateCpEndTop=myTag.offset().top;
+		var animateCpEndLeft=myTag.offset().left;
+		myTag.hide();
+		animateCp.animate({
+			left:animateCpEndLeft+"px",
+			top : animateCpEndTop+"px"
+		}, {
+			duration :1000
+		});
+		timeOutSuccess = setTimeout(function() {
+			animateCp.remove();
+			myTag.show();
+			$("#cpid"+cpid).css("opacity", "0.2");//推荐标签变暗
+			$("#cpid"+cpid).css("cursor", "auto");//点击小手不见
+		},1000);
+	}
 	
 	console.log("选中标签成功");
 	toast_popup("选中标签成功",2500);
@@ -513,6 +519,10 @@ function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 
 //叶夷  2017.08.08 取消选中的标签
 function showUnSelectCP(data){
+	var addtag=$("#addtag");
+	//获得点击取消选择标签时位置变化之前的添加标签的top值
+	var addTagBottom1=addtag.offset().top
+	
 	var cpid=data.cpid;
 	var cp_node=$("#cpid"+cpid);
 	var text=cp_node.find(".incp").text();
@@ -522,16 +532,23 @@ function showUnSelectCP(data){
 	$("#mytag"+cpid).remove();
 	
 	//取消的时候将高度还原
-	var addtag=$("#addtag");
-	var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
-	var myTagContainer=$("#mytag-container");
-	var myTagContainerHeight=myTagContainer.height();
-	var myTagHeight=addtag.height();
+	//获得点击取消选择标签时位置变化之后的添加标签的top值
+	var addTagBottom2=addtag.offset().top
 	var myTagMarginTop=parseInt(addtag.css("margin-top"));
-	if(myTagContainerHeight>(myTagHeight*2+myTagMarginTop*3)){//我的标签框要留出两行
-		//我的标签框高度改变了之后影响其他部分的高度
-		myTagContainerHeightChange($("#mytag-container"),addTagBottom);
+	var myTagHeight=addtag.height();
+	var tagChangeHeight=myTagHeight+myTagMarginTop;
+	var myTagContainerHeight;
+	if(lineNumber<=2){//小于两行
+		myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
+	}else{
+		if(addTagBottom1-addTagBottom2>=tagChangeHeight){//已经少了一行
+			--lineNumber;
+		}
+		myTagContainerHeight=(myTagHeight+myTagMarginTop)*lineNumber+10;
 	}
+	var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
+	//我的标签框高度改变了之后影响其他部分的高度
+	myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
 	
 	//将取消选择的标签重新绑定点击事件
 	cp_node.click(function() {
@@ -585,7 +602,7 @@ var muDataQueue = new Array();
 var circleEnd = true;// 判断动画是否运行完
 
 //2017.07.04 叶夷 模拟数据的产生 
-function addMPData(){ 
+/*function addMPData(){ 
 	var newMatchedUserArr=new Array();//装后台发来的匹配人 
 	var mpId=new Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);//模拟的匹配人ID 
 	var mpImg=new Array("http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40",
@@ -627,7 +644,7 @@ function addMPData(){
 		muDataQueue.push(newMatchedUserArr); 
 	} 
 }
-
+*/
 
 
 var muNowData = new Array();// 前台目前显示的匹配人列表排名
@@ -649,11 +666,12 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 function muAddImg(i,matchedUserArr){
 	var muNode=$("#mu"+(i+1));//这是已经放在页面的匹配人头像div
 	
-	var muId=matchedUserArr[i].getMpId();//获得匹配人列表的匹配人id,这是测试数据版
-	//var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
+	//var muId=matchedUserArr[i].getMpId();//获得匹配人列表的匹配人id,这是测试数据版
+	var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
 	 
-	var muImg=matchedUserArr[i].getMpImg();//获得匹配人列表的匹配人头像,这是测试版数据
-	//var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
+	//var muImg=matchedUserArr[i].getMpImg();//获得匹配人列表的匹配人头像,这是测试版数据
+	var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
+	var muUserName=matchedUserArr[i].username;
 	
 	var muWidth=muNode.css("width");
 	var muNodeImg=$("<img src='"+muImg+"'/>").css("width",muWidth).css("height",muWidth);
@@ -665,13 +683,13 @@ function muAddImg(i,matchedUserArr){
 	//点击事件
 	muNode.click(function() {
 		//进入聊天页
-		enterDialogPage();
+		enterDialogPage(muId,muUserName);
 		//addMPData();//测试匹配人动画
 	});
 }
 
 //2017.08.23 叶夷  生成一个新的匹配人div
-function muDiv(id,muImg,top,left){
+function muDiv(id,muImg,muUserName,top,left){
 	var muNode=$("<div></div>").attr("id","mu"+id).attr("class","mu");//这是页面的匹配人头像div
 	var muNodeImg=$("<img src='"+muImg+"' style='width:0px;height:0px;'/>");
 	muNode.append(muNodeImg);
@@ -684,7 +702,7 @@ function muDiv(id,muImg,top,left){
 	//点击事件
 	muNode.click(function() {
 		//进入聊天页
-		enterDialogPage();
+		enterDialogPage(id,muUserName);
 		//addMPData();//测试匹配人动画
 	});
 }
@@ -729,8 +747,8 @@ function getMuNowPositionNewNotExist(i,matchedUserArr){
 	for (var index = i; index < muNowData.length; index++) {
 		var exist = false;// 表示在前端的数据中在新排名里面没有
 		for (var j = i; j < matchedUserArr.length; j++) {
-			if(muNowData[index].attr("id")==matchedUserArr[j].getMpId()){//表示在前端的数据中在新排名里面有,这是测试版
-			//if (muNowData[index].attr("id") == matchedUserArr[j].userid) {// 表示在前端的数据中在新排名里面有
+			//if(muNowData[index].attr("id")==matchedUserArr[j].getMpId()){//表示在前端的数据中在新排名里面有,这是测试版
+			if (muNowData[index].attr("id") == matchedUserArr[j].userid) {// 表示在前端的数据中在新排名里面有
 				exist = true;
 				break;
 			}
@@ -748,20 +766,21 @@ var isTimeOut = 0;// 判断是否延时，让排名改变需要动画时才延�
 
 // 2017.07.05 叶夷 一一对比之后开始将排名改变的用户动画
 function circleAnimation(i, matchedUserArr) {
-	//var muserid = matchedUserArr[i].userid;// 这是匹配人id
-	var muserid=matchedUserArr[i].getMpId();//这是匹配人id,这是测试版数据
+	var muserid = matchedUserArr[i].userid;// 这是匹配人id
+	//var muserid=matchedUserArr[i].getMpId();//这是匹配人id,这是测试版数据
 
-	var muserimg=matchedUserArr[i].getMpImg();//这是匹配人头像,这是测试数据
-	//var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
+	//var muserimg=matchedUserArr[i].getMpImg();//这是匹配人头像,这是测试数据
+	var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
+	var muUserName=matchedUserArr[i].username;
 
-	if (muserid != muNowData[i].attr("id")) {// 排名改变
+	if (("mu"+muserid) != muNowData[i].attr("id")) {// 排名改变
 		circleEnd = false;// 只要动画开始执行则动画没有完成
 		isTimeOut = 1;// 让排名改变需要动画时才延时
 
 		var exist = false;// 表示后台传来的数据是新数据
 		var muNowPosition;// 表示如果从后台新来的数据在前台存在但是排名有所改变时前台存在的排名
 		for (var j = i; j < muNowData.length; j++) {// 遍历现有的头像
-			if (muserid == muNowData[j].attr("id")) {
+			if (("mu"+muserid) == muNowData[j].attr("id")) {
 				exist = true;// 表示后台传来的数据不是新数据，已经存在
 				muNowPosition = j;
 				break;
@@ -795,8 +814,8 @@ function circleAnimation(i, matchedUserArr) {
 		} else {// 不存在
 			// 2017.07.06 叶夷
 			// 1.将页面不存在的mp
-			muDiv(muserid,muserimg,moveTop,moveLeft);
-			var newMu=$("#"+muserid);
+			muDiv(muserid,muserimg,muUserName,moveTop,moveLeft);
+			var newMu=$("#mu"+muserid);
 
 			// 2.获得现有mp中应该去除的排名，则在新排名中没有的mp,且将它缩小
 			var muNowPositionNewNotExist=getMuNowPositionNewNotExist(i,matchedUserArr);// 这个位置的前端匹配人在新排名里不存在
@@ -1032,6 +1051,7 @@ function showMatchedUsers(){
 	}
 }
 
+/**显示"为你匹配xx个人"位置设置*/
 function showEnterMatchedUsers(){
 	var mu1=$("#mu1");
 	var mu7=$("#mu7");
