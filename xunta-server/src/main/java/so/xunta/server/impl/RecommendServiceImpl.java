@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hankcs.hanlp.dependency.nnparser.util.Log;
+
 import redis.clients.jedis.Tuple;
 import so.xunta.beans.ConcernPointDO;
 import so.xunta.beans.PushMatchedUserDTO;
@@ -181,12 +183,12 @@ public class RecommendServiceImpl implements RecommendService {
 		RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
 		List<Long> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
 		if((matched_uids_previous.size() < U_LISTEN_NUM) && (matched_uids_after.size() > matched_uids_previous.size())){
-			//如果原匹配列表还未达到指定长度并且新匹配列表有新用户产生，则直接推送
+			logger.info("原匹配列表还未达到指定长度并且新匹配列表有新用户产生，则直接推送");
 			generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
 		}else{
-			//其他情况则逐位比较前TOP_NUM位用户，如有变化就推送
 			for(int i=0;i<(matched_uids_previous.size()>U_TOP_NUM ? U_TOP_NUM : matched_uids_previous.size());i++){
 				if(!matched_uids_previous.get(i).equals(matched_uids_after.get(i))){
+					logger.info("前"+matched_uids_previous.size()+"位排名发生了变化,推送");
 					generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
 					break;
 				}
@@ -205,6 +207,7 @@ public class RecommendServiceImpl implements RecommendService {
 			pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid));
 			
 			recommendPushDTO.addPushMatchedCPs(pushRecommendCp);
+			logger.info("产生推送cp："+cp.getText());
 		}
 		
 		logger.info("线程 "+Thread.currentThread().getName()+" updateU2C end: 更新完毕"+ uid + 
@@ -318,7 +321,7 @@ public class RecommendServiceImpl implements RecommendService {
 			pushMatchedUser.setImg_src(u.getImgUrl());
 			pushMatchedUser.setNew_rank(rank);
 			rank++;
-			
+			logger.info("推送用户: "+u.getName()+" rank:"+rank);
 			recommendPushDTO.addPushMatchedUser(pushMatchedUser);
 		}
 	}

@@ -79,13 +79,13 @@ public class ConcernPointOperationWSController {
 					List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
 					if(pushMatchedUserDTOs!=null){
 						logger.info("给id为”"+uid+"“ 的用户产生了MatchedUsers推送");
-						pushChangedMatchedUsers(pushMatchedUserDTOs,session);
+						pushChangedMatchedUsers(pushMatchedUserDTOs,EchoWebSocketHandler.getUserById(Long.valueOf(uid)));
 					}
 					
 					List<PushRecommendCpDTO> pushRecommendCpDTOs = recommendPushDTO.getPushMatchedCPs();
 					if(pushRecommendCpDTOs!=null){
 						logger.info("给id为”"+uid+"“ 的用户产生了CP推送,推送了 "+pushRecommendCpDTOs.size()+" 个");
-						pushRecommendCps(pushRecommendCpDTOs,session);
+						pushRecommendCps(pushRecommendCpDTOs,EchoWebSocketHandler.getUserById(Long.valueOf(uid)));
 					}
 				}
 			}
