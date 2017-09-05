@@ -72,14 +72,12 @@ public class RecommendServiceImpl implements RecommendService {
 						uid+"\t cpid: "+cpid+"\t selectType: "+selectType);
 		long startTime = System.currentTimeMillis();
 	
-		//新增时先查后更新C2U，删除时先更新后查C2U,这样在后面遍历时就不会把自己也包括进去
-		Set<String> usersSelectedSameCp = null;
+		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid);
+		
 		if(selectType == RecommendService.SELECT_CP){
-			usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid);
 			c2uDao.saveCpOneUser(cpid, uid);
 		}else{
 			c2uDao.deleteUserInCp(cpid, uid);
-			usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid);
 		}
 		Double dValue = concernPointDao.getConcernPoint(new BigInteger(cpid)).getWeight().doubleValue();
 	
@@ -147,8 +145,9 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		
 		//记录更新前用户的匹配用户列表和推荐CP列表
-		final int U_LISTEN_NUM = 5;  //前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
-		final int CP_THRESHOLD = 3; //如果一个cp原先推荐值从CP_TOP_NUM名之外一下跳到前CP_TOP_NUM的位置，就推送
+		final int U_TOP_NUM = 1;  //前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
+		final int U_LISTEN_NUM = 15;  //匹配列表长度
+		final int CP_THRESHOLD = 10; //如果一个cp原先推荐值从CP_LISTEN_NUM名之外一下跳到前CP_THRESHOLD的位置，就推送
 		final int CP_LISTEN_NUM = 10;
 		List<Long> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);
 		List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
@@ -181,19 +180,19 @@ public class RecommendServiceImpl implements RecommendService {
 		
 		RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
 		List<Long> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
-		for(int i=0;i<matched_uids_previous.size();i++){
-			if(matched_uids_previous.get(i).equals(matched_uids_after.get(i))){
-				continue;
+		if((matched_uids_previous.size() < U_LISTEN_NUM) && (matched_uids_after.size() > matched_uids_previous.size())){
+			//如果原匹配列表还未达到指定长度并且新匹配列表有新用户产生，则直接推送
+			generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
+		}else{
+			//其他情况则逐位比较前TOP_NUM位用户，如有变化就推送
+			for(int i=0;i<(matched_uids_previous.size()>U_TOP_NUM ? U_TOP_NUM : matched_uids_previous.size());i++){
+				if(!matched_uids_previous.get(i).equals(matched_uids_after.get(i))){
+					generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
+					break;
+				}
 			}
-			User u = userDao.findUserByUserid(matched_uids_after.get(i));
-			PushMatchedUserDTO pushMatchedUser = new PushMatchedUserDTO();
-			pushMatchedUser.setUserid(u.getUserId().toString());
-			pushMatchedUser.setUsername(u.getName());
-			pushMatchedUser.setImg_src(u.getImgUrl());
-			pushMatchedUser.setNew_rank(i+1);
-			
-			recommendPushDTO.addPushMatchedUser(pushMatchedUser);
 		}
+		
 		List<String> recommend_cps_after = getRecommendCPs(uid, CP_THRESHOLD);
 		for(String cpid:recommend_cps_after){
 			if(recommend_cps_previous.contains(cpid)){
@@ -307,5 +306,20 @@ public class RecommendServiceImpl implements RecommendService {
 			cpIds.add(cpid);
 		}
 		return cpIds;
+	}
+	
+	private void generatePushMatchedUsers(List<Long> matched_uids_after, RecommendPushDTO recommendPushDTO){
+		List<User> matched_users = userDao.findUserInIds(matched_uids_after);
+		int rank=1;
+		for(User u:matched_users){
+			PushMatchedUserDTO pushMatchedUser = new PushMatchedUserDTO();
+			pushMatchedUser.setUserid(u.getUserId().toString());
+			pushMatchedUser.setUsername(u.getName());
+			pushMatchedUser.setImg_src(u.getImgUrl());
+			pushMatchedUser.setNew_rank(rank);
+			rank++;
+			
+			recommendPushDTO.addPushMatchedUser(pushMatchedUser);
+		}
 	}
 }
