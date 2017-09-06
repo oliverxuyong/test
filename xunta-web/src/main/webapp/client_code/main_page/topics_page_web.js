@@ -651,7 +651,9 @@ var muNowData = new Array();// 前台目前显示的匹配人列表排名
 // 2017.07.04 叶夷 显示匹配人列表，没有数据的时候先用模拟数据
 function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹配人列表数据(且排好了顺序)
 	if (muNowData.length == 0) {// 如果是用户一开始上线，匹配人列表没有
-		for (var i = 0; i < matchedUserArr.length; i++) {
+		//2017.09.06  叶夷     matchedUserArr.length改成现有的匹配人div的数量，因为匹配人数量有可能比这个数量少,会导致后面的对比产生null异常
+		var muLength=$(".mu").length;
+		for (var i = 0; i < muLength; i++) {
 			muAddImg(i,matchedUserArr);
 		}
 	} else {// 用户在操作过程中匹配人列表发生改变
@@ -664,28 +666,32 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 
 //2017.08.23 叶夷  将匹配人div加上头像图片
 function muAddImg(i,matchedUserArr){
-	var muNode=$("#mu"+(i+1));//这是已经放在页面的匹配人头像div
-	
-	//var muId=matchedUserArr[i].getMpId();//获得匹配人列表的匹配人id,这是测试数据版
-	var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
-	 
-	//var muImg=matchedUserArr[i].getMpImg();//获得匹配人列表的匹配人头像,这是测试版数据
-	var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
-	var muUserName=matchedUserArr[i].username;
-	
-	var muWidth=muNode.css("width");
-	var muNodeImg=$("<img src='"+muImg+"'/>").css("width",muWidth).css("height",muWidth);
-	muNode.append(muNodeImg);
+	var muNode;
+	if(matchedUserArr[i]!=null){
+		muNode=$("#mu"+(i+1));//这是已经放在页面的匹配人头像div
+		
+		//var muId=matchedUserArr[i].getMpId();//获得匹配人列表的匹配人id,这是测试数据版
+		var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
+		 
+		//var muImg=matchedUserArr[i].getMpImg();//获得匹配人列表的匹配人头像,这是测试版数据
+		var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
+		var muUserName=matchedUserArr[i].username;
+		
+		var muWidth=muNode.css("width");
+		var muNodeImg=$("<img src='"+muImg+"'/>").css("width",muWidth).css("height",muWidth);
+		muNode.append(muNodeImg);
+		muNode.attr("id","mu"+muId);
+		//点击事件
+		muNode.click(function() {
+			//进入聊天页
+			enterDialogPage(muId,muUserName);
+			//addMPData();//测试匹配人动画
+		});
+	}else{
+		muNode=$(".mu").eq(i);
+	}
 	
 	muNowData.push(muNode);
-	muNode.attr("id","mu"+muId);
-	
-	//点击事件
-	muNode.click(function() {
-		//进入聊天页
-		enterDialogPage(muId,muUserName);
-		//addMPData();//测试匹配人动画
-	});
 }
 
 //2017.08.23 叶夷  生成一个新的匹配人div
@@ -773,14 +779,14 @@ function circleAnimation(i, matchedUserArr) {
 	var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
 	var muUserName=matchedUserArr[i].username;
 
-	if ((muNowData[i]==null) || (("mu"+muserid) != muNowData[i].attr("id"))) {// 排名改变
+	if (("mu"+muserid) != muNowData[i].attr("id")) {// 排名改变
 		circleEnd = false;// 只要动画开始执行则动画没有完成
 		isTimeOut = 1;// 让排名改变需要动画时才延时
 
 		var exist = false;// 表示后台传来的数据是新数据
 		var muNowPosition;// 表示如果从后台新来的数据在前台存在但是排名有所改变时前台存在的排名
 		for (var j = i; j < muNowData.length; j++) {// 遍历现有的头像
-			if ((muNowData[j]!=null) && ("mu"+muserid) == muNowData[j].attr("id")) {
+			if (("mu"+muserid) == muNowData[j].attr("id")) {
 				exist = true;// 表示后台传来的数据不是新数据，已经存在
 				muNowPosition = j;
 				break;
