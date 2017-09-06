@@ -34,7 +34,7 @@ public class CpChoiceDetailDaoImpl implements CpChoiceDetailDao {
 	}
 
 	@Override
-	public Map<BigInteger, String> getSelectedCpAfterTime(Long userid, Timestamp lastUpdateTime) {
+	public Map<BigInteger, String> getOperatedCpAfterTime(Long userid, Timestamp lastUpdateTime) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql="SELECT cp_id,is_selected FROM cp_choice_detail WHERE user_id=:userid AND create_time>=:lastUpdateTime GROUP BY cp_id HAVING MAX(create_time) ";
 		@SuppressWarnings("unchecked")

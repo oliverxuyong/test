@@ -16,10 +16,11 @@ public interface CpChoiceDetailDao {
 	/**
 	 * 获得在上次更新后标签的变化
 	 * */
-	public Map<BigInteger,String> getSelectedCpAfterTime(Long userid, Timestamp lastUpdateTime);
+	public Map<BigInteger,String> getOperatedCpAfterTime(Long userid, Timestamp lastUpdateTime);
 	/**
 	 * 获得在上次更新前已选择的标签
 	 * */
+	@Deprecated
 	public List<BigInteger> getSelectedCpBeforeTime(Long userid, Timestamp lastUpdateTime);
 	
 	public CpChoiceDetailDO getCpChoiceDetail(Long userid, BigInteger cpId);

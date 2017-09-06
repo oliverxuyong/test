@@ -23,6 +23,7 @@ import so.xunta.beans.RecommendPushDTO;
 import so.xunta.beans.User;
 import so.xunta.persist.C2uDao;
 import so.xunta.persist.ConcernPointDao;
+import so.xunta.persist.CpChoiceDao;
 import so.xunta.persist.CpChoiceDetailDao;
 import so.xunta.persist.U2cDao;
 import so.xunta.persist.U2uRelationDao;
@@ -48,6 +49,8 @@ public class RecommendServiceImpl implements RecommendService {
 	private UserLastUpdateTimeDao userLastUpdateTimeDao;
 	@Autowired
 	private CpChoiceDetailDao cpChoiceDetailDao;
+	@Autowired
+	private CpChoiceDao cpChoiceDao;
 	@Autowired
 	private UserDao userDao;
 
@@ -151,7 +154,8 @@ public class RecommendServiceImpl implements RecommendService {
 		final int U_TOP_NUM = 10;  //前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
 		final int U_LISTEN_NUM = 10;  //匹配列表长度
 		final int CP_THRESHOLD = 10; //如果一个cp原先推荐值从CP_LISTEN_NUM名之外一下跳到前CP_THRESHOLD的位置，就推送
-		final int CP_LISTEN_NUM = 10;		List<Long> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);
+		final int CP_LISTEN_NUM = 10;		
+		List<Long> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);
 		List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
 		
 		//step 1
@@ -163,7 +167,7 @@ public class RecommendServiceImpl implements RecommendService {
 		for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
 			String changedUid = changedUserEntry.getKey();
 			double uDeltaValue = Double.valueOf(changedUserEntry.getValue());
-			Map<BigInteger, String> newCps= cpChoiceDetailDao.getSelectedCpAfterTime(Long.valueOf(changedUid), lastUpdateTime);
+			Map<BigInteger, String> newCps= cpChoiceDetailDao.getOperatedCpAfterTime(Long.valueOf(changedUid), lastUpdateTime);
 			
 			if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
 				updateU2CAfterLastUpdated(newCps, uid, changedUid);
@@ -262,7 +266,7 @@ public class RecommendServiceImpl implements RecommendService {
 	}
 	
 	private void updateU2CAfterLastUpdated(Map<BigInteger, String> newCps, String uid, String changedUid){
-		logger.info("CP新选更新：用户 "+changedUid);
+		logger.info("新选CP更新：关联用户 "+changedUid);
 		for(Entry<BigInteger, String> selectedCp:newCps.entrySet()){
 			BigInteger selectedCpid = selectedCp.getKey();
 			String is_selected = selectedCp.getValue();
@@ -279,8 +283,8 @@ public class RecommendServiceImpl implements RecommendService {
 	}
 	
 	private void updateU2CBeforeLastUpdated(String uid,Long changedUid,Timestamp lastUpdateTime,double uDeltaValue){
-		logger.info("CP已选更新：用户 "+changedUid);
-		List<BigInteger> oldCps = cpChoiceDetailDao.getSelectedCpBeforeTime(changedUid, lastUpdateTime);
+		logger.info("已选CP更新：关联用户 "+changedUid);
+		List<BigInteger> oldCps = cpChoiceDao.getSelectedCpsBeforeTime(changedUid, lastUpdateTime);
 		for(BigInteger oldCp:oldCps){
 			Double cpWeight = concernPointDao.getConcernPoint(oldCp).getWeight().doubleValue();
 			u2cDao.updateUserCpValue(uid, oldCp.toString(), cpWeight*uDeltaValue);

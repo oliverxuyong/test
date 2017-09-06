@@ -1,6 +1,9 @@
 package so.xunta.persist.impl;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import so.xunta.persist.CpChoiceDao;
 @Repository
 @Transactional
 public class CpChoiceDaoImpl implements CpChoiceDao {
+
 	@Autowired
 	SessionFactory sessionFactory;
 	
@@ -44,5 +48,15 @@ public class CpChoiceDaoImpl implements CpChoiceDao {
 		}else{
 			return null;
 		}
+	}
+	
+	@Override
+	public List<BigInteger> getSelectedCpsBeforeTime(Long userid, Timestamp lastUpdateTime) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql="SELECT cpc.cp_id FROM CpChoiceDO as cpc WHERE cpc.user_id=:userid AND cpc.create_time<:lastUpdateTime ";
+		@SuppressWarnings("unchecked")
+		List<BigInteger> result = (List<BigInteger>)session.createQuery(hql).setLong("userid", userid).setDate("lastUpdateTime", lastUpdateTime).list();
+	
+		return result;
 	}
 }
