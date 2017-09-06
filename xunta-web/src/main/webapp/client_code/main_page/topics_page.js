@@ -225,7 +225,7 @@ function push_matched_user(newMuData) {
 	if (circleEnd) {// 如果运行完，则直接进入程序运行
 		showMatchPeople(newMatchedUserArr);
 	} else {// 如果没有运行完则将新数据放入队列中
-		mpDataQueue.push(newMatchedUserArr);
+		muDataQueue.push(newMatchedUserArr);
 	}
 }
 

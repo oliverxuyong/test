@@ -598,7 +598,7 @@ function MatchPeople(mpId, mpImg) {// 有匹配人的ID，匹配人的头像图�
 // 2017.07.07 叶夷 如何解决匹配人交换位置动画还没完成又有新的匹配人排名顺序进来
 // 1.一个队列，用来装后台发来的匹配人的数组，如果有新数据，先判断动画有没有运行完，如果运行完，则直接进入程序运行，如果没有运行完则将新数据放入队列中
 // 2.匹配人交换位置动画运行完毕现将自己这份数据在队列中删除，然后查看队列里面有没数据，有则接着运行,没有则运行完毕
-var muDataQueue = new Array();
+var muDataQueue = new Array();//mpDataQueue
 var circleEnd = true;// 判断动画是否运行完
 
 //2017.07.04 叶夷 模拟数据的产生 
@@ -773,14 +773,14 @@ function circleAnimation(i, matchedUserArr) {
 	var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
 	var muUserName=matchedUserArr[i].username;
 
-	if (("mu"+muserid) != muNowData[i].attr("id")) {// 排名改变
+	if ((muNowData[i]==null) || (("mu"+muserid) != muNowData[i].attr("id"))) {// 排名改变
 		circleEnd = false;// 只要动画开始执行则动画没有完成
 		isTimeOut = 1;// 让排名改变需要动画时才延时
 
 		var exist = false;// 表示后台传来的数据是新数据
 		var muNowPosition;// 表示如果从后台新来的数据在前台存在但是排名有所改变时前台存在的排名
 		for (var j = i; j < muNowData.length; j++) {// 遍历现有的头像
-			if (("mu"+muserid) == muNowData[j].attr("id")) {
+			if ((muNowData[j]!=null) && ("mu"+muserid) == muNowData[j].attr("id")) {
 				exist = true;// 表示后台传来的数据不是新数据，已经存在
 				muNowPosition = j;
 				break;
