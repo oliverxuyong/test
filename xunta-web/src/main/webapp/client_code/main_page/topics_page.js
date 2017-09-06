@@ -150,6 +150,7 @@ function return_sendIfSelectedCP(jsonObj){
 	var cpid=jsonObj.cpid;
 	if(jsonObj.is_select=="false"){//没有被选择
 		sendSelectCP(userId,cpid,text);
+		closePop();//添加标签框关掉
 	}else{
 		toast_popup("这个标签被选中过",2500);
 	}
@@ -224,7 +225,7 @@ function push_matched_user(newMuData) {
 	if (circleEnd) {// 如果运行完，则直接进入程序运行
 		showMatchPeople(newMatchedUserArr);
 	} else {// 如果没有运行完则将新数据放入队列中
-		mpDataQueue.push(newMatchedUserArr);
+		muDataQueue.push(newMatchedUserArr);
 	}
 }
 

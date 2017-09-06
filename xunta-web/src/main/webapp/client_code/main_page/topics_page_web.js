@@ -598,7 +598,7 @@ function MatchPeople(mpId, mpImg) {// 有匹配人的ID，匹配人的头像图�
 // 2017.07.07 叶夷 如何解决匹配人交换位置动画还没完成又有新的匹配人排名顺序进来
 // 1.一个队列，用来装后台发来的匹配人的数组，如果有新数据，先判断动画有没有运行完，如果运行完，则直接进入程序运行，如果没有运行完则将新数据放入队列中
 // 2.匹配人交换位置动画运行完毕现将自己这份数据在队列中删除，然后查看队列里面有没数据，有则接着运行,没有则运行完毕
-var muDataQueue = new Array();
+var muDataQueue = new Array();//mpDataQueue
 var circleEnd = true;// 判断动画是否运行完
 
 //2017.07.04 叶夷 模拟数据的产生 
@@ -651,7 +651,9 @@ var muNowData = new Array();// 前台目前显示的匹配人列表排名
 // 2017.07.04 叶夷 显示匹配人列表，没有数据的时候先用模拟数据
 function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹配人列表数据(且排好了顺序)
 	if (muNowData.length == 0) {// 如果是用户一开始上线，匹配人列表没有
-		for (var i = 0; i < matchedUserArr.length; i++) {
+		//2017.09.06  叶夷     matchedUserArr.length改成现有的匹配人div的数量，因为匹配人数量有可能比这个数量少,会导致后面的对比产生null异常
+		var muLength=$(".mu").length;
+		for (var i = 0; i < muLength; i++) {
 			muAddImg(i,matchedUserArr);
 		}
 	} else {// 用户在操作过程中匹配人列表发生改变
@@ -664,28 +666,32 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 
 //2017.08.23 叶夷  将匹配人div加上头像图片
 function muAddImg(i,matchedUserArr){
-	var muNode=$("#mu"+(i+1));//这是已经放在页面的匹配人头像div
-	
-	//var muId=matchedUserArr[i].getMpId();//获得匹配人列表的匹配人id,这是测试数据版
-	var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
-	 
-	//var muImg=matchedUserArr[i].getMpImg();//获得匹配人列表的匹配人头像,这是测试版数据
-	var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
-	var muUserName=matchedUserArr[i].username;
-	
-	var muWidth=muNode.css("width");
-	var muNodeImg=$("<img src='"+muImg+"'/>").css("width",muWidth).css("height",muWidth);
-	muNode.append(muNodeImg);
+	var muNode;
+	if(matchedUserArr[i]!=null){
+		muNode=$("#mu"+(i+1));//这是已经放在页面的匹配人头像div
+		
+		//var muId=matchedUserArr[i].getMpId();//获得匹配人列表的匹配人id,这是测试数据版
+		var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
+		 
+		//var muImg=matchedUserArr[i].getMpImg();//获得匹配人列表的匹配人头像,这是测试版数据
+		var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
+		var muUserName=matchedUserArr[i].username;
+		
+		var muWidth=muNode.css("width");
+		var muNodeImg=$("<img src='"+muImg+"'/>").css("width",muWidth).css("height",muWidth);
+		muNode.append(muNodeImg);
+		muNode.attr("id","mu"+muId);
+		//点击事件
+		muNode.click(function() {
+			//进入聊天页
+			enterDialogPage(muId,muUserName);
+			//addMPData();//测试匹配人动画
+		});
+	}else{
+		muNode=$(".mu").eq(i);
+	}
 	
 	muNowData.push(muNode);
-	muNode.attr("id","mu"+muId);
-	
-	//点击事件
-	muNode.click(function() {
-		//进入聊天页
-		enterDialogPage(muId,muUserName);
-		//addMPData();//测试匹配人动画
-	});
 }
 
 //2017.08.23 叶夷  生成一个新的匹配人div

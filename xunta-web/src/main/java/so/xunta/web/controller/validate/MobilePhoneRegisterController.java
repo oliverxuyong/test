@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -316,6 +317,7 @@ public class MobilePhoneRegisterController {
 			Long userId = idWorker.nextId();
 			String third_party_id =  "null";
 			String type ="Phone";
+			
 			User new_user = new User(userId, third_party_id, nickname,"http://42.121.136.225:8888/user-pic2.jpg", type, groupname, Timestamp.valueOf(new Date().toString()));
 			new_user.setThird_party_id(idWorker.nextId()+"");
 			new_user.setPassword(password);
