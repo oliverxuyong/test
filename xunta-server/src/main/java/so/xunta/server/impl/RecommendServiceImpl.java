@@ -316,17 +316,18 @@ public class RecommendServiceImpl implements RecommendService {
 	}
 	
 	private void generatePushMatchedUsers(List<Long> matched_uids_after, RecommendPushDTO recommendPushDTO){
-		List<User> matched_users = userDao.findUserInIds(matched_uids_after);
 		int rank=1;
-		for(User u:matched_users){
+		for(Long uid:matched_uids_after){
+			User u = userDao.findUserByUserid(uid);
 			PushMatchedUserDTO pushMatchedUser = new PushMatchedUserDTO();
 			pushMatchedUser.setUserid(u.getUserId().toString());
 			pushMatchedUser.setUsername(u.getName());
 			pushMatchedUser.setImg_src(u.getImgUrl());
 			pushMatchedUser.setNew_rank(rank);
-			rank++;
+
 			logger.info("推送用户: "+u.getName()+" rank:"+rank);
 			recommendPushDTO.addPushMatchedUser(pushMatchedUser);
+			rank++;
 		}
 	}
 }
