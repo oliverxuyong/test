@@ -150,7 +150,6 @@ function return_sendIfSelectedCP(jsonObj){
 	var cpid=jsonObj.cpid;
 	if(jsonObj.is_select=="false"){//没有被选择
 		sendSelectCP(userId,cpid,text);
-		closePop();//添加标签框关掉
 	}else{
 		toast_popup("这个标签被选中过",2500);
 	}
