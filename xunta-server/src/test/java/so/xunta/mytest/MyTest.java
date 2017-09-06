@@ -1,30 +1,36 @@
 package so.xunta.mytest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.HashSet;
+import java.util.Set;
 
 public class MyTest {
 
 	public static void main(String[] args) {
-		Map<Long,List<Long>> ms = new HashMap<Long,List<Long>>();
-		List<Long> nums = new ArrayList<Long>();
-		nums.add(1L);
-		nums.add(2L);
-		ms.put(10L, nums);
+		Set<String> set1 = new HashSet<String>();
+		Set<String> set2;
+		Set<String> set3 = new HashSet<String>();
 		
-		if(ms.containsKey(10L))
-		{
-			ms.get(10L).add(1000L);
+		set1.add("1");
+		set1.add("2");
+		set1.add("3");
+		
+		set3.add("1");
+		set3.add("2");
+		
+		set2=set1;
+	//	set1.removeAll(set3);
+		
+		set3.addAll(set1);
+		
+		for(String s:set1){
+			System.out.println("set1:"+s);
 		}
 		
-		
-		List<Long> temps = ms.get(10L);
-		for(Long l:temps)
-		{
-			System.out.println("l:"+l);
+		for(String s:set2){
+			System.out.println("set2:"+s);
+		}
+		for(String s:set3){
+			System.out.println("set3:"+s);
 		}
 	}
 }

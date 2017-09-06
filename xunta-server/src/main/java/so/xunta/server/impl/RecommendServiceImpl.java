@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import redis.clients.jedis.Tuple;
 import so.xunta.beans.ConcernPointDO;
 import so.xunta.beans.PushMatchedUserDTO;
@@ -101,14 +102,16 @@ public class RecommendServiceImpl implements RecommendService {
 				relatedUids.add(user.getElement());
 			}
 		}
-		Set<String> pendingPushUids = relatedUids;
+		Set<String> pendingPushUids = new HashSet<String>();
+		pendingPushUids.addAll(relatedUids);
+		pendingPushUids.addAll(usersSelectedSameCp);
 		
 		relatedUids.removeAll(usersSelectedSameCp);//产生了∆u_score的User不需要重复记录
-		
 		for(String relatedUid:relatedUids){
 			final double UPDATE_MARK = 0;
 			u2uUpdateStatusDao.updateDeltaRelationValue(relatedUid, uid, UPDATE_MARK);
 		}
+		
 		long endTime = System.currentTimeMillis();
 		logger.info("线程 "+Thread.currentThread().getName()+" recordU2UChange end:"+"\t 选中相同CP的用户数: "+ 
 						usersSelectedSameCp.size() +"\t 其他产生推荐的用户数: "+ relatedUsers.size() +"\n 执行时间: "+
@@ -145,13 +148,10 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		
 		//记录更新前用户的匹配用户列表和推荐CP列表
-
-		final int U_TOP_NUM = 1;  //前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
-		final int U_LISTEN_NUM = 15;  //匹配列表长度
-		final int CP_THRESHOLD = 10; //如果一个cp原先推荐值从CP_LISTEN_NUM名之外一下跳到前CP_THRESHOLD的位置，就推送
-		final int CP_LISTEN_NUM = 10;
-		List<Long> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);
-		List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
+		final int U_TOP_NUM = 10;  //前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
+		final int U_LISTEN_NUM = 10;  //匹配列表长度	
+	final int CP_THRESHOLD = 10; //如果一个cp原先推荐值从CP_LISTEN_NUM名之外一下跳到前CP_THRESHOLD的位置，就推送
+		final int CP_LISTEN_NUM = 10;		List<Long> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);		List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
 		
 		//step 1
 		Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
@@ -182,12 +182,12 @@ public class RecommendServiceImpl implements RecommendService {
 		RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
 		List<Long> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
 		if((matched_uids_previous.size() < U_LISTEN_NUM) && (matched_uids_after.size() > matched_uids_previous.size())){
-			//如果原匹配列表还未达到指定长度并且新匹配列表有新用户产生，则直接推送
+			logger.info("原匹配列表还未达到指定长度并且新匹配列表有新用户产生，则直接推送");
 			generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
 		}else{
-			//其他情况则逐位比较前TOP_NUM位用户，如有变化就推送
 			for(int i=0;i<(matched_uids_previous.size()>U_TOP_NUM ? U_TOP_NUM : matched_uids_previous.size());i++){
 				if(!matched_uids_previous.get(i).equals(matched_uids_after.get(i))){
+					logger.info("前"+matched_uids_previous.size()+"位排名发生了变化,推送");
 					generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
 					break;
 				}
@@ -206,6 +206,7 @@ public class RecommendServiceImpl implements RecommendService {
 			pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid));
 			
 			recommendPushDTO.addPushMatchedCPs(pushRecommendCp);
+			logger.info("产生推送cp："+cp.getText());
 		}
 		
 		logger.info("线程 "+Thread.currentThread().getName()+" updateU2C end: 更新完毕"+ uid + 
@@ -319,7 +320,7 @@ public class RecommendServiceImpl implements RecommendService {
 			pushMatchedUser.setImg_src(u.getImgUrl());
 			pushMatchedUser.setNew_rank(rank);
 			rank++;
-			
+			logger.info("推送用户: "+u.getName()+" rank:"+rank);
 			recommendPushDTO.addPushMatchedUser(pushMatchedUser);
 		}
 	}
