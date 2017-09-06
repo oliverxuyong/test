@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hankcs.hanlp.dependency.nnparser.util.Log;
 
 import redis.clients.jedis.Tuple;
 import so.xunta.beans.ConcernPointDO;
@@ -103,14 +102,16 @@ public class RecommendServiceImpl implements RecommendService {
 				relatedUids.add(user.getElement());
 			}
 		}
-		Set<String> pendingPushUids = relatedUids;
+		Set<String> pendingPushUids = new HashSet<String>();
+		pendingPushUids.addAll(relatedUids);
+		pendingPushUids.addAll(usersSelectedSameCp);
 		
 		relatedUids.removeAll(usersSelectedSameCp);//产生了∆u_score的User不需要重复记录
-		
 		for(String relatedUid:relatedUids){
 			final double UPDATE_MARK = 0;
 			u2uUpdateStatusDao.updateDeltaRelationValue(relatedUid, uid, UPDATE_MARK);
 		}
+		
 		long endTime = System.currentTimeMillis();
 		logger.info("线程 "+Thread.currentThread().getName()+" recordU2UChange end:"+"\t 选中相同CP的用户数: "+ 
 						usersSelectedSameCp.size() +"\t 其他产生推荐的用户数: "+ relatedUsers.size() +"\n 执行时间: "+
