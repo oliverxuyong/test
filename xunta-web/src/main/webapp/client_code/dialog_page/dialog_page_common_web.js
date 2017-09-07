@@ -97,6 +97,7 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
 	});
 	var length = msgJson.length;
 	if (length < requestMsgCounts) {
+		showAllPosters(msgJson);
 		$("#loadingtext").attr("class", "");
 		$("#loading img").attr("src", "../image/threedotmoving.jpg");
 		$("#loadingtext").text("无更多消息");

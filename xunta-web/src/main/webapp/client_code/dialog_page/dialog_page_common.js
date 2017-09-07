@@ -97,7 +97,7 @@ function verifyInputText(obj){//对输入框提交的字符串进行合法性预
 
 function adjustWidthsHeights() {
 	if( userAgent[0] == "PC" ){//PC和手机浏览器在body宽度上不一致.暂时用这个判断来弥补:
-		document.getElementById("inputbox").style.width = $("#inputframe").width() - 50 + "px";
+		document.getElementById("inputbox").style.width = $("#inputframe").width() - 70 + "px";
 	}else{
 		document.getElementById("inputbox").style.width = $("#inputframe").width() - 68 + "px";
 	}
