@@ -423,8 +423,6 @@ function chooseCP(cp_node,cpid,text){
 
 //叶夷  2017.08.08 选中的标签添加到我的标签框中
 function showSelectTag(data){
-	closePop();//添加标签框关掉
-	
 	var cpid=data.cpid;
 	var text=data.cptext;
 	
@@ -1001,6 +999,7 @@ function addCpShow(data){
 		sendSelectCP(userId,cpid,text);
     	console.log("添加标签成功");
     	toast_popup("添加标签成功",2500);
+    	closePop();//添加标签框关掉
 	}else{//添加的标签存在
 		cpid=data.msg[0].id;
 		sendIfSelectedCP(userId,cpid);
