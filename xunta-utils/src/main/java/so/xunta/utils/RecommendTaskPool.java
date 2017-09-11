@@ -1,19 +1,17 @@
 package so.xunta.utils;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.test.context.ContextConfiguration;
 
+@ContextConfiguration
 public class RecommendTaskPool {
-	//@Value("$(recommendTaskPool.maxThreadSize)")
-	private int maxThreadSize = 500;
 	private static RecommendTaskPool recommendTaskPool;
-	private ExecutorService threadPool;
+	@Autowired
+	private ThreadPoolTaskExecutor threadPool;
 	
-	private RecommendTaskPool(){
-		//Bright Zheng: 要改为ThreadPoolExecutor的方式，规避资源耗尽的风险
-		threadPool = Executors.newFixedThreadPool(maxThreadSize);
-	}
+	private RecommendTaskPool(){	}
 	
 	public static RecommendTaskPool getInstance(){
 		if(recommendTaskPool == null){
@@ -22,7 +20,7 @@ public class RecommendTaskPool {
 		return recommendTaskPool;
 	}
 
-	public ExecutorService getThreadPool(){
+	public ThreadPoolTaskExecutor getThreadPool(){
 		return threadPool;
 	}
 	
