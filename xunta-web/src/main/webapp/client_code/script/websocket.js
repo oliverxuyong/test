@@ -83,7 +83,7 @@ function task_RequestCP() {//检查并执行话题列表请求任务.
 }
 
 function requestCP(){//请一组CP.首次请求页号设为1.
-	console.log("真正请求一组CP:,userId="+userId+" 请求数量="+requestCPNum+" 请求的页面="+currentRequestedCPPage);
+	console.log("真正请求一组CP:,userId="+userId+" 请求数量="+requestCPNum+" 请求的页面="+currentRequestedCPPage+" 时间="+new Date());
 	var json_obj = {
 			 _interface:"1101-1",
 			 interface_name: "requestCP",
@@ -99,7 +99,7 @@ function requestCP(){//请一组CP.首次请求页号设为1.
 function sendSelectedCP(userId,cpid,text){
 	//console.log("测试 3： "+typeof(userId));
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
-		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid);
+		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 时间="+new Date());
 		var json_obj = {
 			 _interface:"1102-1",
 			 interface_name: "sendSelectedCP",
@@ -115,7 +115,7 @@ function sendSelectedCP(userId,cpid,text){
 //叶夷   2017.06.16  发送"标签选中取消"
 function sendUnselectedCP(userId,cpid){
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
-		console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid);
+		console.log("标签选中取消:userId="+userId+" 选中取消的cpid="+cpid+" 时间="+new Date());
 		var json_obj = {
 			 _interface:"1103-1",
 			 interface_name: "sendUnselectedCP",
@@ -130,7 +130,7 @@ function sendUnselectedCP(userId,cpid){
 //叶夷   2017.07.07  请求用户匹配缩略表
 function requestMatchedUsers(userId,requestTopMUNum){
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
-		console.log("请求用户匹配:userId="+userId+" 请求的数量requestTopMUNum="+requestTopMUNum);
+		console.log("请求用户匹配:userId="+userId+" 请求的数量requestTopMUNum="+requestTopMUNum+" 时间="+new Date());
 		var json_obj = {
 			 _interface:"1104-1",
 			 interface_name: "requestTopMatchedUsers",
@@ -238,6 +238,7 @@ function checkMessageInterface(evnt) {
 	console.log("收到消息,类型=" + jsonObj._interface);
 	console.log("消息内容:" + JSON.stringify(jsonObj).substring(0,150)+"...(只显示150个字符)");
 	logging("收到消息,类型=" + jsonObj._interface);
+	console.log("返回时间="+new Date());
 	if(jsonObj._interface == '1101-2'){
 		console.log(JSON.stringify(jsonObj.cp_wrap));
 		

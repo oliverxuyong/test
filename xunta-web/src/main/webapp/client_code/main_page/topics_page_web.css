@@ -434,13 +434,16 @@ width:100%;
 }
 
 .enterdialogList{
-	width:96%;
-	height:6%;
+	//width:96%;
+	//height:6%;
 	background-color:#f1f1f1;
-	text-align:center;
-	margin-top:-10px;
-	margin-left:6px;
-	border-radius:0px 0px 10px 10px;
+	//text-align:center;
+	//margin-top:-25px;
+	//margin-left:6px;
+	//border-radius:0px 0px 10px 10px;
+	position:fixed;
+	top:0px;
+	left:100px;
 }
 
 .mytag{

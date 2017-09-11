@@ -11,7 +11,7 @@ html, body {
 	height:11%;
 	width:100%;
 	border-bottom:1px solid #f1f1f1;
-	position:absolute;
+	//position:absolute;
 }
 
 .dialog >img{

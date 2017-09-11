@@ -993,11 +993,14 @@ function addCpShow(data){
 	
 	var cpid=data.msg.insertId;
 	var mgs2=data.msg2;//判断是否重复添加
-	if(mgs2==undefined){
+	var text = $("#pop_tagName").val();
+	
+	if(mgs2==undefined){//添加的标签不存在
+		sendSelectCP(userId,cpid,text);
     	console.log("添加标签成功");
-    		//添加标签框回复原样
     	toast_popup("添加标签成功",2500);
-	}else{
+    	closePop();//添加标签框关掉
+	}else{//添加的标签存在
 		cpid=data.msg[0].id;
 		sendIfSelectedCP(userId,cpid);
 	}
