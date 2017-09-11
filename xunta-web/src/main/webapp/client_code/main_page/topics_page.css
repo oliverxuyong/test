@@ -187,3 +187,11 @@ line-height: 10px;
 	display:none;
 	overflow-y:auto;
 }
+
+.myTagFail{
+	width:5px; 
+	//position:absolute; 
+	top:-1px; 
+	left:-10px; 
+	border-bottom:1px solid gray;
+}

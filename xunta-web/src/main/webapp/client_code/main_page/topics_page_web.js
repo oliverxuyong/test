@@ -417,14 +417,16 @@ function chooseOneCP(cp_node, cp) {
 
 function chooseCP(cp_node,cpid,text){
 	console.log(cp_node.attr("id") +":"+text+ "-> 选中状态");
-	cp_node.unbind();
+	
+	cp_node.unbind();//不可点击
+	showSelectTag(cpid,text);
 	sendSelectCP(userId, cpid,text);
 }
 
 //叶夷  2017.08.08 选中的标签添加到我的标签框中
-function showSelectTag(data){
-	var cpid=data.cpid;
-	var text=data.cptext;
+function showSelectTag(cpid,text){
+	//var cpid=data.cpid;
+	//var text=data.cptext;
 	
 	addMyCp(cpid,text);
 	
@@ -463,8 +465,12 @@ var lineNumber=2;
 
 function addMyCp(cpid,text){
 	var myTagContainer=$("#mytag-container");
-	var myTag = $("<div onclick='sendUnSelectCP("+cpid+")'></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
+	var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
 	myTagContainer.append(myTag);
+	
+	myTag.click(function(){
+		sendUnSelectCP(cpid);
+	});
 	
 	var myTagTextLength = length(text);
 	var myTagTextSize = parseInt(myTag.css("font-size"))+1;
@@ -1079,4 +1085,35 @@ function showEnterMatchedUsers(){
 	var enterMatchedUserListWidth=parseInt(mu5.css("left"))-enterMatchedUserListLeft;
 	enterMatchUserList.css("width",enterMatchedUserListWidth+"px");
 	
+}
+
+/**
+ * 2017.09.11  叶夷   cp选择失败，加上感叹号重新选择
+ */
+function sendSelectedCPFail(cpid,text){
+	//1.在我的标签上加感叹号
+	var mytag=$("#mytag"+cpid);
+	var myTagFaildImg=$("<img />").attr("src", "../image/acclaim-50x173.png").attr("class","myTagFail");
+	mytag.append(myTagFaildImg);
+	
+	//2.将我的标签的点击事件绑定为选择标签
+	mytag.unbind();
+	var cpid=$("#cpid"+cpid);
+	mytag.click(function(){
+		chooseCP(cp_node,cpid,text);
+	});
+}
+
+/**
+ * 2017.09.11  叶夷   cp选择成功，绑定上取消点击标签的点击事件
+ */
+function myTagAgainBindingClick(cpid){
+	var mytag=$("#mytag"+cpid);
+	myTagFail=mytag.find(".myTagFail");
+	if(myTagFail.length>0){//只有选择标签出错时
+		myTagFail.remove();
+		mytag.click(function(){
+			sendUnSelectCP(cpid);
+		});
+	}
 }
