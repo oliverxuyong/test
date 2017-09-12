@@ -188,7 +188,27 @@
             		//聊天列表未读消息提示
             		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
             			exec("dialoglist_page", "unreadMsg('"+user+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"')");
-            		} 
+            		}else{//聊天页表没有打开才将未读信息保存好
+            			//2017.08.16   装所有的未读信息，为了将数组传给聊天列表
+                		var unreadNum=1;
+                		if(unreadObjList.length!=0){
+                			var isExit=false;
+                			for(var j in unreadObjList){
+                				var unReadObj=unreadObjList[j];
+                				if(unReadObj.getTouserId()==respondeUserId){//这个用户已经存在，未读数加1
+                					unreadNum++;
+                					unreadObjList[j]=new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum);
+                					isExit=true;
+                					break;
+                				}
+                			}
+                			if(isExit=false){
+                				unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
+                			}
+                		}else{
+                			unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
+                		}
+            		}
             		
             		//首页未读消息提示
             		//exec("main_page", "unreadMsg()");
@@ -196,26 +216,6 @@
             		//提示音
             		//notifyNewMessage(pageTitle);
             		execRoot("notifyNewMessage('"+pageTitle+"')");
-            		
-            		//2017.08.16   装所有的未读信息，为了将数组传给聊天列表
-            		var unreadNum=1;
-            		if(unreadObjList.length!=0){
-            			var isExit=false;
-            			for(var j in unreadObjList){
-            				var unReadObj=unreadObjList[j];
-            				if(unReadObj.getTouserId()==respondeUserId){//这个用户已经存在，未读数加1
-            					unreadNum++;
-            					unreadObjList[j]=new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum);
-            					isExit=true;
-            					break;
-            				}
-            			}
-            			if(isExit=false){
-            				unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
-            			}
-            		}else{
-            			unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
-            		}
             		
             		if(window.parent.document.getElementById(window_id)!=null ){//聊天列表打开过
             			exec(window_id, "showSelfPoster('" + user + "','" + data +"','" +imgUrl+"','" + msgId+"','" + myOrOther+ "','" + false+"')");
