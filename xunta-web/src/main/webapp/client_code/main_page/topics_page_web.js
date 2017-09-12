@@ -1002,6 +1002,7 @@ function addCpShow(data){
 	var text = $("#pop_tagName").val();
 	
 	if(mgs2==undefined){//添加的标签不存在
+		showSelectTag(cpid,text);
 		sendSelectCP(userId,cpid,text);
     	console.log("添加标签成功");
     	toast_popup("添加标签成功",2500);
@@ -1098,7 +1099,7 @@ function sendSelectedCPFail(cpid,text){
 	
 	//2.将我的标签的点击事件绑定为选择标签
 	mytag.unbind();
-	var cpid=$("#cpid"+cpid);
+	var cp_node=$("#cpid"+cpid);
 	mytag.click(function(){
 		chooseCP(cp_node,cpid,text);
 	});
