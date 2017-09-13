@@ -54,10 +54,11 @@ function length(cpText) {
 	var len = 0;
 	var cpLength=cpText.length;
 	for (var i = 0; i <cpLength; i++) {
-		if (cpText.charCodeAt(i) >=97 && cpText.charCodeAt(i) <=122) {//数字和字母
+		if (cpText.charCodeAt(i) >=97 && cpText.charCodeAt(i) <=122) {//小写字母
 			len+=0.6;
-		} else if((cpText.charCodeAt(i) >= 65 && cpText.charCodeAt(i) <= 90)
-			       || (cpText.charCodeAt(i) >= 48 && cpText.charCodeAt(i) <= 57)){
+		} else if(cpText.charCodeAt(i) >= 65 && cpText.charCodeAt(i) <= 90){//大写字母
+			len+=0.8;
+		}else if(cpText.charCodeAt(i) >= 48 && cpText.charCodeAt(i) <= 57){//数字
 			len+=0.7;
 		}else {
 			len++;

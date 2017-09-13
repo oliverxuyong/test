@@ -2,6 +2,9 @@ function wsConnect() {
 	execRoot("checkIfWSOnline4Signal()");
 }
 
+//2017.09.13 叶夷  定义一个数组装哪几个圆相交
+var intersetCPArray=new Array();
+
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
 	// 叶夷 2017.07.11 等请求cp返回之后再请求用户匹配缩略表
@@ -10,10 +13,17 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	}
 
 	$("#showatloaded").show();//首页开始显示
-
+	
 	//获得一批推荐标签数据进行位置，大小和动画的设置
 	var cpList = CP_list.cp_wrap;
 	var notRepeatCpCount=0;//不重复的可以上升的cp个数
+	
+	//2017.09.13 叶夷  判断每一批请求相交的次数和哪几个圆相交
+	var intersetCount=parseInt(Math.random()*2+1);//相交次数随机为1，2,3
+	for(var count=1;count<=intersetCount;count++){
+		intersetCPArray.push(parseInt(Math.random()*cpList.length));
+	}
+	
 	for (var i = 0; i < cpList.length; i++) {
 		var cp = cpList[i];//每个推荐标签
 		var cpid=cp.cpid;//每个推荐标签id
@@ -36,6 +46,9 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 		}
 	}
 
+	//一批标签个别相交之后数据清空
+	intersetCPArray.splice(0,intersetCPArray.length);  
+	
 	// 定义好位置之后开始动画,参数是需要动画的不重复的可以上升的cp个数
 	startAnimate(notRepeatCpCount);
 	//推荐标签动画开始之后再将"请求下一批"的按钮显现
@@ -58,6 +71,11 @@ function appendElement(i, cpid,cp) {
 	var cp_text = $("<div></div>");// 文字div
 	cp_innode.append(cp_text);
 	
+	//2017.09.13  叶夷   在标签处再增加一个外圆，用来控制圆与圆之间的距离
+	var cpNodeByDistance=$("<div></div>").attr("class", "outcp").attr("id","outcpid" + cpid);
+	cpNodeByDistance.append(cp_node);
+	
+	
 	// 先随机内圆 div的大小,在这里留一个可以控制内圆div大小的入口
 	var cpInNodeWidth = Math.random() * 40 + 40;
 	cpInNodeWidth = parseInt(cpInNodeWidth);
@@ -71,7 +89,7 @@ function appendElement(i, cpid,cp) {
 	//将标签的文字设置为字母和数字，为了测试匹配文字和数字和原型
 	//calCircle(cp_text, cpTextSize, "CaraDelev...", cp_node, cp_innode);
 	// 调用字体大小匹配圆大小的方法
-	calCircle(cp_text, cpTextSize, cp.cptext, cp_node, cp_innode,selectTagNum);
+	calCircle(i,cp_text, cpTextSize, cp.cptext, cp_node, cp_innode,selectTagNum,cpNodeByDistance);
 	
 	cp_node.click(function() {
 		// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
@@ -79,10 +97,11 @@ function appendElement(i, cpid,cp) {
 	});
 	
 	//标签圆大小确定之后将标签放在标签容器中
-	cp_container.append(cp_node);
+	cp_container.append(cpNodeByDistance);
 	
 	//标签大小设置之后将设置标签动画的轨迹且将前端出现过的标签位置全部保存下来
-	cpAnimationLocation(cp_container,cp_node);
+	//cpAnimationLocation(cp_container,cp_node);
+	cpAnimationLocation(cp_container,cpNodeByDistance);
 }
 
 var minCPSize = 40;// 最小内圆的大小
@@ -104,8 +123,8 @@ function sizeInMaxAndMin(size,max,min){
 
 // 叶夷 2017.06.30
 // cp圆的大小与文字匹配,在分级的情况下计算相应文字的面积，然后计算圆的面积(这里还没想好怎么做：然后比较内圆大小，如果内圆不能装下文字，则扩大外圆)
-//传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div
-function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNum) {
+//传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div,再加上一个圆（用来判断标签之前的距离）
+function calCircle(i,cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNum,cpNodeByDistance) {
 	//获得cp文字字符的长度
 	var cpTextLength = length(cpText);
 
@@ -183,7 +202,7 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNum)
 		cp_node.css("width", hypotenuse + "px");
 
 		// 内圆位置调整
-		var cpInNodeTop = (hypotenuse - cpInNodeWidth) / 2;
+		var cpInNodeTop = (hypotenuse - cpInNodeWidth) / 2-1;
 		cp_innode.css("top", cpInNodeTop);
 		cp_innode.css("left", cpInNodeTop);
 
@@ -194,10 +213,31 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNum)
 	cp_text.css("top", cpTextTop);
 	cp_text.css("left", cpTextLeft);
 	
-	/*if(selectTagNumNode!=undefined){
-		var cpTextNodeTop=parseInt(cp_innode.css("top"));
-		selectTagNumNode.css("top", (cpTextNodeTop+cpTextHeight) + "px");
-	}*/
+	//2017.09.13  叶夷    判断标签之前的距离，需要获得cp_node的大小，然后再加上一个随即距离则是最外面圆的大小
+	var cpNodeWidth=cp_node.width();
+	var randowDistance=cpNodeWidth*0.55;//这是标签之间的随机距离,根据自身的大小判断，再加上个别相交
+	var isInterset=false;;
+	for(var count=0;count<=intersetCPArray.length;count++){
+		var intersetCP=intersetCPArray[count];
+		if(i==intersetCP){
+			isInterset=true;
+			break;
+		}
+	}
+	if(isInterset){
+		randowDistance=-(cpNodeWidth*0.3);
+	}
+	
+	var cpNodeByDistanceWidth=cpNodeWidth+randowDistance;
+	cpNodeByDistance.css("width",cpNodeByDistanceWidth+"px");
+	cpNodeByDistance.css("height",cpNodeByDistanceWidth+"px");
+	
+	//2017.09.13  叶夷    标签再加上一个圆之后居中
+	if(cpNodeByDistanceWidth>cpNodeWidth){
+		var cpNodeTop=parseInt((cpNodeByDistanceWidth-cpNodeWidth)/2);
+		cp_node.css("top", cpNodeTop+"px");
+		cp_node.css("left", cpNodeTop+"px");
+	}
 }
 
 //叶夷 2017.08.22 判断标签是否全为数字或者字母
@@ -281,7 +321,11 @@ function cpAnimationLocation(cp_container,cp_node) {
 
 	// 1.遍历装cp容器的宽度,每次+1px
 	// start是要上升的cp的left的值，所以终点必须空出上升cp的width
-	for (var start = 0; start <= containerWidth - cpWidth; start++) {
+	var startLength=cp_node.find(".cp").width();
+	if(startLength<cpWidth){
+		startLength=cpWidth;
+	}
+	for (var start = 10; start <= containerWidth - startLength-10; start++) {
 		// 2.从开始获得上升cp的圆心坐标和半径，以cp_container的左下点为(0,0)
 		var cpRadius = cpWidth / 2;// 半径就是要上升的cp的宽除以2
 		var cpX = start + cpRadius;// 一开始圆心的x为start+cpRadius
@@ -348,7 +392,6 @@ function cpAnimationLocation(cp_container,cp_node) {
 		if (isOverLay) {
 			continue;
 		}
-		//console.log("测试 1："+top+"->"+maxTop);
 		if (top == -1) {// 如果一开始=-1，则top直接赋值
 			top = maxTop;
 		} else {
@@ -359,8 +402,10 @@ function cpAnimationLocation(cp_container,cp_node) {
 			}
 		}
 	}
-	var right = left + cpWidth;
-	var bottom = top + cpHeight;
+	
+	var right,bottom;
+	right = left + cpWidth;
+	bottom = top + cpHeight;
 	cpValue.push(new CP(cp_node.attr("id"), left, right, top, bottom));
 	//cp容器的高度调整
 	cp_container.height(bottom);
@@ -432,7 +477,7 @@ function showSelectTag(cpid,text){
 	
 	//2017.08.29   叶夷    选择标签加上动画效果，标签上升到“我的标签”容器中
 	var myTag=$("#mytag"+cpid);
-	var animateCp=$("#cpid"+cpid).clone();
+	var animateCp=$("#outcpid"+cpid).clone();
 	if(animateCp.length>0){//这是点击选中添加标签
 		$("#showatloaded").append(animateCp);
 		//var animateCpStartTop=parseInt($("#top-container").height())+parseInt(animateCp.css("top"))+10;
