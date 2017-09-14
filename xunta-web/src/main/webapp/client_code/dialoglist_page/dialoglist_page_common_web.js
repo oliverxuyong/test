@@ -28,9 +28,7 @@ function showDialogList(data){
 		var toUserImgUrl=data[d].to_user_imgUrl;
 		var toUserName=data[d].to_user_name;
 		
-		var unreadNum=parseInt(Math.random() * 10) ;
-		
-		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName,unreadNum);
+		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
 	}
 	//从首页传过来的聊天列表的未读信息
 	if(unreadObjList.length>0){
@@ -40,7 +38,7 @@ function showDialogList(data){
 	}
 }
 
-function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName,unreadNum){
+function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
 	var dialog=$("<div></div>").attr("class", "dialog cursor").attr("id", toUserId);
 	var toUserImg="<img src="+toUserImgUrl+">";
 	var dialogContent=$("<div></div>").attr("class", "dialog_content");
@@ -176,9 +174,9 @@ function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 		var dialogImgWidth=parseInt(dialogImg.css("width"));
 		var dialogImgMargin=parseInt(dialogImg.css("margin"));
 		
-		var unreadLeft=dialogImgWidth+parseInt(unreadNumNode.css("width"))/2;
-		unreadNumNode.css("left",unreadLeft+"px");
-		unreadNumNode.css("top",dialogImgMargin/2+"px");
+		var unreadLeft=dialogImgWidth+dialogImgMargin;
+		unreadNumNode.css("margin-left",unreadLeft+"px");
+		//unreadNumNode.css("top",dialogImgMargin/2+"px");
 		
 		
 	} else {//如果已有未读消息,则加上1:
@@ -188,11 +186,11 @@ function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 	}
 	
 	//内容
-	var dialog_content_msg=$(".dialog_content_msg");
+	var dialog_content_msg=unreadParent.find(".dialog_content_msg");
 	dialog_content_msg.text(user+"："+data);
 	
 	//把时间更新
-	var dialog_content_time=$(".dialog_content_time");
+	var dialog_content_time=unreadParent.find(".dialog_content_time");
 	dialog_content_time.text(showDialogListTime(postTimeStr));
 }
 
@@ -200,6 +198,6 @@ function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 //如果A给我发了3条未读消息，B给我发了2条未读消息，首页显示的是5条未读消息，我打开和A的聊天页面，聊天列表里B的未读提示还存在，不过颜色变暗，首页的未读提示消失
 //这里是使聊天列表没打开过有未读提示的聊天页未读提示颜色变暗
 function changeUnreadColor(){
-	$(".unread").css("cpacity","0.7");
+	$(".unread").css("opacity","0.7");
 }
 

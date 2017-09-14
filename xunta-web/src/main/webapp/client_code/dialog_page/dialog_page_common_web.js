@@ -55,7 +55,10 @@ function showAllPosters(data) {
 		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
 		sort =undefined;
 	}
-	firstMsgId=data[data.length-1].msg_id;
+	//加上历史消息为null的判断
+	if(data.length>0){
+		firstMsgId=data[data.length-1].msg_id;
+	}
 }
 
 function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态

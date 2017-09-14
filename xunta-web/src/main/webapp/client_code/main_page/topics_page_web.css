@@ -352,6 +352,12 @@ width:100%;
 
 /*叶夷  2017.06.19
 	标签的动画实现，是由jq的animate属性完成  */
+.outcp{ 
+	position:absolute; /*标签不用排列的时候不需要这个*/
+	top:0px;
+	left:0px;
+}
+	
 .cp{ 
 	position:absolute; /*标签不用排列的时候不需要这个*/
 	top:0px;
@@ -363,9 +369,11 @@ width:100%;
 
 .incp{ 
 	position:absolute;
-	background:url(../image/cp.png) no-repeat center center;  
-	background-size:100% auto;
+	//background:url(../image/cp.png) no-repeat center center;  
+	//background-size:100% auto;
 	font-family:'微软雅黑';
+	border-radius:50%; 
+	border:1px solid #e5efff;
 	}
 	
 .incp div{
@@ -458,6 +466,7 @@ width:100%;
     width:37px;
     height:30px;
     line-height:30px;
+    cursor:pointer;
 }
 
 .add{

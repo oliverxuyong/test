@@ -50,6 +50,8 @@ var tmptid2tmppid = new Array();
 //临时存放原始数据,供执行任务筐时使用.
 
 var currentPageId = null;
+//2017.09.11  叶夷   判断在一定时限内后端是否返回选择成功,id为cpid,判断是选择了哪个cp,value为true/false,判断这个cp是否选择成功
+var checksendSelectedCPSuccessArray=new Array();
 
 
 function initToGetCP(userId,requestNum,currentPage) {
@@ -110,6 +112,22 @@ function sendSelectedCP(userId,cpid,text){
 		};
 		WS_Send(json_obj);
 	}
+	checksendSelectedCPSuccessArray[cpid]=false;
+	//2017.09.11  叶夷   判断在一定时限内后端是否返回选择成功
+	setTimeout("checksendSelectedCPSuccess('"+cpid+"','"+text+"')", 3000);
+}
+/**
+ * 2017.09.11  叶夷   判断在一定时限内后端是否返回选择成功
+ */
+function checksendSelectedCPSuccess(cpid,text){
+	var checksendSelectedCPSuccess=checksendSelectedCPSuccessArray[cpid];
+	if (checksendSelectedCPSuccess) {
+		console.log("checksendSelectedCPSuccess 成功了,不作为");
+	} else {//加上感叹号,并绑定点击再请求的事件:
+		console.log("checksendSelectedCPSuccess 失败, "+text+"加上感叹号.");
+		var script="sendSelectedCPFail('"+cpid+"','"+text+"')";
+		exec("main_page",script);
+	}
 }
 
 //叶夷   2017.06.16  发送"标签选中取消"
@@ -163,9 +181,6 @@ function tasksOnWired() {//ws连接事件的响应执行方法:
 	//检查并执行话题列表请求任务.
 
 }
-
-
-
 
 function showSetupInfo(eventdata) {
 	var jsonObj = JSON.parse(eventdata);
@@ -251,9 +266,9 @@ function checkMessageInterface(evnt) {
 		console.log("发送'标签选中' :"+JSON.stringify(jsonObj.is_success));
 		if(JSON.stringify(jsonObj.is_success)=='"true"'){
 			//标签选中之后将结果返回判断是否成功
-			exec("main_page","showSelectTag("+evnt.data+")");
-		}else{
-			toast_popup("选中标签失败",2500);
+			var cpid=JSON.stringify(jsonObj.cpid);
+			checksendSelectedCPSuccessArray[cpid]=true;
+			exec("main_page","myTagAgainBindingClick('"+cpid+"')");
 		}
 	}
 	
@@ -277,7 +292,7 @@ function checkMessageInterface(evnt) {
 	//叶夷 2017.07.07   匹配用户改变
 	if(jsonObj._interface == '2106-1'){
 		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.matched_user_arr));
-		exec("main_page","push_matched_user("+evnt.data+")");
+		//exec("main_page","push_matched_user("+evnt.data+")");
 	}
 	
 	//2017.08.11 叶夷    判断这个标签是否被选中过
