@@ -19,6 +19,7 @@ public class RecommendCancelCpTask implements Runnable {
 	
 	@Override
 	public void run() {
+		logger.info("========================RecommendCancelCpTask======================================");
 		if(userId!=null&&cpId!=null){
 			recommandService.recordU2UChange(userId,cpId,RecommendService.UNSELECT_CP);
 			recommandService.updateU2C(userId);

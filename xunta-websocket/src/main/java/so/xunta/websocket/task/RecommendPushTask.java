@@ -32,6 +32,7 @@ public class RecommendPushTask implements Runnable{
 	
 	@Override
 	public void run() {
+		logger.info("==============================RecommendPushTask===================================");
 		if(userId!=null &&cpId!=null){
 			Set<String> pendingPushUids = recommendService.recordU2UChange(userId,cpId,RecommendService.SELECT_CP);
 			
@@ -87,14 +88,24 @@ public class RecommendPushTask implements Runnable{
 	}
 	
 	private void pushRecommendCps(List<PushRecommendCpDTO> pushRecommendCpDTOs,WebSocketSession session){
+		if(session == null){
+			logger.info("用户已下线，不再推送");
+			return;
+		}
 		JSONArray cpWrap = new JSONArray();
+	//	List<String> pushedCpIds = new LinkedList<String>();
 		for(PushRecommendCpDTO pushRecommendCp:pushRecommendCpDTOs){
+		//	pushedCpIds.add(pushRecommendCp.getCpId());
+			
 			JSONObject pushMatchedUserJson = new JSONObject();
 			pushMatchedUserJson.put("cpid", pushRecommendCp.getCpId());
 			pushMatchedUserJson.put("cptext", pushRecommendCp.getCpText());
 			pushMatchedUserJson.put("howmanypeople_selected", pushRecommendCp.getSelectPepoleNum());
 			cpWrap.put(pushMatchedUserJson);
 		}
+		// 暂时推送后不将cp置为显示
+		//recommendService.signPushedCps();
+		
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "2105-1");
 		returnJson.put("interface_name", "PushCP");

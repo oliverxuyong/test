@@ -70,6 +70,7 @@ public class PendingTaskQueue {
 				returnTasks.add(t3);
 				break;
 			}
+			iterator.remove();
 			loopTimes++;
 		}
 		return returnTasks;

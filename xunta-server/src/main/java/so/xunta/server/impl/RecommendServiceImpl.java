@@ -73,7 +73,7 @@ public class RecommendServiceImpl implements RecommendService {
 	@Override
 	public Set<String> recordU2UChange(String uid, String cpid, int selectType) {
 		//Map<Long,List<Long>> relate_user_matched_uids_previous = new HashMap<Long,List<Long>>();//未改变前和我相关的在线用户们的匹配列表	
-		logger.info("用户:"+uid+" 的记录线程启动");
+		logger.info("用户:"+uid+" 选择了CP："+cpid+"  的记录线程启动");
 		long startTime = System.currentTimeMillis();
 	
 		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid);
@@ -116,7 +116,7 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		
 		long endTime = System.currentTimeMillis();
-		logger.info("用户:"+uid+" 的记录任务完成"+"\t 选中相同CP的用户数: "+ 
+		logger.info("用户:"+uid+" 选择了CP："+cpid+"  的记录任务完成"+"\t 选中相同CP的用户数: "+ 
 						usersSelectedSameCp.size() +"\t 其他产生推荐的用户数: "+ relatedUsers.size() +"\n 执行时间: "+
 						(endTime-startTime)+"毫秒");
 		return pendingPushUids;
@@ -207,6 +207,7 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		
 		List<String> recommend_cps_after = getRecommendCPs(uid, CP_THRESHOLD);
+		List<String> pushedCpIds = new ArrayList<String>();
 		for(String cpid:recommend_cps_after){
 			if(recommend_cps_previous.contains(cpid)){
 				continue;
@@ -219,6 +220,7 @@ public class RecommendServiceImpl implements RecommendService {
 			
 			recommendPushDTO.addPushMatchedCPs(pushRecommendCp);
 			logger.info("产生推送cp："+cp.getText());
+			pushedCpIds.add(cpid);
 		}
 		
 		updateTaskQueue.remove(uid);
@@ -266,6 +268,14 @@ public class RecommendServiceImpl implements RecommendService {
 		userDao.updateUser(u);
 	}
 	
+	
+	@Override
+	public void signPushedCps(String uid, List<String> pushedCpIds) {
+		if(pushedCpIds.size()>0){
+			u2cDao.setUserCpsPresented(uid, pushedCpIds);
+		}		
+	}
+
 	private void updateU2CAfterLastUpdated(Map<BigInteger, String> newCps, String uid, String changedUid){
 		logger.info("新选CP更新：关联用户 "+changedUid);
 		for(Entry<BigInteger, String> selectedCp:newCps.entrySet()){

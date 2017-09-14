@@ -15,6 +15,7 @@ public class RecommendUpdateTask implements Runnable {
 	
 	@Override
 	public void run() {
+		logger.info("=========================RecommendUpdateTask==============================");
 		if(uid!=null){
 			recommendService.updateU2C(uid);
 		}else{

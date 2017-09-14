@@ -184,7 +184,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 				session.close();
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error("User offLine Error: ",e);
 		} finally {
 			users.remove(session);
 		}

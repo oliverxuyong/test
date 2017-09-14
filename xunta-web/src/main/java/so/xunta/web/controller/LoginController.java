@@ -480,6 +480,7 @@ public class LoginController {
 		}
 
 		try {
+			//这里有空指针异常
 			AccessToken accessTokenObj = (new Oauth()).getAccessTokenByQueryString(request.getQueryString(),
 					request.getParameter("state"));
 			String code = request.getParameter("code");
