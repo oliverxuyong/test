@@ -25,6 +25,8 @@ import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
 import so.xunta.websocket.config.Constants;
 import so.xunta.websocket.config.WebSocketContext;
+import so.xunta.websocket.task.RecommendUpdateTask;
+import so.xunta.websocket.utils.RecommendTaskPool;
 
 /**
  * Echo messages by implementing a Spring {@link WebSocketHandler} abstraction.
@@ -42,6 +44,12 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	
 	@Autowired
 	private LoggerService loggerService;
+	
+	@Autowired
+	private RecommendUpdateTask recommendUpdateTask; 
+	
+	@Autowired
+	private RecommendTaskPool recommendTaskPool;
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
@@ -118,6 +126,8 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			User u = userService.findUser(userid);
 			
 			recommendService.initRecommendParm(u);
+			recommendUpdateTask.setUid(u.getUserId()+"");
+			recommendTaskPool.execute(recommendUpdateTask);
 			
 			/*if(session.getAttributes().get("boot").equals("yes"))
 			{

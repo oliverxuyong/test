@@ -125,11 +125,9 @@ public class UserController {
 			 * 		如果不存在初始化话题,就初始化话题
 			 */
 			if(user.getIfInitedTopics()==0){//代表没有初始化话题列表
-				System.out.println("开始初始化话题");
 				recommendService.initRecommendParm(user);
 				user.setIfInitedTopics(1);
 				userService.updateUser(user);		
-				System.out.println("初始化话题成功");
 			}
 		} catch (Exception e) {
 			System.out.println("添加用户失败");

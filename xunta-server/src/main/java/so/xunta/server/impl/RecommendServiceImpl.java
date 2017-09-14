@@ -3,6 +3,7 @@ package so.xunta.server.impl;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +32,6 @@ import so.xunta.persist.U2uUpdateStatusDao;
 import so.xunta.persist.UserDao;
 import so.xunta.persist.UserLastUpdateTimeDao;
 import so.xunta.server.RecommendService;
-import so.xunta.utils.RecommendTaskPool;
 
 @Service
 public class RecommendServiceImpl implements RecommendService {
@@ -56,6 +56,7 @@ public class RecommendServiceImpl implements RecommendService {
 
 	Logger logger =Logger.getLogger(RecommendServiceImpl.class);
 	
+	private Set<String> updateTaskQueue =Collections.synchronizedSet(new HashSet<String>());
 	private final double NO_CHANGE = 0.0;
 	
 	/**
@@ -72,8 +73,7 @@ public class RecommendServiceImpl implements RecommendService {
 	@Override
 	public Set<String> recordU2UChange(String uid, String cpid, int selectType) {
 		//Map<Long,List<Long>> relate_user_matched_uids_previous = new HashMap<Long,List<Long>>();//未改变前和我相关的在线用户们的匹配列表	
-		logger.info("线程 "+Thread.currentThread().getName()+" recordU2UChange begin:"+" uid: "+
-						uid+"\t cpid: "+cpid+"\t selectType: "+selectType);
+		logger.info("用户:"+uid+" 的记录线程启动");
 		long startTime = System.currentTimeMillis();
 	
 		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid);
@@ -116,7 +116,7 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		
 		long endTime = System.currentTimeMillis();
-		logger.info("线程 "+Thread.currentThread().getName()+" recordU2UChange end:"+"\t 选中相同CP的用户数: "+ 
+		logger.info("用户:"+uid+" 的记录任务完成"+"\t 选中相同CP的用户数: "+ 
 						usersSelectedSameCp.size() +"\t 其他产生推荐的用户数: "+ relatedUsers.size() +"\n 执行时间: "+
 						(endTime-startTime)+"毫秒");
 		return pendingPushUids;
@@ -139,7 +139,13 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public RecommendPushDTO updateU2C(String uid) {
-		logger.info("线程 "+Thread.currentThread().getName()+" updateU2C begin:"+"\t uid: "+ uid);
+		if(updateTaskQueue.contains(uid)){
+			logger.info("用户:"+uid+" 的上一次更新任务还没结束，本次任务丢弃");
+			return new RecommendPushDTO();
+		}else{
+			updateTaskQueue.add(uid);
+		}
+		logger.info("用户:"+uid+" 的更新任务启动");
 		long startTime = System.currentTimeMillis();
 		String lastUpdateTimeStr = userLastUpdateTimeDao.getUserLastUpdateTime(uid);
 		Timestamp lastUpdateTime = Timestamp.valueOf(lastUpdateTimeStr);
@@ -147,7 +153,8 @@ public class RecommendServiceImpl implements RecommendService {
 		final long MIN_INTERVAL = 1000L;
 		if((startTime-lastUpadteTimeLong) < MIN_INTERVAL){
 			logger.info("离上一次更新间隔过短，任务放弃");
-			return null;
+			updateTaskQueue.remove(uid);
+			return new RecommendPushDTO();
 		}
 		
 		//记录更新前用户的匹配用户列表和推荐CP列表
@@ -187,7 +194,7 @@ public class RecommendServiceImpl implements RecommendService {
 		RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
 		List<Long> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
 		if((matched_uids_previous.size() < U_LISTEN_NUM) && (matched_uids_after.size() > matched_uids_previous.size())){
-			logger.info("原匹配列表还未达到指定长度并且新匹配列表有新用户产生，则直接推送");
+			logger.info("原匹配列表还未达到指定长度并且新匹配列表有新用户产生，直接推送");
 			generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
 		}else{
 			for(int i=0;i<(matched_uids_previous.size()>U_TOP_NUM ? U_TOP_NUM : matched_uids_previous.size());i++){
@@ -214,8 +221,8 @@ public class RecommendServiceImpl implements RecommendService {
 			logger.info("产生推送cp："+cp.getText());
 		}
 		
-		logger.info("线程 "+Thread.currentThread().getName()+" updateU2C end: 更新完毕"+ uid + 
-					"\n 执行时间: "+(endTime-startTime)+"毫秒");
+		updateTaskQueue.remove(uid);
+		logger.info("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
 		return recommendPushDTO;
 	}
 
@@ -225,7 +232,7 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public void initRecommendParm(User u) {
-		logger.info("用户: "+ u.getName()+" 开始初始化推荐参数");
+		logger.info("用户: "+ u.getName()+" 初始化推荐参数任务开始");
 		Timestamp lastUpdateTime = u.getLast_update_time();
 		userLastUpdateTimeDao.setUserLastUpdateTime(u.getUserId().toString(), lastUpdateTime.toString());
 		Boolean ifInited = u2cDao.ifUserCpInited(u.getUserId().toString());
@@ -243,15 +250,9 @@ public class RecommendServiceImpl implements RecommendService {
 			u2cDao.updateUserBatchCpValue(u.getUserId().toString(), initCpsMap);
 			
 			logger.info("用户: "+ u.getName()+" U2C列表初始化成功！");
+		}else{
+			logger.info("用户: "+ u.getName()+" U2C列表已存在");
 		}
-		
-		logger.info("初始化推荐参数完成，执行一次更新任务");
-		RecommendTaskPool.getInstance().getThreadPool().execute(new Runnable() {	
-			@Override
-			public void run() {
-				updateU2C(u.getUserId().toString());
-			}
-		});
 	}
 
 	/**
