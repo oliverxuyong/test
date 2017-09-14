@@ -44,9 +44,6 @@
 					<div class="username" id="username"></div>
 				</div>
 				
-				<!-- 进入匹配人列表 -->
-				<div class="enterMatchUserList" id="enterMatchUserList">为你匹配了18个人</div>
-				
 				<!--2017.07.04  叶夷   匹配人列表 -->
 				<div class="mu" id="mu1" style="left: 145px;width: 40px;height: 40px;top: 80px;"></div>
     			<div class="mu" id="mu2" style="left: 193px;width: 37px;height: 37px;top: 83px;"></div>
@@ -58,6 +55,13 @@
     			<div class="mu" id="mu8" style="left: 332px;width: 19px;height: 19px;top: 13px;"></div>
     			<div class="mu" id="mu9" style="left: 313px;width: 16px;height: 16px;top: 5px;"></div>
     			<div class="mu" id="mu10" style="left: 296px;width: 13px;height: 13px;top: 2px;"></div>
+    			<div class="mu" id="mu11" style="left: 342px;width: 13px;height: 13px;top: 57px;"></div>
+    			<div class="mu" id="mu12" style="left: 346px;width: 13px;height: 13px;top: 31px;"></div>
+    			<div class="mu" id="mu13" style="left: 332px;width: 13px;height: 13px;top: 13px;"></div>
+    			<div class="mu" id="mu14" style="left: 313px;width: 13px;height: 13px;top: 5px;"></div>
+    			<div class="mu" id="mu15" style="left: 296px;width: 13px;height: 13px;top: 2px;"></div>
+    			
+    			
 			</div>
 			
 			<!-- 我的标签 -->
@@ -96,6 +100,10 @@
 		<!-- "聊天"文字容器-->
 		<div class="enterdialogList" id="enterdialogList" onclick="EnterdialogList()">
 			聊天列表
+		</div>
+		<!-- 选中标签性能测试按钮-->
+		<div onclick="testSelectTag()" style="position: absolute;top: 26px;left: 100px;background: #f1f1f1;">
+			选中标签测试
 		</div> 
 		
 	</div> <!--End of <div id="showatloaded" class="showatloaded"> -->
@@ -143,11 +151,9 @@
 			
 			//2017.08.23 叶夷   匹配人位置根据屏幕调整
 			showMatchedUsers();
-			//这是进入匹配人详细列列表的按钮位置
-			showEnterMatchedUsers();
 			
 			//2017.07.04  叶夷  
-			//addMPData();//匹配人列表测试
+			addMPData();//匹配人列表测试
 			//requestTopMatchedUsers(userId,requestTopMUNum);//请求用户匹配缩略表,不能放在这里，因为不能同时请求,等请求cp返回且显示之后再请求这个方法，所以此方法放在responseToCPRequest(CP_list)中
 			
 			//2017.08.09  叶夷  显示我的标签
