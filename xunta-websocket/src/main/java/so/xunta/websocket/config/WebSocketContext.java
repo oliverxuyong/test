@@ -3,15 +3,14 @@ package so.xunta.websocket.config;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.DriverManager;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.log4j.Logger;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +28,8 @@ import so.xunta.websocket.utils.RecommendTaskPool;
 public class WebSocketContext {
 	@Autowired
 	private RecommendTaskPool recommendTaskPool;
+	@Autowired
+	private SessionFactory sessionFactory;
 	private static final Logger logger;
 
 	static {
@@ -109,20 +110,10 @@ public class WebSocketContext {
 		}
 	}
 
-	@PostConstruct
-	public void init() {
-		System.out.println("websocketcontext init .....");
-	}
-
 	@PreDestroy
 	public void destroy() {
 		logger.info("destroy....");
 		recommendTaskPool.destroy();
-		try{
-		    DriverManager.deregisterDriver(DriverManager.getDrivers().nextElement());
-		}catch(Exception e){
-			logger.error(e.getMessage(), e);
-		}
+		sessionFactory.close();
 	}
-
 }

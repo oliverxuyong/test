@@ -89,7 +89,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String userid = session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString();
-		System.out.println("客户端"+userid+"请求：" + message.getPayload());
+		logger.info("客户端"+userid+"请求：" + message.getPayload());
 	
 	
 		org.json.JSONObject obj = null;
@@ -98,13 +98,13 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			User user = userService.findUser(Long.valueOf(userid));
 			loggerService.log(userid, user.getName(),obj.toString());
 		} catch (Exception e) {
-			System.out.println("非json格式" + e.getMessage());
+			logger.error(e.getMessage(),e);
 			session.sendMessage(new TextMessage("json数据格式错误"));
 			return;
 		}
 
 		String _interface = obj.get("_interface").toString();
-		System.out.println("_interface:" + _interface);
+		logger.info("_interface:" + _interface);
 		websocketContext.executeMethod(_interface, session, message);
 	}
 
@@ -195,7 +195,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	 */
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-		System.out.println("连接异常");
+		logger.error("连接异常");
 		userOffLine(session);
 	}
 
@@ -311,12 +311,13 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 
 	@PostConstruct
 	public void init() {
+		logger.info("websocketcontext init .....");
 		try {
 			if (websocketContext.getwebsocketContext().size() == 0) {
 				websocketContext.scanPackage("so.xunta.websocket");
 			}
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -332,7 +333,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 						ack_json.put("data", "ACK:" + DateTimeUtils.getCurrentTimeStr());
 						user.sendMessage(new TextMessage(ack_json.toString()));
 					} catch (IOException e) {
-						e.printStackTrace();
+						logger.error(e.getMessage(), e);
 					}
 				}
 			}
