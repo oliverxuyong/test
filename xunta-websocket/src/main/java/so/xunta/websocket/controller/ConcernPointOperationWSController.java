@@ -38,10 +38,6 @@ public class ConcernPointOperationWSController {
 	private CpChoiceService cpChoiceService;
 	@Autowired
 	private RecommendTaskPool recommendTaskPool;
-	@Autowired
-	private RecommendPushTask recommendPushTask;
-	@Autowired
-	private RecommendCancelCpTask recommendCancelCpTask;
 	
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1102-1")
@@ -61,8 +57,7 @@ public class ConcernPointOperationWSController {
 
 		selectOneNewCPService.addNewCP(cpChoiceDetailDO);
 		
-		recommendPushTask.setCpId(cpid+"");;
-		recommendPushTask.setUserId(uid+"");
+		RecommendPushTask recommendPushTask = new RecommendPushTask(uid+"", cpid+"");
 		recommendTaskPool.execute(recommendPushTask);
 		
 		if(cpChoiceDetailDO !=null){
@@ -90,6 +85,7 @@ public class ConcernPointOperationWSController {
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
 		
 		cpChoiceDetailDO = cancelOneSelectedCP.deleteSelectedCP(cpChoiceDetailDO);
+		RecommendCancelCpTask recommendCancelCpTask = new RecommendCancelCpTask(uid.toString(),cpid.toString());
 		recommendTaskPool.execute(recommendCancelCpTask);
 		
 		if(cpChoiceDetailDO !=null){

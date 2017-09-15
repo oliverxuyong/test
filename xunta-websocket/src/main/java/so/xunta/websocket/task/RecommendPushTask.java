@@ -30,6 +30,11 @@ public class RecommendPushTask implements Runnable{
 	
 	Logger logger =Logger.getLogger(RecommendPushTask.class);
 	
+	public RecommendPushTask(String userId,String cpId){
+		this.cpId=cpId;
+		this.userId=userId;
+	}
+	
 	@Override
 	public void run() {
 		logger.info("==============================RecommendPushTask===================================");
@@ -117,18 +122,8 @@ public class RecommendPushTask implements Runnable{
 		return cpId;
 	}
 
-	public void setCpId(String cpId) {
-		this.cpId = cpId;
-	}
-
 	public String getUserId() {
 		return userId;
 	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	
-
 
 }

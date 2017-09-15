@@ -3,6 +3,7 @@ package so.xunta.server.impl;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -18,27 +19,32 @@ import so.xunta.server.SocketService;
  */
 @Service
 public class SocketServiceImpl implements SocketService {
+	Logger logger =Logger.getLogger(SocketServiceImpl.class);
 
 	@Override
 	public void chat2one(WebSocketSession receiver, JSONObject msg) {
 		System.out.println("chat2one: "+msg);
 		try {
-			if(receiver.isOpen()){
-				receiver.sendMessage(new TextMessage(msg.toString()));
-			}
+			synchronized (receiver) {
+				if(receiver.isOpen()){
+					receiver.sendMessage(new TextMessage(msg.toString()));
+				}
+			}		
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 		}
 	}
 	
 	@Override
 	public void chat2one(WebSocketSession receiver, JSONArray msg) {
 		try {
-			if(receiver.isOpen()){
-				receiver.sendMessage(new TextMessage(msg.toString()));
+			synchronized (receiver) {
+				if(receiver.isOpen()){
+					receiver.sendMessage(new TextMessage(msg.toString()));
+				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 		}
 	}
 

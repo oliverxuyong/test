@@ -3,6 +3,7 @@ package so.xunta.websocket.config;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.DriverManager;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,7 @@ import javax.annotation.PreDestroy;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
@@ -21,9 +23,12 @@ import org.springframework.web.socket.WebSocketSession;
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.utils.FilePathUtil2;
+import so.xunta.websocket.utils.RecommendTaskPool;
 
 @Component
 public class WebSocketContext {
+	@Autowired
+	private RecommendTaskPool recommendTaskPool;
 	private static final Logger logger;
 
 	static {
@@ -51,8 +56,7 @@ public class WebSocketContext {
 					} else {
 					}
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage(),e);
 				}
 			}
 		}
@@ -112,7 +116,13 @@ public class WebSocketContext {
 
 	@PreDestroy
 	public void destroy() {
-		System.out.println("destroy ....");
+		logger.info("destroy....");
+		recommendTaskPool.destroy();
+		try{
+		    DriverManager.deregisterDriver(DriverManager.getDrivers().nextElement());
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+		}
 	}
 
 }

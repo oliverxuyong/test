@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class WolfThreadExecutor extends ThreadPoolExecutor{
 	@Autowired
 	private RecommendTaskPool recommendTaskPool;
+	
+	Logger logger=Logger.getRootLogger();
 
 	public WolfThreadExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
 			BlockingQueue<Runnable> workQueue) {
@@ -29,7 +32,7 @@ public class WolfThreadExecutor extends ThreadPoolExecutor{
 		if(activeTaskCount<maxTaskCount){
 			List<Runnable> tasks = PendingTaskQueue.getInstance().getTaskList(this.getQueue().size()*(maxTaskCount-activeTaskCount));
 			for(Runnable task:tasks){
-				System.out.println("线程池空闲，执行搁置任务");
+				logger.info("线程池空闲，执行搁置任务");
 				recommendTaskPool.execute(task);
 			}
 		}

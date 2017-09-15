@@ -27,4 +27,8 @@ public class RecommendTaskPool {
 	public void setRejectedHandler(){
 		threadPoolExecutor.setRejectedExecutionHandler(new WolfRejectedExecutionHandler());
 	}
+	
+	public void destroy(){
+		threadPoolExecutor.shutdown();
+	}
 }

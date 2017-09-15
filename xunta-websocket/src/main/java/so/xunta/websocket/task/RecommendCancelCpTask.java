@@ -16,6 +16,10 @@ public class RecommendCancelCpTask implements Runnable {
 	private String userId;
 	private String cpId;
 	
+	public RecommendCancelCpTask(String userId,String cpId){
+		this.userId=userId;
+		this.cpId=cpId;
+	}
 	
 	@Override
 	public void run() {
@@ -28,16 +32,6 @@ public class RecommendCancelCpTask implements Runnable {
 		}
 		
 	}
-
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public void setCpId(String cpId) {
-		this.cpId = cpId;
-	}
-
 
 	public String getUserId() {
 		return userId;

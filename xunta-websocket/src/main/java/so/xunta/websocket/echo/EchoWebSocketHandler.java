@@ -3,6 +3,7 @@ package so.xunta.websocket.echo;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -46,18 +47,15 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	private LoggerService loggerService;
 	
 	@Autowired
-	private RecommendUpdateTask recommendUpdateTask; 
-	
-	@Autowired
 	private RecommendTaskPool recommendTaskPool;
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
 	private static final Logger logger;
 
-	private static ArrayList<WebSocketSession> users;
+	private static List<WebSocketSession> users;
 
-	public static ArrayList<WebSocketSession> getUsers() {
+	public static List<WebSocketSession> getUsers() {
 		return users;
 	}
 
@@ -68,7 +66,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	private static boolean isRunning = false;
 
 	static {
-		users = new ArrayList<>();
+		users = Collections.synchronizedList(new ArrayList<WebSocketSession>());
 		logger = Logger.getRootLogger();
 	}
 
@@ -126,7 +124,8 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			User u = userService.findUser(userid);
 			
 			recommendService.initRecommendParm(u);
-			recommendUpdateTask.setUid(u.getUserId()+"");
+			
+			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask(userid+"");
 			recommendTaskPool.execute(recommendUpdateTask);
 			
 			/*if(session.getAttributes().get("boot").equals("yes"))
@@ -148,12 +147,12 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			
 			@Override
 			public void run() {
-				System.out.println("补发");
+				logger.info("补发");
 				WebSocketSession socketSession =getUserById(userid);
 				if(socketSession!=null){
 					websocketContext.executeMethod("submit_client_new_msg_id", socketSession, null);
 				}else{
-					System.out.println("opps ! session is null");
+					logger.error("opps ! session is null");
 				}
 			
 			}
