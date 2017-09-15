@@ -30,6 +30,8 @@ public class RecommendPushTask implements Runnable{
 	
 	Logger logger =Logger.getLogger(RecommendPushTask.class);
 	
+	public RecommendPushTask(){}
+	
 	public RecommendPushTask(String userId,String cpId){
 		this.cpId=cpId;
 		this.userId=userId;

@@ -16,6 +16,7 @@ public class RecommendCancelCpTask implements Runnable {
 	private String userId;
 	private String cpId;
 	
+	public RecommendCancelCpTask(){}
 	public RecommendCancelCpTask(String userId,String cpId){
 		this.userId=userId;
 		this.cpId=cpId;

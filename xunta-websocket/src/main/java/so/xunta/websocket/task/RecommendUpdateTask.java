@@ -12,8 +12,9 @@ public class RecommendUpdateTask implements Runnable {
 	private RecommendService recommendService;
 	private String uid;
 	
-	Logger logger =Logger.getLogger(RecommendPushTask.class);
+	Logger logger =Logger.getLogger(RecommendUpdateTask.class);
 	
+	public RecommendUpdateTask(){}
 	public RecommendUpdateTask(String uid) {
 		this.uid = uid;
 	}
