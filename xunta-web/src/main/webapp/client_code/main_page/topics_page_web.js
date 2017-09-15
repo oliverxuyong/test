@@ -710,9 +710,12 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 	if (muNowData.length == 0) {// 如果是用户一开始上线，匹配人列表没有
 		// 2017.09.06 叶夷
 		// matchedUserArr.length改成现有的匹配人div的数量，因为匹配人数量有可能比这个数量少,会导致后面的对比产生null异常
-		var muLength=$(".mu").length;
-		for (var i = 0; i < muLength; i++) {
-			muAddImg(i,matchedUserArr);
+		//var muLength=$(".mu").length;
+		//for (var i = 0; i < muLength; i++) {
+		for (var i = 0; i < matchedUserArr.length; i++) {
+			var muNode=$("#mu"+(i+1));// 这是已经放在页面的匹配人头像div
+			setMUPosition(i,muNode);
+			muAddImg(i,matchedUserArr,muNode);
 		}
 	} else {// 用户在操作过程中匹配人列表发生改变
 		var i = 0;
@@ -721,13 +724,102 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		circleAnimation(i, matchedUserArr);
 	}
 }
+/**
+ * 叶夷  2017.09.14  匹配人头像静态情况下的位置放置
+ * 1.随机找到一个(x,y)点，这个点必须在装匹配人列表的范围
+ * 2.然后和存在的所有匹配人头像对比是否相交
+ * 3.如果相交则x++,x到达范围则y++,直到找到一个不会相交的点
+ */
+var muPositionArray=new Array();//用来存储前台已经显示的匹配人的位置
+function setMUPosition(i,muNode){
+	var muNodeWidth=muNode.width();
+	var radius=muNodeWidth/2;//这是半径
+	
+	//1.确定装匹配人列表的范围
+	var headerContainer=$("#header-container");
+	var matchUserContainerXStart=headerContainer.width()/2+radius;//从屏幕的二分之一开始
+	var matchUserContainerXEnd=headerContainer.width()-radius-10;//到屏幕留出10的空隙结束
+	var matchUserContainerYStart=radius+5;//y轴从5开始，给留出一点空隙
+	var matchUserContainerYEnd=headerContainer.height()-radius-5;//y轴结束的范围给留出一点空隙
+	
+	//2.在范围内随机取点
+	var x,y;
+	x=parseInt(Math.random()*(matchUserContainerXEnd-matchUserContainerXStart))+matchUserContainerXStart;
+	y=parseInt(Math.random()*(matchUserContainerYEnd-matchUserContainerYStart))+matchUserContainerYStart;
+	
+	//3.然后和存在的所有匹配人头像对比是否相交
+	for(var j=matchUserContainerYStart;j<=matchUserContainerYEnd;j++){
+		var isBreak=false;
+		for(var i=matchUserContainerXStart;i<=matchUserContainerXEnd;i++){
+			var intersect=isIntersect(x,y,radius);
+			if(!intersect){//不相交
+				muPositionArray.push(muPosition(x, y, radius));
+				isBreak=true;
+				break;
+			}
+			++x;
+			if(x>=matchUserContainerXEnd){
+				x=matchUserContainerXStart;
+			}
+		}
+		if(isBreak){
+			break;
+		}
+		
+		++y;
+		if(y>=matchUserContainerYEnd){
+			y=matchUserContainerYStart;
+		}
+	}
+	
+	//4.获得了不会相交的点之后,计算出top和left值
+	var muNodeTop=y-radius;
+	var muNodeLeft=x-radius;
+	muNode.css("top",muNodeTop);
+	muNode.css("left",muNodeLeft);
+}
+/**
+ * 叶夷  2017.09.14  判断是否相交，true相交，false不相交
+ */
+function isIntersect(x,y,radius){
+	var intersect=false;//相交为true;不相交为false
+	if(muPositionArray.length>0){
+		for(var index in muPositionArray){
+			var xForContrast=muPositionArray[index].getX();//用来对比的x点
+			var yForContrast=muPositionArray[index].getY();//用来对比的x点
+			var radiusForContrast=muPositionArray[index].getRadius();//用来对比的x点
+			
+			if(Math.sqrt(Math.pow((x- xForContrast), 2)
+					+ Math.pow((y - yForContrast), 2)) < (radius + radiusForContrast)){//三角形两条直角边的和的开平方<斜边，则相交
+				intersect=true;
+				break;
+			}
+		}
+	}
+	return intersect;
+}
+
+/** 定义一个匹配人位置类 x,y,radius */
+function muPosition(x, y, radius) {
+	var obj = new Object();
+	obj.x = x;
+	obj.y = y;
+	obj.radius = radius;
+	obj.getX = function() {
+		return this.x;
+	};
+	obj.getY = function() {
+		return this.y;
+	};
+	obj.getRadius = function() {
+		return this.radius;
+	};
+	return obj;
+}
 
 // 2017.08.23 叶夷 将匹配人div加上头像图片
-function muAddImg(i,matchedUserArr){
-	var muNode;
+function muAddImg(i,matchedUserArr,muNode){
 	if(matchedUserArr[i]!=null){
-		muNode=$("#mu"+(i+1));// 这是已经放在页面的匹配人头像div
-		
 		var muId=matchedUserArr[i].getMpId();// 获得匹配人列表的匹配人id,这是测试数据版
 		//var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
 		 
@@ -735,10 +827,16 @@ function muAddImg(i,matchedUserArr){
 		//var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
 		//var muUserName=matchedUserArr[i].username;
 		
-		var muWidth=muNode.css("width");
-		var muNodeImg=$("<img src='"+muImg+"'/>").css("width",muWidth).css("height",muWidth);
+		var muWidth=muNode.width();
+		var muImgWidth=muWidth-8;
+		var muNodeImg=$("<img src='"+muImg+"'/>").css("width",muImgWidth).css("height",muImgWidth);
 		muNode.append(muNodeImg);
 		muNode.attr("id","mu"+muId);
+		
+		var muImgMargin=(muWidth-muImgWidth)/2;
+		muNodeImg.css("margin-top",muImgMargin);
+		muNodeImg.css("margin-left",muImgMargin);
+		
 		// 点击事件
 		muNode.click(function() {
 			// 进入聊天页
@@ -750,7 +848,6 @@ function muAddImg(i,matchedUserArr){
 	}
 	
 	muNowData.push(muNode);
-	
 }
 
 // 2017.08.23 叶夷 生成一个新的匹配人div
@@ -1106,16 +1203,16 @@ function showMatchedUsers(){
 	
 	for(var i=1;i<=15;i++){
 		var muNode=$("#mu"+i);
-		var newMuTop=parseInt(muNode.css("top"));
-		var newMuLeft=parseInt(muNode.css("left"));
+		//var newMuTop=parseInt(muNode.css("top"));
+		//var newMuLeft=parseInt(muNode.css("left"));
 		var newMuWidth=parseInt(muNode.css("width"));
 		
-		var changeMuTop=newMuTop*proportionHeight;
-		var changeMuLeft=newMuLeft*proportionWidth;
+		//var changeMuTop=newMuTop*proportionHeight;
+		//var changeMuLeft=newMuLeft*proportionWidth;
 		var changeMuWidth=newMuWidth*proportionWidth;
 		
-		muNode.css("top",changeMuTop+"px");
-		muNode.css("left",changeMuLeft+"px");
+		//muNode.css("top",changeMuTop+"px");
+		//muNode.css("left",changeMuLeft+"px");
 		muNode.css("width",changeMuWidth+"px");
 		muNode.css("height",changeMuWidth+"px");
 	}
@@ -1164,12 +1261,16 @@ function testSelectTag(){
 			var cpid=cpTestArray[i].getCpid();
 			var text=cpTestArray[i].getText();
 			// var cp_node=$("cpid"+cpid);
-			sendSelectCP(userId, cpid,text);
+			//sendSelectCP(userId, cpid,text);
+			timeOutSuccess = setTimeout(function() {
+				sendSelectCP(userId, cpid,text);
+			},100);
 		}
 	}
-	cpTestArray.splice(0,cpTestArray.length);
-	
-	requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)));
+	timeOutSuccess = setTimeout(function() {
+		cpTestArray.splice(0,cpTestArray.length);
+		requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)));
+	},cpTestArray.length*100);
 }
 function CPTestObj(cpid, text) {
 	var obj = new Object();
