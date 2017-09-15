@@ -125,7 +125,8 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			
 			recommendService.initRecommendParm(u);
 			
-			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask(userid+"");
+			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask();
+			recommendUpdateTask.setUid(userid+"");
 			recommendTaskPool.execute(recommendUpdateTask);
 			
 			/*if(session.getAttributes().get("boot").equals("yes"))

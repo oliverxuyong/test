@@ -11,13 +11,8 @@ public class RecommendUpdateTask implements Runnable {
 	@Autowired
 	private RecommendService recommendService;
 	private String uid;
-	
+
 	Logger logger =Logger.getLogger(RecommendUpdateTask.class);
-	
-	public RecommendUpdateTask(){}
-	public RecommendUpdateTask(String uid) {
-		this.uid = uid;
-	}
 	
 	@Override
 	public void run() {
@@ -29,6 +24,9 @@ public class RecommendUpdateTask implements Runnable {
 		}
 	}
 
+	public void setUid(String uid) {
+		this.uid = uid;
+	}
 	public String getUid() {
 		return uid;
 	}

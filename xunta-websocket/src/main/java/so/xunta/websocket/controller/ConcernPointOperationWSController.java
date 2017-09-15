@@ -57,7 +57,9 @@ public class ConcernPointOperationWSController {
 
 		selectOneNewCPService.addNewCP(cpChoiceDetailDO);
 		
-		RecommendPushTask recommendPushTask = new RecommendPushTask(uid+"", cpid+"");
+		RecommendPushTask recommendPushTask = new RecommendPushTask();
+		recommendPushTask.setUserId(uid+"");
+		recommendPushTask.setCpId(cpid+"");
 		recommendTaskPool.execute(recommendPushTask);
 		
 		if(cpChoiceDetailDO !=null){
@@ -65,7 +67,7 @@ public class ConcernPointOperationWSController {
 			returnJson.put("_interface", "1102-2");
 			returnJson.put("is_success", "true");
 			//2017.08.08 叶夷  在选中标签时返回的数据中加上cpid
-			returnJson.put("cpid", cpid);
+			returnJson.put("cpid", cpid+"");
 			returnJson.put("cptext", text);
 			returnJson.put("timestamp", timestamp);
 			socketService.chat2one(session, returnJson);
@@ -85,7 +87,9 @@ public class ConcernPointOperationWSController {
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
 		
 		cpChoiceDetailDO = cancelOneSelectedCP.deleteSelectedCP(cpChoiceDetailDO);
-		RecommendCancelCpTask recommendCancelCpTask = new RecommendCancelCpTask(uid.toString(),cpid.toString());
+		RecommendCancelCpTask recommendCancelCpTask = new RecommendCancelCpTask();
+		recommendCancelCpTask.setUserId(uid+"");
+		recommendCancelCpTask.setCpId(cpid+"");
 		recommendTaskPool.execute(recommendCancelCpTask);
 		
 		if(cpChoiceDetailDO !=null){
@@ -93,7 +97,7 @@ public class ConcernPointOperationWSController {
 			returnJson.put("_interface", "1103-2");
 			returnJson.put("is_success", "true");
 			//2017.08.08 叶夷  在选中标签时返回的数据中加上cpid
-			returnJson.put("cpid", cpid);
+			returnJson.put("cpid", cpid+"");
 			returnJson.put("timestamp", timestamp);
 			socketService.chat2one(session, returnJson);
 		}	
@@ -115,8 +119,8 @@ public class ConcernPointOperationWSController {
 		}else{
 			returnJson.put("is_select", "true");
 		}
-		returnJson.put("cpid", cpid);
-		returnJson.put("uid", uid);
+		returnJson.put("cpid", cpid+"");
+		returnJson.put("uid", uid+"");
 		returnJson.put("timestamp", timestamp);
 		socketService.chat2one(session, returnJson);
 	}

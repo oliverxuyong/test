@@ -50,18 +50,23 @@ public class PendingTaskQueue {
 			case RECOMMEND_PUSH:
 				String userId1 = parms[1];
 				String cpId1 = parms[2];
-				RecommendPushTask t1= new RecommendPushTask(userId1,cpId1);
+				RecommendPushTask t1= new RecommendPushTask();
+				t1.setUserId(userId1);
+				t1.setCpId(cpId1);
 				returnTasks.add(t1);
 				break;
 			case RECOMMEND_CANCELCP:
 				String userId2 = parms[1];
 				String cpId2 = parms[2];
-				RecommendCancelCpTask t2 = new RecommendCancelCpTask(userId2,cpId2);
+				RecommendCancelCpTask t2 = new RecommendCancelCpTask();
+				t2.setUserId(userId2);
+				t2.setCpId(cpId2);
 				returnTasks.add(t2);
 				break;
 			case RECOMMEND_UPDARW:
 				String userId3 = parms[1];
-				RecommendUpdateTask t3 = new RecommendUpdateTask(userId3);
+				RecommendUpdateTask t3 = new RecommendUpdateTask();
+				t3.setUid(userId3);
 				returnTasks.add(t3);
 				break;
 			}
