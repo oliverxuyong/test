@@ -3,6 +3,7 @@ package so.xunta.websocket.config;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.DriverManager;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class WebSocketContext {
 	@Autowired
 	private RecommendTaskPool recommendTaskPool;
 	@Autowired
-	private SessionFactory sessionFactory;
+	SessionFactory sessionFactory;
 	private static final Logger logger;
 
 	static {
@@ -115,5 +116,11 @@ public class WebSocketContext {
 		logger.info("destroy....");
 		recommendTaskPool.destroy();
 		sessionFactory.close();
+		try{
+		    DriverManager.deregisterDriver(DriverManager.getDrivers().nextElement());
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+		}
 	}
+
 }

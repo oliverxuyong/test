@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
 import so.xunta.beans.PushMatchedUserDTO;
@@ -18,7 +17,7 @@ import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
 
-@Component
+
 public class RecommendPushTask implements Runnable{
 	@Autowired
 	private SocketService socketService;

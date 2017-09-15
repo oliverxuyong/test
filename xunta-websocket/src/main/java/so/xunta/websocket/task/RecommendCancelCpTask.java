@@ -2,11 +2,10 @@ package so.xunta.websocket.task;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import so.xunta.server.RecommendService;
 
-@Component
+
 public class RecommendCancelCpTask implements Runnable {
 	@Autowired
 	private RecommendService recommandService;
