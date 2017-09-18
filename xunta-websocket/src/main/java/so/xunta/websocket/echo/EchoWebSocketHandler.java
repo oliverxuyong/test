@@ -162,20 +162,11 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	 */
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-		try {
 			Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 			User u = userService.findUser(userid);
 			recommendService.syncLastUpdateTime(u);
-			
-			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason());
-			if (session.isOpen()) {
-				session.close(status);
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-		} finally {
-			users.remove(session);
-		}	
+			users.remove(session);	
+			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason()+";"+status.getCode());
 	}
 
 	/**

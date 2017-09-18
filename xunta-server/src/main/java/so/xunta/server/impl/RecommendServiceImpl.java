@@ -262,6 +262,10 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public void syncLastUpdateTime(User u) {
+		if(u==null){
+			logger.error("用户为空，同步更新时间失败");
+			return;
+		}
 		logger.info("用户: "+ u.getName()+" 下线，将更新时间同步到数据库");
 		Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(u.getUserId().toString()));
 		u.setLast_update_time(lastUpdateTime);

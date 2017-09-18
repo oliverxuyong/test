@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -31,7 +32,12 @@ public class SocketServiceImpl implements SocketService {
 				}
 			}		
 		} catch (IOException e) {
-			logger.error(e.getMessage(),e);
+			logger.error("发送失败"+e.getMessage(),e);
+			try {
+				receiver.close(CloseStatus.SERVICE_RESTARTED);
+			} catch (IOException e1) {
+				logger.error(e1.getMessage(),e1);
+			}
 		}
 	}
 	
@@ -44,7 +50,12 @@ public class SocketServiceImpl implements SocketService {
 				}
 			}
 		} catch (IOException e) {
-			logger.error(e.getMessage(),e);
+			logger.error("发送失败"+e.getMessage(),e);
+			try {
+				receiver.close(CloseStatus.SERVICE_RESTARTED);
+			} catch (IOException e1) {
+				logger.error(e1.getMessage(),e1);
+			}
 		}
 	}
 
