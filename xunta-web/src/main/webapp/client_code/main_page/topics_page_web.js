@@ -31,7 +31,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 		// 加上一个过滤，前端出现过的cp不应该再出现
 		var isRepeat=false;
 		for(var j in cpValue){
-			if(cpValue[j].getCpNode()==("cpid"+cpid)){// 出现过
+			if(cpValue[j].getCpNode()==("outcpid"+cpid)){// 出现过
 				console.log("cpid->"+cpid+" 标签重复出现")
 				isRepeat=true;
 				break;
