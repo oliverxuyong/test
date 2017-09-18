@@ -125,8 +125,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			
 			recommendService.initRecommendParm(u);
 			
-			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask();
-			recommendUpdateTask.setUid(userid+"");
+			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask(recommendService,userid+"");
 			recommendTaskPool.execute(recommendUpdateTask);
 			
 			/*if(session.getAttributes().get("boot").equals("yes"))
@@ -180,11 +179,8 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			
 			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线");
 			
-			if (session.isOpen()) {
-				session.close();
-			}
 		} catch (Exception e) {
-			logger.error("User offLine Error: ",e);
+			logger.error(e.getMessage(),e);
 		} finally {
 			users.remove(session);
 		}
@@ -197,6 +193,13 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 		logger.error("连接异常");
 		userOffLine(session);
+		try {
+			if (session.isOpen()) {
+				session.close();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+		}	
 	}
 
 	/**
@@ -211,7 +214,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 					user.sendMessage(message);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -233,7 +236,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 					logger.info("发消息过滤:" + user.getAttributes().get(Constants.WEBSOCKET_USERNAME));
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -253,7 +256,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 						user.sendMessage(message);
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 				break;
 			}
@@ -319,25 +322,5 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		} catch (UnsupportedEncodingException e) {
 			logger.error(e.getMessage(), e);
 		}
-	}
-
-	class HeartBeatTask extends TimerTask {
-
-		@Override
-		public void run() {
-			if (users != null) {
-				for (WebSocketSession user : users) {
-					try {
-						JSONObject ack_json = new JSONObject();
-						ack_json.put("_interface", "ack");
-						ack_json.put("data", "ACK:" + DateTimeUtils.getCurrentTimeStr());
-						user.sendMessage(new TextMessage(ack_json.toString()));
-					} catch (IOException e) {
-						logger.error(e.getMessage(), e);
-					}
-				}
-			}
-		}
-
 	}
 }

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -17,7 +18,7 @@ import org.json.JSONObject;
 public class FileUtils {
 	
 	static String publictopic = "别人在说啥";
-	
+    static Logger logger = Logger.getRootLogger();
 	
 	public static String readStrFromFile(String filepath) {
 		File file = new File(filepath);
@@ -31,10 +32,10 @@ public class FileUtils {
 			}
 			reader.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return sb.toString();
 	}

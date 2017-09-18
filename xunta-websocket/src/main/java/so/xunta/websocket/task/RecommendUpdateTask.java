@@ -1,17 +1,20 @@
 package so.xunta.websocket.task;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import so.xunta.server.RecommendService;
 
 
 public class RecommendUpdateTask implements Runnable {
-	@Autowired
 	private RecommendService recommendService;
 	private String uid;
 
 	Logger logger =Logger.getLogger(RecommendUpdateTask.class);
+	
+	public RecommendUpdateTask(RecommendService recommendService,String uid) {
+		this.recommendService = recommendService;
+		this.uid = uid;
+	}
 	
 	@Override
 	public void run() {

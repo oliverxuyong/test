@@ -1,19 +1,23 @@
 package so.xunta.websocket.task;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import so.xunta.server.RecommendService;
 
 
 public class RecommendCancelCpTask implements Runnable {
-	@Autowired
-	private RecommendService recommandService;
 	
 	Logger logger =Logger.getLogger(RecommendCancelCpTask.class);
 	
+	private RecommendService recommandService;
 	private String userId;
 	private String cpId;
+	
+	public RecommendCancelCpTask(RecommendService recommandService,String userId,String cpId) {
+		this.recommandService=recommandService;
+		this.userId=userId;
+		this.cpId=cpId;
+	}
 	
 	@Override
 	public void run() {
@@ -33,14 +37,6 @@ public class RecommendCancelCpTask implements Runnable {
 
 	public String getCpId() {
 		return cpId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public void setCpId(String cpId) {
-		this.cpId = cpId;
 	}
 
 }

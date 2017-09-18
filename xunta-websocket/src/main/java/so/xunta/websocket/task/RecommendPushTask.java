@@ -7,7 +7,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.WebSocketSession;
 
 import so.xunta.beans.PushMatchedUserDTO;
@@ -19,9 +18,7 @@ import so.xunta.websocket.echo.EchoWebSocketHandler;
 
 
 public class RecommendPushTask implements Runnable{
-	@Autowired
 	private SocketService socketService;
-	@Autowired
 	private RecommendService recommendService;	
 	
 	private String cpId;
@@ -29,6 +26,12 @@ public class RecommendPushTask implements Runnable{
 	
 	Logger logger =Logger.getLogger(RecommendPushTask.class);
 	
+	public RecommendPushTask(RecommendService recommendService,String userId,String cpId, SocketService socketService) {
+		this.recommendService=recommendService;
+		this.userId=userId;
+		this.cpId=cpId;
+		this.socketService=socketService;
+	}
 	@Override
 	public void run() {
 		logger.info("==============================RecommendPushTask===================================");
@@ -118,14 +121,6 @@ public class RecommendPushTask implements Runnable{
 
 	public String getUserId() {
 		return userId;
-	}
-
-	public void setCpId(String cpId) {
-		this.cpId = cpId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 }

@@ -3,7 +3,10 @@ package so.xunta.websocket.config;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +22,8 @@ import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+
+import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
@@ -58,7 +63,7 @@ public class WebSocketContext {
 					} else {
 					}
 				} catch (ClassNotFoundException e) {
-					logger.error(e.getMessage(),e);
+					logger.error(e.getMessage(), e);
 				}
 			}
 		}
@@ -88,13 +93,13 @@ public class WebSocketContext {
 								m.invoke(webContext.getBean(c), session, message);
 								break;
 							} catch (IllegalArgumentException e) {
-								e.printStackTrace();
+								logger.error(e.getMessage(),e);
 							} catch (BeansException e) {
-								e.printStackTrace();
+								logger.error(e.getMessage(),e);
 							} catch (IllegalAccessException e) {
-								e.printStackTrace();
+								logger.error(e.getMessage(),e);
 							} catch (InvocationTargetException e) {
-								e.printStackTrace();
+								logger.error(e.getMessage(),e);
 							}
 						}
 					}
@@ -116,10 +121,20 @@ public class WebSocketContext {
 		logger.info("destroy....");
 		recommendTaskPool.destroy();
 		sessionFactory.close();
-		try{
-		    DriverManager.deregisterDriver(DriverManager.getDrivers().nextElement());
-		}catch(Exception e){
+		try {
+			AbandonedConnectionCleanupThread.shutdown();
+		} catch (InterruptedException e) {
 			logger.error(e.getMessage(), e);
+		}
+
+		Enumeration<Driver> drivers = DriverManager.getDrivers();
+		while (drivers.hasMoreElements()) {
+			try {
+				Driver driver = drivers.nextElement();
+				DriverManager.deregisterDriver(driver);
+			} catch (SQLException e) {
+				logger.error(e.getMessage(),e);
+			}
 		}
 	}
 

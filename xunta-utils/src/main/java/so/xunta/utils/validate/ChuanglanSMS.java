@@ -9,6 +9,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.log4j.Logger;
 
 public class ChuanglanSMS {
 	private CloseableHttpClient client;
@@ -17,6 +18,7 @@ public class ChuanglanSMS {
 	private static final String SEND_URL="http://222.73.117.138:7891/mt";
 	private static final String QUERY_URL="http://222.73.117.138:7891/bi";
 	private static final String INTERNATIONAL_URL="http://222.73.117.140:8044/mt";
+	private Logger logger = Logger.getRootLogger();
 
 	public ChuanglanSMS(String account,String password){
 		this.account = account;
@@ -29,7 +31,7 @@ public class ChuanglanSMS {
 		try {
 			encodedContent = URLEncoder.encode(content, "utf-8");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return null;
 		}
 		StringBuffer strBuf = new StringBuffer(SEND_URL);
@@ -43,9 +45,9 @@ public class ChuanglanSMS {
 		try {
 			return client.execute(get);
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -60,9 +62,9 @@ public class ChuanglanSMS {
 		try {
 			return client.execute(get);
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -72,7 +74,7 @@ public class ChuanglanSMS {
 		try {
 			encodedContent = URLEncoder.encode(content, "utf-8");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return null;
 		}
 		StringBuffer strBuf = new StringBuffer(INTERNATIONAL_URL);
@@ -86,9 +88,9 @@ public class ChuanglanSMS {
 		try {
 			return client.execute(get);
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -98,7 +100,7 @@ public class ChuanglanSMS {
 			try {
 				client.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 	}

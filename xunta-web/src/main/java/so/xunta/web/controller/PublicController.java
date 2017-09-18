@@ -18,7 +18,7 @@ import so.xunta.utils.IdWorker;
 public class PublicController {
 
 	
-	Logger logger = Logger.getLogger(UserController.class);
+	Logger logger = Logger.getLogger(PublicController.class);
 	
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
@@ -36,7 +36,7 @@ public class PublicController {
 		try {
 			response.getWriter().write(ret.toString(2));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	@RequestMapping("/server_time")
@@ -57,7 +57,7 @@ public class PublicController {
 		try {
 			response.getWriter().write(ret.toString(2));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	@RequestMapping("/nextid_and_stime")
@@ -84,7 +84,7 @@ public class PublicController {
 		try {
 			response.getWriter().write(ret.toString(2));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
