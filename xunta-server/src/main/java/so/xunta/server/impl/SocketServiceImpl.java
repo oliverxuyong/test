@@ -25,38 +25,40 @@ public class SocketServiceImpl implements SocketService {
 	@Override
 	public void chat2one(WebSocketSession receiver, JSONObject msg) {
 		logger.info("chat2one: "+msg);
-		try {
+		
+		synchronized (receiver) {
 			if(receiver.isOpen()){
-				synchronized (receiver) {
+				try {
 					receiver.sendMessage(new TextMessage(msg.toString()));
+				} catch (IOException e) {
+					logger.error("发送失败"+e.getMessage(),e);
+					try {
+						receiver.close(CloseStatus.SERVICE_RESTARTED);
+					} catch (IOException e1) {
+						logger.error(e1.getMessage(),e1);
+					}
 				}
-			}		
-		} catch (IOException e) {
-			logger.error("发送失败"+e.getMessage(),e);
-			try {
-				receiver.close(CloseStatus.SERVICE_RESTARTED);
-			} catch (IOException e1) {
-				logger.error(e1.getMessage(),e1);
 			}
-		}
+		}		
+		
 	}
 	
 	@Override
 	public void chat2one(WebSocketSession receiver, JSONArray msg) {
-		try {
+		synchronized (receiver) {
 			if(receiver.isOpen()){
-				synchronized (receiver) {
+				try {
 					receiver.sendMessage(new TextMessage(msg.toString()));
+				} catch (IOException e) {
+					logger.error("发送失败"+e.getMessage(),e);
+					try {
+						receiver.close(CloseStatus.SERVICE_RESTARTED);
+					} catch (IOException e1) {
+						logger.error(e1.getMessage(),e1);
+					}
 				}
 			}
-		} catch (IOException e) {
-			logger.error("发送失败"+e.getMessage(),e);
-			try {
-				receiver.close(CloseStatus.SERVICE_RESTARTED);
-			} catch (IOException e1) {
-				logger.error(e1.getMessage(),e1);
-			}
-		}
+		}		
 	}
 
 	@Override
