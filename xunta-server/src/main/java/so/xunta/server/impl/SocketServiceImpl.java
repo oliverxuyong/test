@@ -25,8 +25,8 @@ public class SocketServiceImpl implements SocketService {
 	public void chat2one(WebSocketSession receiver, JSONObject msg) {
 		logger.info("chat2one: "+msg);
 		try {
-			synchronized (receiver) {
-				if(receiver.isOpen()){
+			if(receiver.isOpen()){
+				synchronized (receiver) {
 					receiver.sendMessage(new TextMessage(msg.toString()));
 				}
 			}		
@@ -38,8 +38,8 @@ public class SocketServiceImpl implements SocketService {
 	@Override
 	public void chat2one(WebSocketSession receiver, JSONArray msg) {
 		try {
-			synchronized (receiver) {
-				if(receiver.isOpen()){
+			if(receiver.isOpen()){
+				synchronized (receiver) {
 					receiver.sendMessage(new TextMessage(msg.toString()));
 				}
 			}

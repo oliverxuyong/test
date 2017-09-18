@@ -5,12 +5,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.TimerTask;
 
 import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -22,7 +20,6 @@ import so.xunta.beans.User;
 import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.UserService;
-import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
 import so.xunta.websocket.config.Constants;
 import so.xunta.websocket.config.WebSocketContext;
@@ -165,25 +162,20 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	 */
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-		
-		userOffLine(session);
-		
-	}
-
-	private void userOffLine(WebSocketSession session) {
-		
 		try {
 			Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 			User u = userService.findUser(userid);
 			recommendService.syncLastUpdateTime(u);
 			
-			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线");
-			
+			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason());
+			if (session.isOpen()) {
+				session.close(status);
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 		} finally {
 			users.remove(session);
-		}
+		}	
 	}
 
 	/**
@@ -191,15 +183,20 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	 */
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-		logger.error("连接异常");
-		userOffLine(session);
-		try {
-			if (session.isOpen()) {
+		Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
+		User u = userService.findUser(userid);
+		recommendService.syncLastUpdateTime(u);
+		
+		logger.error("用户:"+u.getUserId()+"  "+u.getName()+" 连接异常",exception);
+		try{
+			if(session.isOpen()){
 				session.close();
 			}
-		} catch (Exception e) {
+		}catch(Exception e){
 			logger.error(e.getMessage(),e);
-		}	
+		}finally {
+			users.remove(session);
+		}
 	}
 
 	/**
