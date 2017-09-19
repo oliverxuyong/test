@@ -24,18 +24,22 @@ public class SocketServiceImpl implements SocketService {
 
 	@Override
 	public void chat2one(WebSocketSession receiver, JSONObject msg) {
+		if(receiver==null){
+			logger.info("用户中途下线 session为null，中止传输!");
+			return;
+		}
 		logger.info("chat2one: "+msg);
-		
 		synchronized (receiver) {
 			if(receiver.isOpen()){
 				try {
 					receiver.sendMessage(new TextMessage(msg.toString()));
 				} catch (IOException e) {
-					logger.error("发送失败"+e.getMessage(),e);
+					logger.error("发送失败："+e.getMessage(),e);
 					try {
 						receiver.close(CloseStatus.SERVICE_RESTARTED);
+						receiver.sendMessage(new TextMessage(msg.toString()));
 					} catch (IOException e1) {
-						logger.error(e1.getMessage(),e1);
+						logger.error("session服务重启失败："+e1.getMessage(),e1);
 					}
 				}
 			}

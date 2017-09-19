@@ -120,19 +120,20 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			users.add(session);
 			User u = userService.findUser(userid);
 			
-			recommendService.initRecommendParm(u);
-			
-			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask(recommendService,userid+"");
-			recommendTaskPool.execute(recommendUpdateTask);
-			
-			/*if(session.getAttributes().get("boot").equals("yes"))
+			if(session.getAttributes().get("boot").equals("yes"))
 			{
 				logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  打开应用上线");
 			}else{
 				logger.info("用户"+u.getUserId()+"  "+u.getName()+"恢复连接");
 				
-				re_sendMsg(userid,5); //zheng 先取消，以后的更新任务还会有类似的功能
-			}*/
+				//re_sendMsg(userid,5); //zheng 先取消，以后的更新任务还会有类似的功能
+			}
+			
+			recommendService.initRecommendParm(u);
+			
+			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask(recommendService,userid+"");
+			recommendTaskPool.execute(recommendUpdateTask);
+			
 		} else {
 		}
 	}
@@ -163,9 +164,13 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
 			Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
+			users.remove(session);	
+			if(status.equals(CloseStatus.SERVICE_RESTARTED)){
+				logger.info("用户:"+userid+" WebSocketSession服务重启");
+				return;
+			}
 			User u = userService.findUser(userid);
 			recommendService.syncLastUpdateTime(u);
-			users.remove(session);	
 			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason()+";"+status.getCode());
 	}
 
@@ -176,16 +181,19 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 		Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 		User u = userService.findUser(userid);
-		recommendService.syncLastUpdateTime(u);
 		
 		logger.error("用户:"+u.getUserId()+"  "+u.getName()+" 连接异常",exception);
-		try{
-			if(session.isOpen()){
-				session.close();
+	
+		if(session.isOpen()){
+			try{
+				session.close(); //执行close方法正常后会调用afterConnectionClosed方法
+			}catch(Exception e){
+				logger.error(e.getMessage(),e);
+				recommendService.syncLastUpdateTime(u);
+				users.remove(session);
 			}
-		}catch(Exception e){
-			logger.error(e.getMessage(),e);
-		}finally {
+		}else{
+			recommendService.syncLastUpdateTime(u);
 			users.remove(session);
 		}
 	}
@@ -274,17 +282,18 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		return false;
 	}
 
-	public static void removeUser(String user) {
+	public static void removeUser(String userid) {
 		for (int i = 0; i < users.size(); i++) {
 			WebSocketSession u = users.get(i);
-			String _user = (String) (u.getAttributes().get(Constants.WEBSOCKET_USERNAME));
-			if (_user.equals(user)) {
+			String _userid = (String) (u.getAttributes().get(Constants.WEBSOCKET_USERNAME));
+			if (_userid.equals(userid)) {
 				//logger.info("用户重复连接websocket,移除原来的session" + u.getAttributes().get(Constants.WEBSOCKET_USERNAME));
 				users.remove(u);
 				if (u.isOpen()) {
 					try {
 						u.close();
 					} catch (IOException e) {
+						logger.info(e.getMessage()+"用户连接已关闭，无法重复close");
 					}
 				}
 			}

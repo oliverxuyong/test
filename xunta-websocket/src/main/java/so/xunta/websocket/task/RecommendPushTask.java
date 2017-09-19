@@ -42,17 +42,21 @@ public class RecommendPushTask implements Runnable{
 			pendingPushUids.add(userId);
 			filterOffLineUsers(pendingPushUids);
 			for(String uid:pendingPushUids){
+				WebSocketSession userSession = EchoWebSocketHandler.getUserById(Long.valueOf(uid));
+				if(userSession==null){
+					continue;
+				}
 				RecommendPushDTO recommendPushDTO = recommendService.updateU2C(uid);
 				List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
 				if(pushMatchedUserDTOs!=null){
 					logger.info("给id为”"+uid+"“ 的用户产生了MatchedUsers推送");
-					pushChangedMatchedUsers(pushMatchedUserDTOs,EchoWebSocketHandler.getUserById(Long.valueOf(uid)));
+					pushChangedMatchedUsers(pushMatchedUserDTOs,userSession);
 				}
 				
 				List<PushRecommendCpDTO> pushRecommendCpDTOs = recommendPushDTO.getPushMatchedCPs();
 				if(pushRecommendCpDTOs!=null){
 					logger.info("给id为”"+uid+"“ 的用户产生了CP推送,推送了 "+pushRecommendCpDTOs.size()+" 个");
-					pushRecommendCps(pushRecommendCpDTOs,EchoWebSocketHandler.getUserById(Long.valueOf(uid)));
+					pushRecommendCps(pushRecommendCpDTOs,userSession);
 				}
 			}
 		}else{
