@@ -192,9 +192,6 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 				recommendService.syncLastUpdateTime(u);
 				users.remove(session);
 			}
-		}else{
-			recommendService.syncLastUpdateTime(u);
-			users.remove(session);
 		}
 	}
 
@@ -289,13 +286,14 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			if (_userid.equals(userid)) {
 				//logger.info("用户重复连接websocket,移除原来的session" + u.getAttributes().get(Constants.WEBSOCKET_USERNAME));
 				users.remove(u);
-				if (u.isOpen()) {
+				/*不需要手动关闭session
+				 * if (u.isOpen()) {
 					try {
 						u.close();
 					} catch (IOException e) {
 						logger.info(e.getMessage()+"用户连接已关闭，无法重复close");
 					}
-				}
+				}*/
 			}
 		}
 	}
