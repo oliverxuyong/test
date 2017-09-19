@@ -266,7 +266,7 @@ function checkMessageInterface(evnt) {
 		console.log("发送'标签选中' :"+JSON.stringify(jsonObj.is_success));
 		if(JSON.stringify(jsonObj.is_success)=='"true"'){
 			//标签选中之后将结果返回判断是否成功
-			var cpid=JSON.stringify(jsonObj.cpid);
+			var cpid=jsonObj.cpid;
 			checksendSelectedCPSuccessArray[cpid]=true;
 			exec("main_page","myTagAgainBindingClick('"+cpid+"')");
 		}
