@@ -2,6 +2,8 @@ package so.xunta.websocket.controller;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,10 @@ public class ConcernPointOperationWSController {
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
 
 		selectOneNewCPService.addNewCP(cpChoiceDetailDO);
+		
+		List<String> cpList = new ArrayList<String>(1);
+		cpList.add(cpid+"");
+		recommendService.signCpsPresented(uid+"", cpList);
 		
 		RecommendPushTask recommendPushTask = new RecommendPushTask(recommendService,uid+"",cpid+"",socketService);
 		recommendTaskPool.execute(recommendPushTask);

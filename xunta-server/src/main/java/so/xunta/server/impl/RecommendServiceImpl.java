@@ -190,7 +190,7 @@ public class RecommendServiceImpl implements RecommendService {
 			//step 3
 			u2uUpdateStatusDao.deleteU2uUpdateStatus(uid);
 			userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Timestamp(System.currentTimeMillis()).toString());
-			long endTime = System.currentTimeMillis();
+
 			
 			RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
 			List<Long> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
@@ -224,6 +224,7 @@ public class RecommendServiceImpl implements RecommendService {
 				pushedCpIds.add(cpid);
 			}
 		
+			long endTime = System.currentTimeMillis();
 			logger.info("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
 			return recommendPushDTO;
 		} catch (Exception e) {
@@ -280,14 +281,14 @@ public class RecommendServiceImpl implements RecommendService {
 	
 	
 	@Override
-	public void signPushedCps(String uid, List<String> pushedCpIds) {
+	public void signCpsPresented(String uid, List<String> pushedCpIds) {
 		if(pushedCpIds.size()>0){
 			u2cDao.setUserCpsPresented(uid, pushedCpIds);
 		}		
 	}
 
 	private void updateU2CAfterLastUpdated(Map<BigInteger, String> newCps, String uid, String changedUid){
-		logger.info("新选CP更新：关联用户 "+changedUid);
+		logger.info("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
 		for(Entry<BigInteger, String> selectedCp:newCps.entrySet()){
 			BigInteger selectedCpid = selectedCp.getKey();
 			String is_selected = selectedCp.getValue();

@@ -35,5 +35,5 @@ public interface RecommendService {
 	 * */
 	public void syncLastUpdateTime(User u);
 	
-	public void signPushedCps(String uid,List<String> pushedCpIds);
+	public void signCpsPresented(String uid,List<String> pushedCpIds);
 }

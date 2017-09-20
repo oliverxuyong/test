@@ -183,16 +183,6 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		User u = userService.findUser(userid);
 		
 		logger.error("用户:"+u.getUserId()+"  "+u.getName()+" 连接异常",exception);
-	
-		if(session.isOpen()){
-			try{
-				session.close(); //执行close方法正常后会调用afterConnectionClosed方法
-			}catch(Exception e){
-				logger.error(e.getMessage(),e);
-				recommendService.syncLastUpdateTime(u);
-				users.remove(session);
-			}
-		}
 	}
 
 	/**
