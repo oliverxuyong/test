@@ -721,7 +721,15 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		var muLength=$(".mu").length;
 		for (var i = 0; i < matchedUserArr.length; i++) {
 			var muNode=$("#mu"+(i+1));// 这是已经放在页面的匹配人头像div
-			setMUPosition(i,muNode,isChange);
+			setMUPosition(i,muNode);
+			if(intersect){//只要有一个圆不是跟所有圆都不想交，则重新再来,米面出现偶然的相交情况
+				console.log("有一个圆会跟别的圆相交，重新再计算");
+				muNowData.splice(0, muNowData.length);
+				muPositionArray.splice(0,muPositionArray.length);
+				$(".mu").find("img").remove();
+				showMatchPeople(matchedUserArr);
+				break;
+			}
 			muAddImg(i,matchedUserArr,muNode);
 		}
 	} else {// 用户在操作过程中匹配人列表发生改变
@@ -742,17 +750,18 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			
 			muAddImg(m,matchedUserArr,muNode);
 			var isChange=true;
-			setMUPosition(m,muNode,isChange);
+			setMUPosition(m,muNode);
 		}
 	}
 }
 
 var muPositionArray=new Array();// 用来存储前台已经显示的匹配人的位置
+var intersect=true;//判断是否跟所有的圆都不相交，true为相交，false为不相交
 /**
  * 叶夷 2017.09.14 匹配人头像静态情况下的位置放置 1.随机找到一个(x,y)点，这个点必须在装匹配人列表的范围
  * 2.然后和存在的所有匹配人头像对比是否相交 3.如果相交则x++,x到达范围则y++,直到找到一个不会相交的点
  */
-function setMUPosition(i,muNode,isChange){
+function setMUPosition(i,muNode){
 	var muNodeWidth=muNode.width();
 	var radius=muNodeWidth/2;// 这是半径
 	
@@ -762,32 +771,30 @@ function setMUPosition(i,muNode,isChange){
 	var matchUserContainerXEnd=headerContainer.width()-radius-10;// 到屏幕留出10的空隙结束
 	var matchUserContainerYStart=radius+5;// y轴从5开始，给留出一点空隙
 	var matchUserContainerYEnd=headerContainer.height()-radius-5;// y轴结束的范围给留出一点空隙
-	// 1.1 在随机中设置几个特殊情况
-	if(i<5){// 第一个尽量往中间靠拢
-		var betweenX=(matchUserContainerXEnd-matchUserContainerXStart)/8;// 往中间靠拢的值
-		var betweenY=(matchUserContainerYEnd-matchUserContainerYStart)/8;// 往中间靠拢的值
-		matchUserContainerXStart=headerContainer.width()/2+radius+betweenX;// 开始位置往中间靠拢
-		matchUserContainerXEnd=headerContainer.width()-radius-10-betweenX;
-		matchUserContainerYStart=radius+5+betweenY;
-		matchUserContainerYEnd=headerContainer.height()-radius-5-betweenY;
-	}
 	
 	// 2.在范围内随机取点
 	var x,y;
 	x=parseInt(Math.random()*(matchUserContainerXEnd-matchUserContainerXStart))+matchUserContainerXStart;
 	y=parseInt(Math.random()*(matchUserContainerYEnd-matchUserContainerYStart))+matchUserContainerYStart;
 	
-	/*
-	 * if(i==0){
-	 * x=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
-	 * y=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; }
-	 */
-	
+	var xMiddle,yMiddle;
+	if(i==0){
+		xMiddle=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
+		yMiddle=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; 
+		x=parseInt(Math.random()*10)+(xMiddle-5);
+		y=parseInt(Math.random()*10)+(yMiddle-5);
+	}else if(i<4){
+		xMiddle=muPositionArray[0].getX()-muPositionArray[0].getRadius();
+		yMiddle=muPositionArray[0].getY()-muPositionArray[0].getRadius(); 
+		x=parseInt(Math.random()*10)+(xMiddle-5);
+		y=parseInt(Math.random()*10)+(yMiddle-5);
+	}
+	 
 	// 3.然后和存在的所有匹配人头像对比是否相交
 	for(var j=matchUserContainerYStart;j<=matchUserContainerYEnd;j++){
 		var isBreak=false;
 		for(var i=matchUserContainerXStart;i<=matchUserContainerXEnd;i++){
-			var intersect=isIntersect(x,y,radius);
+			intersect=isIntersect(x,y,radius);
 			if(!intersect){// 不相交
 				muPositionArray.push(muPosition(x, y, radius));
 				isBreak=true;
@@ -811,18 +818,14 @@ function setMUPosition(i,muNode,isChange){
 	// 4.获得了不会相交的点之后,计算出top和left值
 	var muNodeTop=y-radius;
 	var muNodeLeft=x-radius;
-	if(isChange){
-		animateForMu(muNode, muNodeLeft+"px",muNodeTop+"px", aniSecond* 0.4);
-	}else{
-		muNode.css("top",muNodeTop);
-		muNode.css("left",muNodeLeft);
-	}
+	muNode.css("top",muNodeTop);
+	muNode.css("left",muNodeLeft);
 }
 /**
  * 叶夷 2017.09.14 判断是否相交，true相交，false不相交
  */
 function isIntersect(x,y,radius){
-	var intersect=false;// 相交为true;不相交为false
+	var isIntersect=false;// 相交为true;不相交为false
 	if(muPositionArray.length>0){
 		for(var index in muPositionArray){
 			var xForContrast=muPositionArray[index].getX();// 用来对比的x点
@@ -831,12 +834,12 @@ function isIntersect(x,y,radius){
 			
 			if(Math.sqrt(Math.pow((x- xForContrast), 2)
 					+ Math.pow((y - yForContrast), 2)) <= (radius + radiusForContrast)){// 三角形两条直角边的和的开平方<斜边，则相交，正好放在相切的位置
-				intersect=true;
+				isIntersect=true;
 				break;
 			}
 		}
 	}
-	return intersect;
+	return isIntersect;
 }
 
 /** 定义一个匹配人位置类 x,y,radius */
@@ -887,7 +890,7 @@ function muAddImg(i,matchedUserArr,muNode){
 		muNode=$(".mu").eq(i);
 	}
 	
-	muNowData.push(muNode);
+	//muNowData.push(muNode);
 }
 
 /** 2017.07.15 叶夷 对匹配人排名改变重新进行位置计算 */
