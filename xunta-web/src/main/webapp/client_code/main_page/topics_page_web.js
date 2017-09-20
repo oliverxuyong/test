@@ -733,25 +733,8 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			muAddImg(i,matchedUserArr,muNode);
 		}
 	} else {// 用户在操作过程中匹配人列表发生改变
-		// var i = 0;
-
-		// 2017.07.05 叶夷 一一对比之后开始将排名改变的用户动画
-		// circleAnimation(i, matchedUserArr);
 		
-		// 2017.07.15 叶夷 对匹配人排名改变重新进行位置计算
-		// againSetMUPosition(i,matchedUserArr);
 		
-		muPositionArray.splice(0, muPositionArray.length);// 先把数组清空
-		for (var m = 0; m < matchedUserArr.length; m++) {
-			var muId=matchedUserArr[m].getMpId();// 获得匹配人列表的匹配人id,这是测试数据版
-			// var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
-			var muNode=$("#mu"+muId);// 这是已经放在页面的匹配人头像div
-			muNode.find("img").remove();
-			
-			muAddImg(m,matchedUserArr,muNode);
-			var isChange=true;
-			setMUPosition(m,muNode);
-		}
 	}
 }
 
@@ -771,6 +754,15 @@ function setMUPosition(i,muNode){
 	var matchUserContainerXEnd=headerContainer.width()-radius-10;// 到屏幕留出10的空隙结束
 	var matchUserContainerYStart=radius+5;// y轴从5开始，给留出一点空隙
 	var matchUserContainerYEnd=headerContainer.height()-radius-5;// y轴结束的范围给留出一点空隙
+	// 1.1 在随机中设置几个特殊情况
+	if(i<5){// 第一个尽量往中间靠拢
+		var betweenX=(matchUserContainerXEnd-matchUserContainerXStart)/8;// 往中间靠拢的值
+		var betweenY=(matchUserContainerYEnd-matchUserContainerYStart)/8;// 往中间靠拢的值
+		matchUserContainerXStart=headerContainer.width()/2+radius+betweenX;// 开始位置往中间靠拢
+		matchUserContainerXEnd=headerContainer.width()-radius-10-betweenX;
+		matchUserContainerYStart=radius+5+betweenY;
+		matchUserContainerYEnd=headerContainer.height()-radius-5-betweenY;
+	}
 	
 	// 2.在范围内随机取点
 	var x,y;
@@ -781,11 +773,6 @@ function setMUPosition(i,muNode){
 	if(i==0){
 		xMiddle=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
 		yMiddle=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; 
-		x=parseInt(Math.random()*10)+(xMiddle-5);
-		y=parseInt(Math.random()*10)+(yMiddle-5);
-	}else if(i<4){
-		xMiddle=muPositionArray[0].getX()-muPositionArray[0].getRadius();
-		yMiddle=muPositionArray[0].getY()-muPositionArray[0].getRadius(); 
 		x=parseInt(Math.random()*10)+(xMiddle-5);
 		y=parseInt(Math.random()*10)+(yMiddle-5);
 	}
@@ -890,7 +877,7 @@ function muAddImg(i,matchedUserArr,muNode){
 		muNode=$(".mu").eq(i);
 	}
 	
-	//muNowData.push(muNode);
+	muNowData.push(muNode);
 }
 
 /** 2017.07.15 叶夷 对匹配人排名改变重新进行位置计算 */
