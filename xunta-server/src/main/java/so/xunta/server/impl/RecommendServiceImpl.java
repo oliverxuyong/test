@@ -168,7 +168,7 @@ public class RecommendServiceImpl implements RecommendService {
 			
 			//step 1
 			Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
-			logger.info("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了新状态");
+			logger.info("上次更新后有"+userUpdateStatusMap.size()+"个相关用户需要更新");
 			
 			
 			//step 2
