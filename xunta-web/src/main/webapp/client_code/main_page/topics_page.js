@@ -1,9 +1,9 @@
 function showWebsocketStatus(OnOrClosed) {
 	var onlineofflineimgE = $("#showonlineoffline img");
 	if (OnOrClosed == "ws_on") {
-		onlineofflineimgE.attr("src", "../image/signal-orange.png");
+		onlineofflineimgE.attr("src", "../image/dot-green.png");
 	} else {
-		onlineofflineimgE.attr("src", "../image/signal-gray.png");
+		onlineofflineimgE.attr("src", "../image/dot-gray.png");
 	}
 }
 

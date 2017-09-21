@@ -540,7 +540,7 @@ function addMyCp(cpid,text){
 	
 		// 随时在我的标签后面加上“+”
 		$("#addtag").remove();
-		var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+myTagHeight+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
+		var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+(myTagHeight-2)+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
 		myTagContainer.append(addTag);
 	
 		// 装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
