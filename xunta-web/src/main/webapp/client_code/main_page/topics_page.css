@@ -17,13 +17,13 @@
 
 #showonlineoffline {
 	position: absolute;
-	left:33px;
-	margin-top:10px;
+	left:90px;
+	margin-top:58px;
 	float:left;
 }
 
 #showonlineoffline>img{
-	height: 17px; width:13px;
+	height: 17px; width:17px;
 }
 
 #showouseroprate{
@@ -56,7 +56,8 @@
 	text-align: center;
 	//height: 22px;
 	font-size: 1em;
-	background-color:#f9f8f9;
+	//background-color:#c3c3c3;
+	color:#a2a2a2;
 }
 
 #alterUserimage {
