@@ -30,15 +30,15 @@ public class WolfThreadExecutor extends ThreadPoolExecutor{
 	@Override
 	protected void afterExecute(Runnable r, Throwable t) {
 		super.afterExecute(r, t);
-		int activeTaskCount = this.getActiveCount();
-		int maxTaskCount = this.getMaximumPoolSize();
-		if(activeTaskCount<maxTaskCount){
-			List<Runnable> tasks = pendingTaskQueue.getTaskList(this.getQueue().size()*(maxTaskCount-activeTaskCount));
+		int pendingTaskCount = this.getQueue().size();
+		int queueCpacity = this.getQueue().remainingCapacity();
+		if(pendingTaskCount < (queueCpacity/2)){
+			List<Runnable> tasks = pendingTaskQueue.getTaskList(queueCpacity/2);
 			for(Runnable task:tasks){
 				logger.info("线程池空闲，执行搁置任务");
 				recommendTaskPool.execute(task);
 			}
-		}
+		}		
 	}
 	
 }
