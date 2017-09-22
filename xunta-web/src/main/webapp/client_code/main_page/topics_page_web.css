@@ -31,6 +31,15 @@ width:100%;
 	
 }
 
+#showatloaded #background-rightbar{
+	position:absolute;
+	right:0;
+	bottom:0;
+	height:100%;
+	width: 20px;
+	z-index: 999;
+}
+
 .topic_list {
 	margin-top: 120px;
 	margin-right: 10px;
@@ -379,7 +388,7 @@ width:100%;
 	//opacity:0.3;
 	//background-color:#fffff0;
 		//filter:Alpha(opacity=50);
-	background-color:rgba(255,255,255,0.3);
+	
 	text-shadow:#000000 0 0 10px;
 	color:#ffffff;
 	}
@@ -391,6 +400,7 @@ width:100%;
 	//background-size:100% auto;
 	font-family:'微软雅黑';
 	border-radius:50%; 
+	background-color:rgba(255,255,255,0.3);
 	//border:1px solid #e5efff;
 	//FILTER:DropShadow(Color=#808080, OffX=5, OffY=5, Positive=1);
 	}
