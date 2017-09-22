@@ -379,7 +379,7 @@ width:100%;
 	//opacity:0.3;
 	//background-color:#fffff0;
 		//filter:Alpha(opacity=50);
-	background-color:rgba(255,255,255,0.3);
+	
 	text-shadow:#000000 0 0 10px;
 	color:#ffffff;
 	}
@@ -391,6 +391,7 @@ width:100%;
 	//background-size:100% auto;
 	font-family:'微软雅黑';
 	border-radius:50%; 
+	background-color:rgba(255,255,255,0.3);
 	//border:1px solid #e5efff;
 	//FILTER:DropShadow(Color=#808080, OffX=5, OffY=5, Positive=1);
 	}
