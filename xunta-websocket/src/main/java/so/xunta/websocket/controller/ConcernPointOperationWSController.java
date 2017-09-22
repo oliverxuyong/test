@@ -18,6 +18,7 @@ import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.persist.CpChoiceDetailDao;
 import so.xunta.server.CancelOneSelectedCP;
 import so.xunta.server.CpChoiceService;
+import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SelectOneNewCPService;
 import so.xunta.server.SocketService;
@@ -43,6 +44,8 @@ public class ConcernPointOperationWSController {
 	private RecommendTaskPool recommendTaskPool;
 	@Autowired
 	private RecommendService recommendService;
+	@Autowired
+	private RecommendPushService recommendPushService;
 	
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1102-1")
@@ -66,7 +69,7 @@ public class ConcernPointOperationWSController {
 		cpList.add(cpid+"");
 		recommendService.signCpsPresented(uid+"", cpList);
 		
-		RecommendPushTask recommendPushTask = new RecommendPushTask(recommendService,uid+"",cpid+"",socketService);
+		RecommendPushTask recommendPushTask = new RecommendPushTask(recommendService,recommendPushService,uid+"",cpid+"",socketService);
 		recommendTaskPool.execute(recommendPushTask);
 		
 		if(cpChoiceDetailDO !=null){

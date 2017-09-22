@@ -81,14 +81,15 @@ public class U2cDaoImpl implements U2cDao {
 			jedis.close();
 		}		
 	}
-
+	
+	/**给推荐CP列表中已选的CP值为一个很大的负数，就算再加也不会产生影响	*/
 	@Override
 	public void setUserCpsPresented(String uid, List<String> cpIds) {
 		Jedis jedis=null;
 		uid = keyPrefix + uid;
 		Map<String,Double> cps = new HashMap<String,Double>();
 		for(String cpId:cpIds){
-			cps.put(cpId, -Double.MAX_VALUE);//给传入CP的score设为很大的一个负数，使之排到末尾，就算后面再被加也没事
+			cps.put(cpId, -Double.MAX_VALUE);
 		}
 		try {
 			jedis = redisUtil.getJedis();

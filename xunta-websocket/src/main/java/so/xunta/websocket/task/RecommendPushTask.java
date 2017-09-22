@@ -12,6 +12,7 @@ import org.springframework.web.socket.WebSocketSession;
 import so.xunta.beans.PushMatchedUserDTO;
 import so.xunta.beans.PushRecommendCpDTO;
 import so.xunta.beans.RecommendPushDTO;
+import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
@@ -20,14 +21,16 @@ import so.xunta.websocket.echo.EchoWebSocketHandler;
 public class RecommendPushTask implements Runnable{
 	private SocketService socketService;
 	private RecommendService recommendService;	
+	private RecommendPushService recommendPushService;
 	
 	private String cpId;
 	private String userId;
 	
 	Logger logger =Logger.getLogger(RecommendPushTask.class);
 	
-	public RecommendPushTask(RecommendService recommendService,String userId,String cpId, SocketService socketService) {
+	public RecommendPushTask(RecommendService recommendService,RecommendPushService recommendPushService,String userId,String cpId, SocketService socketService) {
 		this.recommendService=recommendService;
+		this.recommendPushService = recommendPushService;
 		this.userId=userId;
 		this.cpId=cpId;
 		this.socketService=socketService;
@@ -46,17 +49,22 @@ public class RecommendPushTask implements Runnable{
 				if(userSession==null){
 					continue;
 				}
-				RecommendPushDTO recommendPushDTO = recommendService.updateU2C(uid);
-				List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
-				if(pushMatchedUserDTOs!=null){
-					logger.info("给id为”"+uid+"“ 的用户产生了MatchedUsers推送");
-					pushChangedMatchedUsers(pushMatchedUserDTOs,userSession);
-				}
 				
-				List<PushRecommendCpDTO> pushRecommendCpDTOs = recommendPushDTO.getPushMatchedCPs();
-				if(pushRecommendCpDTOs!=null){
-					logger.info("给id为”"+uid+"“ 的用户产生了CP推送,推送了 "+pushRecommendCpDTOs.size()+" 个");
-					pushRecommendCps(pushRecommendCpDTOs,userSession);
+				recommendPushService.recordStatusBeforeUpdateTask(uid);
+				Boolean is_executed = recommendService.updateU2C(uid);
+				if(is_executed){
+					RecommendPushDTO recommendPushDTO = recommendPushService.generatePushDataAfterUpdateTask(uid);
+					List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
+					if(pushMatchedUserDTOs!=null){
+						logger.info("给id为”"+uid+"“ 的用户产生了MatchedUsers推送");
+						pushChangedMatchedUsers(pushMatchedUserDTOs,userSession);
+					}
+					
+					List<PushRecommendCpDTO> pushRecommendCpDTOs = recommendPushDTO.getPushMatchedCPs();
+					if(pushRecommendCpDTOs!=null){
+						logger.info("给id为”"+uid+"“ 的用户产生了CP推送,推送了 "+pushRecommendCpDTOs.size()+" 个");
+						pushRecommendCps(pushRecommendCpDTOs,userSession);
+					}
 				}
 			}
 		}else{

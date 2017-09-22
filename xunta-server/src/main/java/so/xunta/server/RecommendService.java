@@ -3,7 +3,6 @@ package so.xunta.server;
 import java.util.List;
 import java.util.Set;
 
-import so.xunta.beans.RecommendPushDTO;
 import so.xunta.beans.User;
 
 public interface RecommendService {
@@ -14,6 +13,10 @@ public interface RecommendService {
 	 * 记录任务
 	 * 在用户选中或取消一个CP后率先触发
 	 * 记录用户选择或删除一个CP后U2U的变化状态
+	 * @param uid：操作用户id
+	 * @param cpid：用户选择的cpid
+	 * @param selectType:“Y/N” 选中或取消
+	 * @return 此次操作后需要触发更新任务的关联用户id
 	 * */
 	public Set<String> recordU2UChange(String uid, String cpid, int selectType);
 	
@@ -21,8 +24,10 @@ public interface RecommendService {
 	 * 更新任务
 	 * 在用户上线，请求一组CP列表后，和选中或取消一个CP的纪录任务后触发
 	 * 通过用户的U2U变化状态更新推荐列表
+	 * @param uid：需要更新的用户id
+	 * @return：更新是否成功执行，是为true，否为false
 	 * */
-	public RecommendPushDTO updateU2C(String uid);
+	public Boolean updateU2C(String uid);
 
 	/**
 	 * 用户每次上线的初始化任务，包括
@@ -36,4 +41,9 @@ public interface RecommendService {
 	public void syncLastUpdateTime(User u);
 	
 	public void signCpsPresented(String uid,List<String> pushedCpIds);
+	
+	/**
+	 * 检查用户的update任务当前是否可执行
+	 * */
+	public Boolean ifUpdateExecutable(String uid);
 }

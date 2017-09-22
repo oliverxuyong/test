@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.websocket.task.RecommendCancelCpTask;
@@ -21,6 +22,9 @@ public class PendingTaskQueue {
 	public static final String RECOMMEND_UPDARW = "update";
 	@Autowired
 	private RecommendService recommendService;
+	@Autowired
+	private RecommendPushService recommendPushService;
+	
 	@Autowired
 	private SocketService socketService;
 	private List<String> taskSerializeList = Collections.synchronizedList(new LinkedList<String>());
@@ -54,7 +58,7 @@ public class PendingTaskQueue {
 			case RECOMMEND_PUSH:
 				String userId1 = parms[1];
 				String cpId1 = parms[2];
-				RecommendPushTask t1= new RecommendPushTask(recommendService,userId1,cpId1,socketService);
+				RecommendPushTask t1= new RecommendPushTask(recommendService,recommendPushService,userId1,cpId1,socketService);
 				returnTasks.add(t1);
 				break;
 			case RECOMMEND_CANCELCP:
