@@ -1,5 +1,6 @@
 package so.xunta.server;
 
+import java.util.List;
 import java.util.Set;
 
 import so.xunta.beans.RecommendPushDTO;
@@ -33,4 +34,6 @@ public interface RecommendService {
 	 * 将用户的lastUpdateTime从Redis同步到数据库中
 	 * */
 	public void syncLastUpdateTime(User u);
+	
+	public void signCpsPresented(String uid,List<String> pushedCpIds);
 }

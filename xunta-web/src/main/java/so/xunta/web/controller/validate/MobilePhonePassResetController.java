@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,8 @@ public class MobilePhonePassResetController {
 	
 	@Autowired
 	LoggerService loggerService;
+	
+	Logger logger = Logger.getLogger(MobilePhonePassResetController.class);
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
@@ -50,7 +53,7 @@ public class MobilePhonePassResetController {
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/json");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		String password = request.getParameter("newpasswd");
 		String phonenumber = request.getParameter("phonenumber");

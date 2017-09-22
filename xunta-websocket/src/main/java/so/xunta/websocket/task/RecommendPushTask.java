@@ -7,8 +7,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
 import so.xunta.beans.PushMatchedUserDTO;
@@ -18,11 +16,9 @@ import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
 
-@Component
+
 public class RecommendPushTask implements Runnable{
-	@Autowired
 	private SocketService socketService;
-	@Autowired
 	private RecommendService recommendService;	
 	
 	private String cpId;
@@ -30,8 +26,15 @@ public class RecommendPushTask implements Runnable{
 	
 	Logger logger =Logger.getLogger(RecommendPushTask.class);
 	
+	public RecommendPushTask(RecommendService recommendService,String userId,String cpId, SocketService socketService) {
+		this.recommendService=recommendService;
+		this.userId=userId;
+		this.cpId=cpId;
+		this.socketService=socketService;
+	}
 	@Override
 	public void run() {
+		logger.info("==============================RecommendPushTask===================================");
 		if(userId!=null &&cpId!=null){
 			Set<String> pendingPushUids = recommendService.recordU2UChange(userId,cpId,RecommendService.SELECT_CP);
 			
@@ -39,17 +42,21 @@ public class RecommendPushTask implements Runnable{
 			pendingPushUids.add(userId);
 			filterOffLineUsers(pendingPushUids);
 			for(String uid:pendingPushUids){
+				WebSocketSession userSession = EchoWebSocketHandler.getUserById(Long.valueOf(uid));
+				if(userSession==null){
+					continue;
+				}
 				RecommendPushDTO recommendPushDTO = recommendService.updateU2C(uid);
 				List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
 				if(pushMatchedUserDTOs!=null){
 					logger.info("给id为”"+uid+"“ 的用户产生了MatchedUsers推送");
-					pushChangedMatchedUsers(pushMatchedUserDTOs,EchoWebSocketHandler.getUserById(Long.valueOf(uid)));
+					pushChangedMatchedUsers(pushMatchedUserDTOs,userSession);
 				}
 				
 				List<PushRecommendCpDTO> pushRecommendCpDTOs = recommendPushDTO.getPushMatchedCPs();
 				if(pushRecommendCpDTOs!=null){
 					logger.info("给id为”"+uid+"“ 的用户产生了CP推送,推送了 "+pushRecommendCpDTOs.size()+" 个");
-					pushRecommendCps(pushRecommendCpDTOs,EchoWebSocketHandler.getUserById(Long.valueOf(uid)));
+					pushRecommendCps(pushRecommendCpDTOs,userSession);
 				}
 			}
 		}else{
@@ -87,14 +94,24 @@ public class RecommendPushTask implements Runnable{
 	}
 	
 	private void pushRecommendCps(List<PushRecommendCpDTO> pushRecommendCpDTOs,WebSocketSession session){
+		if(session == null){
+			logger.info("用户已下线，不再推送");
+			return;
+		}
 		JSONArray cpWrap = new JSONArray();
+	//	List<String> pushedCpIds = new LinkedList<String>();
 		for(PushRecommendCpDTO pushRecommendCp:pushRecommendCpDTOs){
+		//	pushedCpIds.add(pushRecommendCp.getCpId());
+			
 			JSONObject pushMatchedUserJson = new JSONObject();
 			pushMatchedUserJson.put("cpid", pushRecommendCp.getCpId());
 			pushMatchedUserJson.put("cptext", pushRecommendCp.getCpText());
 			pushMatchedUserJson.put("howmanypeople_selected", pushRecommendCp.getSelectPepoleNum());
 			cpWrap.put(pushMatchedUserJson);
 		}
+		// 暂时推送后不将cp置为显示
+		//recommendService.signPushedCps();
+		
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "2105-1");
 		returnJson.put("interface_name", "PushCP");
@@ -106,18 +123,8 @@ public class RecommendPushTask implements Runnable{
 		return cpId;
 	}
 
-	public void setCpId(String cpId) {
-		this.cpId = cpId;
-	}
-
 	public String getUserId() {
 		return userId;
 	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	
-
 
 }

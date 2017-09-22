@@ -55,7 +55,7 @@ public class CpChoiceDaoImpl implements CpChoiceDao {
 		Session session = sessionFactory.getCurrentSession();
 		String hql="SELECT cpc.cp_id FROM CpChoiceDO as cpc WHERE cpc.user_id=:userid AND cpc.create_time<:lastUpdateTime ";
 		@SuppressWarnings("unchecked")
-		List<BigInteger> result = (List<BigInteger>)session.createQuery(hql).setLong("userid", userid).setDate("lastUpdateTime", lastUpdateTime).list();
+		List<BigInteger> result = (List<BigInteger>)session.createQuery(hql).setLong("userid", userid).setTimestamp("lastUpdateTime", lastUpdateTime).list();
 	
 		return result;
 	}

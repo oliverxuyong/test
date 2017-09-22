@@ -73,7 +73,7 @@ public class RecommendServiceImpl implements RecommendService {
 	@Override
 	public Set<String> recordU2UChange(String uid, String cpid, int selectType) {
 		//Map<Long,List<Long>> relate_user_matched_uids_previous = new HashMap<Long,List<Long>>();//未改变前和我相关的在线用户们的匹配列表	
-		logger.info("用户:"+uid+" 的记录线程启动");
+		logger.info("用户:"+uid+" 选择了CP："+cpid+"  的记录线程启动");
 		long startTime = System.currentTimeMillis();
 	
 		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid);
@@ -116,7 +116,7 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		
 		long endTime = System.currentTimeMillis();
-		logger.info("用户:"+uid+" 的记录任务完成"+"\t 选中相同CP的用户数: "+ 
+		logger.info("用户:"+uid+" 选择了CP："+cpid+"  的记录任务完成"+"\t 选中相同CP的用户数: "+ 
 						usersSelectedSameCp.size() +"\t 其他产生推荐的用户数: "+ relatedUsers.size() +"\n 执行时间: "+
 						(endTime-startTime)+"毫秒");
 		return pendingPushUids;
@@ -139,91 +139,100 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public RecommendPushDTO updateU2C(String uid) {
-		if(updateTaskQueue.contains(uid)){
-			logger.info("用户:"+uid+" 的上一次更新任务还没结束，本次任务丢弃");
-			return new RecommendPushDTO();
-		}else{
-			updateTaskQueue.add(uid);
-		}
-		logger.info("用户:"+uid+" 的更新任务启动");
-		long startTime = System.currentTimeMillis();
-		String lastUpdateTimeStr = userLastUpdateTimeDao.getUserLastUpdateTime(uid);
-		Timestamp lastUpdateTime = Timestamp.valueOf(lastUpdateTimeStr);
-		long lastUpadteTimeLong = lastUpdateTime.getTime();
-		final long MIN_INTERVAL = 1000L;
-		if((startTime-lastUpadteTimeLong) < MIN_INTERVAL){
-			logger.info("离上一次更新间隔过短，任务放弃");
-			updateTaskQueue.remove(uid);
-			return new RecommendPushDTO();
-		}
-		
-		//记录更新前用户的匹配用户列表和推荐CP列表
-		final int U_TOP_NUM = 10;  //前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
-		final int U_LISTEN_NUM = 10;  //匹配列表长度
-		final int CP_THRESHOLD = 10; //如果一个cp原先推荐值从CP_LISTEN_NUM名之外一下跳到前CP_THRESHOLD的位置，就推送
-		final int CP_LISTEN_NUM = 10;		
-		List<Long> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);
-		List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
-		
-		//step 1
-		Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
-		logger.info("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了新状态");
-		
-		
-		//step 2
-		for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
-			String changedUid = changedUserEntry.getKey();
-			double uDeltaValue = Double.valueOf(changedUserEntry.getValue());
-			Map<BigInteger, String> newCps= cpChoiceDetailDao.getOperatedCpAfterTime(Long.valueOf(changedUid), lastUpdateTime);
-			
-			if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
-				updateU2CAfterLastUpdated(newCps, uid, changedUid);
+		try {
+			if(updateTaskQueue.contains(uid)){
+				logger.info("用户:"+uid+" 的上一次更新任务还没结束，本次任务丢弃");
+				return new RecommendPushDTO();
 			}else{
-				u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
-				//推荐CP列表中已选的CP值为一个很大的负数，就算再加也不会产生影响
-				updateU2CAfterLastUpdated(newCps, uid, changedUid);
-				updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), lastUpdateTime, uDeltaValue);
+				updateTaskQueue.add(uid);
 			}
-		}
-		
-		//step 3
-		u2uUpdateStatusDao.deleteU2uUpdateStatus(uid);
-		userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Timestamp(System.currentTimeMillis()).toString());
-		long endTime = System.currentTimeMillis();
-		
-		RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
-		List<Long> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
-		if((matched_uids_previous.size() < U_LISTEN_NUM) && (matched_uids_after.size() > matched_uids_previous.size())){
-			logger.info("原匹配列表还未达到指定长度并且新匹配列表有新用户产生，直接推送");
-			generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
-		}else{
-			for(int i=0;i<(matched_uids_previous.size()>U_TOP_NUM ? U_TOP_NUM : matched_uids_previous.size());i++){
-				if(!matched_uids_previous.get(i).equals(matched_uids_after.get(i))){
-					logger.info("前"+matched_uids_previous.size()+"位排名发生了变化,推送");
-					generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
-					break;
+			logger.info("用户:"+uid+" 的更新任务启动");
+			long startTime = System.currentTimeMillis();
+			String lastUpdateTimeStr = userLastUpdateTimeDao.getUserLastUpdateTime(uid);
+			Timestamp lastUpdateTime = Timestamp.valueOf(lastUpdateTimeStr);
+			long lastUpadteTimeLong = lastUpdateTime.getTime();
+			final long MIN_INTERVAL = 1000L;
+			if((startTime-lastUpadteTimeLong) < MIN_INTERVAL){
+				logger.info("离上一次更新间隔过短，任务放弃");
+				updateTaskQueue.remove(uid);
+				return new RecommendPushDTO();
+			}
+			
+			//记录更新前用户的匹配用户列表和推荐CP列表
+			final int U_TOP_NUM = 10;  //前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
+			final int U_LISTEN_NUM = 10;  //匹配列表长度
+			final int CP_THRESHOLD = 10; //如果一个cp原先推荐值从CP_LISTEN_NUM名之外一下跳到前CP_THRESHOLD的位置，就推送
+			final int CP_LISTEN_NUM = 10;		
+			List<Long> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);
+			List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
+			
+			//step 1
+			Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
+			logger.info("上次更新后有"+userUpdateStatusMap.size()+"个相关用户需要更新");
+			
+			
+			//step 2
+			for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
+				String changedUid = changedUserEntry.getKey();
+				double uDeltaValue = Double.valueOf(changedUserEntry.getValue());
+				Map<BigInteger, String> newCps= cpChoiceDetailDao.getOperatedCpAfterTime(Long.valueOf(changedUid), lastUpdateTime);
+				
+				if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
+					updateU2CAfterLastUpdated(newCps, uid, changedUid);
+				}else{
+					u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
+					//推荐CP列表中已选的CP值为一个很大的负数，就算再加也不会产生影响
+					updateU2CAfterLastUpdated(newCps, uid, changedUid);
+					updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), lastUpdateTime, uDeltaValue);
 				}
 			}
-		}
-		
-		List<String> recommend_cps_after = getRecommendCPs(uid, CP_THRESHOLD);
-		for(String cpid:recommend_cps_after){
-			if(recommend_cps_previous.contains(cpid)){
-				continue;
-			}
-			ConcernPointDO cp = concernPointDao.getConcernPoint(BigInteger.valueOf(Long.valueOf(cpid)));
-			PushRecommendCpDTO pushRecommendCp = new PushRecommendCpDTO();
-			pushRecommendCp.setCpId(cpid);
-			pushRecommendCp.setCpText(cp.getText());
-			pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid));
 			
-			recommendPushDTO.addPushMatchedCPs(pushRecommendCp);
-			logger.info("产生推送cp："+cp.getText());
-		}
+			//step 3
+			u2uUpdateStatusDao.deleteU2uUpdateStatus(uid);
+			userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Timestamp(System.currentTimeMillis()).toString());
+
+			
+			RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
+			List<Long> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
+			if((matched_uids_previous.size() < U_LISTEN_NUM) && (matched_uids_after.size() > matched_uids_previous.size())){
+				logger.info("原匹配列表还未达到指定长度并且新匹配列表有新用户产生，直接推送");
+				generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
+			}else{
+				for(int i=0;i<(matched_uids_previous.size()>U_TOP_NUM ? U_TOP_NUM : matched_uids_previous.size());i++){
+					if(!matched_uids_previous.get(i).equals(matched_uids_after.get(i))){
+						logger.info("前"+matched_uids_previous.size()+"位排名发生了变化,推送");
+						generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
+						break;
+					}
+				}
+			}
+			
+			List<String> recommend_cps_after = getRecommendCPs(uid, CP_THRESHOLD);
+			List<String> pushedCpIds = new ArrayList<String>();
+			for(String cpid:recommend_cps_after){
+				if(recommend_cps_previous.contains(cpid)){
+					continue;
+				}
+				ConcernPointDO cp = concernPointDao.getConcernPoint(BigInteger.valueOf(Long.valueOf(cpid)));
+				PushRecommendCpDTO pushRecommendCp = new PushRecommendCpDTO();
+				pushRecommendCp.setCpId(cpid);
+				pushRecommendCp.setCpText(cp.getText());
+				pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid));
+				
+				recommendPushDTO.addPushMatchedCPs(pushRecommendCp);
+				logger.info("产生推送cp："+cp.getText());
+				pushedCpIds.add(cpid);
+			}
 		
-		updateTaskQueue.remove(uid);
-		logger.info("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
-		return recommendPushDTO;
+			long endTime = System.currentTimeMillis();
+			logger.info("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
+			return recommendPushDTO;
+		} catch (Exception e) {
+			logger.error("用户:"+uid+"更新任务出错："+e.getMessage(),e);
+			return new RecommendPushDTO();
+		}finally{
+			updateTaskQueue.remove(uid);
+		}
 	}
 
 	/**
@@ -260,14 +269,26 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public void syncLastUpdateTime(User u) {
+		if(u==null){
+			logger.error("用户为空，同步更新时间失败");
+			return;
+		}
 		logger.info("用户: "+ u.getName()+" 下线，将更新时间同步到数据库");
 		Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(u.getUserId().toString()));
 		u.setLast_update_time(lastUpdateTime);
 		userDao.updateUser(u);
 	}
 	
+	
+	@Override
+	public void signCpsPresented(String uid, List<String> pushedCpIds) {
+		if(pushedCpIds.size()>0){
+			u2cDao.setUserCpsPresented(uid, pushedCpIds);
+		}		
+	}
+
 	private void updateU2CAfterLastUpdated(Map<BigInteger, String> newCps, String uid, String changedUid){
-		logger.info("新选CP更新：关联用户 "+changedUid);
+		logger.info("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
 		for(Entry<BigInteger, String> selectedCp:newCps.entrySet()){
 			BigInteger selectedCpid = selectedCp.getKey();
 			String is_selected = selectedCp.getValue();

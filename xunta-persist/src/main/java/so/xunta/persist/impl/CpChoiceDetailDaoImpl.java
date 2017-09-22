@@ -36,9 +36,9 @@ public class CpChoiceDetailDaoImpl implements CpChoiceDetailDao {
 	@Override
 	public Map<BigInteger, String> getOperatedCpAfterTime(Long userid, Timestamp lastUpdateTime) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql="SELECT cp_id,is_selected FROM cp_choice_detail WHERE user_id=:userid AND create_time>=:lastUpdateTime GROUP BY cp_id HAVING MAX(create_time) ";
+		String sql="SELECT cp_id,is_selected FROM cp_choice_detail WHERE user_id= :userid AND create_time>= :lastUpdateTime GROUP BY cp_id HAVING MAX(create_time) ";
 		@SuppressWarnings("unchecked")
-		List<Map<String,Object>> result = (List<Map<String,Object>>)session.createSQLQuery(sql).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).setLong("userid", userid).setDate("lastUpdateTime", lastUpdateTime).list();
+		List<Map<String,Object>> result = (List<Map<String,Object>>)session.createSQLQuery(sql).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).setLong("userid", userid).setTimestamp("lastUpdateTime", lastUpdateTime).list();
 		
 		Map<BigInteger, String> returnCP = new HashMap<BigInteger, String>();
 		for(Map<String,Object> resultLine:result){
@@ -52,7 +52,7 @@ public class CpChoiceDetailDaoImpl implements CpChoiceDetailDao {
 		Session session = sessionFactory.getCurrentSession();
 		String sql="SELECT cp_id,is_selected FROM cp_choice_detail WHERE user_id=:userid AND create_time<:lastUpdateTime GROUP BY cp_id HAVING MAX(create_time) AND is_selected='Y' ";
 		@SuppressWarnings("unchecked")
-		List<Map<String,Object>> result = (List<Map<String,Object>>)session.createSQLQuery(sql).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).setLong("userid", userid).setDate("lastUpdateTime", lastUpdateTime).list();
+		List<Map<String,Object>> result = (List<Map<String,Object>>)session.createSQLQuery(sql).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).setLong("userid", userid).setTimestamp("lastUpdateTime", lastUpdateTime).list();
 		
 		List<BigInteger> returnCP = new ArrayList<>();
 		for(Map<String,Object> resultLine:result){

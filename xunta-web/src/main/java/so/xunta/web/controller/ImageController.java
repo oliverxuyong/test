@@ -8,12 +8,14 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class ImageController {
+	Logger logger = Logger.getLogger(ImageController.class);
 	///useravatar/"+newname
 	@RequestMapping(value="/useravatar/{imagename}/{suffix}/image")
 	public void getimage(@PathVariable String imagename,@PathVariable String suffix,HttpServletRequest request,HttpServletResponse response)
@@ -37,9 +39,9 @@ public class ImageController {
 				toClient.write(data); // 输出数据
 				toClient.close();
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}	
 	}

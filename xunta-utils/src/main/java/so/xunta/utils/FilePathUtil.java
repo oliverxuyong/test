@@ -9,7 +9,10 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 public class FilePathUtil {
+	private static Logger logger = Logger.getRootLogger();
 	/**
 	 * @param packagename
 	 *            包名
@@ -79,7 +82,7 @@ public class FilePathUtil {
 					classes.add(Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className));
 				} catch (ClassNotFoundException e) {
 					// log.error("添加用户自定义视图类错误 找不到此类的.class文件");
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 			}
 		}
@@ -94,7 +97,7 @@ public class FilePathUtil {
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 }
