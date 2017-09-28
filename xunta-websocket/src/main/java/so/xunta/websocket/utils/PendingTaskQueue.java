@@ -8,11 +8,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import so.xunta.server.CpShowingService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.websocket.task.RecommendCancelCpTask;
-import so.xunta.websocket.task.RecommendPushTask;
+import so.xunta.websocket.task.SelectCpPushTask;
 import so.xunta.websocket.task.RecommendUpdateTask;
 
 @Component
@@ -24,9 +25,11 @@ public class PendingTaskQueue {
 	private RecommendService recommendService;
 	@Autowired
 	private RecommendPushService recommendPushService;
-	
+	@Autowired
+	private CpShowingService cpShowingService;
 	@Autowired
 	private SocketService socketService;
+	
 	private List<String> taskSerializeList = Collections.synchronizedList(new LinkedList<String>());
 
 	public void addPushTask(String userId,String cpId){
@@ -58,7 +61,7 @@ public class PendingTaskQueue {
 			case RECOMMEND_PUSH:
 				String userId1 = parms[1];
 				String cpId1 = parms[2];
-				RecommendPushTask t1= new RecommendPushTask(recommendService,recommendPushService,userId1,cpId1,socketService);
+				SelectCpPushTask t1= new SelectCpPushTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,socketService);
 				returnTasks.add(t1);
 				break;
 			case RECOMMEND_CANCELCP:

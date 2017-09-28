@@ -18,12 +18,13 @@ import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.persist.CpChoiceDetailDao;
 import so.xunta.server.CancelOneSelectedCP;
 import so.xunta.server.CpChoiceService;
+import so.xunta.server.CpShowingService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SelectOneNewCPService;
 import so.xunta.server.SocketService;
 import so.xunta.websocket.task.RecommendCancelCpTask;
-import so.xunta.websocket.task.RecommendPushTask;
+import so.xunta.websocket.task.SelectCpPushTask;
 import so.xunta.websocket.utils.RecommendTaskPool;
 
 /**
@@ -46,6 +47,8 @@ public class ConcernPointOperationWSController {
 	private RecommendService recommendService;
 	@Autowired
 	private RecommendPushService recommendPushService;
+	@Autowired
+	private CpShowingService cpShowingService;
 	
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1102-1")
@@ -69,8 +72,10 @@ public class ConcernPointOperationWSController {
 		cpList.add(cpid+"");
 		recommendService.signCpsPresented(uid+"", cpList);
 		
-		RecommendPushTask recommendPushTask = new RecommendPushTask(recommendService,recommendPushService,uid+"",cpid+"",socketService);
+		SelectCpPushTask recommendPushTask = new SelectCpPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",socketService);
 		recommendTaskPool.execute(recommendPushTask);
+		
+		
 		
 		if(cpChoiceDetailDO !=null){
 			JSONObject returnJson = new JSONObject();

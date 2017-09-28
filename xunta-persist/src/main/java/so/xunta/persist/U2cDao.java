@@ -18,6 +18,11 @@ public interface U2cDao {
 	public Boolean ifUserCpInited(String uid);
 	
 	/**
+	 * 检查用户的U2C是否足够
+	 * */
+	public Boolean ifNeedReplenish(String uid);
+	
+	/**
 	 * 分数递增地添加CP
 	 * */
 	public double updateUserCpValue(String uid,String cpId, double dScore);

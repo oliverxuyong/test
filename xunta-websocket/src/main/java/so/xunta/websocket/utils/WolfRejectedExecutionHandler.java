@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import so.xunta.websocket.task.RecommendCancelCpTask;
-import so.xunta.websocket.task.RecommendPushTask;
+import so.xunta.websocket.task.SelectCpPushTask;
 import so.xunta.websocket.task.RecommendUpdateTask;
 
 @Component
@@ -20,9 +20,9 @@ public class WolfRejectedExecutionHandler implements RejectedExecutionHandler {
 	@Override
 	public void rejectedExecution(Runnable task, ThreadPoolExecutor executor) {
 		logger.info("线程池已满");
-		if(task instanceof RecommendPushTask){
+		if(task instanceof SelectCpPushTask){
 			logger.info("将1个RecommendPushTask 任务序列化到任务队列，等空闲时再执行");
-			RecommendPushTask recommendPushTask = (RecommendPushTask)task;
+			SelectCpPushTask recommendPushTask = (SelectCpPushTask)task;
 			String uid = recommendPushTask.getUserId();
 			String cpId = recommendPushTask.getCpId();
 			pendingTaskQueue.addPushTask(uid, cpId);

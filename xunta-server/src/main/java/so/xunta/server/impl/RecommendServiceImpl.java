@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import redis.clients.jedis.Tuple;
 import so.xunta.beans.ConcernPointDO;
 import so.xunta.beans.User;
@@ -22,6 +21,7 @@ import so.xunta.persist.C2uDao;
 import so.xunta.persist.ConcernPointDao;
 import so.xunta.persist.CpChoiceDao;
 import so.xunta.persist.CpChoiceDetailDao;
+import so.xunta.persist.InitialCpDao;
 import so.xunta.persist.U2cDao;
 import so.xunta.persist.U2uRelationDao;
 import so.xunta.persist.U2uUpdateStatusDao;
@@ -49,6 +49,8 @@ public class RecommendServiceImpl implements RecommendService {
 	private CpChoiceDao cpChoiceDao;
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private InitialCpDao initialCpDao;
 
 	Logger logger =Logger.getLogger(RecommendServiceImpl.class);
 	
@@ -98,9 +100,11 @@ public class RecommendServiceImpl implements RecommendService {
 		Set<Tuple> relatedUsers=u2uRelationDao.getRelatedUsersByRank(uid, 0, -1);//0表示第一个，-1为倒数第一个，即为获取所有关系用户
 		Set<String> relatedUids = new HashSet<String>();
 		for(Tuple user:relatedUsers){
-			if(user.getScore() > 0){
-				relatedUids.add(user.getElement());
+			if(user.getScore()<=0){
+				break;
 			}
+			relatedUids.add(user.getElement());
+			
 		}
 		Set<String> pendingPushUids = new HashSet<String>();
 		pendingPushUids.addAll(relatedUids);
@@ -217,26 +221,51 @@ public class RecommendServiceImpl implements RecommendService {
 		logger.info("用户: "+ u.getName()+" 初始化推荐参数任务开始");
 		Timestamp lastUpdateTime = u.getLast_update_time();
 		userLastUpdateTimeDao.setUserLastUpdateTime(u.getUserId().toString(), lastUpdateTime.toString());
-		Boolean ifInited = u2cDao.ifUserCpInited(u.getUserId().toString());
+		String uid = u.getUserId().toString();
+		Boolean ifInited = u2cDao.ifUserCpInited(uid);
 		if(!ifInited){
 			logger.info("用户: "+ u.getName()+" U2C列表不存在,初始化列表:");
 			
-			final Long SYSTEM_ADMIN = 1L; 
-			List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator(SYSTEM_ADMIN, 0, 10000);
+			Map<String,Double> userCps= initialCpDao.getInitialCps();
+			u2cDao.updateUserBatchCpValue(uid, userCps);
+		}
+		
+		logger.info("用户: "+ u.getName()+" U2C列表初始化成功！");
+	}
+	
+	@Override
+	public void init(){
+		if(!initialCpDao.ifexist()){
+			logger.info("初始化 Redis InitialCP...");
+			List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator();
 			Map<String,Double> initCpsMap = new HashMap<String,Double>();
+			final Double CP_SCORE = 0.1;//CP初始化推荐分数
 			for(ConcernPointDO cp:initCps){
 				String cpId = cp.getId().toString();
-				Double cpWeight = cp.getWeight().doubleValue();
-				initCpsMap.put(cpId, cpWeight);
+				initCpsMap.put(cpId, CP_SCORE);
 			}
-			u2cDao.updateUserBatchCpValue(u.getUserId().toString(), initCpsMap);
-			
-			logger.info("用户: "+ u.getName()+" U2C列表初始化成功！");
+			initialCpDao.setCps(initCpsMap);
+			logger.info("初始化 Redis InitialCP 完成！");
 		}else{
-			logger.info("用户: "+ u.getName()+" U2C列表已存在");
+			logger.info("===Redis InitialCP存在===");
 		}
 	}
 
+	@Override
+	public void replenish(String uid){
+		if(u2cDao.ifNeedReplenish(uid)){
+			logger.info("用户: "+ uid+"推荐CP数量过少，新添。。。");
+			
+			final int REPLENISH_NUM = 100;//每次补充多少个CP
+			Map<String,Double> replenishCps= initialCpDao.getRandomCps(REPLENISH_NUM);
+			u2cDao.updateUserBatchCpValue(uid,replenishCps);
+			
+			logger.info("用户: "+ uid+" U2C补充成功");
+		}else{
+			logger.info("用户: "+ uid+" U2C数据充足");
+		}
+	}
+	
 	/**
 	 * 将用户的lastUpdateTime从Redis同步到数据库中
 	 * */

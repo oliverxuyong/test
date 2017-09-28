@@ -3,7 +3,6 @@ package so.xunta.persist.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -70,11 +69,7 @@ public class U2cDaoImpl implements U2cDao {
 		uid = keyPrefix + uid;
 		try {
 			jedis = redisUtil.getJedis();
-			for(Entry<String,Double> entry:cps.entrySet()){
-				String cpid = entry.getKey();
-				Double score = entry.getValue();
-				jedis.zincrby(uid, score, cpid);
-			}
+			jedis.zadd(uid, cps,ZAddParams.zAddParams().nx());
 		} catch (Exception e) {
 			logger.error("updateUserBatchCpValue error:", e);
 		}finally{
@@ -116,5 +111,25 @@ public class U2cDaoImpl implements U2cDao {
 			jedis.close();
 		}
 		return ifexist;
+	}
+	
+	@Override
+	public Boolean ifNeedReplenish(String uid){
+		Jedis jedis = null;
+		uid = keyPrefix + uid;
+		final int THRESHOLD = 30;//需要补充的阈值
+		
+		try {
+			jedis = redisUtil.getJedis();
+			int surplus = jedis.zcount(uid, 0, Double.MAX_VALUE).intValue();
+			if(surplus <= THRESHOLD){
+				return true;
+			}
+		} catch (Exception e) {
+			logger.error("ifneedReplenish error:", e);
+		}finally{
+			jedis.close();
+		}
+		return false;
 	}
 }

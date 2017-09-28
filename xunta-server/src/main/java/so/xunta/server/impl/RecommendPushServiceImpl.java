@@ -46,6 +46,11 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 		RecommendPushUtil.getInstance().recordUserRecommendCps(uid, recommend_cps_previous);
 	}
 
+	/**
+	 * 比较更新前后的U2U和U2C排序，
+	 	* 前U_TOP_NUM名的匹配用户如果排位发生了变化或者新增，就推送
+	 	* 如果一个cp原先推荐值从CP_LISTEN_NUM名之外一下跳到前CP_THRESHOLD的位置，就推送
+	 * */
 	@Override
 	public RecommendPushDTO generatePushDataAfterUpdateTask(String uid) {
 		RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
@@ -94,6 +99,9 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 		List<String> matched_uids = new ArrayList<String>();	
 		Set<Tuple> userSet = u2uRelationDao.getRelatedUsersByRank(uid, FIRST_USER_RANK, num-1);
 		for(Tuple userTuple:userSet){
+			if(userTuple.getScore()<=0){
+				break;
+			}
 			String matchedUserid = userTuple.getElement();
 			matched_uids.add(matchedUserid);
 		}
@@ -104,6 +112,9 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 		Set<Tuple> cps= u2cDao.getUserCpsByRank(uid.toString(), 0, num-1);
 		List<String> cpIds=new ArrayList<String>();
 		for(Tuple cp:cps){
+			if(cp.getScore()<=0){
+				break;
+			}
 			String cpid = cp.getElement();
 			cpIds.add(cpid);
 		}
