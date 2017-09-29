@@ -8,7 +8,7 @@ public interface RecommendPushService {
 	public static final int CP_THRESHOLD = 10; //如果一个cp原先推荐值从CP_LISTEN_NUM名之外一下跳到前CP_THRESHOLD的位置，就推送
 	public static final int CP_LISTEN_NUM = 10;	
 	
-	public void recordStatusBeforeUpdateTask(String uid);
+	public void recordStatusBeforeUpdateTask(String uid,int updateType);
 	
-	public RecommendPushDTO generatePushDataAfterUpdateTask(String uid);
+	public RecommendPushDTO generatePushDataAfterUpdateTask(String uid,int updateType);
 }

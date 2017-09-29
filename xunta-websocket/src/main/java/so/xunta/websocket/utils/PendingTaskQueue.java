@@ -12,15 +12,14 @@ import so.xunta.server.CpShowingService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
-import so.xunta.websocket.task.RecommendCancelCpTask;
-import so.xunta.websocket.task.SelectCpPushTask;
+import so.xunta.websocket.task.CpOperationPushTask;
 import so.xunta.websocket.task.RecommendUpdateTask;
 
 @Component
 public class PendingTaskQueue {
-	public static final String RECOMMEND_PUSH = "push";
-	public static final String RECOMMEND_CANCELCP = "cancelCP";
-	public static final String RECOMMEND_UPDARW = "update";
+	private final String RECOMMEND_SELECTCP = "selectCP";
+	private final String RECOMMEND_CANCELCP = "cancelCP";
+	private final String RECOMMEND_UPDARW = "update";
 	@Autowired
 	private RecommendService recommendService;
 	@Autowired
@@ -32,8 +31,8 @@ public class PendingTaskQueue {
 	
 	private List<String> taskSerializeList = Collections.synchronizedList(new LinkedList<String>());
 
-	public void addPushTask(String userId,String cpId){
-		String taskId = RECOMMEND_PUSH+":"+userId+":"+cpId;
+	public void addSelectCPTask(String userId,String cpId){
+		String taskId = RECOMMEND_SELECTCP+":"+userId+":"+cpId;
 		taskSerializeList.add(taskId);
 	}
 	
@@ -58,16 +57,16 @@ public class PendingTaskQueue {
 			String taskId =iterator.next();
 			String[] parms=taskId.split(":");
 			switch(parms[0]){
-			case RECOMMEND_PUSH:
+			case RECOMMEND_SELECTCP:
 				String userId1 = parms[1];
 				String cpId1 = parms[2];
-				SelectCpPushTask t1= new SelectCpPushTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,socketService);
+				CpOperationPushTask t1= new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,RecommendService.SELECT_CP,socketService);
 				returnTasks.add(t1);
 				break;
 			case RECOMMEND_CANCELCP:
 				String userId2 = parms[1];
 				String cpId2 = parms[2];
-				RecommendCancelCpTask t2 = new RecommendCancelCpTask(recommendService,userId2,cpId2);
+				CpOperationPushTask t2 = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId2,cpId2,RecommendService.UNSELECT_CP,socketService);
 				returnTasks.add(t2);
 				break;
 			case RECOMMEND_UPDARW:

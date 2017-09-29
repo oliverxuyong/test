@@ -23,8 +23,7 @@ import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SelectOneNewCPService;
 import so.xunta.server.SocketService;
-import so.xunta.websocket.task.RecommendCancelCpTask;
-import so.xunta.websocket.task.SelectCpPushTask;
+import so.xunta.websocket.task.CpOperationPushTask;
 import so.xunta.websocket.utils.RecommendTaskPool;
 
 /**
@@ -32,7 +31,7 @@ import so.xunta.websocket.utils.RecommendTaskPool;
  * */
 @WebSocketTypeAnnotation
 @Component
-public class ConcernPointOperationWSController {
+public class CpOperationWSController {
 	@Autowired
 	private SocketService socketService;
 	@Autowired
@@ -72,7 +71,7 @@ public class ConcernPointOperationWSController {
 		cpList.add(cpid+"");
 		recommendService.signCpsPresented(uid+"", cpList);
 		
-		SelectCpPushTask recommendPushTask = new SelectCpPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",socketService);
+		CpOperationPushTask recommendPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",RecommendService.SELECT_CP,socketService);
 		recommendTaskPool.execute(recommendPushTask);
 		
 		
@@ -102,7 +101,7 @@ public class ConcernPointOperationWSController {
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
 		
 		cpChoiceDetailDO = cancelOneSelectedCP.deleteSelectedCP(cpChoiceDetailDO);
-		RecommendCancelCpTask recommendCancelCpTask = new RecommendCancelCpTask(recommendService,uid+"",cpid+"");
+		CpOperationPushTask recommendCancelCpTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",RecommendService.UNSELECT_CP,socketService);
 		recommendTaskPool.execute(recommendCancelCpTask);
 		
 		if(cpChoiceDetailDO !=null){

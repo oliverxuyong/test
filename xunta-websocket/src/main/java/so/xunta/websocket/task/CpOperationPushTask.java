@@ -19,7 +19,7 @@ import so.xunta.server.SocketService;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
 
 
-public class SelectCpPushTask implements Runnable{
+public class CpOperationPushTask implements Runnable{
 	private SocketService socketService;
 	private RecommendService recommendService;	
 	private RecommendPushService recommendPushService;
@@ -27,17 +27,19 @@ public class SelectCpPushTask implements Runnable{
 	
 	private String cpId;
 	private String userId;
+	private int selectType;
 	
-	Logger logger =Logger.getLogger(SelectCpPushTask.class);
+	Logger logger =Logger.getLogger(CpOperationPushTask.class);
 	
-	public SelectCpPushTask(RecommendService recommendService,RecommendPushService recommendPushService,
-			CpShowingService cpShowingService, String userId,String cpId, SocketService socketService) {
+	public CpOperationPushTask(RecommendService recommendService,RecommendPushService recommendPushService,
+			CpShowingService cpShowingService, String userId,String cpId, int selectType, SocketService socketService) {
 		this.recommendService = recommendService;
 		this.recommendPushService = recommendPushService;
 		this.userId = userId;
 		this.cpId = cpId;
 		this.socketService = socketService;
 		this.cpShowingService = cpShowingService;
+		this.selectType = selectType;
 	}
 	
 	public String getCpId() {
@@ -47,16 +49,20 @@ public class SelectCpPushTask implements Runnable{
 	public String getUserId() {
 		return userId;
 	}
+	public int getSelectType() {
+		return selectType;
+	}
+
 	
 	@Override
 	public void run() {
-		logger.info("==============================SelectCpPushTask===================================");
+		logger.info("==============================CpOperationPushTask===================================");
 		if(userId==null || cpId==null){
 			logger.info("参数为空！放弃任务");
 			return;
 		}
 		/*Step1：执行记录任务，返回和我相关的用户*/
-		Set<String> pendingPushUids = recommendService.recordU2UChange(userId,cpId,RecommendService.SELECT_CP);
+		Set<String> pendingPushUids = recommendService.recordU2UChange(userId,cpId,selectType);
 		
 		/*Step2：获得在线的匹配用户列表，触发他们的更新任务*/
 		pendingPushUids.add(userId);
@@ -68,11 +74,11 @@ public class SelectCpPushTask implements Runnable{
 			}
 			
 			/*更新前记录一次状态*/
-			recommendPushService.recordStatusBeforeUpdateTask(uid);
+			recommendPushService.recordStatusBeforeUpdateTask(uid,selectType);
 			Boolean is_executed = recommendService.updateU2C(uid);
 			if(is_executed){
 				/*更新后执行一次和原先状态比较，有一定变化则产生推送*/
-				RecommendPushDTO recommendPushDTO = recommendPushService.generatePushDataAfterUpdateTask(uid);
+				RecommendPushDTO recommendPushDTO = recommendPushService.generatePushDataAfterUpdateTask(uid,selectType);
 				List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
 				if(pushMatchedUserDTOs!=null){
 					logger.info("给id为”"+uid+"“ 的用户产生了MatchedUsers推送");
@@ -88,7 +94,9 @@ public class SelectCpPushTask implements Runnable{
 		}
 	
 		/*Step3： 为其他当前正在看这个CP的用户推送数字的变化*/
-		pushCpHeatIncrease();
+		pushCpHeatChange();
+		
+		logger.info("==============================CpOperationPushTask 完成！===================================");
 	}
 	
 	private void filterOffLineUsers(Set<String> userids) {
@@ -146,7 +154,7 @@ public class SelectCpPushTask implements Runnable{
 		socketService.chat2one(session, returnJson);
 	}
 
-	private void pushCpHeatIncrease(){
+	private void pushCpHeatChange(){
 		Set<String> pushUserIds= cpShowingService.getUsersNeedPush(userId, cpId);
 		int cpSelectUserCounts = cpShowingService.getCpSelectedUserCounts(cpId);
 		for(String pushUserId:pushUserIds){

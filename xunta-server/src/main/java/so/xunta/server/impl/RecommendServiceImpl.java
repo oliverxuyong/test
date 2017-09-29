@@ -130,7 +130,7 @@ public class RecommendServiceImpl implements RecommendService {
 	@Override
 	public Boolean updateU2C(String uid) {
 		try {
-			if(ifUpdateExecutable(uid)){
+			if(!ifUpdateExecutable(uid)){
 				return false;
 			}
 			logger.info("用户:"+uid+" 的更新任务启动");

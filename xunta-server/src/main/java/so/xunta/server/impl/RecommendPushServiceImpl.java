@@ -21,6 +21,7 @@ import so.xunta.persist.U2cDao;
 import so.xunta.persist.U2uRelationDao;
 import so.xunta.persist.UserDao;
 import so.xunta.server.RecommendPushService;
+import so.xunta.server.RecommendService;
 import so.xunta.utils.RecommendPushUtil;
 
 @Service
@@ -39,11 +40,14 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 	Logger logger =Logger.getLogger(RecommendPushServiceImpl.class);
 	
 	@Override
-	public void recordStatusBeforeUpdateTask(String uid) {
+	public void recordStatusBeforeUpdateTask(String uid,int updateType) {
+		if(updateType==RecommendService.SELECT_CP){
+			List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
+			RecommendPushUtil.getInstance().recordUserRecommendCps(uid, recommend_cps_previous);
+		}
 		List<String> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);
-		List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
 		RecommendPushUtil.getInstance().recordUserMatchedUids(uid, matched_uids_previous);
-		RecommendPushUtil.getInstance().recordUserRecommendCps(uid, recommend_cps_previous);
+
 	}
 
 	/**
@@ -52,27 +56,38 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 	 	* 如果一个cp原先推荐值从CP_LISTEN_NUM名之外一下跳到前CP_THRESHOLD的位置，就推送
 	 * */
 	@Override
-	public RecommendPushDTO generatePushDataAfterUpdateTask(String uid) {
+	public RecommendPushDTO generatePushDataAfterUpdateTask(String uid, int updateType) {
 		RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
 		
+		generatePushMatchedUsers(uid, recommendPushDTO);
+		
+		if(updateType == RecommendService.SELECT_CP){	
+			generatePushRecommendCp(uid,recommendPushDTO);
+		}
+
+		return recommendPushDTO;
+	}
+
+	private void generatePushMatchedUsers(String uid, RecommendPushDTO recommendPushDTO){
 		List<String> matched_uids_previous = RecommendPushUtil.getInstance().getUserMatchedUids(uid);
 		List<String> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
-		if((matched_uids_previous.size() < U_LISTEN_NUM) && (matched_uids_after.size() > matched_uids_previous.size())){
-			logger.info("原匹配列表还未达到指定长度并且新匹配列表有新用户产生，直接推送");
-			generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
+		if(matched_uids_previous.size() != matched_uids_after.size()){
+			logger.info("匹配用户数量发生了变化，直接产生推送");
+			appendPushUsers(matched_uids_after,recommendPushDTO);
 		}else{
-			for(int i=0;i<(matched_uids_previous.size()>U_TOP_NUM ? U_TOP_NUM : matched_uids_previous.size());i++){
+			for(int i=0;i < matched_uids_previous.size();i++){
 				if(!matched_uids_previous.get(i).equals(matched_uids_after.get(i))){
-					logger.info("前"+matched_uids_previous.size()+"位排名发生了变化,推送");
-					generatePushMatchedUsers(matched_uids_after,recommendPushDTO);
+					logger.info("前"+matched_uids_previous.size()+"位排名发生了变化,产生推送");
+					appendPushUsers(matched_uids_after,recommendPushDTO);
 					break;
 				}
 			}
 		}
-		
+	}
+	
+	private void generatePushRecommendCp(String uid, RecommendPushDTO recommendPushDTO){
 		List<String> recommend_cps_previous = RecommendPushUtil.getInstance().getUserRecommendCps(uid);
 		List<String> recommend_cps_after = getRecommendCPs(uid, CP_THRESHOLD);
-		List<String> pushedCpIds = new ArrayList<String>();
 		for(String cpid:recommend_cps_after){
 			if(recommend_cps_previous.contains(cpid)){
 				continue;
@@ -85,15 +100,25 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 			
 			recommendPushDTO.addPushMatchedCPs(pushRecommendCp);
 			logger.info("产生推送cp："+cp.getText());
-			pushedCpIds.add(cpid);
 		}
-	
-		return recommendPushDTO;
 	}
+	
+	private void appendPushUsers(List<String> matched_uids_after, RecommendPushDTO recommendPushDTO){
+		int rank=1;
+		for(String uid:matched_uids_after){
+			User u = userDao.findUserByUserid(Long.valueOf(uid));
+			PushMatchedUserDTO pushMatchedUser = new PushMatchedUserDTO();
+			pushMatchedUser.setUserid(u.getUserId().toString());
+			pushMatchedUser.setUsername(u.getName());
+			pushMatchedUser.setImg_src(u.getImgUrl());
+			pushMatchedUser.setNew_rank(rank);
 
-	/**
-	 * 记录下改变前匹配用户的排序，以便在改变后得到排名变化
-	 * */
+			logger.info("推送用户: "+u.getName()+" rank:"+rank);
+			recommendPushDTO.addPushMatchedUser(pushMatchedUser);
+			rank++;
+		}
+	}	
+	
 	private	List<String> getMatchedUsers(String uid, int num){
 		final int FIRST_USER_RANK = 0;
 		List<String> matched_uids = new ArrayList<String>();	
@@ -121,19 +146,4 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 		return cpIds;
 	}
 	
-	private void generatePushMatchedUsers(List<String> matched_uids_after, RecommendPushDTO recommendPushDTO){
-		int rank=1;
-		for(String uid:matched_uids_after){
-			User u = userDao.findUserByUserid(Long.valueOf(uid));
-			PushMatchedUserDTO pushMatchedUser = new PushMatchedUserDTO();
-			pushMatchedUser.setUserid(u.getUserId().toString());
-			pushMatchedUser.setUsername(u.getName());
-			pushMatchedUser.setImg_src(u.getImgUrl());
-			pushMatchedUser.setNew_rank(rank);
-
-			logger.info("推送用户: "+u.getName()+" rank:"+rank);
-			recommendPushDTO.addPushMatchedUser(pushMatchedUser);
-			rank++;
-		}
-	}
 }
