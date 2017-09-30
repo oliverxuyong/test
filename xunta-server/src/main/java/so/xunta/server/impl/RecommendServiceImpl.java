@@ -31,6 +31,12 @@ import so.xunta.server.RecommendService;
 
 @Service
 public class RecommendServiceImpl implements RecommendService {
+	private final double NO_CHANGE = 0.0;
+	private final Double CP_SCORE = 0.1;//CP初始化推荐分数
+	private final int REPLENISH_NUM = 100;//每次补充多少个CP
+	private final double UPDATE_MARK = 0; //需要更新但用户关系值没变化
+	private final long MIN_INTERVAL = 1000L; //两次更新任务之间的最短间隔时间
+	
 	@Autowired
 	private C2uDao c2uDao;
 	@Autowired
@@ -55,7 +61,7 @@ public class RecommendServiceImpl implements RecommendService {
 	Logger logger =Logger.getLogger(RecommendServiceImpl.class);
 	
 	private Set<String> updateTaskQueue =Collections.synchronizedSet(new HashSet<String>());
-	private final double NO_CHANGE = 0.0;
+
 	
 	/**
 	 * @author Bright_Zheng
@@ -112,7 +118,6 @@ public class RecommendServiceImpl implements RecommendService {
 		
 		relatedUids.removeAll(usersSelectedSameCp);//产生了∆u_score的User不需要重复记录
 		for(String relatedUid:relatedUids){
-			final double UPDATE_MARK = 0;
 			u2uUpdateStatusDao.updateDeltaRelationValue(relatedUid, uid, UPDATE_MARK);
 		}
 		
@@ -202,7 +207,6 @@ public class RecommendServiceImpl implements RecommendService {
 		/*准备工作: 检查上次更新时间
 		 * 如果距离用户上次更新的时间过短，则丢弃本次任务
 		 * */
-		final long MIN_INTERVAL = 1000L;
 		long startTime = System.currentTimeMillis();
 		long lastUpadteTimeLong = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid)).getTime();
 		if((startTime-lastUpadteTimeLong) < MIN_INTERVAL){
@@ -239,7 +243,7 @@ public class RecommendServiceImpl implements RecommendService {
 			logger.info("初始化 Redis InitialCP...");
 			List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator();
 			Map<String,Double> initCpsMap = new HashMap<String,Double>();
-			final Double CP_SCORE = 0.1;//CP初始化推荐分数
+
 			for(ConcernPointDO cp:initCps){
 				String cpId = cp.getId().toString();
 				initCpsMap.put(cpId, CP_SCORE);
@@ -256,7 +260,6 @@ public class RecommendServiceImpl implements RecommendService {
 		if(u2cDao.ifNeedReplenish(uid)){
 			logger.info("用户: "+ uid+"推荐CP数量过少，新添。。。");
 			
-			final int REPLENISH_NUM = 100;//每次补充多少个CP
 			Map<String,Double> replenishCps= initialCpDao.getRandomCps(REPLENISH_NUM);
 			u2cDao.updateUserBatchCpValue(uid,replenishCps);
 			

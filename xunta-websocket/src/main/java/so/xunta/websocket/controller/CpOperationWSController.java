@@ -51,7 +51,7 @@ public class CpOperationWSController {
 	
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1102-1")
-	public void selectOneNewCP(WebSocketSession session, TextMessage message){
+	public void selectOneCP(WebSocketSession session, TextMessage message){
 		JSONObject params = new JSONObject(message.getPayload());
 		Long uid = Long.valueOf(params.getString("uid"));
 		BigInteger cpid = BigInteger.valueOf(Long.valueOf(params.getString("cpid")));

@@ -17,14 +17,13 @@ import so.xunta.utils.RedisUtil;
 
 @Repository
 public class InitialCpDapImpl implements InitialCpDao {
-
+	private final int INIT_COUNTS = 50;//用户初始化时从Initial中取多少个CP
+	
 	@Autowired
 	private RedisUtil redisUtil;
 	
 	@Value("${redis.keyInitialCp}")
 	private String key;
-	
-	private final int COUNTS = 50;//用户初始化时从Initial中取多少个CP
 	
 	Logger logger =Logger.getLogger(InitialCpDapImpl.class);
 	
@@ -66,7 +65,7 @@ public class InitialCpDapImpl implements InitialCpDao {
 
 		try {
 			jedis = redisUtil.getJedis();
-			Set<Tuple> cps = jedis.zrevrangeWithScores(key, 0, COUNTS);
+			Set<Tuple> cps = jedis.zrevrangeWithScores(key, 0, INIT_COUNTS);
 			for(Tuple cp:cps){
 				returncps.put(cp.getElement(),cp.getScore());
 			}
@@ -87,7 +86,7 @@ public class InitialCpDapImpl implements InitialCpDao {
 			jedis = redisUtil.getJedis();
 			int totalCounts = jedis.zcard(key).intValue();
 			int level = totalCounts/number;
-			int start = COUNTS+(new Random().nextInt(level))*number;
+			int start = INIT_COUNTS+(new Random().nextInt(level))*number;
 			Set<Tuple> cps = jedis.zrevrangeWithScores(key, start, start+number);
 			for(Tuple cp:cps){
 				returncps.put(cp.getElement(),cp.getScore());
