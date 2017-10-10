@@ -67,9 +67,14 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 function appendElement(i, cpid,cp) {
 	var cp_container = $("#cp-container");// 装推荐标签的容器
 	
+	// 这是cp的选择人数
+	//var selectTagNum =cp.howmanypeople_selected;
+	var selectTagNum =parseInt(Math.random()*999)+1;
+	
 	// 先随机推荐标签字体的大小，在这里留一个可以控制字体大小的入口
-	var cpTextSize = Math.random() * 8 + 12;
-	cpTextSize = parseInt(cpTextSize);
+	/*var cpTextSize = Math.random() * 8 + 12;
+	cpTextSize = parseInt(cpTextSize);*/
+	var cpTextSize =controlSize(selectTagNum,maxCPTextSize,minCPTextSize);
 	
 	var cp_node = $("<div></div>").attr("class", "cp").attr("id",
 			"cpid" + cpid);// 外圆div
@@ -84,14 +89,11 @@ function appendElement(i, cpid,cp) {
 	
 	
 	// 先随机内圆 div的大小,在这里留一个可以控制内圆div大小的入口
-	var cpInNodeWidth = Math.random() * 40 + 40;
-	cpInNodeWidth = parseInt(cpInNodeWidth);
+	//var cpInNodeWidth = Math.random() * 40 + 40;
+	//cpInNodeWidth = parseInt(cpInNodeWidth);
+	var cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
 	cp_innode.css("height", cpInNodeWidth);
 	cp_innode.css("width", cpInNodeWidth);
-	
-	// 这是cp的选择人数
-// var selectTagNum =cp.howmanypeople_selected;
-	var selectTagNum =parseInt(Math.random()*999)+1;
 	
 	// 将标签的文字设置为字母和数字，为了测试匹配文字和数字和原型
 	// calCircle(cp_text, cpTextSize, "CaraDelev...", cp_node, cp_innode);
@@ -114,11 +116,21 @@ function appendElement(i, cpid,cp) {
 	cpAnimationLocation(cp_container,cpNodeByDistance);
 }
 
-var minCPSize = 40;// 最小内圆的大小
-var maxCPSize = 80;// 最大内圆的大小
+var minCPSize = 50;// 最小内圆的大小
+var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 12;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
 var maxCPTextNumber = 9;// cp文字最大的数量
+var maxselectTagNum = 1000;// 影响标签大小的选择人数最小的数量
+var minselectTagNum = 100;// 影响标签大小的选择人数最大的数量
+/**叶夷  2017.10.10  控制文字大小和内圆大小的方法*/
+function controlSize(selectTagNum,maxSize,minSize){
+	var sectionSize=maxSize-minSize;//大小的范围
+	var sectionSelectTagNum=maxselectTagNum-minselectTagNum;//选择人数的范围
+	var space=sectionSelectTagNum/sectionSize;//这是选择人数和大小范围之间的比例
+	var endSize=selectTagNum/space+minSize;//这是最终的大小
+	return endSize;
+}
 
 // 控制范围的方法
 function sizeInMaxAndMin(size,max,min){
@@ -1458,6 +1470,7 @@ function sendKeyWordToBack(input_value,data) {
 
 function searchTag(suggestWrap,data){
 	var cpid=data.id;
+	addCPID=cpid;
 	var text=data.text;
 	
 	var searchtag = $("<div></div>")/* .attr("id","searchtag" + data) */.text(text);// 文字div

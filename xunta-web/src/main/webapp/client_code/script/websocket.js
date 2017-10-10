@@ -108,6 +108,7 @@ function sendSelectedCP(userId,cpid,text){
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
 			 cptext:text,
+			 property: "P",
 			 timestamp:"",
 		};
 		WS_Send(json_obj);
@@ -139,6 +140,7 @@ function sendUnselectedCP(userId,cpid){
 			 interface_name: "sendUnselectedCP",
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
+			 property: "P",
 			 timestamp:"",
 		};
 		WS_Send(json_obj);

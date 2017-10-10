@@ -83,6 +83,7 @@ function responseSearchTag(text){
         data:{text:text},
         async:false,
         success:function(data, textStatus) {
+        	addCPID=null;
         	//console.log("标签搜索请求成功"+data);
         	sendKeyWordToBack(text,data);
         },
@@ -93,6 +94,7 @@ function responseSearchTag(text){
     });
 }
 
+var addCPID;//用来添加标签的cpid,没有则为空
 //标签添加
 function searchToAddTag(){
 	var suggestWrap = $('#gov_search_suggest');
@@ -104,6 +106,7 @@ function searchToAddTag(){
         jsonp:"callback",
         contentType: "application/json; charset=utf-8",
         data:{from_user_id:userId,
+        		cpid:addCPID,
         		text:text},
         async:false,
         success:function(data, textStatus) {
