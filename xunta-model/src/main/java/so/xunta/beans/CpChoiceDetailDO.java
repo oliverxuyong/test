@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
+
 @Entity
 @Table(name="cp_choice_detail")
 public class CpChoiceDetailDO {
@@ -18,14 +20,16 @@ public class CpChoiceDetailDO {
 	private Long user_id;
 	private BigInteger cp_id;
 	private String is_selected;
+	@ColumnDefault(value="P")
+	private String property;
 	private Timestamp create_time;
+	
 	public BigInteger getId() {
 		return id;
 	}
 	public void setId(BigInteger id) {
 		this.id = id;
 	}
-
 	public Long getUser_id() {
 		return user_id;
 	}
@@ -43,6 +47,12 @@ public class CpChoiceDetailDO {
 	}
 	public void setIs_selected(String is_selected) {
 		this.is_selected = is_selected;
+	}
+	public String getProperty() {
+		return property;
+	}
+	public void setProperty(String property) {
+		this.property = property;
 	}
 	public Timestamp getCreate_time() {
 		return create_time;

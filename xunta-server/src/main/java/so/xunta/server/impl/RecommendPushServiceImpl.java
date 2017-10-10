@@ -102,7 +102,7 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 			PushRecommendCpDTO pushRecommendCp = new PushRecommendCpDTO();
 			pushRecommendCp.setCpId(cpid);
 			pushRecommendCp.setCpText(cp.getText());
-			pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid));
+			pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT));
 			
 			recommendPushDTO.addPushMatchedCPs(pushRecommendCp);
 			logger.info("产生推送cp："+cp.getText());

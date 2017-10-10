@@ -28,11 +28,12 @@ public class CpOperationPushTask implements Runnable{
 	private String cpId;
 	private String userId;
 	private int selectType;
+	private String property;
 	
 	Logger logger =Logger.getLogger(CpOperationPushTask.class);
 	
 	public CpOperationPushTask(RecommendService recommendService,RecommendPushService recommendPushService,
-			CpShowingService cpShowingService, String userId,String cpId, int selectType, SocketService socketService) {
+			CpShowingService cpShowingService, String userId,String cpId, int selectType, String property, SocketService socketService) {
 		this.recommendService = recommendService;
 		this.recommendPushService = recommendPushService;
 		this.userId = userId;
@@ -40,6 +41,7 @@ public class CpOperationPushTask implements Runnable{
 		this.socketService = socketService;
 		this.cpShowingService = cpShowingService;
 		this.selectType = selectType;
+		this.property = property;
 	}
 	
 	public String getCpId() {
@@ -52,8 +54,10 @@ public class CpOperationPushTask implements Runnable{
 	public int getSelectType() {
 		return selectType;
 	}
+	public String getProperty() {
+		return property;
+	}
 
-	
 	@Override
 	public void run() {
 		logger.info("==============================CpOperationPushTask===================================");
@@ -62,7 +66,7 @@ public class CpOperationPushTask implements Runnable{
 			return;
 		}
 		/*Step1：执行记录任务，返回和我相关的用户*/
-		Set<String> pendingPushUids = recommendService.recordU2UChange(userId,cpId,selectType);
+		Set<String> pendingPushUids = recommendService.recordU2UChange(userId,cpId,property,selectType);
 		
 		/*Step2：获得在线的匹配用户列表，触发他们的更新任务*/
 		pendingPushUids.add(userId);

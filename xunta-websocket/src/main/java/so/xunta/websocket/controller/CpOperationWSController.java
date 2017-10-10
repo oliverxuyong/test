@@ -2,8 +2,6 @@ package so.xunta.websocket.controller;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +14,11 @@ import so.xunta.beans.CpChoiceDetailDO;
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.persist.CpChoiceDetailDao;
-import so.xunta.server.CancelOneSelectedCP;
+import so.xunta.server.CpChoiceDetailService;
 import so.xunta.server.CpChoiceService;
 import so.xunta.server.CpShowingService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
-import so.xunta.server.SelectOneNewCPService;
 import so.xunta.server.SocketService;
 import so.xunta.websocket.task.CpOperationPushTask;
 import so.xunta.websocket.utils.RecommendTaskPool;
@@ -35,11 +32,9 @@ public class CpOperationWSController {
 	@Autowired
 	private SocketService socketService;
 	@Autowired
-	private SelectOneNewCPService selectOneNewCPService;
-	@Autowired
-	private CancelOneSelectedCP cancelOneSelectedCP;
-	@Autowired
 	private CpChoiceService cpChoiceService;
+	@Autowired
+	private CpChoiceDetailService cpChoiceDetailService;
 	@Autowired
 	private RecommendTaskPool recommendTaskPool;
 	@Autowired
@@ -58,23 +53,12 @@ public class CpOperationWSController {
 		String timestamp = params.getString("timestamp");
 		//2017.08.08 叶夷  前端请求的接口加上标签文字,为了返回数据里面需要text
 		String text=params.getString("cptext");
+		String property = params.getString("property");
+		if(!(property.equals(RecommendService.POSITIVE_SELECT) || property.equals(RecommendService.NEGATIVE_SELECT))){
+			property = RecommendService.POSITIVE_SELECT;
+		}
 		
-		CpChoiceDetailDO cpChoiceDetailDO = new CpChoiceDetailDO();
-		cpChoiceDetailDO.setUser_id(uid);
-		cpChoiceDetailDO.setCp_id(cpid);
-		cpChoiceDetailDO.setIs_selected(CpChoiceDetailDao.SELECTED);
-		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
-
-		selectOneNewCPService.addNewCP(cpChoiceDetailDO);
-		
-		List<String> cpList = new ArrayList<String>(1);
-		cpList.add(cpid+"");
-		recommendService.signCpsPresented(uid+"", cpList);
-		
-		CpOperationPushTask recommendPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",RecommendService.SELECT_CP,socketService);
-		recommendTaskPool.execute(recommendPushTask);
-		
-		
+		CpChoiceDetailDO cpChoiceDetailDO = cpOperateAction(uid, cpid, CpChoiceDetailDao.SELECTED,property);
 		
 		if(cpChoiceDetailDO !=null){
 			JSONObject returnJson = new JSONObject();
@@ -94,15 +78,12 @@ public class CpOperationWSController {
 		Long uid = Long.valueOf(params.getString("uid"));
 		BigInteger cpid = BigInteger.valueOf(Long.valueOf(params.getString("cpid")));
 		String timestamp = params.getString("timestamp");
-		CpChoiceDetailDO cpChoiceDetailDO = new CpChoiceDetailDO();
-		cpChoiceDetailDO.setUser_id(uid);
-		cpChoiceDetailDO.setCp_id(cpid);
-		cpChoiceDetailDO.setIs_selected(CpChoiceDetailDao.UNSELECTED);
-		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
+		String property = params.getString("property");
+		if(!(property.equals(RecommendService.POSITIVE_SELECT) || property.equals(RecommendService.NEGATIVE_SELECT))){
+			property = RecommendService.POSITIVE_SELECT;
+		}
 		
-		cpChoiceDetailDO = cancelOneSelectedCP.deleteSelectedCP(cpChoiceDetailDO);
-		CpOperationPushTask recommendCancelCpTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",RecommendService.UNSELECT_CP,socketService);
-		recommendTaskPool.execute(recommendCancelCpTask);
+		CpChoiceDetailDO cpChoiceDetailDO = cpOperateAction(uid, cpid, CpChoiceDetailDao.UNSELECTED,property);
 		
 		if(cpChoiceDetailDO !=null){
 			JSONObject returnJson = new JSONObject();
@@ -137,7 +118,24 @@ public class CpOperationWSController {
 		socketService.chat2one(session, returnJson);
 	}
 	
-	
-	
+	private CpChoiceDetailDO cpOperateAction(Long uid, BigInteger cpid, String selectType, String property){
+		CpChoiceDetailDO cpChoiceDetailDO = new CpChoiceDetailDO();
+		cpChoiceDetailDO.setUser_id(uid);
+		cpChoiceDetailDO.setCp_id(cpid);
+		cpChoiceDetailDO.setIs_selected(selectType);
+		cpChoiceDetailDO.setProperty(property);
+		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
 
+		cpChoiceDetailDO = cpChoiceDetailService.saveCpChoiceDetail(cpChoiceDetailDO);
+		
+		int selectTypeRec;
+		if(selectType.equals(CpChoiceDetailDao.SELECTED)){
+			selectTypeRec = RecommendService.SELECT_CP;
+		}else{
+			selectTypeRec = RecommendService.UNSELECT_CP;
+		}
+		CpOperationPushTask cpOperationPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,socketService);
+		recommendTaskPool.execute(cpOperationPushTask);
+		return cpChoiceDetailDO;
+	}
 }

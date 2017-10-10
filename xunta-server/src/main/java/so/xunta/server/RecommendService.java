@@ -8,6 +8,8 @@ import so.xunta.beans.User;
 public interface RecommendService {
 	public static final int SELECT_CP=0;
 	public static final int UNSELECT_CP=1;
+	public static final String POSITIVE_SELECT = "P";
+	public static final String NEGATIVE_SELECT = "N";
 	
 	/**
 	 * 记录任务
@@ -18,7 +20,7 @@ public interface RecommendService {
 	 * @param selectType:“Y/N” 选中或取消
 	 * @return 此次操作后需要触发更新任务的关联用户id
 	 * */
-	public Set<String> recordU2UChange(String uid, String cpid, int selectType);
+	public Set<String> recordU2UChange(String uid, String cpid, String property, int selectType);
 	
 	/**
 	 * 更新任务

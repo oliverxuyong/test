@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Tuple;
 import so.xunta.beans.ConcernPointDO;
+import so.xunta.beans.CpChoiceDO;
+import so.xunta.beans.CpChoiceDetailDO;
 import so.xunta.beans.User;
 import so.xunta.persist.C2uDao;
 import so.xunta.persist.ConcernPointDao;
@@ -67,18 +70,21 @@ public class RecommendServiceImpl implements RecommendService {
 	 * @author Bright_Zheng
 	 * */
 	@Override
-	public Set<String> recordU2UChange(String uid, String cpid, int selectType) {
+	public Set<String> recordU2UChange(String uid, String cpid, String property, int selectType) {
 		logger.info("用户:"+uid+" 选择了CP："+cpid+"  的记录线程启动");
 		long startTime = System.currentTimeMillis();
+		
+		Set<String> pendingPushUids = new HashSet<String>();
+		
 	
-		/* Step 1.得到与用户U答过同一题的用户列表：
+		/* Step 1.得到与用户U相同选择一CP的用户列表：
 		 	*通过C2U表得到选过相同C的用户列表{Ui}，并将U加到C中
 		 * */
-		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid);		
+		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid,property);		
 		if(selectType == RecommendService.SELECT_CP){
-			c2uDao.saveCpOneUser(cpid, uid);
+			c2uDao.saveCpOneUser(cpid, uid, property);
 		}else{
-			c2uDao.deleteUserInCp(cpid, uid);
+			c2uDao.deleteUserInCp(cpid, uid, property);
 		}
 		
 		/*Step 2.更新U2U_Update_Status
@@ -99,31 +105,34 @@ public class RecommendServiceImpl implements RecommendService {
 			}
 		}
 		
-		/*3.记录状态改变
+		
+		/*3.如果是正向选择，就记录状态改变
 		 	*通过U2U_Relation表得到所有和U有关系的用户{Uj},在U2U_Update_Status表中为每个Uj记录上U（增加的∆u_score为0）
 		 	*返回所有需要触发更新任务的用户
 	  	**/
-		Set<Tuple> relatedUsers=u2uRelationDao.getRelatedUsersByRank(uid, 0, -1);//0表示第一个，-1为倒数第一个，即为获取所有关系用户
-		Set<String> relatedUids = new HashSet<String>();
-		for(Tuple user:relatedUsers){
-			if(user.getScore()<=0){
-				break;
+		if(property.equals(RecommendService.POSITIVE_SELECT)){
+			Set<Tuple> relatedUsers=u2uRelationDao.getRelatedUsersByRank(uid, 0, -1);//0表示第一个，-1为倒数第一个，即为获取所有关系用户
+			Set<String> relatedUids = new HashSet<String>();
+			for(Tuple user:relatedUsers){
+				if(user.getScore()<=0){
+					break;
+				}
+				relatedUids.add(user.getElement());
+				
 			}
-			relatedUids.add(user.getElement());
+
+			pendingPushUids.addAll(relatedUids);
 			
+			relatedUids.removeAll(usersSelectedSameCp);//产生了∆u_score的User不需要重复记录
+			for(String relatedUid:relatedUids){
+				u2uUpdateStatusDao.updateDeltaRelationValue(relatedUid, uid, UPDATE_MARK);
+			}
 		}
-		Set<String> pendingPushUids = new HashSet<String>();
-		pendingPushUids.addAll(relatedUids);
 		pendingPushUids.addAll(usersSelectedSameCp);
-		
-		relatedUids.removeAll(usersSelectedSameCp);//产生了∆u_score的User不需要重复记录
-		for(String relatedUid:relatedUids){
-			u2uUpdateStatusDao.updateDeltaRelationValue(relatedUid, uid, UPDATE_MARK);
-		}
 		
 		long endTime = System.currentTimeMillis();
 		logger.info("用户:"+uid+" 选择了CP："+cpid+"  的记录任务完成"+"\t 选中相同CP的用户数: "+ 
-						usersSelectedSameCp.size() +"\t 其他产生推荐的用户数: "+ relatedUsers.size() +"\n 执行时间: "+
+						usersSelectedSameCp.size() +"\t 产生更新用户数："+ pendingPushUids.size()+"\n 执行时间: "+
 						(endTime-startTime)+"毫秒");
 		return pendingPushUids;
 	}
@@ -148,7 +157,7 @@ public class RecommendServiceImpl implements RecommendService {
 			 * step 1：在U2U_Update_Status中获取U所需要更新的状态发生过变化的用户集合{Uj}。
 			 * */
 			Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
-			logger.info("上次更新后有"+userUpdateStatusMap.size()+"个相关用户需要更新");
+			logger.info("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
 			
 			
 			/*step 2: 遍历{Uj}
@@ -160,7 +169,7 @@ public class RecommendServiceImpl implements RecommendService {
 				/*得到Uj在U的update_time后更新的标签列表{CPi}
 				 * */
 				Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
-				Map<BigInteger, String> newCps= cpChoiceDetailDao.getOperatedCpAfterTime(Long.valueOf(changedUid), lastUpdateTime);
+				List<CpChoiceDetailDO> newCps= cpChoiceDetailDao.getOperatedCpAfterTime(Long.valueOf(changedUid), lastUpdateTime);
 				
 				if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
 					/*如∆u_score为0，更新U2C*/
@@ -244,9 +253,12 @@ public class RecommendServiceImpl implements RecommendService {
 			List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator();
 			Map<String,Double> initCpsMap = new HashMap<String,Double>();
 
+			Random randomData = new Random();
 			for(ConcernPointDO cp:initCps){
 				String cpId = cp.getId().toString();
-				initCpsMap.put(cpId, CP_SCORE);
+				/*目前为每个赋值一个0-0.1之间的随机推荐值
+				 * */
+				initCpsMap.put(cpId, randomData.nextDouble()*CP_SCORE);
 			}
 			initialCpDao.setCps(initCpsMap);
 			logger.info("初始化 Redis InitialCP 完成！");
@@ -295,19 +307,28 @@ public class RecommendServiceImpl implements RecommendService {
 	/**更新Uj在U的update_time后更新的标签列表{CPi}
 	 *	对每个CPi，在U的U2C表中对CPi的推荐分score 加上（ CPi自身的score * U-Uj的关系值u_score），新增为正，取消为负。
 	 * */
-	private void updateU2CAfterLastUpdated(Map<BigInteger, String> newCps, String uid, String changedUid){
+	private void updateU2CAfterLastUpdated(List<CpChoiceDetailDO> newCps, String uid, String changedUid){
 		logger.info("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
-		for(Entry<BigInteger, String> selectedCp:newCps.entrySet()){
-			BigInteger selectedCpid = selectedCp.getKey();
-			String is_selected = selectedCp.getValue();
+		for(CpChoiceDetailDO selectedCp:newCps){
+			BigInteger selectedCpid = selectedCp.getCp_id();
+			String is_selected = selectedCp.getIs_selected();
+			String property = selectedCp.getProperty();
 			Double cpWeight = concernPointDao.getConcernPoint(selectedCpid).getWeight().doubleValue();
 			Double relateScore = u2uRelationDao.getRelatedUserScore(uid, changedUid);
 			
-			if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
-				u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+			if(property.equals(RecommendService.POSITIVE_SELECT)){
+				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
+					u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+				}else{
+					 //负值是取消标签导致，正常情况下取消前肯定有选中过程，所以总的值不会为负
+					u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+				}
 			}else{
-				 //负值是取消标签导致，正常情况下取消前肯定有选中过程，所以总的值不会为负
-				u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
+					u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+				}else{
+					u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+				}
 			}
 		}
 	}
@@ -317,10 +338,16 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	private void updateU2CBeforeLastUpdated(String uid,Long changedUid,Timestamp lastUpdateTime,double uDeltaValue){
 		logger.info("已选CP更新：关联用户 "+changedUid);
-		List<BigInteger> oldCps = cpChoiceDao.getSelectedCpsBeforeTime(changedUid, lastUpdateTime);
-		for(BigInteger oldCp:oldCps){
-			Double cpWeight = concernPointDao.getConcernPoint(oldCp).getWeight().doubleValue();
-			u2cDao.updateUserCpValue(uid, oldCp.toString(), cpWeight*uDeltaValue);
+		List<CpChoiceDO> oldCps = cpChoiceDao.getSelectedCpsBeforeTime(changedUid, lastUpdateTime);
+		for(CpChoiceDO oldCp:oldCps){
+			BigInteger oldCpId = oldCp.getCp_id();
+			String property = oldCp.getProperty();
+			Double cpWeight = concernPointDao.getConcernPoint(oldCpId).getWeight().doubleValue();
+			if(property.equals(RecommendService.POSITIVE_SELECT)){
+				u2cDao.updateUserCpValue(uid, oldCpId.toString(), cpWeight*uDeltaValue);
+			}else{
+				u2cDao.updateUserCpValue(uid, oldCpId.toString(), -cpWeight*uDeltaValue);
+			}
 		}
 	}
 

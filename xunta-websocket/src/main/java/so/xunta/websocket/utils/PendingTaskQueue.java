@@ -31,13 +31,13 @@ public class PendingTaskQueue {
 	
 	private List<String> taskSerializeList = Collections.synchronizedList(new LinkedList<String>());
 
-	public void addSelectCPTask(String userId,String cpId){
-		String taskId = RECOMMEND_SELECTCP+":"+userId+":"+cpId;
+	public void addSelectCPTask(String userId,String cpId,String property){
+		String taskId = RECOMMEND_SELECTCP+":"+userId+":"+cpId+":"+property;
 		taskSerializeList.add(taskId);
 	}
 	
-	public void addCancelCpTask(String userId,String cpId){
-		String taskId = RECOMMEND_CANCELCP+":"+userId+":"+cpId;
+	public void addCancelCpTask(String userId,String cpId,String property){
+		String taskId = RECOMMEND_CANCELCP+":"+userId+":"+cpId+":"+property;
 		taskSerializeList.add(taskId);
 	}
 	
@@ -60,13 +60,15 @@ public class PendingTaskQueue {
 			case RECOMMEND_SELECTCP:
 				String userId1 = parms[1];
 				String cpId1 = parms[2];
-				CpOperationPushTask t1= new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,RecommendService.SELECT_CP,socketService);
+				String propert1 = parms[3];
+				CpOperationPushTask t1= new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,RecommendService.SELECT_CP,propert1,socketService);
 				returnTasks.add(t1);
 				break;
 			case RECOMMEND_CANCELCP:
 				String userId2 = parms[1];
 				String cpId2 = parms[2];
-				CpOperationPushTask t2 = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId2,cpId2,RecommendService.UNSELECT_CP,socketService);
+				String propert2 = parms[3];
+				CpOperationPushTask t2 = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId2,cpId2,RecommendService.UNSELECT_CP,propert2,socketService);
 				returnTasks.add(t2);
 				break;
 			case RECOMMEND_UPDARW:

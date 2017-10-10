@@ -61,7 +61,7 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 			RecommendCpBO cpBO = new RecommendCpBO();
 			cpBO.setCpId(cpid);
 			cpBO.setCpText(cpDO.getText());
-			cpBO.setHowManyPeopleSelected(c2uDao.getHowManyPeopleSelected(cpid));
+			cpBO.setHowManyPeopleSelected(c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT));
 			String if_selected = "N"; //因为选择的CP都已经被置为已推荐，因此新的一批推荐CP不会是选择过的，先这么处理
 			//CpChoiceDetailDO cpChoiceDetailDO= cpChoiceDetailDao.getCpChoiceDetail(uid, BigInteger.valueOf(Long.valueOf(cpid)));					
 			/*if(cpChoiceDetailDO != null){

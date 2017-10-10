@@ -9,16 +9,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@Table(name="concern_point")
+@Table(name="concern_point",uniqueConstraints = {@UniqueConstraint(columnNames={"text"})})
 public class ConcernPointDO{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private BigInteger id;
 	private Long creator_uid;
+	
 	private String text;
 	@ColumnDefault(value="1.0")
 	private BigDecimal weight;
