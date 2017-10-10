@@ -2,6 +2,8 @@ package so.xunta.websocket.controller;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,12 @@ import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.persist.CpChoiceDetailDao;
 import so.xunta.server.CancelOneSelectedCP;
 import so.xunta.server.CpChoiceService;
+import so.xunta.server.CpShowingService;
+import so.xunta.server.RecommendPushService;
+import so.xunta.server.RecommendService;
 import so.xunta.server.SelectOneNewCPService;
 import so.xunta.server.SocketService;
-import so.xunta.websocket.task.RecommendCancelCpTask;
-import so.xunta.websocket.task.RecommendPushTask;
+import so.xunta.websocket.task.CpOperationPushTask;
 import so.xunta.websocket.utils.RecommendTaskPool;
 
 /**
@@ -27,7 +31,7 @@ import so.xunta.websocket.utils.RecommendTaskPool;
  * */
 @WebSocketTypeAnnotation
 @Component
-public class ConcernPointOperationWSController {
+public class CpOperationWSController {
 	@Autowired
 	private SocketService socketService;
 	@Autowired
@@ -39,9 +43,11 @@ public class ConcernPointOperationWSController {
 	@Autowired
 	private RecommendTaskPool recommendTaskPool;
 	@Autowired
-	private RecommendPushTask recommendPushTask;
+	private RecommendService recommendService;
 	@Autowired
-	private RecommendCancelCpTask recommendCancelCpTask;
+	private RecommendPushService recommendPushService;
+	@Autowired
+	private CpShowingService cpShowingService;
 	
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1102-1")
@@ -61,16 +67,21 @@ public class ConcernPointOperationWSController {
 
 		selectOneNewCPService.addNewCP(cpChoiceDetailDO);
 		
-		recommendPushTask.setCpId(cpid+"");;
-		recommendPushTask.setUserId(uid+"");
+		List<String> cpList = new ArrayList<String>(1);
+		cpList.add(cpid+"");
+		recommendService.signCpsPresented(uid+"", cpList);
+		
+		CpOperationPushTask recommendPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",RecommendService.SELECT_CP,socketService);
 		recommendTaskPool.execute(recommendPushTask);
+		
+		
 		
 		if(cpChoiceDetailDO !=null){
 			JSONObject returnJson = new JSONObject();
 			returnJson.put("_interface", "1102-2");
 			returnJson.put("is_success", "true");
 			//2017.08.08 叶夷  在选中标签时返回的数据中加上cpid
-			returnJson.put("cpid", cpid);
+			returnJson.put("cpid", cpid+"");
 			returnJson.put("cptext", text);
 			returnJson.put("timestamp", timestamp);
 			socketService.chat2one(session, returnJson);
@@ -90,6 +101,7 @@ public class ConcernPointOperationWSController {
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
 		
 		cpChoiceDetailDO = cancelOneSelectedCP.deleteSelectedCP(cpChoiceDetailDO);
+		CpOperationPushTask recommendCancelCpTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",RecommendService.UNSELECT_CP,socketService);
 		recommendTaskPool.execute(recommendCancelCpTask);
 		
 		if(cpChoiceDetailDO !=null){
@@ -97,7 +109,7 @@ public class ConcernPointOperationWSController {
 			returnJson.put("_interface", "1103-2");
 			returnJson.put("is_success", "true");
 			//2017.08.08 叶夷  在选中标签时返回的数据中加上cpid
-			returnJson.put("cpid", cpid);
+			returnJson.put("cpid", cpid+"");
 			returnJson.put("timestamp", timestamp);
 			socketService.chat2one(session, returnJson);
 		}	
@@ -119,8 +131,8 @@ public class ConcernPointOperationWSController {
 		}else{
 			returnJson.put("is_select", "true");
 		}
-		returnJson.put("cpid", cpid);
-		returnJson.put("uid", uid);
+		returnJson.put("cpid", cpid+"");
+		returnJson.put("uid", uid+"");
 		returnJson.put("timestamp", timestamp);
 		socketService.chat2one(session, returnJson);
 	}

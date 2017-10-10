@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,8 @@ public class LoginController {
 
 	@Autowired
 	LoggerService loggerService;
+	
+	static Logger logger = Logger.getRootLogger();
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
@@ -61,7 +64,7 @@ public class LoginController {
 		try {
 			request.getRequestDispatcher("/client_code/index.html").forward(request, response);
 		} catch (ServletException | IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -139,9 +142,9 @@ public class LoginController {
 	 *                             response.sendRedirect(redirect_url);
 	 * 
 	 *                             } catch (QQConnectException e) {
-	 *                             e.printStackTrace(); } catch (IOException e)
+	 *                             logger.error(e.getMessage(), e); } catch (IOException e)
 	 *                             { // TODO Auto-generated catch block
-	 *                             e.printStackTrace(); } }
+	 *                             logger.error(e.getMessage(), e); } }
 	 */
 
 	@RequestMapping("/weibo_login")
@@ -188,7 +191,7 @@ public class LoginController {
 			response.setContentType("text/json");
 			response.getWriter().write(user_json.toString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -393,7 +396,7 @@ public class LoginController {
 			System.out.println("==>redirect to url :" + domainWithContext);
 			response.sendRedirect(domainWithContext + "client_code/index.html");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -435,7 +438,7 @@ public class LoginController {
 			response.sendRedirect(indexpageurl);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 	}
@@ -480,6 +483,7 @@ public class LoginController {
 		}
 
 		try {
+			//这里有空指针异常
 			AccessToken accessTokenObj = (new Oauth()).getAccessTokenByQueryString(request.getQueryString(),
 					request.getParameter("state"));
 			String code = request.getParameter("code");
@@ -527,7 +531,7 @@ public class LoginController {
 				}
 			}
 		} catch (QQConnectException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -541,9 +545,9 @@ public class LoginController {
 			response = getMethod.getResponseBodyAsString(); // 读取服务器返回的页面代码，这里用的是字符读法
 		} catch (HttpException e) {
 			System.out.println("Please check your provided http address!  发生致命的异常，可能是协议不对或者返回的内容有问题"); // 发生致命的异常，可能是协议不对或者返回的内容有问题
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (IOException e) { // 发生网络异常
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally { // 释放连接
 			getMethod.releaseConnection();
 		}
@@ -560,7 +564,7 @@ public class LoginController {
 		try {
 			response.getWriter().write("ok");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 }

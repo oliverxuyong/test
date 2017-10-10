@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.socket.TextMessage;
@@ -14,6 +15,7 @@ import so.xunta.websocket.echo.EchoWebSocketHandler;
 
 @Controller
 public class GreetingController {
+	Logger logger = Logger.getLogger(GreetingController.class);
 
 	@RequestMapping(value = "/greetings")
 	public void greet(String greeting) {
@@ -34,7 +36,7 @@ public class GreetingController {
 			res.getWriter().write("ok");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
@@ -46,7 +48,7 @@ public class GreetingController {
 			res.getWriter().write("ok");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 }

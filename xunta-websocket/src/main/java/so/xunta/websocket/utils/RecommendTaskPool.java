@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 public class RecommendTaskPool {
 	@Autowired
 	private ThreadPoolExecutor threadPoolExecutor;
+	@Autowired
+	private WolfRejectedExecutionHandler wolfRejectedExecutionHandler;
 	
 	Logger logger =Logger.getLogger(RecommendTaskPool.class);
 	
@@ -25,6 +27,10 @@ public class RecommendTaskPool {
 	}
 	@PostConstruct
 	public void setRejectedHandler(){
-		threadPoolExecutor.setRejectedExecutionHandler(new WolfRejectedExecutionHandler());
+		threadPoolExecutor.setRejectedExecutionHandler(wolfRejectedExecutionHandler);
+	}
+	
+	public void destroy(){
+		threadPoolExecutor.shutdown();
 	}
 }

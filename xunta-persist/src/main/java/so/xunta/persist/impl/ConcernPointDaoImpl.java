@@ -46,6 +46,15 @@ public class ConcernPointDaoImpl implements ConcernPointDao {
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ConcernPointDO> listConcernPointsByCreator() {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "select cp.* from concern_point as cp order by cp.weight ";
+		Query query = session.createSQLQuery(sql).addEntity(ConcernPointDO.class);
+		return query.list();
+	}
+	
 	@Override
 	public ConcernPointDO updateConcernPoint(ConcernPointDO cp) {
 		Session session = sessionFactory.getCurrentSession();

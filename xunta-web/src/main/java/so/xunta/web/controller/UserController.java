@@ -9,6 +9,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ public class UserController {
 	@Autowired
 	private RecommendService recommendService;
 	
+	Logger logger =Logger.getLogger(UserController.class);
 	IdWorker idWorder = new IdWorker(1L, 1L);	
 	
 	@RequestMapping("/checkuser")
@@ -131,7 +133,7 @@ public class UserController {
 			}
 		} catch (Exception e) {
 			System.out.println("添加用户失败");
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		
 		response.setCharacterEncoding("utf-8");
@@ -143,7 +145,7 @@ public class UserController {
 		try {
 			responseBack(request, response, obj);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
@@ -225,7 +227,7 @@ public class UserController {
 			
 		} catch (Exception e) {
 			System.out.println("添加用户失败");
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		
 		response.setCharacterEncoding("utf-8");

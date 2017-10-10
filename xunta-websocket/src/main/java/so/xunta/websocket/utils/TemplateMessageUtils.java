@@ -7,6 +7,8 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import so.xunta.beans.Token;
@@ -18,7 +20,7 @@ import so.xunta.beans.Token;
 public class TemplateMessageUtils {
 	
 	private final static String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-	
+	private static Logger logger = Logger.getRootLogger();
     /**
 
      * @method sendWechatmsgToUser
@@ -101,7 +103,7 @@ public class TemplateMessageUtils {
                 return "success";
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return "error";
     }
@@ -186,7 +188,7 @@ public class TemplateMessageUtils {
             jsonRemark.put("color", "#173177");
             json.put("remark", jsonRemark);
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return json;
     }

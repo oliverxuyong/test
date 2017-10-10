@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public int delUser(Long userid) {
-		System.out.println("删除用户");
+		logger.info("删除用户");
 		userDao.deleteUser(userid);
 		return 0;
 	}
