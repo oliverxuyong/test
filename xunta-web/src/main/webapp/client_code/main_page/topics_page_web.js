@@ -196,6 +196,22 @@ function calCircle(i,cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNu
 	var hypotenuse = parseInt(Math.sqrt(Math.pow(cpTextHeight, 2)
 			+ Math.pow(cpTextWidth, 2))) + 1;
 	
+	
+	//2017.08.14 叶夷 加上标签的选择人数 var selectTagNumNode; if(selectTagNum>0){
+	selectTagNumNode= $("<div></div>").attr("class",
+	"selectTagNum").text(selectTagNum); cp_node.append(selectTagNumNode);
+	selectTagNumNode.css("font-size",cpTextSize+"px");
+	selectTagNumNode.css("height", (cpTextSize+5) + "px");
+	//加上了标签的选择人数外圆的大小增大
+	if (cpInNodeWidth > hypotenuse){
+		cpInNodeWidth=cpInNodeWidth+cpTextSize+2; 
+		cp_innode.css("height", cpInNodeWidth);
+		cp_innode.css("width", cpInNodeWidth);
+	}else{
+		hypotenuse=hypotenuse+cpTextSize+5; 
+	}
+	 
+	
 	// 为了使文字居中，计算文字div 的top
 	var cpTextTop;
 	var cpTextLeft;
@@ -219,6 +235,9 @@ function calCircle(i,cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNu
 	cpTextLeft = (cpInNodeWidth - cpTextWidth) / 2;
 	cp_text.css("top", cpTextTop);
 	cp_text.css("left", cpTextLeft);
+	
+	//选择标签的位置也要改变
+	selectTagNumNode.css("top", (cpTextTop+cpTextHeight+5) + "px");
 	
 	// 2017.09.13 叶夷 判断标签之前的距离，需要获得cp_node的大小，然后再加上一个随即距离则是最外面圆的大小
 	var cpNodeWidth=cp_node.width();
