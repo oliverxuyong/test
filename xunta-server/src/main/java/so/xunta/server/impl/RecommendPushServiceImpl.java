@@ -25,7 +25,12 @@ import so.xunta.server.RecommendService;
 import so.xunta.utils.RecommendPushUtil;
 
 @Service
-public class RecommendPushServiceImpl implements RecommendPushService {
+public class RecommendPushServiceImpl implements RecommendPushService {	
+	private final int U_TOP_NUM = 10;//推荐阈值，前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
+	private final int U_LISTEN_NUM = 10;  //比较的匹配列表长度
+	private final int CP_THRESHOLD = 10; //推荐阈值，更新后CP所处的最低排名
+	private final int CP_LISTEN_NUM = 10; //推荐阈值，更新前CP所处的最高排名
+	
 	@Autowired
 	private U2uRelationDao u2uRelationDao;
 	@Autowired
@@ -38,6 +43,7 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 	private UserDao userDao;
 	
 	Logger logger =Logger.getLogger(RecommendPushServiceImpl.class);
+
 	
 	@Override
 	public void recordStatusBeforeUpdateTask(String uid,int updateType) {
@@ -75,7 +81,7 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 			logger.info("匹配用户数量发生了变化，直接产生推送");
 			appendPushUsers(matched_uids_after,recommendPushDTO);
 		}else{
-			for(int i=0;i < matched_uids_previous.size();i++){
+			for(int i=0;i < (matched_uids_previous.size()>U_TOP_NUM ? U_TOP_NUM : matched_uids_previous.size());i++){
 				if(!matched_uids_previous.get(i).equals(matched_uids_after.get(i))){
 					logger.info("前"+matched_uids_previous.size()+"位排名发生了变化,产生推送");
 					appendPushUsers(matched_uids_after,recommendPushDTO);
@@ -96,7 +102,7 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 			PushRecommendCpDTO pushRecommendCp = new PushRecommendCpDTO();
 			pushRecommendCp.setCpId(cpid);
 			pushRecommendCp.setCpText(cp.getText());
-			pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid));
+			pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT));
 			
 			recommendPushDTO.addPushMatchedCPs(pushRecommendCp);
 			logger.info("产生推送cp："+cp.getText());
@@ -120,9 +126,8 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 	}	
 	
 	private	List<String> getMatchedUsers(String uid, int num){
-		final int FIRST_USER_RANK = 0;
 		List<String> matched_uids = new ArrayList<String>();	
-		Set<Tuple> userSet = u2uRelationDao.getRelatedUsersByRank(uid, FIRST_USER_RANK, num-1);
+		Set<Tuple> userSet = u2uRelationDao.getRelatedUsersByRank(uid, 0, num-1);
 		for(Tuple userTuple:userSet){
 			if(userTuple.getScore()<=0){
 				break;

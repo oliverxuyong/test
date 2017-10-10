@@ -10,6 +10,7 @@ import so.xunta.persist.C2uDao;
 import so.xunta.persist.C2uPresentDao;
 import so.xunta.persist.U2cPresentDao;
 import so.xunta.server.CpShowingService;
+import so.xunta.server.RecommendService;
 
 @Service
 public class CpShowingServiceImpl implements CpShowingService {
@@ -42,7 +43,7 @@ public class CpShowingServiceImpl implements CpShowingService {
 
 	@Override
 	public int getCpSelectedUserCounts(String cpid) {
-		return c2uDao.getHowManyPeopleSelected(cpid).intValue();
+		return c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT).intValue();
 	}
 
 	@Override

@@ -26,10 +26,11 @@ public class WolfRejectedExecutionHandler implements RejectedExecutionHandler {
 			String uid = recommendPushTask.getUserId();
 			String cpId = recommendPushTask.getCpId();
 			int selectType = recommendPushTask.getSelectType();
+			String property = recommendPushTask.getProperty();
 			if(selectType == RecommendService.SELECT_CP){
-				pendingTaskQueue.addSelectCPTask(uid, cpId);
+				pendingTaskQueue.addSelectCPTask(uid, cpId, property);
 			}else{
-				pendingTaskQueue.addCancelCpTask(uid, cpId);
+				pendingTaskQueue.addCancelCpTask(uid, cpId, property);
 			}
 			
 		}else if(task instanceof RecommendUpdateTask){

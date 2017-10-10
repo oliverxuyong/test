@@ -8,19 +8,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@Table(name="cp_choice")
+@Table(name="cp_choice",uniqueConstraints = {@UniqueConstraint(columnNames={"user_id", "cp_id"})})
 public class CpChoiceDO {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private BigInteger id;
 	private Long user_id;
 	private BigInteger cp_id;
+	@ColumnDefault(value="P")
+	private String property;
 //	private String is_selected;
-	private Long tmp_id;
+//	private Long tmp_id;
 	private Timestamp create_time;
-	private Timestamp update_time;
+//	private Timestamp update_time;
 	
 	public BigInteger getId() {
 		return id;
@@ -40,28 +45,34 @@ public class CpChoiceDO {
 	public void setCp_id(BigInteger cp_id) {
 		this.cp_id = cp_id;
 	}
+	public String getProperty() {
+		return property;
+	}
+	public void setProperty(String property) {
+		this.property = property;
+	}
 	/*public String getIs_selected() {
 		return is_selected;
 	}
 	public void setIs_selected(String is_selected) {
 		this.is_selected = is_selected;
-	}*/
+	}
 	public Long getTmp_id() {
 		return tmp_id;
 	}
 	public void setTmp_id(Long tmp_id) {
 		this.tmp_id = tmp_id;
-	}
+	}*/
 	public Timestamp getCreate_time() {
 		return create_time;
 	}
 	public void setCreate_time(Timestamp create_time) {
 		this.create_time = create_time;
 	}
-	public Timestamp getUpdate_time() {
+	/*public Timestamp getUpdate_time() {
 		return update_time;
 	}
 	public void setUpdate_time(Timestamp update_time) {
 		this.update_time = update_time;
-	}
+	}*/
 }

@@ -15,5 +15,5 @@ public interface CpChoiceDao {
 	 */
 	public CpChoiceDO getCpChoice(Long userid, BigInteger cpId);
 	
-	public List<BigInteger> getSelectedCpsBeforeTime(Long userid, Timestamp lastUpdateTime);
+	public List<CpChoiceDO> getSelectedCpsBeforeTime(Long userid, Timestamp lastUpdateTime);
 }

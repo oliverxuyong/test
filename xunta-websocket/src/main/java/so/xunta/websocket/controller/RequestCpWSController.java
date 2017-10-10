@@ -20,7 +20,7 @@ import so.xunta.server.SocketService;
 
 @WebSocketTypeAnnotation
 @Component
-public class RequestCpController {
+public class RequestCpWSController {
 	@Autowired
 	private ResponseGroupCPsService responseGroupCPsService;
 	@Autowired
