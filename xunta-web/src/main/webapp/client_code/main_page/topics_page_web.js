@@ -8,10 +8,10 @@ var intersetCPArray=new Array();
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
 	// 叶夷 2017.07.11 等请求cp返回之后再请求用户匹配缩略表
-	 /*if(firstRequestTopMatchedUsers==true){
-		 //requestTopMatchedUsers(userId,requestTopMUNum); 
-		 addMPData();
-	 }*/
+	 if(firstRequestTopMatchedUsers==true){
+		 requestTopMatchedUsers(userId,requestTopMUNum); 
+		 //addMPData();
+	 }
 	 
 	
 	$("#showatloaded").show();// 首页开始显示
@@ -651,7 +651,7 @@ var muDataQueue = new Array();// mpDataQueue
 var circleEnd = true;// 判断动画是否运行完
 
 // 2017.07.04 叶夷 模拟数据的产生
-function addMPData(){ 
+/*function addMPData(){ 
 	var newMatchedUserArr=new Array();// 装后台发来的匹配人
 	var mpId=new Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);// 模拟的匹配人ID
 	var mpImg=new Array("http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40",
@@ -697,7 +697,8 @@ function addMPData(){
 	}else{// 如果没有运行完则将新数据放入队列中
 		muDataQueue.push(newMatchedUserArr); 
 	} 
-}
+}*/
+
 var aniSecond=3;//秒数
 /**前台目前显示的匹配人列表排名*/
 var muNowData = new Array();
@@ -752,11 +753,11 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 	} else{
 		
 		//测试
-		muChangeData=[].concat(muNowData);
+		/*muChangeData=[].concat(muNowData);
 		getMuChangeData(matchedUserArr);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
-		setPositionAndNotIntersect();
+		setPositionAndNotIntersect();*/
 		
-		/*circleEnd = false;//动画开始
+		circleEnd = false;//动画开始
 		muChangeData=[].concat(muNowData);
 		getMuChangeData(matchedUserArr);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
 		
@@ -797,7 +798,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			showMatchPeople(muDataQueue[0]);
 		} else {// 没有则运行完毕
 			circleEnd = true;
-		}*/
+		}
 	}
 }
 
@@ -1054,7 +1055,7 @@ function muAddImg(i,matchedUserArr,isFirst){
 		var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
 		 
 		var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
-		// var muUserName=matchedUserArr[i].username;
+		var muUserName=matchedUserArr[i].username;
 		
 		var muNode=$("<div></div>").attr("class","mu").attr("id","mu"+muId);
 		var muNodeImg=$("<img src='"+muImg+"'/>");
@@ -1102,7 +1103,7 @@ var changeCount=0;//这是循环变化的次数
 
 /**2017.09.26 叶夷 从一个匹配人开始，然后计算边框和其它匹配人共同作用的排斥力(排斥力即移动的距离，目前是距离的倒数*大小,即距离越近和质量越大，排斥力越大),知道这个距离在0~1之间，则算是平衡下来停下*/
 function setPositionAndNotIntersect(){
-	++changeCount;//判断次数
+	/*++changeCount;//判断次数
 	
 	//为了测试效果，现将大小更新
 	for(var a=0;a<muChangeData.length;a++){
@@ -1116,7 +1117,7 @@ function setPositionAndNotIntersect(){
 		var imgWidth=(parseInt(moveWidth)-10)+"px";
 		muDiv.find("img").css("width",imgWidth);
 		muDiv.find("img").css("height",imgWidth);
-	}
+	}*/
 	var headerContainerSize=100;//边的质量
 	var moveMax;//移动的最大值(边界的时候为移动匹配圆的大小，对比别的匹配圆的时候是对比的匹配圆大小)：出现在几种情况1.距离为0~10个像素之间；2.距离为负数
 	var moveMaxRange=2;//这是0以上像素的限制
@@ -1229,30 +1230,17 @@ function setPositionAndNotIntersect(){
 		var moveX,moveY;//边框移动的总和
 		moveX=moveStartX+moveEndX;
 		moveY=moveStartY+moveEndY;
-		/*
-		updateXAndY(a,x,moveX,y,moveY,muDiv,radius);
-		muDiv.css("background-color","");
-		
-		console.log("测试->第"+changeCount+"次循环->第判断是否相交");
-		var x=oneMuData.x;
-		var y=oneMuData.y;
-		var intersect=isIntersect(oneMuData.userid,x,y,radius);//判断是否相交
-		if(intersect 
-				|| x<(matchUserContainerXStart-1) || x>(matchUserContainerXEnd+1)
-				|| y<(matchUserContainerYStart-1) || y>(matchUserContainerYEnd+1)){//如果这个圆与所有的圆都不相交
-			allOver=false;
-		}*/
 		
 		//先做平均判断再移动
 		if(changeCount==n){//开始求平均数
 			averageForChangeX[a]=changeTotalX/n;
 			averageForChangeY[a]=changeTotalY/n;
 		}else if(changeCount>n){//开始之后的平均数求法
-			if(a==0){
+			/*if(a==0){
 				console.log("测试->第"+changeCount+"次循环->"+averageForChangeX[a]+"+"+moveX+"/"+n);
 				console.log("测试->第"+changeCount+"次循环->"+averageForChangeY[a]+"+"+moveY+"/"+n);
 			}
-			
+			*/
 			averageForChangeX[a]=(averageForChangeX[a]*(n-1)+moveX)/n;
 			averageForChangeY[a]=(averageForChangeY[a]*(n-1)+moveY)/n;
 			/*if(a==0){
@@ -1269,27 +1257,29 @@ function setPositionAndNotIntersect(){
 		//如果平均值小于0.5,则减少移动距离
 		var reduceDistance;//判断当前移动距离是否大于减少移动的距离
 		if(averageForChangeX[a]<=2){
-			reduceDistance=Math.abs(moveX)-2;
+			/*reduceDistance=Math.abs(moveX)-2;
 			if(reduceDistance>0){
 				moveX=(moveX>=0)?(moveX-moveMaxRange):(moveX+moveMaxRange);
 			}else{
 				moveX=0;
-			}
+			}*/
 			//console.log("测试变化之前->平均移动距离："+allMoveX);
 			moveX=moveX/3;
 		}
 		if(averageForChangeY[a]<=2){
-			reduceDistance=Math.abs(moveY)-2;
+			/*reduceDistance=Math.abs(moveY)-2;
 			if(reduceDistance>0){
 				moveY=(moveY>=0)?(moveY-moveMaxRange):(moveY+moveMaxRange);
 			}else{
 				moveY=0;
-			}
+			}*/
 			//console.log("测试变化之前->平均移动距离："+allMoveX);
 			moveY=moveY/3;
 		}
-		/*console.log("测试->第"+changeCount+"次循环->第"+a+"个匹配人移动距离x："+moveX);
-		console.log("测试->第"+changeCount+"次循环->第"+a+"个匹配人移动距离y："+moveY);*/
+		/*if(a==0){
+			console.log("测试->第"+changeCount+"次循环->第"+a+"个匹配人移动距离x："+moveX);
+			console.log("测试->第"+changeCount+"次循环->第"+a+"个匹配人移动距离y："+moveY);
+		}*/
 		
 		//移动测试
 		updateXAndY(a,x,moveX,y,moveY,muDiv,radius);
@@ -1299,14 +1289,16 @@ function setPositionAndNotIntersect(){
 		}
 	}
 	
-	if(!allOver){
+	return allOver;
+	
+	/*if(!allOver){
 		timeOutSuccess = setTimeout(function() {
 			setPositionAndNotIntersect();
 			console.log("排名改变第"+changeCount+"次循环");
 		},100);
 	}else{
 		return ;
-	}
+	}*/
 	
 }
 
@@ -1326,7 +1318,7 @@ function updateXAndY(a,x,moveX,y,moveY,muDiv,radius){
 }
 
 // 2017.08.23 叶夷 生成一个新的匹配人div
-function muDiv(id,muImg,muUserName,top,left){
+/*function muDiv(id,muImg,muUserName,top,left){
 	var muNode=$("<div></div>").attr("id","mu"+id).attr("class","mu");// 这是页面的匹配人头像div
 	var muNodeImg=$("<img src='"+muImg+"' style='width:0px;height:0px;'/>");
 	muNode.append(muNodeImg);
@@ -1342,10 +1334,10 @@ function muDiv(id,muImg,muUserName,top,left){
 		enterDialogPage(id,muUserName);
 		// addMPData();//测试匹配人动画
 	});
-}
+}*/
 
 // 2017.08.24 叶夷 获得现有mp中应该去除的排名，则在新排名中没有的mp
-function getMuNowPositionNewNotExist(i,matchedUserArr){
+/*function getMuNowPositionNewNotExist(i,matchedUserArr){
 	var muNowPositionNewNotExist;// 这个位置的前端匹配人在新排名里不存在
 	// 3.获得现有mp中应该去除的排名，则在新排名中没有的mp,且将它缩小
 	for (var index = i; index < muNowData.length; index++) {
@@ -1364,7 +1356,7 @@ function getMuNowPositionNewNotExist(i,matchedUserArr){
 		}
 	}
 	return muNowPositionNewNotExist;
-}
+}*/
 
 // 匹配人头像移动,即改变top和left值
 function animateForMu(muDiv, muLeft,muTop, second) {// 移动的物体，移动的目的地，移动的时间
