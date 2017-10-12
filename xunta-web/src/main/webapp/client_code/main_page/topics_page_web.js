@@ -1039,14 +1039,21 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		averageForChangeX.splice(0, averageForChangeX.length);
 		averageForChangeY.splice(0, averageForChangeY.length);
 		
+		
 		//这是为了解决排名改变还没有计算完新的排名又出现的问题
-		removeByValue(muDataQueue, matchedUserArr);
-		// 然后查看队列里面有没数据，有则接着运行,没有则运行完毕
-		if (muDataQueue.length > 0) {// 有则接着运行
-			showMatchPeople(muDataQueue[0]);
-		} else {// 没有则运行完毕
-			circleEnd = true;
-		}
+		timeOutSuccess=setTimeout(function(){
+			muDataQueueEnd(matchedUserArr);
+		},aniSecond * 0.4);
+	}
+}
+
+function muDataQueueEnd(matchedUserArr){
+	removeByValue(muDataQueue, matchedUserArr);
+	// 然后查看队列里面有没数据，有则接着运行,没有则运行完毕
+	if (muDataQueue.length > 0) {// 有则接着运行
+		showMatchPeople(muDataQueue[0]);
+	} else {// 没有则运行完毕
+		circleEnd = true;
 	}
 }
 
