@@ -8,11 +8,11 @@ var intersetCPArray=new Array();
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
 	// 叶夷 2017.07.11 等请求cp返回之后再请求用户匹配缩略表
-	/*
-	 * if(firstRequestTopMatchedUsers==true){
-	 * requestTopMatchedUsers(userId,requestTopMUNum); }
-	 */
-	
+	 if(firstRequestTopMatchedUsers==true){
+		 requestTopMatchedUsers(userId,requestTopMUNum); 
+		 //addMPData();
+	 }
+	 
 	$("#showatloaded").show();// 首页开始显示
 	
 	// 获得一批推荐标签数据进行位置，大小和动画的设置
@@ -53,7 +53,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	}
 	
 	// 一批标签个别相交之后数据清空
-	intersetCPArray.splice(0,intersetCPArray.length);  
+	//intersetCPArray.splice(0,intersetCPArray.length);  
 	
 	// 定义好位置之后开始动画,参数是需要动画的不重复的可以上升的cp个数
 	startAnimate(notRepeatCpCount);
@@ -61,14 +61,22 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	$("#request_cp").show();
 }
 
+//2017.10.12 叶夷   标签的完整文字内容,cpid为键，文字为值
+var fullTextArray=new Array();
+
 // 叶夷 2017.06.16 通过服务器返回的标签添加到页面的方法
 // i表示一批推荐标签的第几个标签
 function appendElement(i, cpid,cp) {
 	var cp_container = $("#cp-container");// 装推荐标签的容器
 	
+	// 这是cp的选择人数
+	var selectTagNum =cp.howmanypeople_selected;
+	//var selectTagNum =parseInt(Math.random()*999)+1;
+	
 	// 先随机推荐标签字体的大小，在这里留一个可以控制字体大小的入口
-	var cpTextSize = Math.random() * 8 + 12;
-	cpTextSize = parseInt(cpTextSize);
+	/*var cpTextSize = Math.random() * 8 + 12;
+	cpTextSize = parseInt(cpTextSize);*/
+	var cpTextSize =controlSize(selectTagNum,maxCPTextSize,minCPTextSize);
 	
 	var cp_node = $("<div></div>").attr("class", "cp").attr("id",
 			"cpid" + cpid);// 外圆div
@@ -77,25 +85,43 @@ function appendElement(i, cpid,cp) {
 	var cp_text = $("<div></div>");// 文字div
 	cp_innode.append(cp_text);
 	
+	//将选择人数放入标签中
+	var selectTagNumText=selectTagNum;
+	if(selectTagNum>999){
+		selectTagNumText=999+"+";
+	}
+	var selectTagNumNode= $("<div></div>").attr("class",
+	"selectTagNum").attr("id","selectTagNum"+cpid).text(selectTagNumText); 
+	cp_node.append(selectTagNumNode);
+	
 	// 2017.09.13 叶夷 在标签处再增加一个外圆，用来控制圆与圆之间的距离
 	var cpNodeByDistance=$("<div></div>").attr("class", "outcp").attr("id","outcpid" + cpid);
 	cpNodeByDistance.append(cp_node);
 	
 	
 	// 先随机内圆 div的大小,在这里留一个可以控制内圆div大小的入口
-	var cpInNodeWidth = Math.random() * 40 + 40;
-	cpInNodeWidth = parseInt(cpInNodeWidth);
+	//var cpInNodeWidth = Math.random() * 40 + 40;
+	//cpInNodeWidth = parseInt(cpInNodeWidth);
+	var cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
 	cp_innode.css("height", cpInNodeWidth);
 	cp_innode.css("width", cpInNodeWidth);
 	
-	// 这是cp的选择人数
-// var selectTagNum =cp.howmanypeople_selected;
-	var selectTagNum =parseInt(Math.random()*999)+1;
-	
-	// 将标签的文字设置为字母和数字，为了测试匹配文字和数字和原型
-	// calCircle(cp_text, cpTextSize, "CaraDelev...", cp_node, cp_innode);
+	//判断是否需要相交
+	var isInterset=false;;
+	for(var count=0;count<=intersetCPArray.length;count++){
+		var intersetCP=intersetCPArray[count];
+		if(i==intersetCP){
+			isInterset=true;
+			intersetCPArray[count]=cpid;
+			break;
+		}
+	}
+	//标签文字完整内容保存
+	fullTextArray[cpid]=cp.cptext;
+	// 测试字数超过九个字的显示
+	//calCircle(cp_text, cpTextSize, "今天上海很冷要多穿衣服", cp_node, cp_innode,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
 	// 调用字体大小匹配圆大小的方法
-	calCircle(i,cp_text, cpTextSize, cp.cptext, cp_node, cp_innode,selectTagNum,cpNodeByDistance);
+	calCircle(cp_text, cpTextSize, cp.cptext, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
 	
 	cpTestArray.push(CPTestObj(cpid, cp.cptext));// 2017.09.14 叶夷
 													// 用来装页面存在过的cpid,为了性能测试
@@ -110,14 +136,24 @@ function appendElement(i, cpid,cp) {
 	
 	// 标签大小设置之后将设置标签动画的轨迹且将前端出现过的标签位置全部保存下来
 	// cpAnimationLocation(cp_container,cp_node);
-	cpAnimationLocation(cp_container,cpNodeByDistance);
+	cpAnimationLocation(cp_container,cpNodeByDistance,cpValue);
 }
 
-var minCPSize = 40;// 最小内圆的大小
-var maxCPSize = 80;// 最大内圆的大小
+var minCPSize = 50;// 最小内圆的大小
+var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 12;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
 var maxCPTextNumber = 9;// cp文字最大的数量
+var maxselectTagNum = 1000;// 影响标签大小的选择人数最小的数量
+var minselectTagNum = 100;// 影响标签大小的选择人数最大的数量
+/**叶夷  2017.10.10  控制文字大小和内圆大小的方法*/
+function controlSize(selectTagNum,maxSize,minSize){
+	var sectionSize=maxSize-minSize;//大小的范围
+	var sectionSelectTagNum=maxselectTagNum-minselectTagNum;//选择人数的范围
+	var space=sectionSelectTagNum/sectionSize;//这是选择人数和大小范围之间的比例
+	var endSize=selectTagNum/space+minSize;//这是最终的大小
+	return endSize;
+}
 
 // 控制范围的方法
 function sizeInMaxAndMin(size,max,min){
@@ -132,17 +168,10 @@ function sizeInMaxAndMin(size,max,min){
 
 // 叶夷 2017.06.30
 // cp圆的大小与文字匹配,在分级的情况下计算相应文字的面积，然后计算圆的面积(这里还没想好怎么做：然后比较内圆大小，如果内圆不能装下文字，则扩大外圆)
-// 传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div,再加上一个圆（用来判断标签之前的距离）
-function calCircle(i,cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNum,cpNodeByDistance) {
+// 传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div,选择的人数，再加上一个圆div（用来判断标签之前的距离）,选择人数div,判断是否相交
+function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset) {
 	// 获得cp文字字符的长度
 	var cpTextLength = length(cpText);
-
-	// 控制cp文字的大小,范围在最小和最大之间
-	cpTextSize=sizeInMaxAndMin(cpTextSize,maxCPTextSize,minCPTextSize);
-
-	// 控制内圆div的大小,范围在最小和最大之间
-	var cpInNodeWidth = cp_innode.width();// 内圆div的宽
-	cpInNodeWidth=sizeInMaxAndMin(cpInNodeWidth,maxCPSize,minCPSize);
 
 	// 控制cp文字显示的个数,超过最大个数则截断且加上"..."
 	if (cpTextLength > maxCPTextNumber) {
@@ -152,6 +181,12 @@ function calCircle(i,cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNu
 		cpTextLength = maxCPTextNumber + 1;
 	}
 	
+	//限制了文字内容和长度之后对圆进行大小计算
+	calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
+}
+
+function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset,isSelect){
+	//var cpInNodeWidth = cp_innode.width();// 内圆div的宽
 	var cpTextWidth;// cp文字 div的宽
 	var cpTextHeight;// cp文字 div的高
 	
@@ -160,7 +195,7 @@ function calCircle(i,cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNu
 	if (cpTextLength <= 3 || (isLetterOrNumber(cpText)==true)) {
 		cpTextWidth = cpTextSize * cpTextLength;
 		cpTextHeight = cpTextSize + 5;
-	} else if (cpTextLength <= 10 && cpTextLength > 3) {// 4-10个字为两行
+	} else if (cpTextLength > 3) {// 4-10个字为两行
 		if (cpTextLength % 2 == 0) {
 			cpTextWidth = cpTextSize * (cpTextLength / 2);
 		} else {
@@ -179,21 +214,28 @@ function calCircle(i,cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNu
 	cp_text.css("font-size", cpTextSize);
 	cp_text.text(cpText);
 	
+	//叶夷  2017.10.12  选中标签加上两个选项
+	
+	
 	// 计算cp div的斜边的大小，即容纳其外圆的直径
 	var hypotenuse = parseInt(Math.sqrt(Math.pow(cpTextHeight, 2)
 			+ Math.pow(cpTextWidth, 2))) + 1;
 	
-	/*
-	 * //2017.08.14 叶夷 加上标签的选择人数 var selectTagNumNode; if(selectTagNum>0){
-	 * selectTagNumNode= $("<div></div>").attr("class",
-	 * "selectTagNum").text(selectTagNum); cp_node.append(selectTagNumNode);
-	 * 
-	 * selectTagNumNode.css("font-size",cpTextSize+"px");
-	 * selectTagNumNode.css("height", (cpTextSize+5) + "px");
-	 * //加上了标签的选择人数外圆的大小增大 if (cpInNodeWidth > hypotenuse){
-	 * cpInNodeWidth=cpInNodeWidth+cpTextSize+5; }else{
-	 * hypotenuse=hypotenuse+cpTextSize+5; } }
-	 */
+	
+	//2017.08.14 叶夷 加上标签的选择人数 
+	selectTagNumNode.css("font-size",cpTextSize+"px");
+	selectTagNumNode.css("height", (cpTextSize+5) + "px");
+	//加上了标签的选择人数外圆的大小增大
+	if (cpInNodeWidth > hypotenuse){
+		cpInNodeWidth=cpInNodeWidth+cpTextSize+2; 
+		cp_innode.css("height", cpInNodeWidth);
+		cp_innode.css("width", cpInNodeWidth);
+	}else{
+		hypotenuse=hypotenuse+cpTextSize+5; 
+	}
+	if(selectTagNum<=0){
+		selectTagNumNode.text("");
+	}
 	
 	// 为了使文字居中，计算文字div 的top
 	var cpTextTop;
@@ -219,21 +261,16 @@ function calCircle(i,cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNu
 	cp_text.css("top", cpTextTop);
 	cp_text.css("left", cpTextLeft);
 	
-	// 2017.09.13 叶夷 判断标签之前的距离，需要获得cp_node的大小，然后再加上一个随即距离则是最外面圆的大小
-	var cpNodeWidth=cp_node.width();
-	var randowDistance=cpNodeWidth*0.55;// 这是标签之间的随机距离,根据自身的大小判断，再加上个别相交
-	var isInterset=false;;
-	for(var count=0;count<=intersetCPArray.length;count++){
-		var intersetCP=intersetCPArray[count];
-		if(i==intersetCP){
-			isInterset=true;
-			break;
-		}
-	}
-	if(isInterset){
-		randowDistance=-(cpNodeWidth*0.3);
-	}
+	//选择标签的位置也要改变
+	selectTagNumNode.css("top", (cpTextTop+cpTextHeight+5) + "px");
 	
+	// 2017.09.13 叶夷 判断标签之前的距离，需要获得cp_node的大小，然后再加上一个随即距离则是最外面圆的大小
+	var randowDistance=cpInNodeWidth*0.25;// 先按内圆计算,这是标签之间的随机距离,根据自身的大小判断，再加上个别相交
+	//var randowDistance=10;
+	/*if(isInterset){
+		randowDistance=-(cpNodeWidth*0.3);
+	}*/
+	var cpNodeWidth=cp_node.width();
 	var cpNodeByDistanceWidth=cpNodeWidth+randowDistance;
 	cpNodeByDistance.css("width",cpNodeByDistanceWidth+"px");
 	cpNodeByDistance.css("height",cpNodeByDistanceWidth+"px");
@@ -243,6 +280,188 @@ function calCircle(i,cp_text, cpTextSize, cpText, cp_node, cp_innode,selectTagNu
 		var cpNodeTop=parseInt((cpNodeByDistanceWidth-cpNodeWidth)/2);
 		cp_node.css("top", cpNodeTop+"px");
 		cp_node.css("left", cpNodeTop+"px");
+	}
+	
+	return cpInNodeWidth;//这里返回是为了得到标签选择人数变化时的内圆大小
+}
+
+//保存每一个变化人数的数据
+var selectDataArray=new Array();
+//查看是否执行完的变量,true为执行完，false是为执行完
+var selectNumChangeOver=true;
+/**
+ * 叶夷  2017.10.12 在选择人数变化时查看前端是否执行完，如果没有则先保存
+ */
+function pushSelectCpPresent(data){
+	if(selectNumChangeOver){
+		selectNumChangeOver=false;
+		startPushSelectCpPresent(data)
+	}else{
+		selectDataArray.push(data);
+	}
+}
+
+//选择人数变化是推荐标签的位置需要调整，所以新建一个数组
+var cpValueForSelectNum=new Array();
+/**
+ * 2017.10.11  叶夷   
+ * 当前展示的cp中有用户新选中某个cp
+ */
+function startPushSelectCpPresent(data){
+	var cpid=data.cpid;
+	
+	//测试版本的cpid
+	/*var selectTagNumNodes=$(".selectTagNum");
+	var temp=parseInt(Math.random()*selectTagNumNodes.length);
+	var cpid=selectTagNumNodes.eq(temp).attr("id");*/
+	
+	var selectTagNum =data.howmanypeople_selected;
+	//var selectTagNum =parseInt(Math.random()*999)+1;//测试版本
+	//var selectTagNum=999;
+	
+	var selectTagNumNode=$("#selectTagNum"+cpid);
+	//var selectTagNumNode=$("#"+cpid);//测试版本
+	var nowSelectTagNum=selectTagNumNode.text();
+	var selectTagNumText=selectTagNum;
+	if(selectTagNum>999){
+		selectTagNumText=999+"+";
+	}
+	selectTagNumNode.text(selectTagNumText);
+	
+	cpid=cpid.replace(/[^0-9]/ig,"");//测试版本需要
+	
+	//判断这个标签是否是需要相交的圆
+	var isInterset=false;;
+	for(var count=0;count<=intersetCPArray.length;count++){
+		var intersetCP=intersetCPArray[count];
+		if(cpid==intersetCP){
+			isInterset=true;
+			break;
+		}
+	}
+	
+	//接下来是标签的大小改变
+	var cpNodeByDistance=$("#outcpid"+cpid);
+	var cp_node=$("#cpid"+cpid);
+	var cp_innode=cp_node.find(".incp");
+	var cp_text=cp_innode.find("div");
+	var cpText=cp_text.text();
+	var cpTextSize =controlSize(selectTagNum,maxCPTextSize,minCPTextSize);
+	
+	var cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
+	/*cp_innode.css("width",cpInNodeWidth);
+	cp_innode.css("height",cpInNodeWidth);*/
+	
+	//传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div,选择的人数，再加上一个圆div（用来判断标签之前的距离）,选择人数div,判断是否相交
+	cpInNodeWidth=calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset)
+	cp_innode.animate({
+		width : cpInNodeWidth,
+		height : cpInNodeWidth
+	}, 1000);
+	
+	//位置重新计算,left值不改变，然后通过中心点进行排序，通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
+	var cp_container = $("#cp-container");// 装推荐标签的容器
+	
+	//2.然后通过中心点进行排序
+	cpValue.sort(function(a,b){
+		var aX=((a.cpBottom-a.cpTop)/2)+a.cpBottom;
+		var bX=((b.cpBottom-b.cpTop)/2)+b.cpBottom;
+        return aX-bX;
+       });
+	
+	//测试代码
+	/*for(var a=0;a<cpValue.length;a++){
+		console.log("测试："+cpValue[a].cpNode+"->"+(((cpValue[a].cpBottom-cpValue[a].cpTop)/2)+cpValue[a].cpBottom));
+	}*/
+	
+	cpValueForSelectNum.splice(0, cpValueForSelectNum.length);
+	//通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
+	for (var index= 0; index < cpValue.length; index++) {
+		var cpObj = cpValue[index];// 存在的cp
+		var cpNodeID =cpObj.cpNode;// 存在的cpid
+		var cpLeft = cpObj.cpLeft;// 获得已有cp的最左边边界值
+		var cpRight = cpObj.cpRight;
+		var cpTop,cpBottom;
+		
+		var cpRadius;
+		var cpid1=cpNodeID.replace(/[^0-9]/ig,"");
+		if(cpid==cpid1){
+			cpRadius=$("#outcpid"+cpid).width()/2
+		}else{
+			cpRadius=(cpRight-cpLeft)/2;
+		}
+		var cpX = cpLeft + cpRadius;// 一开始圆心的x为start+cpRadius
+		var cpY = cp_container.height();//从下往上单轨迹扫描
+		// 1.遍历装cp容器的宽度,每次+1px
+		// start是要上升的cp的left的值，所以终点必须空出上升cp的width
+		for (;cpY>=cpRadius; cpY--) {
+			var isOverLay = false;// 判断是否重叠,false为不重叠
+			// 4.遍历所有已经存在的cp，判断哪些cp在这条轨迹范围内
+			for (var j = 0; j < cpValueForSelectNum.length; j++) {// 遍历已经存在的所有cp
+				var cpObj = cpValueForSelectNum[j];// 存在的cp
+				var cpNode = cpObj.getCpNode();// 存在的cpid
+				if(cpNodeID!=cpNode){
+					var cpLeftValue = cpObj.cpLeft;// 获得已有cp的最左边边界值
+					var cpRightValue = cpObj.cpRight;// 获得已有cp的最右边边界值
+					var cpTopValue = cpObj.cpTop;// 获得已有cp的最上边边界值
+					var cpBottomValue = cpObj.cpBottom;// 获得已有cp的最下边边界值
+
+					var nowCpRadius = (cpRightValue - cpLeftValue) / 2;// 现有cp的半径
+					var nowCpX = cpLeftValue + nowCpRadius;// 现有cp的圆心x周
+					var nowCpY = cpTopValue + nowCpRadius;
+
+					//console.log("")
+					//console.log("测试1："+cpX+" "+nowCpX+" "+cpY+" "+nowCpY+" "+cpRadius+" "+nowCpRadius);
+					//console.log("测试2："+(Math.sqrt(Math.pow((cpX - nowCpX), 2)
+					//		+ Math.pow((cpY - nowCpY), 2)))+"->"+(cpRadius + nowCpRadius))
+					if (Math.sqrt(Math.pow((cpX - nowCpX), 2)
+							+ Math.pow((cpY - nowCpY), 2)) <= (cpRadius + nowCpRadius)) {// 一旦相切则停止
+						isOverLay = true;
+						break;
+					}
+				}
+			}
+			if (isOverLay) {//一旦不相交
+				break;
+			}
+		}
+		//console.log("测试3："+cpY);
+		cpTop=cpY-cpRadius;
+		bottom = cpTop +cpRadius*2;
+		right=cpLeft+cpRadius*2;
+		cpValueForSelectNum.push(new CP(cpNodeID, cpLeft, right, cpTop, bottom));
+		// cp容器的高度调整
+		cp_container.height(bottom+maxCPSize);
+	}
+	cpValue= [].concat(cpValueForSelectNum);
+	
+	//开始动画
+	for (var j = 0; j < cpValue.length; j++) {// 只需要从需要动画的cp个数开始上升，已经在前端的cp不动
+		var cp_nodeId = cpValue[j].getCpNode();
+		var cp_node = $("#" + cp_nodeId);
+		var left = cpValue[j].getCpLeft();
+		var top = cpValue[j].getCpTop();
+
+		cp_node.animate({
+			top : top + "px",
+			left:left+"px"
+		}, {
+			duration :1000
+		});
+	}
+	
+	//判断动画是否执行完
+	timeOutSuccess=setTimeout(function(){
+		ifSelectNumChangeOver(data);
+	},1000);
+}
+
+function ifSelectNumChangeOver(data){
+	if(selectDataArray.length>0){
+		removeByValue(selectDataArray, data);
+		startPushSelectCpPresent(selectDataArray[0]);
+	}else{
+		selectNumChangeOver=true;
 	}
 }
 
@@ -317,7 +536,7 @@ function CP(cpNode, cpLeft, cpRight, cpTop, cpBottom) {
 }
 
 // 叶夷 2017.06.27 实现圆切面的上升动画效果,cp_container是装所有推荐标签的容器，cp_node是一个推荐标签
-function cpAnimationLocation(cp_container,cp_node) {
+function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	var cpWidth = cp_node.width();// 要上升的标签宽
 	var cpHeight = cp_node.height();// 要上升的标签高
 	var containerWidth = cp_container.width();// 装cp容器的宽度，即扫描轨迹的x轴的总数
@@ -345,8 +564,8 @@ function cpAnimationLocation(cp_container,cp_node) {
 		var cpTwo = new Array();
 
 		// 4.遍历所有已经存在的cp，判断哪些cp在这条轨迹范围内
-		for (var j = 0; j < cpValue.length; j++) {// 遍历已经存在的所有cp
-			var cpObj = cpValue[j];// 存在的cp
+		for (var j = 0; j < cpValueArray.length; j++) {// 遍历已经存在的所有cp
+			var cpObj = cpValueArray[j];// 存在的cp
 			var cpNode = cpObj.getCpNode();// 存在的cpid
 			var cpLeftValue = cpObj.getCpLeft();// 获得已有cp的最左边边界值
 			var cpRightValue = cpObj.getCpRight();// 获得已有cp的最右边边界值
@@ -412,7 +631,7 @@ function cpAnimationLocation(cp_container,cp_node) {
 	var right,bottom;
 	right = left + cpWidth;
 	bottom = top + cpHeight;
-	cpValue.push(new CP(cp_node.attr("id"), left, right, top, bottom));
+	cpValueArray.push(new CP(cp_node.attr("id"), left, right, top, bottom));
 	// cp容器的高度调整
 	cp_container.height(bottom);
 }
@@ -464,6 +683,22 @@ function calCPTangencyTop(cpObj, cpRadius, cpX) {
 function chooseOneCP(cp_node,cp) {
 	var cpid = cp.cpid;
 	var text=cp.cptext;
+	
+	//cp选择之前先放大实现“收了”和“消失”的功能，再进行选择
+	//1.先将需要的div放入
+	var selectItemNode=$("<div></div>").attr("class","selectItem");//这是放选项的div
+	cp_node.append(selectItemNode);
+	var yesItem=$("<div></div>").attr("class","yesItem").text("收了");//收下按钮
+	var noItem=$("<div></div>").attr("class","noItem").text("消失");//消失按钮
+	selectItemNode.append(yesItem).append(noItem);
+	//2.设置字体，目前设置为和标签文字的字体一样大
+	var cpInnode=cp_node.find(".incp");
+	var cpTextSize=cpInnode.find("div").css("font-size").replace(/[^0-9]/ig,"");
+	yesItem.css("font-size",cpTextSize+"px");
+	noItem.css("font-size",cpTextSize+"px");
+	//3.改变整个标签的大小
+	
+	
 	chooseCP(cp_node,cpid,text);
 }
 
@@ -471,7 +706,9 @@ function chooseCP(cp_node,cpid,text){
 	console.log(cpid +":"+text+ "-> 选中状态");
 	
 	if(lineNumber<=3){
-		cp_node.unbind();// 不可点击
+		if(cp_node!=null){
+			cp_node.unbind();// 不可点击
+		}
 		showSelectTag(cpid,text);
 		sendSelectCP(userId, cpid,text);
 	}else{
@@ -648,16 +885,10 @@ function closeSearch() {
 }
 
 // 2017.07.04 叶夷 建立一个匹配人列表所需要的数据类，用来模拟数据
-function MatchPeople(mpId, mpImg) {// 有匹配人的ID，匹配人的头像图片
+function MatchPeople(userid, img_src) {// 有匹配人的ID，匹配人的头像图片
 	var obj = new Object();
-	obj.mpId = mpId;
-	obj.mpImg = mpImg;
-	obj.getMpId = function() {
-		return this.mpId;
-	};
-	obj.getMpImg = function() {
-		return this.mpImg;
-	};
+	obj.userid = userid;
+	obj.img_src = img_src;
 	return obj;
 }
 
@@ -668,7 +899,7 @@ var muDataQueue = new Array();// mpDataQueue
 var circleEnd = true;// 判断动画是否运行完
 
 // 2017.07.04 叶夷 模拟数据的产生
-function addMPData(){ 
+/*function addMPData(){ 
 	var newMatchedUserArr=new Array();// 装后台发来的匹配人
 	var mpId=new Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);// 模拟的匹配人ID
 	var mpImg=new Array("http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40",
@@ -688,13 +919,18 @@ function addMPData(){
 						"http://www.mxunta.so:80/xunta-web/useravatar/thumb_img_767240700042547200/jpg/image");// 模拟的匹配人头像，目前用颜色代替
 	
 	// 判断是实时改变的匹配人头像还是一开始请求的匹配人头像
-	if(muNowData.length!=15){// 一开始请求的匹配人头像
-		for(var j=0;j<15;j++){
+	if(muNowData.length==0){// 一开始请求的匹配人头像
+		var length=15;
+		for(var j=0;j<length;j++){
 			newMatchedUserArr.push(new MatchPeople(mpId[j],mpImg[j]));
 		}
 	}else{// 是实时改变的匹配人头像
-		var temp=parseInt(Math.random()*15);
-		for(var i=0;i<15;i++){
+		var temp=parseInt(Math.random()*14)+1;
+		//var temp=14;
+		//只是测试固定新排名
+		//var length=parseInt(Math.random()*3)+11;
+		var length=15;
+		for(var i=0;i<length;i++){
 			newMatchedUserArr.push(new MatchPeople(mpId[temp],mpImg[temp]));
 			temp++;
 			if(temp==15){
@@ -709,53 +945,269 @@ function addMPData(){
 	}else{// 如果没有运行完则将新数据放入队列中
 		muDataQueue.push(newMatchedUserArr); 
 	} 
-}
+}*/
 
-var muNowData = new Array();// 前台目前显示的匹配人列表排名
+var aniSecond=3;//秒数
+/**前台目前显示的匹配人列表排名*/
+var muNowData = new Array();
+var muChangeData=new Array();//这是排名改变之后新的muNowData的数据
 // 2017.07.04 叶夷 显示匹配人列表，没有数据的时候先用模拟数据
 function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹配人列表数据(且排好了顺序)
-	var isChange=false;
 	if (muNowData.length == 0) {// 如果是用户一开始上线，匹配人列表没有
+		
+		//测试数据，先固定下来
+		/*muNowData.push(muPosition(1,393.5, 102, 36,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
+		muNowData.push(muPosition(2,461.9375, 85.375, 33.6,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_669143375538163712/jpg/image"));
+		muNowData.push(muPosition(3,324.4375,130.875, 31.5,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_671612515800715264/jpg/image"));
+		muNowData.push(muPosition(4,322.9375,50.375, 29.5,"http://q.qlogo.cn/qqapp/1104713537/5610B8A29AD893CB93284098C11549C8/40"));
+		muNowData.push(muPosition(5,441.0625,143.5, 27,"http://42.121.136.225:8888/user-pic2.jpg"));
+		muNowData.push(muPosition(6,494.5,134, 25,"http://q.qlogo.cn/qqapp/1104713537/9DB80ECB26EB4571E6F176543D4DEFD4/40"));
+		muNowData.push(muPosition(7,372.5,33, 23,"http://q.qlogo.cn/qqapp/1104713537/2CD480E191D757CFF15536FC6B655176/40"));
+		muNowData.push(muPosition(8,371.5,155, 21,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_708988162394951680/jpg/image"));
+		muNowData.push(muPosition(9,449,29.5, 18.5,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_670182701776637952/jpg/image"));
+		muNowData.push(muPosition(10,498.5,46, 18,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_720907019216883712/jpg/image"));
+		muNowData.push(muPosition(11,399.5, 102, 17.5,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
+		muNowData.push(muPosition(12,459.9, 67.3, 17,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
+		muNowData.push(muPosition(13,324.4, 118.8, 16.5,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
+		muNowData.push(muPosition(14,471.9,129.3, 16,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
+		muNowData.push(muPosition(15,321, 48.5, 15.5,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));*/
+		
 		// 2017.09.06 叶夷
 		// matchedUserArr.length改成现有的匹配人div的数量，因为匹配人数量有可能比这个数量少,会导致后面的对比产生null异常
-		var muLength=$(".mu").length;
 		for (var i = 0; i < matchedUserArr.length; i++) {
-			var muNode=$("#mu"+(i+1));// 这是已经放在页面的匹配人头像div
-			setMUPosition(i,muNode);
-			if(intersect){//只要有一个圆不是跟所有圆都不想交，则重新再来,米面出现偶然的相交情况
+			//var muNode=$("#mutemp"+(i+1));// 这是已经放在页面的匹配人头像div
+			
+			//这是测试
+			/*var muNodeWidth=muNode.width();
+			var radius=muNodeWidth/2;// 这是半径
+			var x=muNowData[i].x;
+			var y=muNowData[i].y;
+			var muNodeTop=y-radius;
+			var muNodeLeft=x-radius;
+			muNode.css("top",muNodeTop);
+			muNode.css("left",muNodeLeft);*/
+			
+			setMUPosition(i,matchedUserArr);//位置计算好
+			if(intersect){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
 				console.log("有一个圆会跟别的圆相交，重新再计算");
 				muNowData.splice(0, muNowData.length);
-				muPositionArray.splice(0,muPositionArray.length);
-				$(".mu").find("img").remove();
+				//$(".mu").find("img").remove();
 				showMatchPeople(matchedUserArr);
 				break;
 			}
-			muAddImg(i,matchedUserArr,muNode);
+			muAddImg(i,matchedUserArr,true);
+			
 		}
-	} else {// 用户在操作过程中匹配人列表发生改变
+	} else{
+		
+		//测试
+		/*muChangeData=[].concat(muNowData);
+		getMuChangeData(matchedUserArr);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+		setPositionAndNotIntersect();*/
+		
+		circleEnd = false;//动画开始
+		muChangeData=[].concat(muNowData);
+		getMuChangeData(matchedUserArr);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+		
+		//接下来就是遍历匹配人改变后的数组，将相交的匹配圆一点点移动
+		changeCount=0;
+		while(true){
+			var allOver=setPositionAndNotIntersect();
+			if(allOver){
+				break;
+			}
+			++changeCount;
+			//console.log("排名改变第"+changeCount+"次循环");
+		}
+		
+		for(var j=0;j<muChangeData.length;j++){//开始移动
+			var oneMuData=muChangeData[j];
+			var radius=oneMuData.radius;
+			var muDiv=$("#mu"+oneMuData.userid);
+			
+			var moveWidth=radius*2;
+			animateForSize(muDiv, moveWidth, aniSecond * 0.4);// 扩大
+			var endX=oneMuData.x;
+			var endY=oneMuData.y;
+			var muNodeTop=endY-radius;
+			var muNodeLeft=endX-radius;
+			animateForMu(muDiv, muNodeLeft,muNodeTop, aniSecond * 0.4);
+		}
+		//排名改变之后就将改变的数组数值复制到muNowData中，再清空muChangeData
+		muNowData=[].concat(muChangeData);
+		muChangeData.splice(0, muChangeData.length);
+		averageForChangeX.splice(0, averageForChangeX.length);
+		averageForChangeY.splice(0, averageForChangeY.length);
 		
 		
+		//这是为了解决排名改变还没有计算完新的排名又出现的问题
+		timeOutSuccess=setTimeout(function(){
+			muDataQueueEnd(matchedUserArr);
+		},aniSecond * 0.4);
 	}
 }
 
-var muPositionArray=new Array();// 用来存储前台已经显示的匹配人的位置
+function muDataQueueEnd(matchedUserArr){
+	removeByValue(muDataQueue, matchedUserArr);
+	// 然后查看队列里面有没数据，有则接着运行,没有则运行完毕
+	if (muDataQueue.length > 0) {// 有则接着运行
+		showMatchPeople(muDataQueue[0]);
+	} else {// 没有则运行完毕
+		circleEnd = true;
+	}
+}
+
+function getMuChangeData(matchedUserArr){
+	//将muNowData的数据和改变的排名数据计算之后获得新的muNewData，即下面的muNewData
+	for(var i = 0; i < matchedUserArr.length; i++){//将排名改变的数据遍历
+		var muserid = matchedUserArr[i].userid;// 这是匹配人id
+
+		var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
+		// var muUserName=matchedUserArr[i].username;
+		//这里是判断一开始的时候匹配用户没有满的情况
+		if(i>muChangeData.length-1){
+			setMUPosition(i,matchedUserArr);
+			muAddImg(i,matchedUserArr,false);
+			muChangeData=[].concat(muNowData);
+		}
+		var radius=muChangeData[i].radius;
+			if (muserid != muChangeData[i].userid) {// 排名改变
+				var exist = false;// 表示后台传来的数据是新数据
+				var muNowPosition;// 表示如果从后台新来的数据在前台存在但是排名有所改变时前台存在的排名
+				for (var j = i; j < muChangeData.length; j++) {// 遍历现有的头像
+					if (muserid == muChangeData[j].userid) {
+						exist = true;// 表示后台传来的数据不是新数据，已经存在
+						muNowPosition = j;
+						break;
+					}
+				}
+				if (exist) {// 存在
+					var temp=muChangeData[muNowPosition];//改变之前的数值
+					var tempX=temp.x;
+					var tempY=temp.y;
+					var tempRadius=temp.radius;
+					for (var k = muNowPosition; k >= i; k--) {
+						if(k == i){
+							var dValueRadius=radius-tempRadius;//这是radius变化的值
+							
+							//id和img是新排名位置的
+							muChangeData[k].userid=muserid;
+							muChangeData[k].img_src=muserimg;
+							//r保持这个位置不变
+							//x,y用改变之前的x,y结合r变化之后计算出来的x,y值
+							muChangeData[k].x=tempX+dValueRadius;
+							muChangeData[k].y=tempY+dValueRadius;
+						}else{//这是被动后移的排名
+							//id和img是k-1的
+							muChangeData[k].userid= muChangeData[k - 1].userid;
+							muChangeData[k].img_src= muChangeData[k - 1].img_src;
+							
+							//r保持这个位置不变
+							//x,y用改变之前的x,y结合r变化之后计算出来的x,y值
+							var dValueRadius= muChangeData[k].radius-muChangeData[k - 1].radius;//这是radius变化的值
+							muChangeData[k].x=muChangeData[k - 1].x+dValueRadius;
+							muChangeData[k].y=muChangeData[k - 1].y+dValueRadius;
+						}
+					}
+				} else {// 不存在
+					var muNowPositionNewNotExist=muChangeData.length-1;// 这个位置的前端匹配人在新排名里不存在
+					// 3.获得现有mp中应该去除的排名，则在新排名中没有的mp,且将它缩小
+					/*for (var index = i; index < muChangeData.length; index++) {
+						var exist ;// 表示在前端的数据中在新排名里面没有
+						for (var j = i; j < matchedUserArr.length; j++) {
+							if(muChangeData[index].userid==matchedUserArr[j].userid){
+								exist = true;
+								break;
+							}
+						}
+						if (!exist) {
+							muNowPositionNewNotExist = index;
+							break;
+						}
+					}*/
+					var muDiv=$("#mu"+muChangeData[muNowPositionNewNotExist].userid);//这是需要去除的匹配人
+					//muDiv.remove();
+					animateForSize(muDiv, 0, aniSecond * 0.4);
+					muAddImg(i,matchedUserArr,false);
+
+					// 5.所有位置移动之后mpNowData数组的位置也要更新
+					var temp=muChangeData[muNowPositionNewNotExist];//改变之前的数值
+					var tempX=temp.x;
+					var tempY=temp.y;
+					var tempRadius=temp.radius;
+					for (var k = muNowPositionNewNotExist; k >= i; k--) {
+						if(k == i){//这是新的排名
+							var dValueRadius=radius-tempRadius;//这是radius变化的值
+							
+							//id和图片是i的
+							muChangeData[k].userid=muserid;
+							muChangeData[k].img_src=muserimg;
+							
+							//r是K的
+							//x,y是被删除位置的基础上结合r变化之后计算出来的x,y值
+							muChangeData[k].x=tempX+dValueRadius;
+							muChangeData[k].y=tempY+dValueRadius;
+							
+						}else{//这是被动后移的排名
+							//id和img是k-1的
+							muChangeData[k].userid= muChangeData[k - 1].userid;
+							muChangeData[k].img_src= muChangeData[k - 1].img_src;
+							
+							//r保持这个位置不变
+							//x,y用改变之前的x,y结合r变化之后计算出来的x,y值
+							var dValueRadius= muChangeData[k].radius-muChangeData[k - 1].radius;//这是radius变化的值
+							muChangeData[k].x=muChangeData[k - 1].x+dValueRadius;
+							muChangeData[k].y=muChangeData[k - 1].y+dValueRadius;
+						}
+					}
+				}
+			}
+		//console.log("测试这是第"+(i+1)+"次比较结果");
+		/*for(var c = 0; c < muChangeData.length; c++){
+			console.log(muChangeData[c].userid+" "+muChangeData[c].x+" "+muChangeData[c].y);
+		}*/
+	}
+	
+	//循环完了之后将muChangeData多余的删除，因为会出现匹配人减少的情况
+	if(muChangeData.length>matchedUserArr.length){
+		for(var removeIndex=matchedUserArr.length;removeIndex<muChangeData.length;removeIndex++){
+			var removeMuDiv=$("#mu"+muChangeData[removeIndex].userid);
+			//removeMuDiv.remove();
+			animateForSize(removeMuDiv, 0, aniSecond * 0.4);
+		}
+		muChangeData.splice(matchedUserArr.length, muChangeData.length);
+	}
+}
+
 var intersect=true;//判断是否跟所有的圆都不相交，true为相交，false为不相交
+var matchUserContainerXStart,matchUserContainerXEnd,matchUserContainerYStart,matchUserContainerYEnd;//匹配人头像的范围
 /**
  * 叶夷 2017.09.14 匹配人头像静态情况下的位置放置 1.随机找到一个(x,y)点，这个点必须在装匹配人列表的范围
  * 2.然后和存在的所有匹配人头像对比是否相交 3.如果相交则x++,x到达范围则y++,直到找到一个不会相交的点
  */
-function setMUPosition(i,muNode){
-	var muNodeWidth=muNode.width();
+function setMUPosition(i,matchedUserArr){
+	/*var muNodeWidth=muNode.width();
 	var radius=muNodeWidth/2;// 这是半径
+*/	
+	var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
+	var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
 	
 	// 1.确定装匹配人列表的范围
 	var headerContainer=$("#header-container");
-	var matchUserContainerXStart=headerContainer.width()/2+radius;// 从屏幕的二分之一开始
-	var matchUserContainerXEnd=headerContainer.width()-radius-10;// 到屏幕留出10的空隙结束
-	var matchUserContainerYStart=radius+5;// y轴从5开始，给留出一点空隙
-	var matchUserContainerYEnd=headerContainer.height()-radius-5;// y轴结束的范围给留出一点空隙
+	
+	//定义radius
+	var radius;
+	if(i==0){
+		radius=headerContainer.width()/8/2;
+	}else if(i<10){
+		radius=muNowData[i-1].radius-1.5;
+	}else{
+		radius=muNowData[i-1].radius-1;
+	}
+	
+	setBorder(headerContainer,radius);
 	// 1.1 在随机中设置几个特殊情况
-	if(i<5){// 第一个尽量往中间靠拢
+	if(i<5 && i>0){
 		var betweenX=(matchUserContainerXEnd-matchUserContainerXStart)/8;// 往中间靠拢的值
 		var betweenY=(matchUserContainerYEnd-matchUserContainerYStart)/8;// 往中间靠拢的值
 		matchUserContainerXStart=headerContainer.width()/2+radius+betweenX;// 开始位置往中间靠拢
@@ -776,14 +1228,14 @@ function setMUPosition(i,muNode){
 		x=parseInt(Math.random()*10)+(xMiddle-5);
 		y=parseInt(Math.random()*10)+(yMiddle-5);
 	}
-	 
+	
 	// 3.然后和存在的所有匹配人头像对比是否相交
 	for(var j=matchUserContainerYStart;j<=matchUserContainerYEnd;j++){
 		var isBreak=false;
 		for(var i=matchUserContainerXStart;i<=matchUserContainerXEnd;i++){
-			intersect=isIntersect(x,y,radius);
+			intersect=isIntersect(muId,x,y,radius);
 			if(!intersect){// 不相交
-				muPositionArray.push(muPosition(x, y, radius));
+				muNowData.push(muPosition(muId,x, y, radius,muImg));
 				isBreak=true;
 				break;
 			}
@@ -803,164 +1255,325 @@ function setMUPosition(i,muNode){
 	}
 	
 	// 4.获得了不会相交的点之后,计算出top和left值
-	var muNodeTop=y-radius;
+	/*var muNodeTop=y-radius;
 	var muNodeLeft=x-radius;
 	muNode.css("top",muNodeTop);
-	muNode.css("left",muNodeLeft);
+	muNode.css("left",muNodeLeft);*/
+}
+
+function setBorder(headerContainer,radius){
+	matchUserContainerXStart=headerContainer.width()/2+radius;// 从屏幕的二分之一开始
+	matchUserContainerXEnd=headerContainer.width()-radius-5;// 到屏幕留出10的空隙结束
+	matchUserContainerYStart=radius+5;// y轴从5开始，给留出一点空隙
+	matchUserContainerYEnd=headerContainer.height()-radius-5;// y轴结束的范围给留出一点空隙
 }
 /**
- * 叶夷 2017.09.14 判断是否相交，true相交，false不相交
+ * 叶夷 2017.09.14 判断是否和其他匹配人相交，true相交，false不相交
+ * notContrast,不用对比的点位置，没有的话就为空
  */
-function isIntersect(x,y,radius){
-	var isIntersect=false;// 相交为true;不相交为false
-	if(muPositionArray.length>0){
-		for(var index in muPositionArray){
-			var xForContrast=muPositionArray[index].getX();// 用来对比的x点
-			var yForContrast=muPositionArray[index].getY();// 用来对比的x点
-			var radiusForContrast=muPositionArray[index].getRadius();// 用来对比的x点
-			
-			if(Math.sqrt(Math.pow((x- xForContrast), 2)
-					+ Math.pow((y - yForContrast), 2)) <= (radius + radiusForContrast)){// 三角形两条直角边的和的开平方<斜边，则相交，正好放在相切的位置
-				isIntersect=true;
-				break;
+function isIntersect(id,x,y,radius){
+	var flag=false;// 相交为true;不相交为false
+	if(muNowData.length>0){
+		for(var index in muNowData){
+			var onePosition=muNowData[index];
+			var idForContrast=onePosition.userid;
+			if(id!=idForContrast){
+				var radiusForContrast=onePosition.radius;
+				var xForContrast=onePosition.x;// 用来对比的x点
+				var yForContrast=onePosition.y;// 用来对比的y点
+				if(Math.sqrt(Math.pow((x- xForContrast), 2)
+						+ Math.pow((y - yForContrast), 2)) < (radius + radiusForContrast-2)){// 三角形两条直角边的和的开平方<斜边，则相交，正好放在相切的位置
+					flag=true;
+					break;
+				}
 			}
 		}
 	}
-	return isIntersect;
+	return flag;
 }
 
-/** 定义一个匹配人位置类 x,y,radius */
-function muPosition(x, y, radius) {
+/** 定义一个匹配人位置类 id,x,y,radius */
+function muPosition(userid,x, y, radius, img_src) {
 	var obj = new Object();
+	obj.userid = userid;
 	obj.x = x;
 	obj.y = y;
 	obj.radius = radius;
-	obj.getX = function() {
-		return this.x;
-	};
-	obj.getY = function() {
-		return this.y;
-	};
-	obj.getRadius = function() {
-		return this.radius;
-	};
+	obj.img_src = img_src;
+	//obj.username = username;
 	return obj;
 }
 
 /** 2017.08.23 叶夷 将匹配人div加上头像图片 */
-function muAddImg(i,matchedUserArr,muNode){
+function muAddImg(i,matchedUserArr,isFirst){
 	if(matchedUserArr[i]!=null){
-		var muId=matchedUserArr[i].getMpId();// 获得匹配人列表的匹配人id,这是测试数据版
-		// var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
+		var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
 		 
-		var muImg=matchedUserArr[i].getMpImg();// 获得匹配人列表的匹配人头像,这是测试版数据
-		// var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
-		// var muUserName=matchedUserArr[i].username;
+		var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
+		var muUserName=matchedUserArr[i].username;
 		
-		var muWidth=muNode.width();
-		var muImgWidth=muWidth-10;
-		var muNodeImg=$("<img src='"+muImg+"'/>").css("width",muImgWidth).css("height",muImgWidth);
+		var muNode=$("<div></div>").attr("class","mu").attr("id","mu"+muId);
+		var muNodeImg=$("<img src='"+muImg+"'/>");
 		muNode.append(muNodeImg);
-		muNode.attr("id","mu"+muId);
+		$("#header-container").append(muNode);
 		
+		var muNow=muNowData[i];
+		var x=muNow.x;
+		var y=muNow.y;
+		var radius=muNow.radius;
+		var muWidth;
+		if(!isFirst){
+			muWidth=0;
+		}else{
+			muWidth=radius*2;
+		}
+		var muNodeTop=y-radius;
+		var muNodeLeft=x-radius;
+		muNode.css("top",muNodeTop);
+		muNode.css("left",muNodeLeft);
+		muNode.css("width",muWidth);
+		muNode.css("height",muWidth);
+		
+		var muImgWidth=muWidth-10;
 		var muImgMargin=(muWidth-muImgWidth)/2;
 		muNodeImg.css("margin-top",muImgMargin);
 		muNodeImg.css("margin-left",muImgMargin);
-		
+		muNodeImg.css("width",muImgWidth);
+		muNodeImg.css("height",muImgWidth);
 		// 点击事件
 		muNode.click(function() {
 			// 进入聊天页
 			enterDialogPage(muId,muUserName);
-			// addMPData();//测试匹配人动画
 		});
-	}else{
-		muNode=$(".mu").eq(i);
 	}
-	
-	muNowData.push(muNode);
 }
 
-/** 2017.07.15 叶夷 对匹配人排名改变重新进行位置计算 */
-function againSetMUPosition(i,matchedUserArr){
-	// var muserid = matchedUserArr[i].userid;// 这是新的匹配人id
-	var muserid=matchedUserArr[i].getMpId();// 这是新的匹配人id,这是测试版数据
+//2017.09.27 叶夷   如何能够让排名变化时位置循环能够停下来,求每n次之后x(和y)的位置的变化的平均值，当这个平均值<0.5的时候，则x(和y)的变化的绝对值减去1个像素,如果小于等于0,则循环停止
+var n=30;//这是平均数的次数
+var averageForChangeX=new Array();//x位置变化的平均值
+var averageForChangeY=new Array();//y位置变化的平均值
+var changeTotalX=0;//在n次之前累计的变化总数
+var changeTotalY=0;
+var changeCount=0;//这是循环变化的次数
 
-	var muserimg=matchedUserArr[i].getMpImg();// 这是新的匹配人头像,这是测试数据
-	// var muserimg = matchedUserArr[i].img_src;// 这是新的匹配人头像
-	// var muUserName=matchedUserArr[i].username;
-
-	if (("mu"+muserid) != muNowData[i].attr("id")) {// 排名改变
-		circleEnd = false;// 只要动画开始执行则动画没有完成
-		isTimeOut = 1;// 让排名改变需要动画时才延时
-
-		var exist = false;// 表示后台传来的数据是新数据，true表示不是新数据，false表示是新数据
-		var muNowPosition;// 表示如果从后台新来的数据在前台存在但是排名有所改变时前台存在的排名
-		for (var j = i; j < muNowData.length; j++) {// 遍历现有的头像
-			if (("mu"+muserid) == muNowData[j].attr("id")) {
-				exist = true;// 表示后台传来的数据不是新数据，已经存在
-				muNowPosition = j;
-				break;
+/**2017.09.26 叶夷 从一个匹配人开始，然后计算边框和其它匹配人共同作用的排斥力(排斥力即移动的距离，目前是距离的倒数*大小,即距离越近和质量越大，排斥力越大),知道这个距离在0~1之间，则算是平衡下来停下*/
+function setPositionAndNotIntersect(){
+	/*++changeCount;//判断次数
+	
+	//为了测试效果，现将大小更新
+	for(var a=0;a<muChangeData.length;a++){
+		var oneMuData=muChangeData[a];
+		var radius=oneMuData.radius;
+		var muDiv=$("#mu"+oneMuData.userid);
+		var moveWidth=radius*2;
+		//animateForSize(muDiv, moveWidth, aniSecond * 0.4);// 扩大
+		muDiv.css("width",moveWidth);
+		muDiv.css("height",moveWidth);
+		var imgWidth=(parseInt(moveWidth)-10)+"px";
+		muDiv.find("img").css("width",imgWidth);
+		muDiv.find("img").css("height",imgWidth);
+	}*/
+	var headerContainerSize=100;//边的质量
+	var moveMax;//移动的最大值(边界的时候为移动匹配圆的大小，对比别的匹配圆的时候是对比的匹配圆大小)：出现在几种情况1.距离为0~10个像素之间；2.距离为负数
+	var moveMaxRange=2;//这是0以上像素的限制
+	
+	var allOver=true;//这里是判断所有匹配人是否互不相交
+	for(var a=0;a<muChangeData.length;a++){
+		//这是开始的匹配人中心点
+		var oneMuData=muChangeData[a];
+		var radius=oneMuData.radius;
+		var muDiv=$("#mu"+oneMuData.userid);
+		var moveWidth=radius*2;
+		muDiv.css("background-color","red");
+		
+		//var allMoveX=0,allMoveY=0;//所有相交圆的总和
+		//遍历所有的圆计算所有的圆(排除自己)形成的排斥力
+		for(var index=0;index<muChangeData.length;index++){
+			var oneForContrastMuData=muChangeData[index];
+			if(oneMuData.userid!=oneForContrastMuData.userid){
+				var x=oneMuData.x;
+				var y=oneMuData.y;
+				//改变颜色测试
+				var muDivForContrast=$("#mu"+oneForContrastMuData.userid);
+				muDivForContrast.css("background-color","aqua");
+				
+				var radiusForContrast=oneForContrastMuData.radius;
+				var xForContrast=oneForContrastMuData.x;// 用来对比的x点
+				var yForContrast=oneForContrastMuData.y;// 用来对比的y点
+					
+				var subtractX=x-xForContrast;//两个x相减
+				var subtractY=y-yForContrast;//两个y相减
+				//距离
+				var actualDistance=parseInt(Math.sqrt(Math.pow((subtractX), 2)+ Math.pow((subtractY), 2)));//两圆心的距离
+				var tangentDistance=radius + radiusForContrast;//两圆相切的距离
+				var intersectionDistance=Math.abs(actualDistance-tangentDistance);
+				
+				var DM;
+				var moveXForContrast,moveYForContrast;
+				if(tangentDistance >= (actualDistance)){//相交
+					//DM=radiusForContrast*2/20;
+					DM=/*Math.cbrt(*/Math.sqrt(radiusForContrast*2+moveWidth)/2;//两圆大小相加的立方根
+					moveXForContrast=DM/actualDistance*subtractX;
+					moveYForContrast=DM/actualDistance*subtractY;
+				}else if(actualDistance>100){
+					moveXForContrast=0;
+					moveYForContrast=0;
+				}else{
+					DM=1/Math.pow((intersectionDistance), 2)*Math.sqrt(radiusForContrast*2*moveWidth)/10;
+					moveXForContrast=DM/actualDistance*subtractX;
+					moveYForContrast=DM/actualDistance*subtractY;
+					
+					if(Math.abs(moveXForContrast)>moveMaxRange){
+						moveXForContrast=(moveXForContrast>=0)?(moveXForContrast=moveMaxRange):(moveXForContrast=(-moveMaxRange));
+					}
+					if(Math.abs(moveYForContrast)>moveMaxRange){
+						moveYForContrast=(moveYForContrast>=0)?(moveYForContrast=moveMaxRange):(moveYForContrast=(-moveMaxRange));
+					}
+				}
+				
+				//allMoveX=moveXForContrast;
+				//allMoveY=moveYForContrast;
+				
+				updateXAndY(a,x,moveXForContrast,y,moveYForContrast,muDiv,radius);
+				muDivForContrast.css("background-color","");
 			}
 		}
 		
-		var moveWidth = muNowData[i].css("width");
+		var x=oneMuData.x;
+		var y=oneMuData.y;
+		var moveStartX=0,moveStartY=0,moveEndX=0,moveEndY=0;//每条边框产生的排斥力
+		//边框的排斥力计算,边框的排斥力加大，在距离和质量的基础上再加上50%
+		var headerContainer=$("#header-container");
+		setBorder(headerContainer,radius);
+		if(x<=matchUserContainerXStart){//出现在几种情况1.距离为0~10个像素之间；2.距离为负数
+			moveStartX=Math.cbrt(headerContainerSize+moveWidth);
+			//moveStartX=moveMaxRange*2;
+		}else{
+			moveStartX=1/Math.pow((x-matchUserContainerXStart), 3)*moveWidth*headerContainerSize;
+			if(Math.abs(moveStartX)>moveMaxRange){
+				moveStartX=moveStartX=moveMaxRange;
+			}
+		}
+		if(x>=matchUserContainerXEnd){
+			moveEndX=-Math.cbrt(headerContainerSize+moveWidth);
+			//moveEndX=-moveMaxRange*2;
+		}else{
+			moveEndX=-1/Math.pow((x-matchUserContainerXEnd), 3)*moveWidth*headerContainerSize;
+			if(Math.abs(moveEndX)>moveMaxRange){
+				moveEndX=(-moveMaxRange);
+			}
+		}
+		if(y<=matchUserContainerYStart){
+			moveStartY=Math.cbrt(headerContainerSize+moveWidth);
+			//moveStartY=moveMaxRange*2;
+		}else{
+			moveStartY=1/Math.pow((y-matchUserContainerYStart),3)*moveWidth*headerContainerSize;
+			if(Math.abs(moveStartY)>moveMaxRange){
+				moveStartY=moveMaxRange;
+			}
+		}
+		if(y>=matchUserContainerYEnd){
+			moveEndY=-Math.cbrt(headerContainerSize+moveWidth);
+			//moveEndY=-moveMaxRange*2;
+		}else{
+			moveEndY=-1/Math.pow((y-matchUserContainerYEnd), 3)*moveWidth*headerContainerSize;
+			if(Math.abs(moveEndY)>moveMaxRange){
+				moveEndY=(-moveMaxRange);
+			}
+		}
 		
-		if (exist) {// 存在,则只是排名交换，则原有位置的mp缩小，所有mp网缩小的匹配人圆移动，原有位置的mp缩小之后移动到该有的位置
-			// 1.需要变换位置的mp
-			var changeMu = muNowData[muNowPosition];// 需要移动的mp
-			
-			// 2.需要变换位置的mp变大
-			animateForSize(changeMu, moveWidth, aniSecond * 0.4);// 扩大
-
-			// 2017.08.23 叶夷 所有位置移动之后mpNowData数组的位置也要更新
-			function mpNowDataUpdate(muNowPosition,temp,i){
-				for (var k = muNowPosition; k > i; k--) {
-					muNowData.splice(k, k );
-					muPositionArray.splice(k, k );
-				}
+		var moveX,moveY;//边框移动的总和
+		moveX=moveStartX+moveEndX;
+		moveY=moveStartY+moveEndY;
+		
+		//先做平均判断再移动
+		if(changeCount==n){//开始求平均数
+			averageForChangeX[a]=changeTotalX/n;
+			averageForChangeY[a]=changeTotalY/n;
+		}else if(changeCount>n){//开始之后的平均数求法
+			/*if(a==0){
+				console.log("测试->第"+changeCount+"次循环->"+averageForChangeX[a]+"+"+moveX+"/"+n);
+				console.log("测试->第"+changeCount+"次循环->"+averageForChangeY[a]+"+"+moveY+"/"+n);
 			}
-			
-			// 5.所有位置移动之后mpNowData数组的位置重新计算
-			muPositionArray.splice((i+1), muPositionArray.length);// 先把数组清空
-			for (var m = i+1; m < matchedUserArr.length; m++) {
-				var muId=matchedUserArr[m].getMpId();// 获得匹配人列表的匹配人id,这是测试数据版
-				// var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
-				var muNode=$("#mu"+muId);// 这是已经放在页面的匹配人头像div
-				muNode.find("img").remove();
-				
-				muAddImg(m,matchedUserArr,muNode);
-				var isChange=true;
-				setMUPosition(m,muNode,isChange);
-			}
-			
-		} /*
-			 * else {// 不存在 // 2017.07.06 叶夷 // 1.将页面不存在的mp
-			 * muDiv(muserid,muserimg,muUserName,moveTop,moveLeft); var
-			 * newMu=$("#mu"+muserid);
-			 *  // 2.获得现有mp中应该去除的排名，则在新排名中没有的mp,且将它缩小 var
-			 * muNowPositionNewNotExist=getMuNowPositionNewNotExist(i,matchedUserArr);//
-			 * 这个位置的前端匹配人在新排名里不存在
-			 * 
-			 * animateForSize(muNowData[muNowPositionNewNotExist], 0, aniSecond *
-			 * 0.4);// 缩小
-			 *  // 缩小之后，匹配人在前端界面中删除
-			 * $("#"+muNowData[muNowPositionNewNotExist].attr("id")).remove();
-			 *  // 3.将新的mp位置与现有mp中应该去除的排名位置之间的mp向右移
-			 * muMove(i,muNowPositionNewNotExist);
-			 *  // 4.新的mp变大 animateForSize(newMu, moveWidth, aniSecond * 0.4);//
-			 * 扩大
-			 *  // 5.所有位置移动之后mpNowData数组的位置也要更新
-			 * mpNowDataUpdate(muNowPositionNewNotExist,newMu,i); }
-			 */
+			*/
+			averageForChangeX[a]=(averageForChangeX[a]*(n-1)+moveX)/n;
+			averageForChangeY[a]=(averageForChangeY[a]*(n-1)+moveY)/n;
+			/*if(a==0){
+				console.log("测试->第"+changeCount+"次循环->"+averageForChangeX[a]+"+"+moveX+"/"+n);
+				console.log("测试->第"+changeCount+"次循环->"+averageForChangeY[a]+"+"+moveY+"/"+n);
+			}*/
+			/*console.log("测试->第"+changeCount+"次循环->第"+a+"个匹配人平均数x:"+averageForChangeX[a]);
+			console.log("测试->第"+changeCount+"次循环->第"+a+"个匹配人平均数y:"+averageForChangeY[a]);*/
+		}else{//开始之前先累计变化总数
+			changeTotalX=changeTotalX+moveX;
+			changeTotalY=changeTotalY+moveY;
+		}
+		
+		//如果平均值小于0.5,则减少移动距离
+		var reduceDistance;//判断当前移动距离是否大于减少移动的距离
+		if(averageForChangeX[a]<=2){
+			/*reduceDistance=Math.abs(moveX)-2;
+			if(reduceDistance>0){
+				moveX=(moveX>=0)?(moveX-moveMaxRange):(moveX+moveMaxRange);
+			}else{
+				moveX=0;
+			}*/
+			//console.log("测试变化之前->平均移动距离："+allMoveX);
+			moveX=moveX/3;
+		}
+		if(averageForChangeY[a]<=2){
+			/*reduceDistance=Math.abs(moveY)-2;
+			if(reduceDistance>0){
+				moveY=(moveY>=0)?(moveY-moveMaxRange):(moveY+moveMaxRange);
+			}else{
+				moveY=0;
+			}*/
+			//console.log("测试变化之前->平均移动距离："+allMoveX);
+			moveY=moveY/3;
+		}
+		/*if(a==0){
+			console.log("测试->第"+changeCount+"次循环->第"+a+"个匹配人移动距离x："+moveX);
+			console.log("测试->第"+changeCount+"次循环->第"+a+"个匹配人移动距离y："+moveY);
+		}*/
+		
+		//移动测试
+		updateXAndY(a,x,moveX,y,moveY,muDiv,radius);
+		muDiv.css("background-color","");
+		if(moveX<-1 || moveX>1 || moveY<-1 || moveY>1){
+			allOver=false;
+		}
 	}
+	
+	return allOver;
+	
+	/*if(!allOver){
+		timeOutSuccess = setTimeout(function() {
+			setPositionAndNotIntersect();
+			console.log("排名改变第"+changeCount+"次循环");
+		},100);
+	}else{
+		return ;
+	}*/
+	
+}
 
-	i += 1;
-	// 这里是为了做一次动画延时操作和解决每批匹配人变化的动画不丢失
-	timeOutAndMuDataQueue(i,matchedUserArr);
+function updateXAndY(a,x,moveX,y,moveY,muDiv,radius){
+	var endX=x+moveX;
+	var endY=y+moveY;
+
+	muChangeData[a].x=endX;
+	muChangeData[a].y=endY;
+		
+	//开始移动
+	var muNodeTop=endY-radius;
+	var muNodeLeft=endX-radius;
+	//animateForMu(muDiv, muNodeLeft,muNodeTop, aniSecond * 0.4);
+	muDiv.css("top",muNodeTop+"px");
+	muDiv.css("left",muNodeLeft+"px");
 }
 
 // 2017.08.23 叶夷 生成一个新的匹配人div
-function muDiv(id,muImg,muUserName,top,left){
+/*function muDiv(id,muImg,muUserName,top,left){
 	var muNode=$("<div></div>").attr("id","mu"+id).attr("class","mu");// 这是页面的匹配人头像div
 	var muNodeImg=$("<img src='"+muImg+"' style='width:0px;height:0px;'/>");
 	muNode.append(muNodeImg);
@@ -976,43 +1589,10 @@ function muDiv(id,muImg,muUserName,top,left){
 		enterDialogPage(id,muUserName);
 		// addMPData();//测试匹配人动画
 	});
-}
-
-// 2017.08.23 叶夷 在新排名和原有位置的mp之间的匹配人,这些匹配人移动
-function muMove(i,muNowPosition){
-	for (var k = i; k < muNowPosition; k++) {
-		var moveMu = muNowData[k];// 需要移动的mp
-		var moveEndLeft = muNowData[k + 1].css("left");// 移动的目的地，
-		var moveEndTop = muNowData[k + 1].css("top");
-		var moveEndWidth = muNowData[k + 1].css("width");
-		// 即下一个mp的位置
-		animateForMu(moveMu, moveEndLeft,moveEndTop, aniSecond* 0.4);
-		animateForSize(moveMu, moveEndWidth, aniSecond * 0.4);// 大小也改变
-	}
-}
-
-// 2017.08.23 叶夷 所有位置移动之后mpNowData数组的位置也要更新
-function mpNowDataUpdate(muNowPosition,temp,i){
-	for (var k = muNowPosition; k >= i; k--) {
-		if (k == i) {
-			muNowData[k] = temp;
-		} else {
-			muNowData[k] = muNowData[k - 1];
-		}
-	}
-}
-
-// 2017.08.24 叶夷 需要变换位置的mp向左移动,这里为了实现曲线移动，可以一个圆一个圆的位置移动
-function muCurveMove(i,muNowPosition,changeMu){
-	for (var k = muNowPosition; k >i; k--) {
-		var moveEndLeft = muNowData[k - 1].css("left");// 移动的目的地，
-		var moveEndTop = muNowData[k - 1].css("top");
-		animateForMu(changeMu, moveEndLeft,moveEndTop,  aniSecond* 0.4/(muNowPosition-i) );
-	}
-}
+}*/
 
 // 2017.08.24 叶夷 获得现有mp中应该去除的排名，则在新排名中没有的mp
-function getMuNowPositionNewNotExist(i,matchedUserArr){
+/*function getMuNowPositionNewNotExist(i,matchedUserArr){
 	var muNowPositionNewNotExist;// 这个位置的前端匹配人在新排名里不存在
 	// 3.获得现有mp中应该去除的排名，则在新排名中没有的mp,且将它缩小
 	for (var index = i; index < muNowData.length; index++) {
@@ -1031,109 +1611,7 @@ function getMuNowPositionNewNotExist(i,matchedUserArr){
 		}
 	}
 	return muNowPositionNewNotExist;
-}
-
-var aniSecond = 2;// 动画的速度，即距离/秒数，37px/s
-var isTimeOut = 0;// 判断是否延时，让排名改变需要动画时才延时，isTimeOut=1,如果排名没有改变不需要延时，isTimeOut=0;
-
-// 2017.07.05 叶夷 一一对比之后开始将排名改变的用户动画
-function circleAnimation(i, matchedUserArr) {
-	// var muserid = matchedUserArr[i].userid;// 这是匹配人id
-	var muserid=matchedUserArr[i].getMpId();// 这是匹配人id,这是测试版数据
-
-	var muserimg=matchedUserArr[i].getMpImg();// 这是匹配人头像,这是测试数据
-	// var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
-	// var muUserName=matchedUserArr[i].username;
-
-	if (("mu"+muserid) != muNowData[i].attr("id")) {// 排名改变
-		circleEnd = false;// 只要动画开始执行则动画没有完成
-		isTimeOut = 1;// 让排名改变需要动画时才延时
-
-		var exist = false;// 表示后台传来的数据是新数据
-		var muNowPosition;// 表示如果从后台新来的数据在前台存在但是排名有所改变时前台存在的排名
-		for (var j = i; j < muNowData.length; j++) {// 遍历现有的头像
-			if (("mu"+muserid) == muNowData[j].attr("id")) {
-				exist = true;// 表示后台传来的数据不是新数据，已经存在
-				muNowPosition = j;
-				break;
-			}
-		}
-		
-		// 发生变化的排名的参数
-		var moveLeft = muNowData[i].css("left");// 需要向左移动的目的地的位置,在这个位置移动之前先保存下来
-		var moveTop = muNowData[i].css("top");
-		var moveWidth = muNowData[i].css("width");
-		
-		if (exist) {// 存在,则原有位置的mp缩小，其左边的且没超过新排名名次的mp向右移动，原有位置的mp缩小之后移动到该有的位置
-			// 1.需要变换位置的mp缩小
-			var changeMu = muNowData[muNowPosition];// 需要移动的mp
-			
-			// animateForSize(changeMu, 10, aniSecond * 0.3);// 缩小
-
-			// 2.首先判断在新排名和原有位置的mp之间的匹配人,这些匹配人移动
-			muMove(i,muNowPosition);
-
-			// 3.需要变换位置的mp向左移动,这里为了实现曲线移动，可以一个圆一个圆的位置移动
-			muCurveMove(i,muNowPosition,changeMu);
-			
-			// 4.需要变换位置的mp到了位置之后再变大
-			animateForSize(changeMu, moveWidth, aniSecond * 0.4);// 扩大
-
-			// 5.所有位置移动之后mpNowData数组的位置也要更新
-			var temp = muNowData[muNowPosition];// 临时位置，用来保存
-			mpNowDataUpdate(muNowPosition,temp,i);
-			
-		} else {// 不存在
-			// 2017.07.06 叶夷
-			// 1.将页面不存在的mp
-			muDiv(muserid,muserimg,muUserName,moveTop,moveLeft);
-			var newMu=$("#mu"+muserid);
-
-			// 2.获得现有mp中应该去除的排名，则在新排名中没有的mp,且将它缩小
-			var muNowPositionNewNotExist=getMuNowPositionNewNotExist(i,matchedUserArr);// 这个位置的前端匹配人在新排名里不存在
-			/*
-			 * animateForSize(muNowData[muNowPositionNewNotExist], 0, aniSecond *
-			 * 0.4);// 缩小
-			 */			
-			// 缩小之后，匹配人在前端界面中删除
-			$("#"+muNowData[muNowPositionNewNotExist].attr("id")).remove();
-
-			// 3.将新的mp位置与现有mp中应该去除的排名位置之间的mp向右移
-			muMove(i,muNowPositionNewNotExist);
-
-			// 4.新的mp变大
-			animateForSize(newMu, moveWidth, aniSecond * 0.4);// 扩大
-
-			// 5.所有位置移动之后mpNowData数组的位置也要更新
-			mpNowDataUpdate(muNowPositionNewNotExist,newMu,i);
-		}
-	}
-
-	i += 1;
-	// 这里是为了做一次动画延时操作和解决每批匹配人变化的动画不丢失
-	timeOutAndMuDataQueue(i,matchedUserArr);
-}
-
-// 2017.08.24 叶夷 这里是为了做一次动画延时操作和解决每批匹配人变化的动画不丢失
-function timeOutAndMuDataQueue(i,matchedUserArr){
-	if (i >= matchedUserArr.length) {
-		// alert("一次排名整个调换动画完毕");
-		// 匹配人交换位置动画运行完毕现将自己这份数据在队列中删除
-		removeByValue(muDataQueue, matchedUserArr);
-		// 然后查看队列里面有没数据，有则接着运行,没有则运行完毕
-		if (muDataQueue.length > 0) {// 有则接着运行
-			showMatchPeople(muDataQueue[0]);
-		} else {// 没有则运行完毕
-			circleEnd = true;
-		}
-		return;
-	} else {
-		timeOutSuccess = setTimeout(function() {
-			circleAnimation(i, matchedUserArr);
-		}, aniSecond  * 1000 * isTimeOut);
-	}
-	isTimeOut = 0;// 是否延时调整回最初状态;
-}
+}*/
 
 // 匹配人头像移动,即改变top和left值
 function animateForMu(muDiv, muLeft,muTop, second) {// 移动的物体，移动的目的地，移动的时间
@@ -1147,10 +1625,15 @@ function animateForMu(muDiv, muLeft,muTop, second) {// 移动的物体，移动�
 function animateForSize(muDiv, muSize, second) {// 移动的物体，变化的大小，移动的时间
 	muDiv.css("width",muSize);
 	muDiv.css("height",muSize);
+	var imgWidth=(parseInt(muSize)-10)+"px";
 	muDiv.find("img").animate({
-		width : muSize,
-		height : muSize
-	}, second * 1000);
+		width : imgWidth,
+		height : imgWidth
+	}, second * 1000, function() {
+		if(muSize==0){
+			muDiv.remove();
+		}
+    });
 }
 
 // 删除数组元素的方法,为了动画完成之后将动画完成的数据在队列里删除
@@ -1230,6 +1713,7 @@ function sendKeyWordToBack(input_value,data) {
 
 function searchTag(suggestWrap,data){
 	var cpid=data.id;
+	addCPID=cpid;
 	var text=data.text;
 	
 	var searchtag = $("<div></div>")/* .attr("id","searchtag" + data) */.text(text);// 文字div
@@ -1262,8 +1746,9 @@ function addCpShow(data){
 	var text = $("#pop_tagName").val();
 	
 	if(mgs2==undefined){// 添加的标签不存在
-		showSelectTag(cpid,text);
-		sendSelectCP(userId,cpid,text);
+		//showSelectTag(cpid,text);
+		//sendSelectCP(userId,cpid,text);
+		chooseCP(null,cpid,text);
     	console.log("添加标签成功");
     	toast_popup("添加标签成功",2500);
     	closePop();// 添加标签框关掉
@@ -1311,7 +1796,7 @@ function showMatchedUsers(){
 	var proportionHeight=headerContainerHeight/contrastHeight;
 	
 	for(var i=1;i<=15;i++){
-		var muNode=$("#mu"+i);
+		var muNode=$("#mutemp"+i);
 		// var newMuTop=parseInt(muNode.css("top"));
 		// var newMuLeft=parseInt(muNode.css("left"));
 		var newMuWidth=parseInt(muNode.css("width"));
@@ -1359,7 +1844,7 @@ function myTagAgainBindingClick(cpid){
 }
 
 /**
- * 2017.09.14 叶夷 "选中标签"性能测试
+ * start 2017.09.14 叶夷 "选中标签"性能测试
  */
 var cpTestArray=new Array();// 用来装页面存在过的cpid
 var startTest=false;
@@ -1402,3 +1887,5 @@ function CPTestObj(cpid, text) {
 function cleartimeout(){
 	startTest=false;
 }
+/**end
+ */

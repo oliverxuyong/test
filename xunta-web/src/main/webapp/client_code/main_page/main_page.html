@@ -40,27 +40,27 @@
 				
 				<!--头像-->
 				<div class="userimg">
-					<img id="topic_img" src="" onclick="addMPData()" />
+					<img id="topic_img" src="" onclick="" />
 					<div class="username" id="username"></div>
 				</div>
 				
 				<!--2017.07.04  叶夷   匹配人列表 -->
-				<div class="mu" id="mu1" style="/* left: 145px; */width: 50px;height: 50px;/* top: 80px; */"></div>
-    			<div class="mu" id="mu2" style="/* left: 193px; */width: 47px;height: 47px;/* top: 83px; */"></div>
-    			<div class="mu" id="mu3" style="/* left: 240px; */width: 44px;height: 44px;/* top: 85px; */"></div>
-    			<div class="mu" id="mu4" style="/* left: 281px; */width: 41px;height: 41px;/* top: 84px; */"></div>
-    			<div class="mu" id="mu5" style="/* left: 318px; */width: 38px;height: 38px;/* top: 79px; */"></div>
-    			<div class="mu" id="mu6" style="/* left: 342px; */width: 35px;height: 35px;/* top: 57px; */"></div>
-    			<div class="mu" id="mu7" style="/* left: 346px; */width: 32px;height: 32px;/* top: 31px; */"></div>
-    			<div class="mu" id="mu8" style="/* left: 332px; */width: 29px;height: 29px;/* top: 13px; */"></div>
-    			<div class="mu" id="mu9" style="/* left: 313px; */width: 26px;height: 26px;/* top: 5px; */"></div>
-    			<div class="mu" id="mu10" style="/* left: 296px; */width: 25px;height: 25px;/* top: 2px; */"></div>
-    			<div class="mu" id="mu11" style="/* left: 342px; */width: 24px;height: 24px;/* top: 57px; */"></div>
-    			<div class="mu" id="mu12" style="/* left: 346px; */width: 23px;height: 23px;/* top: 31px; */"></div>
-    			<div class="mu" id="mu13" style="/* left: 332px; */width: 22px;height: 22px;/* top: 13px; */"></div>
-    			<div class="mu" id="mu14" style="/* left: 313px; */width: 21px;height: 21px;/* top: 5px; */"></div>
-    			<div class="mu" id="mu15" style="/* left: 296px; */width: 20px;height: 20px;/* top: 2px; */"></div>
-    			
+				<!-- <div class="mu" id="mutemp1" style="/* left: 145px; */width: 48px;height: 48px;/* top: 80px; */"></div>
+    			<div class="mu" id="mutemp2" style="/* left: 193px; */width: 45px;height: 45px;/* top: 83px; */"></div>
+    			<div class="mu" id="mutemp3" style="/* left: 240px; */width: 42px;height: 42px;/* top: 85px; */"></div>
+    			<div class="mu" id="mutemp4" style="/* left: 281px; */width: 39px;height: 39px;/* top: 84px; */"></div>
+    			<div class="mu" id="mutemp5" style="/* left: 318px; */width: 36px;height: 36px;/* top: 79px; */"></div>
+    			<div class="mu" id="mutemp6" style="/* left: 342px; */width: 33px;height: 33px;/* top: 57px; */"></div>
+    			<div class="mu" id="mutemp7" style="/* left: 346px; */width: 30px;height: 30px;/* top: 31px; */"></div>
+    			<div class="mu" id="mutemp8" style="/* left: 332px; */width: 27px;height: 27px;/* top: 13px; */"></div>
+    			<div class="mu" id="mutemp9" style="/* left: 313px; */width: 24px;height: 24px;/* top: 5px; */"></div>
+    			<div class="mu" id="mutemp10" style="/* left: 296px; */width: 23px;height: 23px;/* top: 2px; */"></div>
+    			<div class="mu" id="mutemp11" style="/* left: 342px; */width: 22px;height: 22px;/* top: 57px; */"></div>
+    			<div class="mu" id="mutemp12" style="/* left: 346px; */width: 21px;height: 21px;/* top: 31px; */"></div>
+    			<div class="mu" id="mutemp13" style="/* left: 332px; */width: 20px;height: 20px;/* top: 13px; */"></div>
+    			<div class="mu" id="mutemp14" style="/* left: 313px; */width: 19px;height: 19px;/* top: 5px; */"></div>
+    			<div class="mu" id="mutemp15" style="/* left: 296px; */width: 18px;height: 18px;/* top: 2px; */"></div>
+    			 -->
     			
 			</div>
 			
@@ -159,7 +159,7 @@
 			showMatchedUsers();
 			
 			//2017.07.04  叶夷  
-			addMPData();//匹配人列表测试
+			//addMPData();//匹配人列表测试
 			//requestTopMatchedUsers(userId,requestTopMUNum);//请求用户匹配缩略表,不能放在这里，因为不能同时请求,等请求cp返回且显示之后再请求这个方法，所以此方法放在responseToCPRequest(CP_list)中
 			
 			//2017.08.09  叶夷  显示我的标签

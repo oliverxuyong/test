@@ -108,6 +108,7 @@ function sendSelectedCP(userId,cpid,text){
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
 			 cptext:text,
+			 property: "P",
 			 timestamp:"",
 		};
 		WS_Send(json_obj);
@@ -139,6 +140,7 @@ function sendUnselectedCP(userId,cpid){
 			 interface_name: "sendUnselectedCP",
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
+			 property: "P",
 			 timestamp:"",
 		};
 		WS_Send(json_obj);
@@ -305,6 +307,12 @@ function checkMessageInterface(evnt) {
 	if(jsonObj._interface == '2105-1'){
 		console.log("CP推荐:"+JSON.stringify(jsonObj.cp_wrap));
 		exec("main_page","pushCP("+evnt.data+")");
+	}
+	
+	//2017.10.11 叶夷   当前展示的cp中有用户新选中某个cp
+	if(jsonObj._interface == '2107-1'){
+		console.log("新选中的cp:"+JSON.stringify(jsonObj.cp_wrap));
+		exec("main_page","pushSelectCpPresent("+evnt.data+")");
 	}
 }
 
