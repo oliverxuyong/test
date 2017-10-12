@@ -1,6 +1,7 @@
 package so.xunta.persist;
 
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -16,14 +17,17 @@ public interface ConcernPointDao {
 	 * @author bright_zheng
 	 * @param ConcernPointDO
 	 * @return ConcernPointDO
+	 * @throws SQLException 
 	 * */
-	public ConcernPointDO saveConcernPoint(ConcernPointDO cp);
+	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) throws SQLException;
 	/**
 	 * @author bright_zheng
 	 * @param BigInteger
 	 * @return ConcernPointDO
 	 * */
-	public ConcernPointDO getConcernPoint(BigInteger id);
+	public ConcernPointDO getConcernPointById(BigInteger cpId);
+	
+	public ConcernPointDO getConcernPointByText(String cpText);
 	/**
 	 * @author bright_zheng
 	 * @param Long

@@ -1,6 +1,7 @@
 package so.xunta.persist.impl;
 
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -22,7 +23,7 @@ public class ConcernPointDaoImpl implements ConcernPointDao {
 	SessionFactory sessionFactory;
 	
 	@Override
-	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) {
+	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) throws SQLException{
 		Session session = sessionFactory.getCurrentSession();
 		BigInteger cpid = (BigInteger)session.save(cp);
 		cp.setId(cpid);
@@ -30,10 +31,18 @@ public class ConcernPointDaoImpl implements ConcernPointDao {
 	}
 
 	@Override
-	public ConcernPointDO getConcernPoint(BigInteger id) {
+	public ConcernPointDO getConcernPointById(BigInteger id) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "select cp.* from concern_point as cp where cp.id = :id ";
 		Query query = session.createSQLQuery(sql).addEntity(ConcernPointDO.class).setBigInteger("id", id);
+		return (ConcernPointDO)query.uniqueResult();
+	}
+	
+	@Override
+	public ConcernPointDO getConcernPointByText(String cpText) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "select cp.* from concern_point as cp where cp.text = :text ";
+		Query query = session.createSQLQuery(sql).addEntity(ConcernPointDO.class).setString("text", cpText);
 		return (ConcernPointDO)query.uniqueResult();
 	}
 

@@ -35,7 +35,8 @@ import so.xunta.server.RecommendService;
 @Service
 public class RecommendServiceImpl implements RecommendService {
 	private final double NO_CHANGE = 0.0;
-	private final Double CP_SCORE = 0.1;//CP初始化推荐分数
+	private final Double INIT_CP_SCORE = 0.1;//CP初始化推荐分数
+	private final double SELF_ADD_CP_SCORE = 0.5;//用户自己添加cp的初始化推荐分数
 	private final int REPLENISH_NUM = 100;//每次补充多少个CP
 	private final double UPDATE_MARK = 0; //需要更新但用户关系值没变化
 	private final long MIN_INTERVAL = 1000L; //两次更新任务之间的最短间隔时间
@@ -91,7 +92,7 @@ public class RecommendServiceImpl implements RecommendService {
 		  *遍历{Ui}，在U2U_Update_Status表中U的关系用户列表里对Ui的∆u_score值加上刚选中CP的score值，没有则新增
 		  *同时也在Ui的关系用户列表里找到U，将其∆u_score值加上刚选中CP的score值，没有则新增。
 		*/
-		Double dValue = concernPointDao.getConcernPoint(new BigInteger(cpid)).getWeight().doubleValue();
+		Double dValue = concernPointDao.getConcernPointById(new BigInteger(cpid)).getWeight().doubleValue();
 		for(String relatedUid:usersSelectedSameCp){
 			switch(selectType){
 			case RecommendService.SELECT_CP:
@@ -258,7 +259,7 @@ public class RecommendServiceImpl implements RecommendService {
 				String cpId = cp.getId().toString();
 				/*目前为每个赋值一个0-0.1之间的随机推荐值
 				 * */
-				initCpsMap.put(cpId, randomData.nextDouble()*CP_SCORE);
+				initCpsMap.put(cpId, randomData.nextDouble()*INIT_CP_SCORE);
 			}
 			initialCpDao.setCps(initCpsMap);
 			logger.info("初始化 Redis InitialCP 完成！");
@@ -304,6 +305,18 @@ public class RecommendServiceImpl implements RecommendService {
 		}		
 	}
 	
+	@Override
+	public void setSelfAddCp(String cpid) {
+		Map<String,Double> selfAddCp = new HashMap<String,Double>();
+		selfAddCp.put(cpid, SELF_ADD_CP_SCORE);
+		initialCpDao.setCps(selfAddCp);
+		
+		List<User> all_users = userDao.findAllUsers();
+		for(User u:all_users){
+			u2cDao.updateUserCpValue(u.getUserId().toString(), cpid, SELF_ADD_CP_SCORE);
+		}		
+	}
+	
 	/**更新Uj在U的update_time后更新的标签列表{CPi}
 	 *	对每个CPi，在U的U2C表中对CPi的推荐分score 加上（ CPi自身的score * U-Uj的关系值u_score），新增为正，取消为负。
 	 * */
@@ -313,7 +326,7 @@ public class RecommendServiceImpl implements RecommendService {
 			BigInteger selectedCpid = selectedCp.getCp_id();
 			String is_selected = selectedCp.getIs_selected();
 			String property = selectedCp.getProperty();
-			Double cpWeight = concernPointDao.getConcernPoint(selectedCpid).getWeight().doubleValue();
+			Double cpWeight = concernPointDao.getConcernPointById(selectedCpid).getWeight().doubleValue();
 			Double relateScore = u2uRelationDao.getRelatedUserScore(uid, changedUid);
 			
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
@@ -342,7 +355,7 @@ public class RecommendServiceImpl implements RecommendService {
 		for(CpChoiceDO oldCp:oldCps){
 			BigInteger oldCpId = oldCp.getCp_id();
 			String property = oldCp.getProperty();
-			Double cpWeight = concernPointDao.getConcernPoint(oldCpId).getWeight().doubleValue();
+			Double cpWeight = concernPointDao.getConcernPointById(oldCpId).getWeight().doubleValue();
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
 				u2cDao.updateUserCpValue(uid, oldCpId.toString(), cpWeight*uDeltaValue);
 			}else{
@@ -350,5 +363,7 @@ public class RecommendServiceImpl implements RecommendService {
 			}
 		}
 	}
+
+
 
 }

@@ -1,6 +1,7 @@
 package so.xunta.server.impl;
 
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -22,17 +23,23 @@ public class ConcernPointServiceImpl implements ConcernPointService {
 	Logger logger = Logger.getLogger(ConcernPointServiceImpl.class);
 	
 	@Override
-	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) {
+	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) throws SQLException{
 		
 		return concernPointDao.saveConcernPoint(cp);
 	}
 
 	@Override
-	public ConcernPointDO getConcernPoint(BigInteger id) {
+	public ConcernPointDO getConcernPointById(BigInteger id) {
 		
-		return concernPointDao.getConcernPoint(id);
+		return concernPointDao.getConcernPointById(id);
 	}
 
+	@Override
+	public ConcernPointDO getConcernPointByText(String cptext) {
+		
+		return concernPointDao.getConcernPointByText(cptext);
+	}
+	
 	@Override
 	public List<ConcernPointDO> listConcernPointsByCreator(Long uid,int startPoint,int howMany) {
 		

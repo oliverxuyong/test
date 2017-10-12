@@ -98,7 +98,7 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 			if(recommend_cps_previous.contains(cpid)){
 				continue;
 			}
-			ConcernPointDO cp = concernPointDao.getConcernPoint(BigInteger.valueOf(Long.valueOf(cpid)));
+			ConcernPointDO cp = concernPointDao.getConcernPointById(BigInteger.valueOf(Long.valueOf(cpid)));
 			PushRecommendCpDTO pushRecommendCp = new PushRecommendCpDTO();
 			pushRecommendCp.setCpId(cpid);
 			pushRecommendCp.setCpText(cp.getText());

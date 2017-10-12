@@ -58,4 +58,6 @@ public interface RecommendService {
 	 * 检查用户的update任务当前是否可执行
 	 * */
 	public Boolean ifUpdateExecutable(String uid);
+	
+	public void setSelfAddCp(String cpid);
 }

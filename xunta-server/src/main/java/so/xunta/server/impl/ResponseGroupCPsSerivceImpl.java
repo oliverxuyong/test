@@ -56,7 +56,7 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 			//Double cpScore = cp.getScore();
 			
 
-			ConcernPointDO cpDO = concernPointDao.getConcernPoint(BigInteger.valueOf(Long.valueOf(cpid)));
+			ConcernPointDO cpDO = concernPointDao.getConcernPointById(BigInteger.valueOf(Long.valueOf(cpid)));
 			
 			RecommendCpBO cpBO = new RecommendCpBO();
 			cpBO.setCpId(cpid);
