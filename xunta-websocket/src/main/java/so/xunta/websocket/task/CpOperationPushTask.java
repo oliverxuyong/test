@@ -118,8 +118,13 @@ public class CpOperationPushTask implements Runnable{
 		
 		JSONArray newUserArr = new JSONArray();
 		for(PushMatchedUserDTO matchedUserDTO:pushMatchedUserDTOs){
+			String userId = matchedUserDTO.getUserid();
+			if(userId==null){
+				logger.info("匹配用户减少为0");
+				continue;
+			}
 			JSONObject pushMatchedUserJson = new JSONObject();
-			pushMatchedUserJson.put("userid", matchedUserDTO.getUserid());
+			pushMatchedUserJson.put("userid", userId);
 			pushMatchedUserJson.put("username", matchedUserDTO.getUsername());
 			pushMatchedUserJson.put("img_src", matchedUserDTO.getImg_src());
 			pushMatchedUserJson.put("new_rank", matchedUserDTO.getNew_rank());

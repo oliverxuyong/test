@@ -111,17 +111,23 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 	
 	private void appendPushUsers(List<String> matched_uids_after, RecommendPushDTO recommendPushDTO){
 		int rank=1;
-		for(String uid:matched_uids_after){
-			User u = userDao.findUserByUserid(Long.valueOf(uid));
+		if(matched_uids_after.size()==0){
+			logger.info("没有匹配用户");
 			PushMatchedUserDTO pushMatchedUser = new PushMatchedUserDTO();
-			pushMatchedUser.setUserid(u.getUserId().toString());
-			pushMatchedUser.setUsername(u.getName());
-			pushMatchedUser.setImg_src(u.getImgUrl());
-			pushMatchedUser.setNew_rank(rank);
-
-			logger.info("推送用户: "+u.getName()+" rank:"+rank);
 			recommendPushDTO.addPushMatchedUser(pushMatchedUser);
-			rank++;
+		}else{
+			for(String uid:matched_uids_after){
+				User u = userDao.findUserByUserid(Long.valueOf(uid));
+				PushMatchedUserDTO pushMatchedUser = new PushMatchedUserDTO();
+				pushMatchedUser.setUserid(u.getUserId().toString());
+				pushMatchedUser.setUsername(u.getName());
+				pushMatchedUser.setImg_src(u.getImgUrl());
+				pushMatchedUser.setNew_rank(rank);
+	
+				logger.info("匹配用户: "+u.getName()+" rank:"+rank);
+				recommendPushDTO.addPushMatchedUser(pushMatchedUser);
+				rank++;
+			}
 		}
 	}	
 	
