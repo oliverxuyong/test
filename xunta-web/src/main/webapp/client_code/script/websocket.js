@@ -98,7 +98,7 @@ function requestCP(){//请一组CP.首次请求页号设为1.
 }
 
 //叶夷   2017.06.16 发送"标签选中"
-function sendSelectedCP(userId,cpid,text){
+function sendSelectedCP(userId,cpid,text, property){
 	//console.log("测试 3： "+typeof(userId));
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
 		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 时间="+new Date());
@@ -108,7 +108,7 @@ function sendSelectedCP(userId,cpid,text){
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
 			 cptext:text,
-			 property: "P",
+			 property:  property,
 			 timestamp:"",
 		};
 		WS_Send(json_obj);

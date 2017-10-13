@@ -783,8 +783,7 @@ function chooseOneCP(cp_node,cp) {
 		cp_innode.css("background-color","rgba(255,255,255,0.3)");
 		//cp_innode.css("opacity","0.3");
 		calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
-		
-		chooseCP(cp_innode,cpid,text);
+		chooseCP(cp_innode,cpid,text,"P");
 	});
 	
 	noItem.click(function() {
@@ -895,21 +894,27 @@ function chooseOneCP(cp_node,cp) {
 				duration :1000
 			});
 		}
+		
+		chooseCP(cp_innode,cpid,text,"N");
 	});
 }
 
-function chooseCP(cp_innode,cpid,text){
+function chooseCP(cp_innode,cpid,text,property){
 	console.log(cpid +":"+text+ "-> 选中状态");
 	
-	if(lineNumber<=3){
-		if(cp_innode!=null){
-			cp_innode.unbind();// 不可点击
-		}
-		showSelectTag(cpid,text);
-		sendSelectCP(userId, cpid,text);
+	if(property=="N"){
+		sendSelectCP(userId, cpid,text, property);
 	}else{
-		console.log("选中标签超过三行");
-		toast_popup("选中标签超过三行",2500);
+		if(lineNumber<=3){
+			if(cp_innode!=null){
+				cp_innode.unbind();// 不可点击
+			}
+			showSelectTag(cpid,text);
+			sendSelectCP(userId, cpid,text, property);
+		}else{
+			console.log("选中标签超过三行");
+			toast_popup("选中标签超过三行",2500);
+		}
 	}
 }
 
@@ -2021,7 +2026,7 @@ function sendSelectedCPFail(cpid,text){
 	mytag.unbind();
 	var cp_node=$("#cpid"+cpid);
 	mytag.click(function(){
-		chooseCP(cp_node,cpid,text);
+		chooseCP(cp_node,cpid,text,"P");
 	});
 }
 
