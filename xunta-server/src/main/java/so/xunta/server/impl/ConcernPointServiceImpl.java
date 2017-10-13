@@ -1,11 +1,11 @@
 package so.xunta.server.impl;
 
 import java.math.BigInteger;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +23,7 @@ public class ConcernPointServiceImpl implements ConcernPointService {
 	Logger logger = Logger.getLogger(ConcernPointServiceImpl.class);
 	
 	@Override
-	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) throws SQLException{
+	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) throws DuplicateKeyException{
 		
 		return concernPointDao.saveConcernPoint(cp);
 	}

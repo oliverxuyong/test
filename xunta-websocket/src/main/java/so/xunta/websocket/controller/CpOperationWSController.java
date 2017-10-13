@@ -2,11 +2,11 @@ package so.xunta.websocket.controller;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -139,7 +139,7 @@ public class CpOperationWSController {
 			cpId = concernPointDO.getId();
 			recommendService.setSelfAddCp(cpId.toString());
 			returnMsg="新增标签并选中";
-		} catch (SQLException e) {
+		} catch (DuplicateKeyException e) {
 			returnMsg="标签已存在，直接选中";
 			if(cpId==null){
 				concernPointDO = concernPointService.getConcernPointByText(cpText);
@@ -169,7 +169,11 @@ public class CpOperationWSController {
 		cpChoiceDetailDO.setProperty(property);
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
 
-		cpChoiceDetailDO = cpChoiceDetailService.saveCpChoiceDetail(cpChoiceDetailDO);
+		try{
+			cpChoiceDetailDO = cpChoiceDetailService.saveCpChoiceDetail(cpChoiceDetailDO);
+		}catch(Exception e){
+			return null;
+		}
 		
 		int selectTypeRec;
 		if(selectType.equals(CpChoiceDetailDao.SELECTED)){

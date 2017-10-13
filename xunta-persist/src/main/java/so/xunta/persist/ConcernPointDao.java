@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.dao.DuplicateKeyException;
 
 import so.xunta.beans.ConcernPointDO;
 
@@ -19,7 +20,7 @@ public interface ConcernPointDao {
 	 * @return ConcernPointDO
 	 * @throws SQLException 
 	 * */
-	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) throws SQLException;
+	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) throws DuplicateKeyException;
 	/**
 	 * @author bright_zheng
 	 * @param BigInteger

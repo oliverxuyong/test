@@ -1,7 +1,6 @@
 package so.xunta.persist.impl;
 
 import java.math.BigInteger;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -10,6 +9,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import so.xunta.beans.ConcernPointDO;
@@ -23,10 +23,14 @@ public class ConcernPointDaoImpl implements ConcernPointDao {
 	SessionFactory sessionFactory;
 	
 	@Override
-	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) throws SQLException{
+	public ConcernPointDO saveConcernPoint(ConcernPointDO cp) throws DuplicateKeyException{
 		Session session = sessionFactory.getCurrentSession();
-		BigInteger cpid = (BigInteger)session.save(cp);
-		cp.setId(cpid);
+		try{
+			BigInteger cpid = (BigInteger)session.save(cp);
+			cp.setId(cpid);
+		}catch(Exception e){
+			throw new DuplicateKeyException(e.getMessage());
+		}
 		return cp;
 	}
 
