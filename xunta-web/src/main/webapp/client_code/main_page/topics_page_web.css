@@ -525,15 +525,21 @@ width:100%;
 	//color:#fccf63;
 }
 
-.selectItem{
-	//position:absolute;
-	//top: 54.5px;
-	width: 100%;
+.yesItem{
+	position:absolute;
 	display:none;
 }
-.yesItem{
-	float:left;
-}
 .noItem{
-	float:right;
+	position:absolute;
+	display:none;
+}
+.cover{
+	width: 387px; 
+	height: 620px; 
+	background: rgb(0, 0, 0); 
+	position: fixed; 
+	z-index: 102; 
+	opacity: 0.5;
+	top:0px;
+	left:0px;
 }
