@@ -294,7 +294,7 @@ function checkMessageInterface(evnt) {
 	//叶夷 2017.07.07   匹配用户改变
 	if(jsonObj._interface == '2106-1'){
 		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.matched_user_arr));
-		//exec("main_page","push_matched_user("+evnt.data+")");
+		exec("main_page","push_matched_user("+evnt.data+")");
 	}
 	
 	//2017.08.11 叶夷    判断这个标签是否被选中过

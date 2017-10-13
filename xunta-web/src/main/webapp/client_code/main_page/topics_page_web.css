@@ -526,8 +526,8 @@ width:100%;
 }
 
 .selectItem{
-	position:absolute;
-	top: 54.5px;
+	//position:absolute;
+	//top: 54.5px;
 	width: 100%;
 	display:none;
 }

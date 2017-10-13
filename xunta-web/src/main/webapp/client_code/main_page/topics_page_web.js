@@ -185,7 +185,7 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth
 	calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
 }
 
-function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset,isSelect){
+function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset){
 	//var cpInNodeWidth = cp_innode.width();// 内圆div的宽
 	var cpTextWidth;// cp文字 div的宽
 	var cpTextHeight;// cp文字 div的高
@@ -194,7 +194,7 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	// 1-3个字为一行 //标签内容全为数字或者字母的情况，则为一行
 	if (cpTextLength <= 3 || (isLetterOrNumber(cpText)==true)) {
 		cpTextWidth = cpTextSize * cpTextLength;
-		cpTextHeight = cpTextSize + 5;
+		cpTextHeight = parseInt(cpTextSize) + 5;
 	} else if (cpTextLength > 3) {// 4-10个字为两行
 		if (cpTextLength % 2 == 0) {
 			cpTextWidth = cpTextSize * (cpTextLength / 2);
@@ -227,11 +227,11 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	selectTagNumNode.css("height", (cpTextSize+5) + "px");
 	//加上了标签的选择人数外圆的大小增大
 	if (cpInNodeWidth > hypotenuse){
-		cpInNodeWidth=cpInNodeWidth+cpTextSize+2; 
+		cpInNodeWidth=parseInt(cpInNodeWidth)+parseInt(cpTextSize)+2; 
 		cp_innode.css("height", cpInNodeWidth);
 		cp_innode.css("width", cpInNodeWidth);
 	}else{
-		hypotenuse=hypotenuse+cpTextSize+5; 
+		hypotenuse=parseInt(hypotenuse)+parseInt(cpTextSize)+5; 
 	}
 	if(selectTagNum<=0){
 		selectTagNumNode.text("");
@@ -353,7 +353,7 @@ function startPushSelectCpPresent(data){
 	cp_innode.css("height",cpInNodeWidth);*/
 	
 	//传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div,选择的人数，再加上一个圆div（用来判断标签之前的距离）,选择人数div,判断是否相交
-	cpInNodeWidth=calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset)
+	cpInNodeWidth=calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
 	cp_innode.animate({
 		width : cpInNodeWidth,
 		height : cpInNodeWidth
@@ -692,14 +692,31 @@ function chooseOneCP(cp_node,cp) {
 	var noItem=$("<div></div>").attr("class","noItem").text("消失");//消失按钮
 	selectItemNode.append(yesItem).append(noItem);
 	//2.设置字体，目前设置为和标签文字的字体一样大
-	var cpInnode=cp_node.find(".incp");
-	var cpTextSize=cpInnode.find("div").css("font-size").replace(/[^0-9]/ig,"");
+	var cpNodeByDistance=$("#outcpid"+cpid);
+	var cp_innode=cp_node.find(".incp");
+	var cpInNodeWidth=parseInt(maxCPSize+10);//内圆大小扩大，目前给一个固定值，比最大圆大一点
+	cp_innode.css("height", cpInNodeWidth);
+	cp_innode.css("width", cpInNodeWidth); 
+	var cp_text=cp_innode.find("div");
+	var cpTextSize=cp_text.css("font-size").replace(/[^0-9]/ig,"");
+	var cpText=fullTextArray[cpid];
+	var cpTextLength=cpText.length;
+	var selectTagNumNode=$("#selectTagNum"+cpid);
+	var selectTagNum=selectTagNumNode.text();
 	yesItem.css("font-size",cpTextSize+"px");
 	noItem.css("font-size",cpTextSize+"px");
 	//3.改变整个标签的大小
+	//cp文字div, cp文字长度,cp文字大小，cp文字，外圆div，内圆div,内圆div大小,选择的人数，再加上一个圆div（用来判断标签之前的距离）,选择人数div,判断是否相交
+	calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
+	cp_innode.css("background-color","beige");
+	cp_innode.css("z-index","101");
+	selectItemNode.show();
+	//蒙上一层黑布
+	/*bgObj = document.createElement('div');
+	bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background:#000;position:absolute;top:0;left:0;z-index:100;opacity:0.7;filter:alpha(opacity =20);";
+	document.body.appendChild(bgObj);*/
 	
-	
-	chooseCP(cp_node,cpid,text);
+	//chooseCP(cp_node,cpid,text);
 }
 
 function chooseCP(cp_node,cpid,text){
