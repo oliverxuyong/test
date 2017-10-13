@@ -48,8 +48,8 @@ function requestCP(userId,requestNum,currentPage){//调用根页面上的同名�
 
 
 //叶夷   2017.06.16  发送"标签选中"
-function sendSelectCP(userId,cpid,text){
-	var paraStr = userId + "','" + cpid + "','" +text;
+function sendSelectCP(userId,cpid,text, property){
+	var paraStr = userId + "','" + cpid + "','" +text+"','"+ property;
 	execRoot("sendSelectedCP('"+ paraStr +"')");
 }
 
@@ -99,25 +99,13 @@ var addCPID;//用来添加标签的cpid,没有则为空
 function searchToAddTag(){
 	var suggestWrap = $('#gov_search_suggest');
 	var text = $("#pop_tagName").val();//获得输入框的值
-	$.ajax({
-        url:"http://xunta.so:3000/v1/add/tag",
-        type:"POST",
-        dataType:"jsonp",
-        jsonp:"callback",
-        contentType: "application/json; charset=utf-8",
-        data:{from_user_id:userId,
-        		cpid:addCPID,
-        		text:text},
-        async:false,
-        success:function(data, textStatus) {
-        	//2017.08.09  叶夷  添加标签之后的显示
-        	addCpShow(data);
-        },
-        error:function(data, textStatus) {
-            console.log("标签搜索请求错误"+data);
-        	return;
-        }
-    });
+	var paraStr = userId + "','" + addCPID+"','"+text;
+	execRoot("add_self_cp('"+ paraStr +"')");
+}
+
+//返回添加标签结果
+function return_add_self_cp(data){
+	addCpShow(data);
 }
 
 //2017.08.09  叶夷  显示我的标签

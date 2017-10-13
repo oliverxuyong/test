@@ -98,7 +98,7 @@ function requestCP(){//请一组CP.首次请求页号设为1.
 }
 
 //叶夷   2017.06.16 发送"标签选中"
-function sendSelectedCP(userId,cpid,text){
+function sendSelectedCP(userId,cpid,text, property){
 	//console.log("测试 3： "+typeof(userId));
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
 		console.log("标签选中:userId="+userId+" 选中的cpid="+cpid+" 时间="+new Date());
@@ -108,7 +108,7 @@ function sendSelectedCP(userId,cpid,text){
 			 uid:userId.toString(),
 			 cpid:cpid.toString(),
 			 cptext:text,
-			 property: "P",
+			 property:  property,
 			 timestamp:"",
 		};
 		WS_Send(json_obj);
@@ -162,7 +162,22 @@ function requestMatchedUsers(userId,requestTopMUNum){
 	}
 }
 
-//2017.08.11 叶夷    判断这个标签是否被选中过
+//2017.10.13 叶夷  添加标签
+function add_self_cp(uid,cpid,cptext){
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("添加标签:userId="+userId+" 添加的标签="+cptext+" 时间="+new Date());
+		var json_obj = {
+			 _interface:"1108-1",
+			 interface_name: "add_self_cp",
+			 uid:uid.toString(),
+			 cpid:cpid.toString(),
+			 cptext:cptext.toString(),
+			 timestamp:"",
+		};
+		WS_Send(json_obj);
+	}
+}
+/*//2017.08.11 叶夷    判断这个标签是否被选中过
 function sendIfSelectedCP(userId,cpid){
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
 		//console.log("请求用户匹配:userId="+userId+" 请求的数量requestTopMUNum="+requestTopMUNum);
@@ -175,7 +190,7 @@ function sendIfSelectedCP(userId,cpid){
 		};
 		WS_Send(json_obj);
 	}
-}
+}*/
 
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
@@ -293,14 +308,20 @@ function checkMessageInterface(evnt) {
 	
 	//叶夷 2017.07.07   匹配用户改变
 	if(jsonObj._interface == '2106-1'){
-		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.matched_user_arr));
-		//exec("main_page","push_matched_user("+evnt.data+")");
+		console.log("匹配用户改变时后台发送的用户匹配列表:"+JSON.stringify(jsonObj.new_user_arr));
+		exec("main_page","push_matched_user("+evnt.data+")");
 	}
 	
-	//2017.08.11 叶夷    判断这个标签是否被选中过
+	/*//2017.08.11 叶夷    判断这个标签是否被选中过
 	if(jsonObj._interface == '1107-2'){
 		console.log("判断这个标签是否被选中过:"+JSON.stringify(jsonObj.is_select));
 		exec("main_page","return_sendIfSelectedCP("+evnt.data+")");
+	}*/
+	
+	//2017.10.13  叶夷  返回用户选择自己新增的cp
+	if(jsonObj._interface == '1108-2'){
+		console.log("新增cp:"+JSON.stringify(jsonObj.is_success));
+		exec("main_page","return_add_self_cp("+evnt.data+")");
 	}
 	
 	//2017.09.04 叶夷    CP推荐
