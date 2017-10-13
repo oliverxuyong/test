@@ -1947,7 +1947,7 @@ function addCpShow(data){
 	if(is_success){
 		var cpid=data.cpid;
 		var cptext=data.cptext;
-		chooseCP(null,cpid,text);
+		chooseCP(null,cpid,cptext);
 		//console.log("添加标签成功");
     	toast_popup("添加标签成功",2500);
     	closePop();// 添加标签框关掉

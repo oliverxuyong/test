@@ -12,12 +12,14 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import so.xunta.beans.ConcernPointDO;
+import so.xunta.beans.CpChoiceDO;
 import so.xunta.beans.CpChoiceDetailDO;
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.persist.CpChoiceDetailDao;
 import so.xunta.server.ConcernPointService;
 import so.xunta.server.CpChoiceDetailService;
+import so.xunta.server.CpChoiceService;
 import so.xunta.server.CpShowingService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
@@ -48,6 +50,8 @@ public class CpOperationWSController {
 	private CpShowingService cpShowingService;
 	@Autowired
 	private ConcernPointService concernPointService;
+	@Autowired
+	private CpChoiceService cpChoiceService;
 	
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1102-1")
@@ -74,6 +78,7 @@ public class CpOperationWSController {
 			returnJson.put("is_success", "true");
 		}else{
 			returnJson.put("is_success", "false");
+			returnJson.put("error_msg", "您已添加过啦");
 		}
 		//2017.08.08 叶夷  在选中标签时返回的数据中加上cpid
 		returnJson.put("cpid", cpid+"");
@@ -103,6 +108,7 @@ public class CpOperationWSController {
 			returnJson.put("is_success", "true");
 		}else{
 			returnJson.put("is_success", "false");
+			returnJson.put("error_msg", "您还没有选择过呢");
 		}
 		//2017.08.08 叶夷  在选中标签时返回的数据中加上cpid
 		returnJson.put("cpid", cpid+"");
@@ -123,7 +129,7 @@ public class CpOperationWSController {
 		String timestamp = params.getString("timestamp");
 		
 		JSONObject returnJson = new JSONObject();
-		returnJson.put("_interface", "1103-2");
+		returnJson.put("_interface", "1108-2");
 		String returnMsg;
 		
 		ConcernPointDO concernPointDO = new ConcernPointDO();
@@ -151,6 +157,7 @@ public class CpOperationWSController {
 				returnJson.put("is_success", "true");
 			}else{
 				returnJson.put("is_success", "false");
+				returnJson.put("error_msg", "您已添加过啦");
 			}
 		}
 
@@ -169,10 +176,19 @@ public class CpOperationWSController {
 		cpChoiceDetailDO.setProperty(property);
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
 
-		try{
-			cpChoiceDetailDO = cpChoiceDetailService.saveCpChoiceDetail(cpChoiceDetailDO);
-		}catch(Exception e){
-			return null;
+		CpChoiceDO cpChoiceDO = cpChoiceService.getCpChoice(uid,cpid);
+		if(selectType.equals(CpChoiceDetailDao.SELECTED)){
+			if(cpChoiceDO==null){
+				cpChoiceDetailDO = cpChoiceDetailService.saveCpChoiceDetail(cpChoiceDetailDO);
+			}else{
+				return null;
+			}	
+		}else{
+			if(cpChoiceDO!=null){
+				cpChoiceDetailDO = cpChoiceDetailService.saveCpChoiceDetail(cpChoiceDetailDO);
+			}else{
+				return null;
+			}	
 		}
 		
 		int selectTypeRec;
