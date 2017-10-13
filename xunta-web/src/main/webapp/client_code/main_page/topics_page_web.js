@@ -1864,7 +1864,9 @@ function addTag() {
 	alertWin(contextresult.join(''), "添加新的标签", _w, _h);
 }
 
+//监听添加标签输入框是否有改变
 function showSearchTag() {
+	addCPID=null;
 	aData.splice(0,aData.length);// 清空数组
 	// 清空div中所有的子元素
 	var childList = document.getElementById('gov_search_suggest').childNodes;
@@ -1940,23 +1942,20 @@ function showMyCp(datas){
 
 // 2017.08.09 叶夷 添加标签之后的显示
 function addCpShow(data){
-	var suggestWrap=$("#gov_search_suggest")
-	
-	var cpid=data.msg.insertId;
-	var mgs2=data.msg2;// 判断是否重复添加
-	var text = $("#pop_tagName").val();
-	
-	if(mgs2==undefined){// 添加的标签不存在
-		//showSelectTag(cpid,text);
-		//sendSelectCP(userId,cpid,text);
+	var is_success=data.is_success;
+	console.log("添加标签消息备注"+data.message);
+	if(is_success){
+		var cpid=data.cpid;
+		var cptext=data.cptext;
 		chooseCP(null,cpid,text);
-    	console.log("添加标签成功");
+		//console.log("添加标签成功");
     	toast_popup("添加标签成功",2500);
     	closePop();// 添加标签框关掉
-	}else{// 添加的标签存在
-		cpid=data.msg[0].id;
-		sendIfSelectedCP(userId,cpid);
+	}else{
+		//console.log("标签添加过,请重新添加");
+    	toast_popup("标签添加过,请重新添加",2500);
 	}
+	var suggestWrap=$("#gov_search_suggest")
 	$("#htmlObj").css("height","100px");
 	suggestWrap.hide();
 }
