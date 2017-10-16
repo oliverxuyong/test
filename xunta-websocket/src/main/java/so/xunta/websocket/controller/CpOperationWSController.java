@@ -120,13 +120,12 @@ public class CpOperationWSController {
 	public void addSelfCp(WebSocketSession session, TextMessage message){
 		JSONObject params=new JSONObject(message.getPayload());
 		Long uid = Long.valueOf(params.getString("uid"));
-		String cpIdStr = params.getString("cpid");
-		BigInteger cpId = null;
-		if(cpIdStr!=null){
-			cpId = new BigInteger(cpIdStr);
-		}
 		String cpText = params.getString("cptext");
 		String timestamp = params.getString("timestamp");
+		BigInteger cpId = null;
+		if(!params.isNull("cpid")){
+			cpId = new BigInteger(params.getString("cpid"));
+		}
 		
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "1108-2");
