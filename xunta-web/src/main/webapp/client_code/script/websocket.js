@@ -164,16 +164,27 @@ function requestMatchedUsers(userId,requestTopMUNum){
 
 //2017.10.13 叶夷  添加标签
 function add_self_cp(uid,cpid,cptext){
+	var json_obj;
+	if(cpid=="null" || cpid=="undefined"){
+		json_obj = {
+				 _interface:"1108-1",
+				 interface_name: "add_self_cp",
+				 uid:uid.toString(),
+				 cptext:cptext.toString(),
+				 timestamp:"",
+			};
+	}else{
+		json_obj = {
+				 _interface:"1108-1",
+				 interface_name: "add_self_cp",
+				 uid:uid.toString(),
+				 cpid:cpid,
+				 cptext:cptext.toString(),
+				 timestamp:"",
+			};
+	}
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
 		console.log("添加标签:userId="+userId+" 添加的标签="+cptext+" 时间="+new Date());
-		var json_obj = {
-			 _interface:"1108-1",
-			 interface_name: "add_self_cp",
-			 uid:uid.toString(),
-			 cpid:cpid.toString(),
-			 cptext:cptext.toString(),
-			 timestamp:"",
-		};
 		WS_Send(json_obj);
 	}
 }

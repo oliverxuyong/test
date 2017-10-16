@@ -235,6 +235,9 @@
                 		exec(window_id, "markSendPosterSuccess('" + msgId + "','" + postTimeLong +"','" +postTimeStr+"')");
             		} 
             	}
+        		
+        		//每次接收到消息消息列表置顶
+        		exec("dialoglist_page", "makeDialogListTop('" + respondeUserId +"')");
         };
         
         function sendmsg(toUserId,inputValue,handler){
