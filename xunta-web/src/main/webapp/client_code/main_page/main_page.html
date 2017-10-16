@@ -192,6 +192,11 @@
         			var msgId=obj.handler;
         			var str = "judgeSelfPosterReturnOrOthers('" + window_id + "','" + msgId + "','" + postTimeLong +"','" +postTimeStr +"')";
         		    execRoot(str);
+        		    
+        		    if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过,实现置顶
+        		    	exec("dialoglist_page", "updateDialogContentAndTime('','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
+            			exec("dialoglist_page", "makeDialogListTop('" + window_id +"')");
+            		}
             	} else { 
             		myOrOther="other";
             		window_id=respondeUserId;
@@ -234,10 +239,12 @@
             			//加上时间 
                 		exec(window_id, "markSendPosterSuccess('" + msgId + "','" + postTimeLong +"','" +postTimeStr+"')");
             		} 
+            		
+            		//每次接收到消息消息列表置顶
+            		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
+            			exec("dialoglist_page", "makeDialogListTop('" + respondeUserId+"')");
+            		}
             	}
-        		
-        		//每次接收到消息消息列表置顶
-        		exec("dialoglist_page", "makeDialogListTop('" + respondeUserId +"')");
         };
         
         function sendmsg(toUserId,inputValue,handler){
