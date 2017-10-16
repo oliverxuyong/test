@@ -2043,6 +2043,17 @@ function myTagAgainBindingClick(cpid){
 	}
 }
 
+//滚动条到页面底部加载更多案例	
+$("#cp-show").scroll(function(){
+	var cpShowHeight = $(this).height();//可见高度  
+	var cpShowContentHeight = $(this).get(0).scrollHeight;//内容高度  
+	var cpShowScrollTop =$(this).scrollTop();//滚动高度  
+	//if(cpShowScrollTop/(cpShowContentHeight -cpShowHeight)>=0.95){ //到达底部100px时,加载新内容  
+	if(cpShowScrollTop==(cpShowContentHeight -cpShowHeight)){ 
+		requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)));
+	} 
+});
+
 /**
  * start 2017.09.14 叶夷 "选中标签"性能测试
  */
