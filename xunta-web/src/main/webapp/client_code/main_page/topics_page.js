@@ -83,7 +83,6 @@ function responseSearchTag(text){
         data:{text:text},
         async:false,
         success:function(data, textStatus) {
-        	addCPID=null;
         	//console.log("标签搜索请求成功"+data);
         	sendKeyWordToBack(text,data);
         },
@@ -99,8 +98,13 @@ var addCPID;//用来添加标签的cpid,没有则为空
 function searchToAddTag(){
 	var suggestWrap = $('#gov_search_suggest');
 	var text = $("#pop_tagName").val();//获得输入框的值
-	var paraStr = userId + "','" + addCPID+"','"+text;
-	execRoot("add_self_cp('"+ paraStr +"')");
+	if(lineNumber<=3){
+		var paraStr = userId + "','" + addCPID+"','"+text;
+		execRoot("add_self_cp('"+ paraStr +"')");
+	}else{
+		console.log("选中标签超过三行");
+		toast_popup("选中标签超过三行",2500);
+	}
 }
 
 //返回添加标签结果

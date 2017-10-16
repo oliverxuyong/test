@@ -24,6 +24,7 @@ public class RecommendUpdateTask implements Runnable {
 		}else{
 			logger.info("参数为空！放弃任务");
 		}
+		logger.info("=========================RecommendUpdateTask完成！==============================");
 	}
 
 	public String getUid() {
