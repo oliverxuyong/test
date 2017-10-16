@@ -14,12 +14,14 @@ import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.websocket.task.CpOperationPushTask;
 import so.xunta.websocket.task.RecommendUpdateTask;
+import so.xunta.websocket.task.SelfAddCpRecommendTask;
 
 @Component
 public class PendingTaskQueue {
 	private final String RECOMMEND_SELECTCP = "selectCP";
 	private final String RECOMMEND_CANCELCP = "cancelCP";
 	private final String RECOMMEND_UPDARW = "update";
+	private final String RECOMMEND_SELF_ADD_CP = "selfAddCP";
 	@Autowired
 	private RecommendService recommendService;
 	@Autowired
@@ -43,6 +45,10 @@ public class PendingTaskQueue {
 	
 	public void addUpdateTask(String userId){
 		String taskId = RECOMMEND_UPDARW+":"+userId;
+		taskSerializeList.add(taskId);
+	}
+	public void addSelfAddCPTask(String cpId){
+		String taskId = RECOMMEND_SELF_ADD_CP+":"+cpId;
 		taskSerializeList.add(taskId);
 	}
 	
@@ -76,6 +82,10 @@ public class PendingTaskQueue {
 				RecommendUpdateTask t3 = new RecommendUpdateTask(recommendService,userId3);
 				returnTasks.add(t3);
 				break;
+			case RECOMMEND_SELF_ADD_CP:
+				String cpId4 = parms[1];
+				SelfAddCpRecommendTask t4 = new SelfAddCpRecommendTask(cpId4,recommendService);
+				returnTasks.add(t4);
 			}
 			iterator.remove();
 			loopTimes++;

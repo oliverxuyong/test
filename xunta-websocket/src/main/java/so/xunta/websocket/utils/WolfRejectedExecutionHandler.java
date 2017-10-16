@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import so.xunta.websocket.task.CpOperationPushTask;
 import so.xunta.server.RecommendService;
 import so.xunta.websocket.task.RecommendUpdateTask;
+import so.xunta.websocket.task.SelfAddCpRecommendTask;
 
 @Component
 public class WolfRejectedExecutionHandler implements RejectedExecutionHandler {
@@ -31,13 +32,17 @@ public class WolfRejectedExecutionHandler implements RejectedExecutionHandler {
 				pendingTaskQueue.addSelectCPTask(uid, cpId, property);
 			}else{
 				pendingTaskQueue.addCancelCpTask(uid, cpId, property);
-			}
-			
+			}		
 		}else if(task instanceof RecommendUpdateTask){
 			logger.info("将1个RecommendUpdateTask 任务序列化到任务队列，等空闲时再执行");
 			RecommendUpdateTask recommendUpdateTask = (RecommendUpdateTask)task;
 			String uid = recommendUpdateTask.getUid();
 			pendingTaskQueue.addUpdateTask(uid);
+		}else if(task instanceof SelfAddCpRecommendTask){
+			logger.info("将1个SelfAddCpRecommendTask 任务序列化到任务队列，等空闲时再执行");
+			SelfAddCpRecommendTask selfAddCpRecommendTask = (SelfAddCpRecommendTask)task;
+			String cpId = selfAddCpRecommendTask.getCpId();
+			pendingTaskQueue.addSelfAddCPTask(cpId);
 		}
 	}
 

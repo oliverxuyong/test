@@ -25,6 +25,7 @@ import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.websocket.task.CpOperationPushTask;
+import so.xunta.websocket.task.SelfAddCpRecommendTask;
 import so.xunta.websocket.utils.RecommendTaskPool;
 
 /**
@@ -142,7 +143,8 @@ public class CpOperationWSController {
 		try {
 			concernPointDO = concernPointService.saveConcernPoint(concernPointDO);
 			cpId = concernPointDO.getId();
-			recommendService.setSelfAddCp(cpId.toString());
+			SelfAddCpRecommendTask selfAddCpRecommendTask = new SelfAddCpRecommendTask(cpId.toString(),recommendService);
+			recommendTaskPool.execute(selfAddCpRecommendTask);
 			returnMsg="新增标签并选中";
 		} catch (DuplicateKeyException e) {
 			returnMsg="标签已存在，直接选中";
