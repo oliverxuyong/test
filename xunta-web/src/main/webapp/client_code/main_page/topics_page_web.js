@@ -148,8 +148,8 @@ var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 12;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
 var maxCPTextNumber = 9;// cp文字最大的数量
-var maxselectTagNum = 1000;// 影响标签大小的选择人数最小的数量
-var minselectTagNum = 100;// 影响标签大小的选择人数最大的数量
+var maxselectTagNum = 50;// 影响标签大小的选择人数最小的数量
+var minselectTagNum = 1;// 影响标签大小的选择人数最大的数量
 /**叶夷  2017.10.10  控制文字大小和内圆大小的方法*/
 function controlSize(selectTagNum,maxSize,minSize){
 	var sectionSize=maxSize-minSize;//大小的范围
@@ -1218,7 +1218,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		changeCount=0;
 		while(true){
 			var allOver=setPositionAndNotIntersect();
-			if(allOver){
+			if(allOver || (changeCount>maxChangeCount)){
 				break;
 			}
 			++changeCount;
@@ -1560,6 +1560,7 @@ var averageForChangeY=new Array();//y位置变化的平均值
 var changeTotalX=0;//在n次之前累计的变化总数
 var changeTotalY=0;
 var changeCount=0;//这是循环变化的次数
+var maxChangeCount=1000;//这是最大的循环变化的次数,超过1000次则不需要再循环
 
 /**2017.09.26 叶夷 从一个匹配人开始，然后计算边框和其它匹配人共同作用的排斥力(排斥力即移动的距离，目前是距离的倒数*大小,即距离越近和质量越大，排斥力越大),知道这个距离在0~1之间，则算是平衡下来停下*/
 function setPositionAndNotIntersect(){
