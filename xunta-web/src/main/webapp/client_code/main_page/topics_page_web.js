@@ -4,6 +4,8 @@ function wsConnect() {
 
 // 2017.09.13 叶夷 定义一个数组装哪几个圆相交
 var intersetCPArray=new Array();
+// 2017.10.17 叶夷  用一个变量表示标签是否请求成功,true为成功，false为不成功
+var requestCPSuccese=false;
 
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
@@ -46,6 +48,8 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 			// 如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
 		}
 	}
+	
+	requestCPSuccese=true;//表示标签请求成功，下面的滑倒底部的方法才可以执行请求下一批标签
 
 	// 判断是否测试
 	if(startTest){
@@ -144,8 +148,8 @@ var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 12;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
 var maxCPTextNumber = 9;// cp文字最大的数量
-var maxselectTagNum = 1000;// 影响标签大小的选择人数最小的数量
-var minselectTagNum = 100;// 影响标签大小的选择人数最大的数量
+var maxselectTagNum = 50;// 影响标签大小的选择人数最小的数量
+var minselectTagNum = 1;// 影响标签大小的选择人数最大的数量
 /**叶夷  2017.10.10  控制文字大小和内圆大小的方法*/
 function controlSize(selectTagNum,maxSize,minSize){
 	var sectionSize=maxSize-minSize;//大小的范围
@@ -1214,7 +1218,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		changeCount=0;
 		while(true){
 			var allOver=setPositionAndNotIntersect();
-			if(allOver){
+			if(allOver || (changeCount>maxChangeCount)){
 				break;
 			}
 			++changeCount;
@@ -1556,6 +1560,7 @@ var averageForChangeY=new Array();//y位置变化的平均值
 var changeTotalX=0;//在n次之前累计的变化总数
 var changeTotalY=0;
 var changeCount=0;//这是循环变化的次数
+var maxChangeCount=1000;//这是最大的循环变化的次数,超过1000次则不需要再循环
 
 /**2017.09.26 叶夷 从一个匹配人开始，然后计算边框和其它匹配人共同作用的排斥力(排斥力即移动的距离，目前是距离的倒数*大小,即距离越近和质量越大，排斥力越大),知道这个距离在0~1之间，则算是平衡下来停下*/
 function setPositionAndNotIntersect(){
@@ -2042,6 +2047,18 @@ function myTagAgainBindingClick(cpid){
 		});
 	}
 }
+
+//滚动条到页面底部加载更多	
+$("#cp-show").scroll(function(){
+	var cpShowHeight = $(this).height();//可见高度  
+	var cpShowContentHeight = $(this).get(0).scrollHeight;//内容高度  
+	var cpShowScrollTop =$(this).scrollTop();//滚动高度  
+	//if(cpShowScrollTop/(cpShowContentHeight -cpShowHeight)>=0.95){ //到达底部100px时,加载新内容  
+	if(cpShowScrollTop==(cpShowContentHeight -cpShowHeight) && requestCPSuccese){ 
+		//滑到底部先查看上一批匹配标签是否请求成功，如果成功再请求下一批
+		requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)));
+	} 
+});
 
 /**
  * start 2017.09.14 叶夷 "选中标签"性能测试

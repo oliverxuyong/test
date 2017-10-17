@@ -42,6 +42,7 @@ function updateNickname(newNickname){
  */
 
 function requestCP(userId,requestNum,currentPage){//调用根页面上的同名方法.
+	requestCPSuccese=false;//表示标签开始请求，然后标签请求完毕监测滑倒底部的方法才能继续请求下一批
 	var paraStr = userId + "','" + requestNum + "','" + currentPage;
 	execRoot("initToGetCP('"+ paraStr +"')");
 }
