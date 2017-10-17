@@ -1948,7 +1948,7 @@ function showMyCp(datas){
 function addCpShow(data){
 	var is_success=data.is_success;
 	console.log("添加标签消息备注:"+data.message);
-	if(is_success){
+	if(is_success=="true"){
 		var cpid=data.cpid;
 		var cptext=data.cptext;
 		//chooseCP(null,cpid,text);
