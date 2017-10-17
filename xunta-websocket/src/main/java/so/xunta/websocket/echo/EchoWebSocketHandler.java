@@ -188,7 +188,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 		User u = userService.findUser(userid);
 		
-		logger.error("用户:"+u.getUserId()+"  "+u.getName()+" 连接异常",exception);
+		logger.info("用户:"+u.getUserId()+"  "+u.getName()+" 连接异常:"+exception.getMessage());
 	}
 
 	/**
