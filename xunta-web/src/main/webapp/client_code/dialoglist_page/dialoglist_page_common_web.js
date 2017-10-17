@@ -185,9 +185,19 @@ function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 		unreadParent.find('.unread').text(unreadNum);
 	}
 	
+	updateDialogContentAndTime(user,data,postTimeStr,respondeUserId);
+}
+
+//把聊天列表的内容和时间更新
+function updateDialogContentAndTime(user,data,postTimeStr,respondeUserId){
+	var unreadParent=$("#"+respondeUserId);
 	//内容
 	var dialog_content_msg=unreadParent.find(".dialog_content_msg");
-	dialog_content_msg.text(user+"："+data);
+	if(user==""){
+		dialog_content_msg.text(data);
+	}else{
+		dialog_content_msg.text(user+"："+data);
+	}
 	
 	//把时间更新
 	var dialog_content_time=unreadParent.find(".dialog_content_time");
@@ -201,3 +211,17 @@ function changeUnreadColor(){
 	$(".unread").css("opacity","0.7");
 }
 
+/**2017.10.16 叶夷  聊天列表消息置顶*/
+function makeDialogListTop(respondeUserId){
+	var oneDialogDiv=$("#"+respondeUserId);
+	var copyOneDialogDiv=oneDialogDiv.clone();
+	
+	//先将节点从dialog_list删除再放入第一位中
+	oneDialogDiv.remove();
+	$("#dialog_list").prepend(copyOneDialogDiv);
+	
+	var toUserName=copyOneDialogDiv.find(".dialog_content_name").text();
+	copyOneDialogDiv.click(function() {//绑定点击事件.
+		enterDialogPage(respondeUserId,toUserName);
+	});
+}

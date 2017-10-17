@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Bright zheng
- * 继承ThreadPoolExecutor，在每次线程执行结束后查看线程池中空闲情况，如果活动线程小于最大线程，就执行pending的任务
+ * 继承ThreadPoolExecutor，在每次线程执行结束后查看线程池中空闲情况，如果queue中的线程数小于容量的一半，就增加pending的任务
  * */
 public class WolfThreadExecutor extends ThreadPoolExecutor{
 	@Autowired

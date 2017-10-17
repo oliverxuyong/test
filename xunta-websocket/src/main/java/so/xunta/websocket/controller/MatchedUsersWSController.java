@@ -22,7 +22,7 @@ import so.xunta.server.SocketService;
  * */
 @WebSocketTypeAnnotation
 @Component
-public class MatchedUsersController {
+public class MatchedUsersWSController {
 	@Autowired
 	private ResponseMatchedUsersService responseMatchedUsersService;
 	@Autowired

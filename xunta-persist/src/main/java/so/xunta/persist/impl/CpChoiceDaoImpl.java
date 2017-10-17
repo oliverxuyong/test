@@ -51,12 +51,11 @@ public class CpChoiceDaoImpl implements CpChoiceDao {
 	}
 	
 	@Override
-	public List<BigInteger> getSelectedCpsBeforeTime(Long userid, Timestamp lastUpdateTime) {
+	public List<CpChoiceDO> getSelectedCpsBeforeTime(Long userid, Timestamp lastUpdateTime) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql="SELECT cpc.cp_id FROM CpChoiceDO as cpc WHERE cpc.user_id=:userid AND cpc.create_time<:lastUpdateTime ";
+		String sql="SELECT cpc.* FROM cp_choice as cpc WHERE cpc.user_id=:userid AND cpc.create_time<:lastUpdateTime ";
 		@SuppressWarnings("unchecked")
-		List<BigInteger> result = (List<BigInteger>)session.createQuery(hql).setLong("userid", userid).setTimestamp("lastUpdateTime", lastUpdateTime).list();
-	
+		List<CpChoiceDO> result = (List<CpChoiceDO>)session.createSQLQuery(sql).addEntity(CpChoiceDO.class).setLong("userid", userid).setTimestamp("lastUpdateTime", lastUpdateTime).list();
 		return result;
 	}
 }

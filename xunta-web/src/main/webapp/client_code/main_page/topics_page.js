@@ -48,8 +48,8 @@ function requestCP(userId,requestNum,currentPage){//调用根页面上的同名�
 
 
 //叶夷   2017.06.16  发送"标签选中"
-function sendSelectCP(userId,cpid,text){
-	var paraStr = userId + "','" + cpid + "','" +text;
+function sendSelectCP(userId,cpid,text, property){
+	var paraStr = userId + "','" + cpid + "','" +text+"','"+ property;
 	execRoot("sendSelectedCP('"+ paraStr +"')");
 }
 
@@ -93,28 +93,23 @@ function responseSearchTag(text){
     });
 }
 
+var addCPID;//用来添加标签的cpid,没有则为空
 //标签添加
 function searchToAddTag(){
 	var suggestWrap = $('#gov_search_suggest');
 	var text = $("#pop_tagName").val();//获得输入框的值
-	$.ajax({
-        url:"http://xunta.so:3000/v1/add/tag",
-        type:"POST",
-        dataType:"jsonp",
-        jsonp:"callback",
-        contentType: "application/json; charset=utf-8",
-        data:{from_user_id:userId,
-        		text:text},
-        async:false,
-        success:function(data, textStatus) {
-        	//2017.08.09  叶夷  添加标签之后的显示
-        	addCpShow(data);
-        },
-        error:function(data, textStatus) {
-            console.log("标签搜索请求错误"+data);
-        	return;
-        }
-    });
+	if(lineNumber<=3){
+		var paraStr = userId + "','" + addCPID+"','"+text;
+		execRoot("add_self_cp('"+ paraStr +"')");
+	}else{
+		console.log("选中标签超过三行");
+		toast_popup("选中标签超过三行",2500);
+	}
+}
+
+//返回添加标签结果
+function return_add_self_cp(data){
+	addCpShow(data);
 }
 
 //2017.08.09  叶夷  显示我的标签
@@ -149,8 +144,9 @@ function return_sendIfSelectedCP(jsonObj){
 	var isSelect=jsonObj.is_select;
 	var cpid=jsonObj.cpid;
 	if(jsonObj.is_select=="false"){//没有被选择
-		showSelectTag(cpid,text);
-		sendSelectCP(userId,cpid,text);
+		//showSelectTag(cpid,text);
+		//sendSelectCP(userId,cpid,text);
+		chooseCP(null,cpid,text);
 		closePop();//添加标签框关掉
 	}else{
 		toast_popup("这个标签被选中过",2500);

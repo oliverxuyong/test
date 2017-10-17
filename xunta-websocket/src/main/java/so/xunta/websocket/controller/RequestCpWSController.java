@@ -1,6 +1,8 @@
 package so.xunta.websocket.controller;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,16 +14,19 @@ import org.springframework.web.socket.WebSocketSession;
 import so.xunta.beans.RecommendCpBO;
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
+import so.xunta.server.CpShowingService;
 import so.xunta.server.ResponseGroupCPsService;
 import so.xunta.server.SocketService;
 
 @WebSocketTypeAnnotation
 @Component
-public class RequestCpController {
+public class RequestCpWSController {
 	@Autowired
 	private ResponseGroupCPsService responseGroupCPsService;
 	@Autowired
 	private SocketService socketService;
+	@Autowired
+	private CpShowingService cpShowingService;
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1101-1")
 	public void responseGroupCPs(WebSocketSession session, TextMessage message){
@@ -34,9 +39,12 @@ public class RequestCpController {
 		List<RecommendCpBO> cps = responseGroupCPsService.getRecommendCPs(uid, startPoint, howMany);
 		
 		JSONArray cpWrap = new JSONArray();
+		Set<String> cpids = new HashSet<String>();
 		for(RecommendCpBO cp:cps){
 			JSONObject cpjson = new JSONObject();
-			cpjson.put("cpid", cp.getCpId());
+			String cpid = cp.getCpId();
+			cpids.add(cpid);
+			cpjson.put("cpid", cpid);
 			cpjson.put("cptext", cp.getCpText());
 			cpjson.put("ifselectedbyme", cp.getIfSelectedByMe());
 			cpjson.put("howmanypeople_selected", cp.getHowManyPeopleSelected());
@@ -50,5 +58,7 @@ public class RequestCpController {
 		returnJson.put("timestamp", timestamp);
 		returnJson.put("cp_wrap", cpWrap);
 		socketService.chat2one(session, returnJson);
+		
+		cpShowingService.addUserShowingCps(uid+"", cpids);
 	}
 }

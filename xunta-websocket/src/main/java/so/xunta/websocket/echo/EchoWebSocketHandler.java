@@ -17,6 +17,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import so.xunta.beans.User;
+import so.xunta.server.CpShowingService;
 import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.UserService;
@@ -45,6 +46,9 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	
 	@Autowired
 	private RecommendTaskPool recommendTaskPool;
+	
+	@Autowired
+	private CpShowingService cpShowingService;
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
@@ -171,6 +175,8 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			}
 			User u = userService.findUser(userid);
 			recommendService.syncLastUpdateTime(u);
+			cpShowingService.clearUserShowingCps(userid+"");
+			
 			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason()+";"+status.getCode());
 	}
 
@@ -307,5 +313,6 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		} catch (UnsupportedEncodingException e) {
 			logger.error(e.getMessage(), e);
 		}
+		recommendService.init();
 	}
 }

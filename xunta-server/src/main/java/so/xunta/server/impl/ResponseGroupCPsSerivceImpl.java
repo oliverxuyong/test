@@ -15,6 +15,7 @@ import so.xunta.beans.RecommendCpBO;
 import so.xunta.persist.C2uDao;
 import so.xunta.persist.ConcernPointDao;
 import so.xunta.persist.U2cDao;
+import so.xunta.server.RecommendService;
 import so.xunta.server.ResponseGroupCPsService;
 
 
@@ -30,31 +31,37 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 	@Autowired
 	private C2uDao c2uDao;
 	
-	/*@Autowired
+	@Autowired
 	private RecommendService recommandService;
-	*/
+	
 	
 	Logger logger =Logger.getLogger(ResponseGroupCPsSerivceImpl.class);
 	
 	@Override
 	public List<RecommendCpBO> getRecommendCPs(Long uid, int startPoint, int howMany) {
 		long startTime = System.currentTimeMillis();
+		
+		recommandService.replenish(uid.toString());
+		
 		Set<Tuple> cps= u2cDao.getUserCpsByRank(uid.toString(), 0, howMany-1);
 		List<String> cpIds=new ArrayList<String>();
 		logger.info("得到 "+ cps.size() +" 条cp");
 		
 		List<RecommendCpBO> returnList = new ArrayList<RecommendCpBO>();
 		for(Tuple cp:cps){
+			if(cp.getScore()<=0){
+				break;
+			}
 			String cpid = cp.getElement();
 			//Double cpScore = cp.getScore();
 			
 
-			ConcernPointDO cpDO = concernPointDao.getConcernPoint(BigInteger.valueOf(Long.valueOf(cpid)));
+			ConcernPointDO cpDO = concernPointDao.getConcernPointById(BigInteger.valueOf(Long.valueOf(cpid)));
 			
 			RecommendCpBO cpBO = new RecommendCpBO();
 			cpBO.setCpId(cpid);
 			cpBO.setCpText(cpDO.getText());
-			cpBO.setHowManyPeopleSelected(c2uDao.getHowManyPeopleSelected(cpid));
+			cpBO.setHowManyPeopleSelected(c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT));
 			String if_selected = "N"; //因为选择的CP都已经被置为已推荐，因此新的一批推荐CP不会是选择过的，先这么处理
 			//CpChoiceDetailDO cpChoiceDetailDO= cpChoiceDetailDao.getCpChoiceDetail(uid, BigInteger.valueOf(Long.valueOf(cpid)));					
 			/*if(cpChoiceDetailDO != null){
@@ -67,6 +74,7 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 		
 		u2cDao.setUserCpsPresented(uid.toString(), cpIds);
 		
+		
 		/* 如果别人的操作对我形成触发，那不需要更新
 		RecommendTaskPool.getInstance().getThreadPool().execute(new Runnable() {
 			@Override
@@ -77,8 +85,7 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 		*/
 		
 		long endTime = System.currentTimeMillis();
-		logger.info("getRecommendCPs success，执行时间："+(startTime-endTime)+"毫秒");
+		logger.info("getRecommendCPs success，执行时间："+(endTime-startTime)+"毫秒");
 		return returnList;
 	}
-
 }

@@ -371,6 +371,9 @@ width:100%;
 	position:absolute; /*标签不用排列的时候不需要这个*/
 	top:0px;
 	left:0px;
+	/* 
+	border: 1px solid black;
+	border-radius: 50%; */
 }
 
 #cp-container{
@@ -391,6 +394,9 @@ width:100%;
 	
 	text-shadow:#000000 0 0 10px;
 	color:#ffffff;
+	
+	/* border: 1px solid white;
+	border-radius: 50%; */
 	}
 
 .incp{ 
@@ -517,4 +523,23 @@ width:100%;
 
 .add{
 	//color:#fccf63;
+}
+
+.yesItem{
+	position:absolute;
+	display:none;
+}
+.noItem{
+	position:absolute;
+	display:none;
+}
+.cover{
+	width: 387px; 
+	height: 620px; 
+	background: rgb(0, 0, 0); 
+	position: fixed; 
+	z-index: 102; 
+	opacity: 0.5;
+	top:0px;
+	left:0px;
 }

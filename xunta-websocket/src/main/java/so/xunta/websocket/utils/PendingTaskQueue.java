@@ -8,35 +8,47 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import so.xunta.server.CpShowingService;
+import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
-import so.xunta.websocket.task.RecommendCancelCpTask;
-import so.xunta.websocket.task.RecommendPushTask;
+import so.xunta.websocket.task.CpOperationPushTask;
 import so.xunta.websocket.task.RecommendUpdateTask;
+import so.xunta.websocket.task.SelfAddCpRecommendTask;
 
 @Component
 public class PendingTaskQueue {
-	public static final String RECOMMEND_PUSH = "push";
-	public static final String RECOMMEND_CANCELCP = "cancelCP";
-	public static final String RECOMMEND_UPDARW = "update";
+	private final String RECOMMEND_SELECTCP = "selectCP";
+	private final String RECOMMEND_CANCELCP = "cancelCP";
+	private final String RECOMMEND_UPDARW = "update";
+	private final String RECOMMEND_SELF_ADD_CP = "selfAddCP";
 	@Autowired
 	private RecommendService recommendService;
 	@Autowired
+	private RecommendPushService recommendPushService;
+	@Autowired
+	private CpShowingService cpShowingService;
+	@Autowired
 	private SocketService socketService;
+	
 	private List<String> taskSerializeList = Collections.synchronizedList(new LinkedList<String>());
 
-	public void addPushTask(String userId,String cpId){
-		String taskId = RECOMMEND_PUSH+":"+userId+":"+cpId;
+	public void addSelectCPTask(String userId,String cpId,String property){
+		String taskId = RECOMMEND_SELECTCP+":"+userId+":"+cpId+":"+property;
 		taskSerializeList.add(taskId);
 	}
 	
-	public void addCancelCpTask(String userId,String cpId){
-		String taskId = RECOMMEND_CANCELCP+":"+userId+":"+cpId;
+	public void addCancelCpTask(String userId,String cpId,String property){
+		String taskId = RECOMMEND_CANCELCP+":"+userId+":"+cpId+":"+property;
 		taskSerializeList.add(taskId);
 	}
 	
 	public void addUpdateTask(String userId){
 		String taskId = RECOMMEND_UPDARW+":"+userId;
+		taskSerializeList.add(taskId);
+	}
+	public void addSelfAddCPTask(String cpId){
+		String taskId = RECOMMEND_SELF_ADD_CP+":"+cpId;
 		taskSerializeList.add(taskId);
 	}
 	
@@ -51,16 +63,18 @@ public class PendingTaskQueue {
 			String taskId =iterator.next();
 			String[] parms=taskId.split(":");
 			switch(parms[0]){
-			case RECOMMEND_PUSH:
+			case RECOMMEND_SELECTCP:
 				String userId1 = parms[1];
 				String cpId1 = parms[2];
-				RecommendPushTask t1= new RecommendPushTask(recommendService,userId1,cpId1,socketService);
+				String propert1 = parms[3];
+				CpOperationPushTask t1= new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,RecommendService.SELECT_CP,propert1,socketService);
 				returnTasks.add(t1);
 				break;
 			case RECOMMEND_CANCELCP:
 				String userId2 = parms[1];
 				String cpId2 = parms[2];
-				RecommendCancelCpTask t2 = new RecommendCancelCpTask(recommendService,userId2,cpId2);
+				String propert2 = parms[3];
+				CpOperationPushTask t2 = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId2,cpId2,RecommendService.UNSELECT_CP,propert2,socketService);
 				returnTasks.add(t2);
 				break;
 			case RECOMMEND_UPDARW:
@@ -68,6 +82,10 @@ public class PendingTaskQueue {
 				RecommendUpdateTask t3 = new RecommendUpdateTask(recommendService,userId3);
 				returnTasks.add(t3);
 				break;
+			case RECOMMEND_SELF_ADD_CP:
+				String cpId4 = parms[1];
+				SelfAddCpRecommendTask t4 = new SelfAddCpRecommendTask(cpId4,recommendService);
+				returnTasks.add(t4);
 			}
 			iterator.remove();
 			loopTimes++;
