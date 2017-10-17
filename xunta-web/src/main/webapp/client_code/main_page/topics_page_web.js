@@ -4,6 +4,8 @@ function wsConnect() {
 
 // 2017.09.13 叶夷 定义一个数组装哪几个圆相交
 var intersetCPArray=new Array();
+// 2017.10.17 叶夷  用一个变量表示标签是否请求成功,true为成功，false为不成功
+var requestCPSuccese=false;
 
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
@@ -46,6 +48,8 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 			// 如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
 		}
 	}
+	
+	requestCPSuccese=true;//表示标签请求成功，下面的滑倒底部的方法才可以执行请求下一批标签
 
 	// 判断是否测试
 	if(startTest){
@@ -2043,13 +2047,14 @@ function myTagAgainBindingClick(cpid){
 	}
 }
 
-//滚动条到页面底部加载更多案例	
+//滚动条到页面底部加载更多	
 $("#cp-show").scroll(function(){
 	var cpShowHeight = $(this).height();//可见高度  
 	var cpShowContentHeight = $(this).get(0).scrollHeight;//内容高度  
 	var cpShowScrollTop =$(this).scrollTop();//滚动高度  
 	//if(cpShowScrollTop/(cpShowContentHeight -cpShowHeight)>=0.95){ //到达底部100px时,加载新内容  
-	if(cpShowScrollTop==(cpShowContentHeight -cpShowHeight)){ 
+	if(cpShowScrollTop==(cpShowContentHeight -cpShowHeight) && requestCPSuccese){ 
+		//滑到底部先查看上一批匹配标签是否请求成功，如果成功再请求下一批
 		requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)));
 	} 
 });
