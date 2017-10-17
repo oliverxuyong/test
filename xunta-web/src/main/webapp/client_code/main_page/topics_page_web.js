@@ -95,7 +95,7 @@ function appendElement(i, cpid,cp) {
 		selectTagNumText=999+"+";
 	}
 	var selectTagNumNode= $("<div></div>").attr("class",
-	"mytag-selectednumber").attr("id","selectTagNum"+cpid).text(selectTagNumText); 
+	"selectTagNum").attr("id","selectTagNum"+cpid).text(selectTagNumText); 
 	cp_node.append(selectTagNumNode);
 	
 	// 2017.09.13 叶夷 在标签处再增加一个外圆，用来控制圆与圆之间的距离
@@ -230,7 +230,7 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	
 	//2017.08.14 叶夷 加上标签的选择人数 
 	selectTagNumNode.css("font-size",cpTextSize+"px");
-	//selectTagNumNode.css("height", (cpTextSize+5) + "px");
+	selectTagNumNode.css("height", (cpTextSize+5) + "px");
 	//加上了标签的选择人数外圆的大小增大
 	if (cpInNodeWidth > hypotenuse){
 		cpInNodeWidth=parseInt(cpInNodeWidth)+parseInt(cpTextSize)+2; 
@@ -337,6 +337,16 @@ function startPushSelectCpPresent(data){
 	selectTagNumNode.text(selectTagNumText);
 	
 	cpid=cpid.replace(/[^0-9]/ig,"");//测试版本需要
+	
+	//2017.10.17 叶夷   在我的标签中也要将选择人数改变
+	var myTagNode=$("#mytag"+cpid);
+	var myTagSelectNumber=myTagNode.find(".mytag-selectednumber");//这是先查看我的标签是否有选择人数
+	if(myTagSelectNumber==undefined){
+		myTagSelectNumber.text(selectTagNumText);
+	}else{
+		myTagSelectNumber=$("<div></div>").attr("class","mytag-selectednumber").text(selectTagNumText);
+		myTagNode.append(myTagSelectNumber);
+	}
 	
 	//判断这个标签是否是需要相交的圆
 	var isInterset=false;;
@@ -1005,6 +1015,18 @@ function addMyCp(cpid,text){
 	
 		// 我的标签框高度改变了之后影响其他部分的高度
 		myTagContainerHeightChange(myTagContainer,myTagContainerHeight);
+		
+		//这是为了测试我的标签加上选择人数是否好看
+		var selectTagNumText=1;
+		var myTagNode=$("#mytag"+cpid);
+		var myTagSelectNumber=myTagNode.find(".mytag-selectednumber");//这是先查看我的标签是否有选择人数
+		if(myTagSelectNumber==undefined){
+			myTagSelectNumber.text(selectTagNumText);
+		}else{
+			myTagSelectNumber=$("<div></div>").attr("class","mytag-selectednumber").text(selectTagNumText);
+			myTagNode.append(myTagSelectNumber);
+		}
+		//end
 	}
 }
 /**
