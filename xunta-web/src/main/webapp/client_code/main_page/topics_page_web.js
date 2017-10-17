@@ -95,7 +95,7 @@ function appendElement(i, cpid,cp) {
 		selectTagNumText=999+"+";
 	}
 	var selectTagNumNode= $("<div></div>").attr("class",
-	"selectTagNum").attr("id","selectTagNum"+cpid).text(selectTagNumText); 
+	"mytag-selectednumber").attr("id","selectTagNum"+cpid).text(selectTagNumText); 
 	cp_node.append(selectTagNumNode);
 	
 	// 2017.09.13 叶夷 在标签处再增加一个外圆，用来控制圆与圆之间的距离
@@ -230,7 +230,7 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	
 	//2017.08.14 叶夷 加上标签的选择人数 
 	selectTagNumNode.css("font-size",cpTextSize+"px");
-	selectTagNumNode.css("height", (cpTextSize+5) + "px");
+	//selectTagNumNode.css("height", (cpTextSize+5) + "px");
 	//加上了标签的选择人数外圆的大小增大
 	if (cpInNodeWidth > hypotenuse){
 		cpInNodeWidth=parseInt(cpInNodeWidth)+parseInt(cpTextSize)+2; 
