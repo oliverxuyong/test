@@ -372,7 +372,7 @@ function startPushSelectCpPresent(data){
 	//如果标签扩大，计算出扩大的width
 	var changeWidth;
 	if(cpNodeByDistance.width()>cpNodeByDistanceOldWidth){
-		changeWidth=cpNodeByDistance.width()-cpInNodeOldWidth;
+		changeWidth=cpNodeByDistance.width()-cpNodeByDistanceOldWidth;
 	}
 	
 	//位置重新计算,left值不改变，然后通过中心点进行排序，通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
