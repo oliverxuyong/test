@@ -767,7 +767,7 @@ function chooseOneCP(cp_node,cp) {
 	var coverDiv=$("<div></div>").attr("class","cover");
 	cp_node.append(coverDiv);
 	coverDiv.css("width",$(window).width());
-	coverDiv.css("height",$(document).height());
+	coverDiv.css("height",$(window).height());
 	coverDiv.click(function(){
 		cp_innode.css("z-index","");
 		coverDiv.remove();
@@ -1043,8 +1043,9 @@ function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 	myTagContainer.css("height",myTagContainerHeight+"px");
 	$("#top-container").css("height",(headerContainerHeight+myTagContainerHeight+20)+"px");
 	var showatloadedHeight=parseInt($("#showatloaded").css("height"));
-	var tagContaiderTop=parseInt($("#tag-container").css("top"));
-	$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight-tagContaiderTop)+"px");
+	//var tagContaiderTop=parseInt($("#tag-container").css("top"));
+	$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight)+"px");
+	//console.log("测试："+showatloadedHeight+" "+headerContainerHeight+" "+myTagContainerHeight+" "+tagContaiderTop);
 }
 
 // 叶夷 2017.08.08 取消选中的标签
