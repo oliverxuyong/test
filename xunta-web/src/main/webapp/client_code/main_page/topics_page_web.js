@@ -2128,3 +2128,56 @@ function cleartimeout(){
 }
 /**end
  */
+
+
+/**start 2017.10.18 叶夷  测试websocket并发的问题*/
+function requestUserIds(){
+	execRoot("requestUserIds()");
+}
+var testWSArray=new Array();
+//var testWS;
+function testWebSocket(data){
+	var uid_arr=data.uid_arr;
+	var i=0;
+	while(true){
+		if(i>=uid_arr.length){
+			break;
+		}
+		createNewWS(uid_arr,i);
+		++i;
+	}
+	
+	setTimeout(function() {
+		var j=0;
+		while(j<testWSArray.length){
+			if(testWSArray[j].readyState==1){
+				sendWS(testWSArray[j]);
+				++j;
+			}
+		}
+	},5000);
+}
+
+function createNewWS(uid_arr,i) {
+	if(i<uid_arr.length){
+		var userId=uid_arr[i].userId;
+		console.log("测试userid "+i+"　"+userId);
+		testWS = new WebSocket("ws://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=no");
+		testWSArray.push(testWS);
+	}
+}
+function sendWS(testWS) {
+	//var testWS=testWSArray[i];
+	var json_obj = {
+			 _interface:"1102-1",
+			 interface_name: "sendSelectedCP",
+			 uid:userId.toString(),
+			 cpid:"58007",
+			 cptext:"翡翠商",
+			 property:  "P",
+			 timestamp:"",
+		};
+	testWS.send(JSON.stringify(json_obj));
+	console.log("执行WS发送.接口:" + json_obj._interface);
+}
+/**end*/
