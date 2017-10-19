@@ -134,6 +134,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			}
 			
 			recommendService.initRecommendParm(u);
+			cpShowingService.initUserShowingCps(u.getUserId()+"");
 			
 			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask(recommendService,userid+"");
 			recommendTaskPool.execute(recommendUpdateTask);

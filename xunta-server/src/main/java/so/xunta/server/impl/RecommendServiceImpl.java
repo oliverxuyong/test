@@ -248,7 +248,7 @@ public class RecommendServiceImpl implements RecommendService {
 			u2cDao.updateUserBatchCpValue(uid, userCps);
 		}
 		
-		logger.info("用户: "+ u.getName()+" U2C列表初始化成功！");
+		logger.info("用户: "+ u.getName()+" 推荐参数初始化成功！");
 	}
 	
 	@Override

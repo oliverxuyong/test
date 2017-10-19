@@ -1,13 +1,18 @@
 package so.xunta.server.impl;
 
+import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import so.xunta.beans.CpChoiceDO;
 import so.xunta.persist.C2uDao;
 import so.xunta.persist.C2uPresentDao;
+import so.xunta.persist.CpChoiceDao;
 import so.xunta.persist.U2cPresentDao;
 import so.xunta.server.CpShowingService;
 import so.xunta.server.RecommendService;
@@ -20,6 +25,8 @@ public class CpShowingServiceImpl implements CpShowingService {
 	U2cPresentDao u2cPresentDao;
 	@Autowired
 	C2uDao c2uDao;
+	@Autowired
+	CpChoiceDao cpChoiceDao;
 	
 	Logger logger =Logger.getLogger(CpShowingServiceImpl.class);
 
@@ -30,6 +37,16 @@ public class CpShowingServiceImpl implements CpShowingService {
 		return pushUsers;
 	}
 
+	@Override
+	public void initUserShowingCps(String uid) {
+		List<CpChoiceDO> cpChoices = cpChoiceDao.getSelectedCpsBeforeTime(Long.valueOf(uid), new Timestamp(System.currentTimeMillis()));
+		Set<String> cpids = new HashSet<String>();
+		for(CpChoiceDO cpChoice:cpChoices){
+			cpids.add(cpChoice.getCp_id()+"");
+		}
+		addUserShowingCps(uid,cpids);
+	}
+	
 	@Override
 	public void addUserShowingCps(String uid, Set<String> cpids) {	
 		if(cpids!=null){
@@ -57,7 +74,5 @@ public class CpShowingServiceImpl implements CpShowingService {
 			u2cPresentDao.dropUserPresentCps(uid);
 		}	
 	}
-	
-	
 
 }
