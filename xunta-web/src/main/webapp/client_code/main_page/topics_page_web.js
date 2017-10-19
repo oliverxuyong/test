@@ -2076,8 +2076,13 @@ $("#cp-show").scroll(function(){
 	var cpShowHeight = $(this).height();//可见高度  
 	var cpShowContentHeight = $(this).get(0).scrollHeight;//内容高度  
 	var cpShowScrollTop =$(this).scrollTop();//滚动高度  
-	//if(cpShowScrollTop/(cpShowContentHeight -cpShowHeight)>=0.95){ //到达底部100px时,加载新内容  
-	if(cpShowScrollTop==(cpShowContentHeight -cpShowHeight) && requestCPSuccese){ 
+	//if(cpShowScrollTop/(cpShowContentHeight -cpShowHeight)>=0.95){ //到达底部100px时,加载新内容
+	//console.log("测试滑动");
+	//console.log("测试滑动2"+cpShowScrollTop+" "+cpShowContentHeight+" "+cpShowHeight+" "+requestCPSuccese);
+	if(0<=Math.abs(cpShowContentHeight -cpShowHeight-cpShowScrollTop) 
+			&& Math.abs(cpShowContentHeight -cpShowHeight-cpShowScrollTop)<=2 
+			&& requestCPSuccese){ 
+		//console.log("测试滑动到底部");
 		//滑到底部先查看上一批匹配标签是否请求成功，如果成功再请求下一批
 		requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)));
 	} 
