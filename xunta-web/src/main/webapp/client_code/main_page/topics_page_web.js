@@ -991,7 +991,7 @@ function addMyCp(cpid,text){
 		myTagContainer.append(myTag);
 	
 		myTag.click(function(){
-			sendUnSelectCP(cpid);
+			unSelectCP(cpid);
 		});
 	
 		var myTagTextLength = length(text);
@@ -1062,6 +1062,46 @@ function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 	//console.log("测试："+showatloadedHeight+" "+headerContainerHeight+" "+myTagContainerHeight+" "+tagContaiderTop);
 }
 
+//2017.10.20 叶夷  在取消标签发送给后台之前
+function unSelectCP(cpid){
+	var myTag=$("#mytag"+cpid);
+	
+	//取消选择我的标签先放大出现"x"和选择人数再消失
+	var myTagHeight=myTag.height();
+	myTag.css("z-index",104);
+	var myTagSelectNumberNode=myTag.find(".mytag-selectednumber");
+	
+	//出现"x"
+	var unSelectCPNode=$("<div></div>").attr("class","unSelectCPNode").text("x");
+	myTag.append(unSelectCPNode);
+	unSelectCPNode.css("z-index",105);
+	
+	//加上一块黑布
+	var coverDiv=$("<div></div>").attr("class","cover");
+	$("#mytag-container").append(coverDiv);
+	coverDiv.css("width",$(window).width());
+	coverDiv.css("height",$(window).height());
+	coverDiv.css("z-index",103);
+	
+	coverDiv.click(function(){
+		unSelectCPNode.remove();
+		myTag.css("height",myTagHeight+"px");
+		myTag.css("z-index","");
+		myTagSelectNumberNode.css("background-color","#505050");
+		myTagSelectNumberNode.css("position","absolute");
+		myTagSelectNumberNode.css("color","#b48f4c");
+		coverDiv.remove();
+	});
+	
+	//点击"x"才取消选择
+	unSelectCPNode.click(function() {
+		myTag.unbind();
+		sendUnSelectCP(cpid);
+		coverDiv.remove();
+	});
+}
+
+
 // 叶夷 2017.08.08 取消选中的标签
 function showUnSelectCP(data){
 	var addtag=$("#addtag");
@@ -1069,37 +1109,39 @@ function showUnSelectCP(data){
 	var addTagBottom1=addtag.offset().top
 	
 	var cpid=data.cpid;
-	var cp_node=$("#cpid"+cpid);
-	var text=cp_node.find(".incp").text();
-	console.log(cpid + "-> 取消选择");
-	cp_node.css("opacity", "1");
-	cp_node.css("cursor", "pointer");
-	$("#mytag"+cpid).remove();
+	var myTag=$("#mytag"+cpid);
 	
-	// 取消的时候将高度还原
-	// 获得点击取消选择标签时位置变化之后的添加标签的top值
-	var addTagBottom2=addtag.offset().top
-	var myTagMarginTop=parseInt(addtag.css("margin-top"));
-	var myTagHeight=addtag.height();
-	var tagChangeHeight=myTagHeight+myTagMarginTop;
-	var myTagContainerHeight;
-	if(lineNumber<=2){// 小于两行
-		myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
-	}else{
-		if(addTagBottom1-addTagBottom2>=tagChangeHeight){// 已经少了一行
-			--lineNumber;
+	//点击"x"才取消选择
+		var cp_node=$("#cpid"+cpid);
+		var text=cp_node.find(".incp").text();
+		console.log(cpid + "-> 取消选择");
+		cp_node.css("opacity", "1");
+		cp_node.css("cursor", "pointer");
+		myTag.remove();
+		
+		// 取消的时候将高度还原
+		// 获得点击取消选择标签时位置变化之后的添加标签的top值
+		var addTagBottom2=addtag.offset().top
+		var myTagMarginTop=parseInt(addtag.css("margin-top"));
+		var myTagHeight=addtag.height();
+		var tagChangeHeight=myTagHeight+myTagMarginTop;
+		var myTagContainerHeight;
+		if(lineNumber<=2){// 小于两行
+			myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
+		}else{
+			if(addTagBottom1-addTagBottom2>=tagChangeHeight){// 已经少了一行
+				--lineNumber;
+			}
+			myTagContainerHeight=(myTagHeight+myTagMarginTop)*lineNumber+10;
 		}
-		myTagContainerHeight=(myTagHeight+myTagMarginTop)*lineNumber+10;
-	}
-	var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
-	// 我的标签框高度改变了之后影响其他部分的高度
-	myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
-	
-	// 将取消选择的标签重新绑定点击事件
-	cp_node.click(function() {
-		chooseCP(cp_node,cpid,text);
-	});
-	
+		var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
+		// 我的标签框高度改变了之后影响其他部分的高度
+		myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
+		
+		// 将取消选择的标签重新绑定点击事件
+		cp_node.click(function() {
+			chooseCP(cp_node,cpid,text);
+		});
 }
 
 /**
