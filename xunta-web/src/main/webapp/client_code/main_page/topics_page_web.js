@@ -95,7 +95,7 @@ function appendElement(i, cpid,cp) {
 		selectTagNumText=999+"+";
 	}
 	var selectTagNumNode= $("<div></div>").attr("class",
-	"selectTagNum").attr("id","selectTagNum"+cpid).text(selectTagNumText); 
+	"mytag-selectednumber").attr("id","selectTagNum"+cpid).text(selectTagNumText); 
 	cp_node.append(selectTagNumNode);
 	
 	// 2017.09.13 叶夷 在标签处再增加一个外圆，用来控制圆与圆之间的距离
@@ -236,6 +236,7 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	//2017.08.14 叶夷 加上标签的选择人数 
 	selectTagNumNode.css("font-size",cpTextSize+"px");
 	selectTagNumNode.css("height", (cpTextSize+5) + "px");
+	selectTagNumNode.css("line-height", (cpTextSize+5) + "px");
 	//加上了标签的选择人数外圆的大小增大
 	if (cpInNodeWidth > hypotenuse){
 		cpInNodeWidth=parseInt(cpInNodeWidth)+parseInt(cpTextSize)+2; 
@@ -245,7 +246,9 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 		hypotenuse=parseInt(hypotenuse)+parseInt(cpTextSize)+5; 
 	}
 	if(selectTagNum<=0){
-		selectTagNumNode.text("");
+		selectTagNumNode.hide();
+	}else{
+		selectTagNumNode.show();
 	}
 	
 	// 为了使文字居中，计算文字div 的top
@@ -275,7 +278,7 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	cp_text.css("left", cpTextLeft);
 	
 	//选择标签的位置也要改变
-	selectTagNumNode.css("top", (cpTextTop+cpTextHeight+5) + "px");
+	selectTagNumNode.css("left", (cpInNodeWidth/5*3) + "px");
 	
 	// 2017.09.13 叶夷 判断标签之前的距离，需要获得cp_node的大小，然后再加上一个随即距离则是最外面圆的大小
 	var randowDistance=cpInNodeWidth*0.25;// 先按内圆计算,这是标签之间的随机距离,根据自身的大小判断，再加上个别相交
@@ -338,8 +341,14 @@ function startPushSelectCpPresent(data){
 	var selectTagNumText=selectTagNum;
 	if(selectTagNum>999){
 		selectTagNumText=999+"+";
+		selectTagNumNode.text(selectTagNumText);
+		selectTagNumNode.show();
+	}else if(selectTagNum<=0){
+		selectTagNumNode.hide();
+	}else{
+		selectTagNumNode.text(selectTagNumText);
+		selectTagNumNode.show();
 	}
-	selectTagNumNode.text(selectTagNumText);
 	
 	cpid=cpid.replace(/[^0-9]/ig,"");//测试版本需要
 	
