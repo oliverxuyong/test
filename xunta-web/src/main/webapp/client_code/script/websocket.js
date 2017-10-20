@@ -203,6 +203,21 @@ function sendIfSelectedCP(userId,cpid){
 	}
 }*/
 
+//2017.10.20 叶夷 用户请求自己选择的CP
+function request_user_selected_cp(userId){
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("用户请求自己选择的CP:userId="+userId);
+		var json_obj = {
+			 _interface:"1109-1",
+			 interface_name: "request_user_selected_cp",
+			 userid:userId.toString(),
+			 property: "P",
+			 timestamp:""
+		};
+		WS_Send(json_obj);
+	}
+}
+
 //为了测试websocket并发,请求一批userid
 function requestUserIds(){
 	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
@@ -362,6 +377,12 @@ function checkMessageInterface(evnt) {
 	if(jsonObj._interface == '9101-2'){
 		console.log("获得一批userids:"+JSON.stringify(jsonObj.uid_arr));
 		exec("main_page","testWebSocket("+evnt.data+")");
+	}
+	
+	//返回用户请求自己选择的CP
+	if(jsonObj._interface == '1109-2'){
+		console.log("返回自己选择的标签:"+JSON.stringify(jsonObj.cp_arr));
+		exec("main_page","response_user_selected_cp("+evnt.data+")");
 	}
 }
 

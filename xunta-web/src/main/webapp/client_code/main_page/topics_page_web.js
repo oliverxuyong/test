@@ -62,7 +62,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	// 定义好位置之后开始动画,参数是需要动画的不重复的可以上升的cp个数
 	startAnimate(notRepeatCpCount);
 	// 推荐标签动画开始之后再将"请求下一批"的按钮显现
-	$("#request_cp").show();
+	//$("#request_cp").hide();
 }
 
 //2017.10.12 叶夷   标签的完整文字内容,cpid为键，文字为值
@@ -361,6 +361,11 @@ function startPushSelectCpPresent(data){
 		myTagSelectNumber=$("<div></div>").attr("class","mytag-selectednumber").text(selectTagNumText);
 		myTagNode.append(myTagSelectNumber);
 	}
+	myTagSelectNumber.show();
+	//过一秒之后消失
+	timeOutSuccess = setTimeout(function() {
+		myTagSelectNumber.hide();
+	},5000);
 	
 	//判断这个标签是否是需要相交的圆
 	var isInterset=false;;
@@ -983,7 +988,7 @@ function showSelectTag(cpid,text){
 // 判断选择过的标签有多少行，从而判断选择过标签的框的height
 var lineNumber=2;
 
-function addMyCp(cpid,text){
+function addMyCp(cpid,text,selected_user_num){
 	// 2017.09.14 叶夷 为了性能测试将选择标签的显示控制在4行以内
 	if(lineNumber<=3){
 		var myTagContainer=$("#mytag-container");
@@ -1031,7 +1036,7 @@ function addMyCp(cpid,text){
 		myTagContainerHeightChange(myTagContainer,myTagContainerHeight);
 		
 		//这是为了测试我的标签加上选择人数是否好看
-		var selectTagNumText=1;
+		var selectTagNumText=selected_user_num;
 		var myTagNode=$("#mytag"+cpid);
 		var myTagSelectNumber=myTagNode.find(".mytag-selectednumber");//这是先查看我的标签是否有选择人数
 		if(myTagSelectNumber==undefined){
@@ -1040,6 +1045,7 @@ function addMyCp(cpid,text){
 			myTagSelectNumber=$("<div></div>").attr("class","mytag-selectednumber").text(selectTagNumText);
 			myTagNode.append(myTagSelectNumber);
 		}
+		myTagSelectNumber.hide();
 		//end
 	}
 }
@@ -2014,12 +2020,14 @@ function searchTag(suggestWrap,data){
 	});
 }
 
-function showMyCp(datas){
+function response_user_selected_cp(datas){
 	var myTagContainer=$("#mytag-container");
-	for(var i in datas){
-		var cpid=datas[i].cp_id;
-		var text=datas[i].text;
-		addMyCp(cpid,text);
+	var cp_arr=datas.cp_arr;
+	for(var i in cp_arr){
+		var cpid=cp_arr[i].cpid;
+		var text=cp_arr[i].cptext;
+		var selected_user_num =cp_arr[i].selected_user_num
+		addMyCp(cpid,text,selected_user_num);
 	}
 }
 
@@ -2138,6 +2146,7 @@ $("#cp-show").scroll(function(){
 	if(0<=Math.abs(cpShowContentHeight -cpShowHeight-cpShowScrollTop) 
 			&& Math.abs(cpShowContentHeight -cpShowHeight-cpShowScrollTop)<=2 
 			&& requestCPSuccese){ 
+		$("#request_cp").show();
 		//console.log("测试滑动到底部");
 		//滑到底部先查看上一批匹配标签是否请求成功，如果成功再请求下一批
 		requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)));

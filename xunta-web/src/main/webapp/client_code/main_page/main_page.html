@@ -104,12 +104,7 @@
 				<div style="width:100%;height:23%;"></div>
 				<!-- start: 叶夷  2017.06.15  添加一个按钮，点击后通过已定义的接口向后台请求一组标签，后台返回后将标签显示出来。点击后继续请求下一页。-->
 				<div class="getmoretopics cursor" id="request_cp" onclick="requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)))">
-					<div>
-						+
-					</div>
-					<div>
-						更多标签
-					</div>
+					
 				</div>
 				
 				<!--<button id="request_cp" type="button" onclick="requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)))" style="width:100%;display:none;">请求标签</button>
@@ -184,7 +179,7 @@
 			//requestTopMatchedUsers(userId,requestTopMUNum);//请求用户匹配缩略表,不能放在这里，因为不能同时请求,等请求cp返回且显示之后再请求这个方法，所以此方法放在responseToCPRequest(CP_list)中
 			
 			//2017.08.09  叶夷  显示我的标签
-			requestMyCP();
+			//requestMyCP();
 			
 			chat.init(userId,recevier);//注册用户，及用记接收消息的函数
 		}
