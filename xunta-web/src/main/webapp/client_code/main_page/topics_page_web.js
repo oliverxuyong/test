@@ -152,6 +152,11 @@ var maxselectTagNum = 50;// 影响标签大小的选择人数最小的数量
 var minselectTagNum = 1;// 影响标签大小的选择人数最大的数量
 /**叶夷  2017.10.10  控制文字大小和内圆大小的方法*/
 function controlSize(selectTagNum,maxSize,minSize){
+	//2017.10.20 给选择人数加上范围的限制
+	if(selectTagNum>maxselectTagNum){
+		selectTagNum=maxselectTagNum;
+	}
+	
 	var sectionSize=maxSize-minSize;//大小的范围
 	var sectionSelectTagNum=maxselectTagNum-minselectTagNum;//选择人数的范围
 	var space=sectionSelectTagNum/sectionSize;//这是选择人数和大小范围之间的比例
@@ -2142,44 +2147,39 @@ function requestUserIds(){
 }
 var testWSArray=new Array();
 //var testWS;
+var i=0;
 function testWebSocket(data){
 	var uid_arr=data.uid_arr;
-	var i=0;
-	while(true){
-		if(i>=uid_arr.length){
-			break;
-		}
-		createNewWS(uid_arr,i);
-		++i;
-	}
-	
-	setTimeout(function() {
-		var j=0;
-		while(j<testWSArray.length){
-			if(testWSArray[j].readyState==1){
-				sendWS(testWSArray[j]);
-				++j;
-			}
-		}
-	},5000);
+	createNewWS(uid_arr,i)	
 }
 
 function createNewWS(uid_arr,i) {
-	if(i<uid_arr.length){
-		var userId=uid_arr[i].userId;
-		console.log("测试userid "+i+"　"+userId);
-		testWS = new WebSocket("ws://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=no");
-		testWSArray.push(testWS);
-	}
+	var userId=uid_arr[i].userId;
+	console.log('新建第'+(i+1)+"个WS");
+	var testWS = new WebSocket("ws://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=no");
+	testWS.onopen=function(event){
+		console.log('Client received a message:',event); 
+		sendWS(testWS,userId); 
+		++i;
+		if(i<=uid_arr.length){
+			setTimeout(function() {
+				createNewWS(uid_arr,i);
+			},100);
+		}
+	};
+	/*
+	setTimeout(function() {
+			sendWS(testWS); 
+	},2000);*/
 }
-function sendWS(testWS) {
+function sendWS(testWS,userId) {
 	//var testWS=testWSArray[i];
 	var json_obj = {
 			 _interface:"1102-1",
 			 interface_name: "sendSelectedCP",
 			 uid:userId.toString(),
-			 cpid:"58007",
-			 cptext:"翡翠商",
+			 cpid:"60670",
+			 cptext:"英音",
 			 property:  "P",
 			 timestamp:"",
 		};
