@@ -2,7 +2,6 @@ package so.xunta.server.impl;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,9 +84,6 @@ public class RecommendServiceImpl implements RecommendService {
 		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid,property);		
 		if(selectType == RecommendService.SELECT_CP){
 			c2uDao.saveCpOneUser(cpid, uid, property);
-			List<String> cpIds = new ArrayList<String>();
-			cpIds.add(cpid);
-			u2cDao.setUserCpsPresented(uid, cpIds);
 		}else{
 			c2uDao.deleteUserInCp(cpid, uid, property);
 		}
@@ -302,12 +298,12 @@ public class RecommendServiceImpl implements RecommendService {
 	}
 	
 	
-	/*@Override
-	public void signCpsPresented(String uid, List<String> pushedCpIds) {
-		if(pushedCpIds.size()>0){
-			u2cDao.setUserCpsPresented(uid, pushedCpIds);
+	@Override
+	public void signCpsPresented(String uid, List<String> cpIds) {
+		if(cpIds.size()>0){
+			u2cDao.setUserCpsPresented(uid, cpIds);
 		}		
-	}*/
+	}
 	
 	@Override
 	public void setSelfAddCp(String cpid) {

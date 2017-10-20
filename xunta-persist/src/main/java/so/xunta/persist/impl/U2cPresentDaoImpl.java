@@ -77,4 +77,18 @@ public class U2cPresentDaoImpl implements U2cPresentDao {
 
 	}
 
+	@Override
+	public void delteUserPresentCp(String uid,String cpId){
+		Jedis jedis=null;
+		uid = keyPrefix + uid;
+		
+		try {
+			jedis = redisUtil.getJedis();
+			jedis.srem(uid,cpId);
+		} catch (Exception e) {
+			logger.error("delteUserPresentCp error:", e);
+		}finally{
+			jedis.close();
+		}
+	}
 }

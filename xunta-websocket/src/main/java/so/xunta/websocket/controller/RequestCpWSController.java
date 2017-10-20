@@ -11,9 +11,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import so.xunta.beans.ConcernPointDO;
 import so.xunta.beans.RecommendCpBO;
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
+import so.xunta.persist.C2uDao;
+import so.xunta.server.CpChoiceService;
 import so.xunta.server.CpShowingService;
 import so.xunta.server.ResponseGroupCPsService;
 import so.xunta.server.SocketService;
@@ -27,6 +30,10 @@ public class RequestCpWSController {
 	private SocketService socketService;
 	@Autowired
 	private CpShowingService cpShowingService;
+	@Autowired
+	private CpChoiceService cpChoiceService;
+	@Autowired
+	private C2uDao c2uDao;
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1101-1")
 	public void responseGroupCPs(WebSocketSession session, TextMessage message){
@@ -60,5 +67,31 @@ public class RequestCpWSController {
 		socketService.chat2one(session, returnJson);
 		
 		cpShowingService.addUserShowingCps(uid+"", cpids);
+	}
+	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1109-1")
+	public void responseUserSelectedCPs(WebSocketSession session, TextMessage message){
+		JSONObject params = new JSONObject(message.getPayload());
+		String userId = params.getString("userid");
+		String property = params.getString("property");
+		String timestamp = params.getString("timestamp"); 
+		
+		List<ConcernPointDO> userSelectedCps=cpChoiceService.getUserSelectedCps(Long.valueOf(userId),property);
+		
+		JSONArray cpArr = new JSONArray();
+		for(ConcernPointDO userSelectedCp:userSelectedCps){
+			String cpId = userSelectedCp.getId().toString();
+			JSONObject cpJson = new JSONObject();
+			cpJson.put("cpid", cpId);
+			cpJson.put("cptext", userSelectedCp.getText());
+			cpJson.put("selected_user_num",c2uDao.getHowManyPeopleSelected(cpId, property).toString());
+			cpArr.put(cpJson);
+		}
+		
+		JSONObject returnJson = new JSONObject();
+		returnJson.put("_interface", "1109-2");
+		returnJson.put("cp_arr", cpArr);
+		returnJson.put("timestamp", timestamp);
+		socketService.chat2one(session, returnJson);
 	}
 }

@@ -16,6 +16,8 @@ public interface CpShowingService {
 	
 	public void clearUserShowingCps(String uid);
 	
+	public void deleteUserShowingCp(String uid, String cpId);
+	
 	public int getCpSelectedUserCounts(String cpid);
 	
 }

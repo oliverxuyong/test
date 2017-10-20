@@ -1,7 +1,6 @@
 package so.xunta.server.impl;
 
 import java.math.BigInteger;
-import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,8 +29,8 @@ public class CpChoiceServiceImpl implements CpChoiceService{
 	}
 
 	@Override
-	public List<ConcernPointDO> getUserSelectedCps(Long userid) {
-		List<CpChoiceDO> cpChoices = cpChoiceDao.getSelectedCpsBeforeTime(userid, new Timestamp(System.currentTimeMillis()));
+	public List<ConcernPointDO> getUserSelectedCps(Long userid,String property) {
+		List<CpChoiceDO> cpChoices = cpChoiceDao.getSelectedCps(userid,property);
 		List<ConcernPointDO> cps = new LinkedList<ConcernPointDO>();
 		for(CpChoiceDO cpChoice:cpChoices){
 			ConcernPointDO cp = concernPointDao.getConcernPointById(cpChoice.getCp_id());

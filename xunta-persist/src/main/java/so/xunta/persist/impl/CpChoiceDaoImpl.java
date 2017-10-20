@@ -58,4 +58,13 @@ public class CpChoiceDaoImpl implements CpChoiceDao {
 		List<CpChoiceDO> result = (List<CpChoiceDO>)session.createSQLQuery(sql).addEntity(CpChoiceDO.class).setLong("userid", userid).setTimestamp("lastUpdateTime", lastUpdateTime).list();
 		return result;
 	}
+
+	@Override
+	public List<CpChoiceDO> getSelectedCps(Long userid, String property) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql="SELECT cpc.* FROM cp_choice as cpc WHERE cpc.user_id=:userid AND cpc.property=:property ";
+		@SuppressWarnings("unchecked")
+		List<CpChoiceDO> result = (List<CpChoiceDO>)session.createSQLQuery(sql).addEntity(CpChoiceDO.class).setLong("userid", userid).setString("property", property).list();
+		return result;
+	}
 }

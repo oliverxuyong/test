@@ -3,6 +3,8 @@ package so.xunta.websocket.controller;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -178,9 +180,17 @@ public class CpOperationWSController {
 		cpChoiceDetailDO.setCreate_time(new Timestamp(System.currentTimeMillis()));
 
 		CpChoiceDO cpChoiceDO = cpChoiceService.getCpChoice(uid,cpid);
+		/*如果是选择，数据库里应该无记录，如果是取消，数据库里应该有记录
+		 * */
 		if(selectType.equals(CpChoiceDetailDao.SELECTED)){
 			if(cpChoiceDO==null){
 				cpChoiceDetailDO = cpChoiceDetailService.saveCpChoiceDetail(cpChoiceDetailDO);
+				List<String> cpIds = new ArrayList<String>();
+				cpIds.add(cpid+"");
+				recommendService.signCpsPresented(uid+"", cpIds);
+				if(property.equals(RecommendService.NEGATIVE_SELECT)){
+					cpShowingService.deleteUserShowingCp(uid+"", cpid+"");
+				}
 			}else{
 				return null;
 			}	

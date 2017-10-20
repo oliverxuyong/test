@@ -10,5 +10,5 @@ public interface CpChoiceService {
 	/**2017.08.11 叶夷  通过uid和cpid查找cp是否存在*/
 	public CpChoiceDO getCpChoice(Long userid, BigInteger cpId);
 	
-	public List<ConcernPointDO> getUserSelectedCps(Long userid);
+	public List<ConcernPointDO> getUserSelectedCps(Long userid,String property);
 }

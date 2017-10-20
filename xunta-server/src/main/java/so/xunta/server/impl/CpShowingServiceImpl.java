@@ -1,6 +1,5 @@
 package so.xunta.server.impl;
 
-import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +38,7 @@ public class CpShowingServiceImpl implements CpShowingService {
 
 	@Override
 	public void initUserShowingCps(String uid) {
-		List<CpChoiceDO> cpChoices = cpChoiceDao.getSelectedCpsBeforeTime(Long.valueOf(uid), new Timestamp(System.currentTimeMillis()));
+		List<CpChoiceDO> cpChoices = cpChoiceDao.getSelectedCps(Long.valueOf(uid), RecommendService.POSITIVE_SELECT);
 		Set<String> cpids = new HashSet<String>();
 		for(CpChoiceDO cpChoice:cpChoices){
 			cpids.add(cpChoice.getCp_id()+"");
@@ -50,7 +49,7 @@ public class CpShowingServiceImpl implements CpShowingService {
 	@Override
 	public void addUserShowingCps(String uid, Set<String> cpids) {	
 		if(cpids!=null){
-			logger.info("设置新的一批");
+			logger.info("设置新的一批用户正在显示的cp列表");
 			u2cPresentDao.setUserPresentCps(uid, cpids);
 			for(String cpid:cpids){
 				c2uPresentDao.setCpPresentUser(cpid, uid);
@@ -73,6 +72,12 @@ public class CpShowingServiceImpl implements CpShowingService {
 			}
 			u2cPresentDao.dropUserPresentCps(uid);
 		}	
+	}
+
+	@Override
+	public void deleteUserShowingCp(String uid, String cpId) {
+		u2cPresentDao.delteUserPresentCp(uid, cpId);
+		c2uPresentDao.deleteCpPresentUser(cpId, uid);
 	}
 
 }

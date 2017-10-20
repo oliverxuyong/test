@@ -1,5 +1,6 @@
 package so.xunta.server;
 
+import java.util.List;
 import java.util.Set;
 
 import so.xunta.beans.User;
@@ -51,7 +52,7 @@ public interface RecommendService {
 	 * */
 	public void syncLastUpdateTime(User u);
 	
-	//public void signCpsPresented(String uid,List<String> pushedCpIds);
+	public void signCpsPresented(String uid,List<String> pushedCpIds);
 	
 	/**
 	 * 检查用户的update任务当前是否可执行

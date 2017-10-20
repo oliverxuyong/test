@@ -90,7 +90,7 @@ public class U2cDaoImpl implements U2cDao {
 		}
 		try {
 			jedis = redisUtil.getJedis();
-			jedis.zadd(uid, cps,ZAddParams.zAddParams().xx());//仅仅更新存在的成员
+			jedis.zadd(uid, cps);
 		} catch (Exception e) {
 			logger.error("setUserCpsPresented error:", e);
 		}finally{
