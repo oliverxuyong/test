@@ -119,6 +119,13 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
  * @param data
  */
 function showSameSelectCp(data){
+	//在放入之前将共同选择的标签删除，避免共同选择的标签重复
+	var selectCPs=$(".selectCp");
+	if(selectCPs.length>0){
+		for(var index in selectCPs){
+			selectCPs.eq(index).remove();
+		}
+	}
 	for(var i in data.msg){
 		var cpid=data.msg[i].cp_id;
 		var text=data.msg[i].text;

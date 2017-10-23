@@ -24,8 +24,11 @@ html, body {
 	float:left;
 	//position:absolute;
 	top:32px;
-	width:100%;
+	width:96.8%;
 	background:white;
+	padding:1.6%;
+	padding-top:0px;
+	padding-bottom:0px;
 	//height:20px;
 	display:none;
 }
