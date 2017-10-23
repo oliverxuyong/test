@@ -598,7 +598,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	var containerWidth = cp_container.width();// 装cp容器的宽度，即扫描轨迹的x轴的总数
 
 	var top = -1;// 标签的top,用来和不同轨迹对比，将数值最大的赋值给top,可以知道标签可上升的最大高度
-	var left = 0;// 得到标签可上升的最大高度时left位置
+	var left = 20;// 得到标签可上升的最大高度时left位置
 
 	// 1.遍历装cp容器的宽度,每次+1px
 	// start是要上升的cp的left的值，所以终点必须空出上升cp的width
@@ -606,7 +606,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	if(startLength<cpWidth){
 		startLength=cpWidth;
 	}
-	for (var start = 10; start <= containerWidth - startLength-10; start++) {
+	for (var start = 20; start <= containerWidth - startLength-20; start++) {
 		// 2.从开始获得上升cp的圆心坐标和半径，以cp_container的左下点为(0,0)
 		var cpRadius = cpWidth / 2;// 半径就是要上升的cp的宽除以2
 		var cpX = start + cpRadius;// 一开始圆心的x为start+cpRadius
@@ -619,9 +619,23 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 		// 用两个数组容器来装轨迹内已经存在的cp中两个最低的圆
 		var cpTwo = new Array();
 
+		//将cpValueArray排序，取最下面的10个标签
+		var cpValueSortArray;
+		if(cpValueArray.length>=20){
+			cpValueSortArray=cpValueArray.slice((cpValueArray.length-20),cpValueArray.length);
+		}else{
+			cpValueSortArray=cpValueArray.slice(0,20);
+		}
+		cpValueSortArray.sort(function(a, b) {
+			return b.getCpBottom() - a.getCpBottom();
+		});
+		
 		// 4.遍历所有已经存在的cp，判断哪些cp在这条轨迹范围内
-		for (var j = 0; j < cpValueArray.length; j++) {// 遍历已经存在的所有cp
-			var cpObj = cpValueArray[j];// 存在的cp
+		for (var j = 0; j < cpValueSortArray.length; j++) {// 遍历已经存在的所有cp
+			if(j>=10){//只遍历最下面10个
+				break;
+			}
+			var cpObj = cpValueSortArray[j];// 存在的cp
 			var cpNode = cpObj.getCpNode();// 存在的cpid
 			var cpLeftValue = cpObj.getCpLeft();// 获得已有cp的最左边边界值
 			var cpRightValue = cpObj.getCpRight();// 获得已有cp的最右边边界值
@@ -1002,7 +1016,7 @@ function showSelectTag(cpid,text){
 var lineNumber=2;
 
 function addMyCp(cpid,text,selected_user_num){
-	// 2017.09.14 叶夷 为了性能测试将选择标签的显示控制在4行以内
+	// 2017.09.14 叶夷 为了性能测试将选择标签的显示控制在3行以内
 	if(lineNumber<=3){
 		var myTagContainer=$("#mytag-container");
 		var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
