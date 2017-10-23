@@ -49,31 +49,34 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 		
 		List<RecommendCpBO> returnList = new ArrayList<RecommendCpBO>();
 		for(Tuple cp:cps){
-			if(cp.getScore()<=0){
+			if(cp.getScore()<0){
 				break;
 			}
 			String cpid = cp.getElement();
 			//Double cpScore = cp.getScore();
 			
 
-			ConcernPointDO cpDO = concernPointDao.getConcernPointById(BigInteger.valueOf(Long.valueOf(cpid)));
+			ConcernPointDO cpDO = concernPointDao.getConcernPointById(new BigInteger(cpid));
 			
-			RecommendCpBO cpBO = new RecommendCpBO();
-			cpBO.setCpId(cpid);
-			cpBO.setCpText(cpDO.getText());
-			cpBO.setHowManyPeopleSelected(c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT));
-			String if_selected = "N"; //因为选择的CP都已经被置为已推荐，因此新的一批推荐CP不会是选择过的，先这么处理
-			//CpChoiceDetailDO cpChoiceDetailDO= cpChoiceDetailDao.getCpChoiceDetail(uid, BigInteger.valueOf(Long.valueOf(cpid)));					
-			/*if(cpChoiceDetailDO != null){
-				if_selected = cpChoiceDetailDO.getIs_selected();
-			}*/
-			cpBO.setIfSelectedByMe(if_selected);
-			returnList.add(cpBO);
-			cpIds.add(cpid);
+			if(cpDO!=null){
+				RecommendCpBO cpBO = new RecommendCpBO();
+				cpBO.setCpId(cpid);
+				cpBO.setCpText(cpDO.getText());
+				cpBO.setHowManyPeopleSelected(c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT));
+				String if_selected = "N"; //因为选择的CP都已经被置为已推荐，因此新的一批推荐CP不会是选择过的，先这么处理
+				//CpChoiceDetailDO cpChoiceDetailDO= cpChoiceDetailDao.getCpChoiceDetail(uid, BigInteger.valueOf(Long.valueOf(cpid)));					
+				/*if(cpChoiceDetailDO != null){
+					if_selected = cpChoiceDetailDO.getIs_selected();
+				}*/
+				cpBO.setIfSelectedByMe(if_selected);
+				returnList.add(cpBO);
+				cpIds.add(cpid);
+			}
 		}
 		
-		u2cDao.setUserCpsPresented(uid.toString(), cpIds);
-		
+		if(cpIds.size()>0){
+			u2cDao.setUserCpsPresented(uid.toString(), cpIds);
+		}
 		
 		/* 如果别人的操作对我形成触发，那不需要更新
 		RecommendTaskPool.getInstance().getThreadPool().execute(new Runnable() {

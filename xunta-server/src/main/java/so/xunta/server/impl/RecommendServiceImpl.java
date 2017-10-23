@@ -259,7 +259,8 @@ public class RecommendServiceImpl implements RecommendService {
 				String cpId = cp.getId().toString();
 				/*目前为每个赋值一个0-0.1之间的随机推荐值
 				 * */
-				initCpsMap.put(cpId, randomData.nextDouble()*INIT_CP_SCORE);
+				double randomDouble = randomData.nextDouble();
+				initCpsMap.put(cpId, (randomDouble == 0?randomData.nextDouble():randomDouble)*INIT_CP_SCORE);
 			}
 			initialCpDao.setCps(initCpsMap);
 			logger.info("初始化 Redis InitialCP 完成！");
@@ -333,14 +334,18 @@ public class RecommendServiceImpl implements RecommendService {
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
 					u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
 				}else{
-					 //负值是取消标签导致，正常情况下取消前肯定有选中过程，所以总的值不会为负
-					u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+					 //为取消标签时，如果在更新之前并未选中过，说明是选择又取消，应该什么都不做，只有选中过，取消才有意义
+					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)!=null){
+						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+					}
 				}
 			}else{
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
 					u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
 				}else{
-					u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)!=null){
+						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+					}
 				}
 			}
 		}

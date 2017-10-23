@@ -87,8 +87,8 @@ public class InitialCpDapImpl implements InitialCpDao {
 			/*将所有cp按请求数分区，随机选择一个区的cp
 			 * */
 			int totalCounts = jedis.zcard(key).intValue();
-			int level = totalCounts/number;
-			int start = INIT_COUNTS+(new Random().nextInt(level))*number;
+			int level = (totalCounts - INIT_COUNTS)/number;
+			int start = INIT_COUNTS+(new Random().nextInt(level+1))*number;
 			Set<Tuple> cps = jedis.zrevrangeWithScores(key, start, start+number);
 			for(Tuple cp:cps){
 				returncps.put(cp.getElement(),cp.getScore());

@@ -105,7 +105,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		}
 
 		String _interface = obj.get("_interface").toString();
-		logger.info("_interface:" + _interface);
+	//	logger.info("_interface:" + _interface);
 		websocketContext.executeMethod(_interface, session, message);
 	}
 
