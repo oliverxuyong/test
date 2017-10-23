@@ -1976,7 +1976,7 @@ function addTag() {
 	var contextresult = [];
 	contextresult.push('<div id="entrytag">');
 	contextresult
-			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:searchToAddTag();}'></p>");
+			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:searchToAddTag();}' maxlength='20'></p>");
 	contextresult
 			.push('<div class="btn-div" onclick="searchToAddTag()">添加</div>');
 	contextresult.push('</div>');
@@ -1994,8 +1994,28 @@ function showSearchTag() {
 	    document.getElementById('gov_search_suggest').removeChild(childList[0]);
 	}
 	var input_value = $("#pop_tagName").val();// 获得输入框的值
-	responseSearchTag(input_value);// 通过输入框获得匹配的数据
+	var strLength=input_value.length;
+	if(strLength<20){
+		responseSearchTag(input_value);// 通过输入框获得匹配的数据
+	}else{
+		toast_popup("输入框不能超过20个字符",2500);
+	}
 }
+/*//计算字符串长度(英文占1个字符，中文汉字占2个字符)
+function strlen(str){
+    var len = 0;
+    for (var i=0; i<str.length; i++) { 
+     var c = str.charCodeAt(i); 
+    //单字节加1 
+     if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) { 
+       len++; 
+     } 
+     else { 
+      len+=2; 
+     } 
+    } 
+    return len;
+}*/
 
 function searchTagData(id,text){
 	var obj = new Object();
