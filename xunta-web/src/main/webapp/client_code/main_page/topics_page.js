@@ -114,7 +114,7 @@ function return_add_self_cp(data){
 }
 
 //2017.08.09  叶夷  显示我的标签
-function requestMyCP(){
+/*function requestMyCP(){
 	$.ajax({
         url:"http://xunta.so:3000/v1/find/users/tags",
         type:"POST",
@@ -132,6 +132,9 @@ function requestMyCP(){
         	return;
         }
     });
+}*/
+function requestMyCP(){
+	execRoot("request_user_selected_cp('"+ userId +"')");
 }
 
 //2017.08.11 叶夷    判断这个标签是否被选中过
@@ -169,6 +172,12 @@ function enterDialogPage(toUserId,toUserName) {
 	};
 	console.log("enterDialogPage toUserId=" + toUserId + "|toUserName="
 			+ toUserName);
+	
+	//在打开聊天页的时候请求共同选择的标签
+	if(window.parent.document.getElementById(toUserId)!=null ){//聊天列表打开过
+		exec(toUserId, "requestSelectCP()");
+	}
+	
 	// openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
 	openWin(toUserId, 'dialog_page/dialog_page.html', JSON.stringify(pageParam));
 }
@@ -214,6 +223,9 @@ function enterMatchUsersPage(){
 function responseTopMatchedUsers(muData) {
 	var matchedUserArr = muData.matched_user_arr;// 获得后台发送的匹配人排名信息数组
 	showMatchPeople(matchedUserArr);// 显示匹配人列表
+	
+	//匹配人显示完毕之后再请求我的标签
+	requestMyCP();
 }
 
 // 2017.07.07 叶夷 匹配用户改变

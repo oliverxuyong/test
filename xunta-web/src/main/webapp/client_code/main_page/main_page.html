@@ -29,12 +29,7 @@
 		
 		<div id="top-container" class="top-container">
 			<div class="header-container" id="header-container">
-			
-				<div id="open-matcheduserlist" >
-					<img src="../image/timg-5.png" onclick="wsConnect()">
-				</div>
-			
-			
+
 				<!-- 重新登录-->
 				<!--div id="showouseroprate">
 					<img src="../image/exit.png" onclick="logOff()">
@@ -72,11 +67,11 @@
 
 			<!-- 我的标签 -->
 			<div class="mytag-container" id="mytag-container">
-
+				<div style="width:37px;height:30px;line-height:28px;" onclick="addTag()" class="mytag add" id="addtag">+</div>
 				<!-- <div class="mytag"><img src="../image/acclaim-50x173.png"><span>阿斯蒂芬8后</span></div> -->
-				<div class="mytag" id="addtag2" onclick="addTag()" style="width:86px;"> 万有引力 					
+				<!-- <div class="mytag" id="addtag2" onclick="addTag()" style="width:86px;"> 万有引力 					
 					<div class="mytag-selectednumber">123</div>
-				</div>
+				</div> -->
 				
 			</div>
 
@@ -91,14 +86,14 @@
 				
 				<!--div class="cp" id="cpid1" class="selected">CP111111111<div class="cp-selectednumber">988</div></div-->
 				
-				<div class="incp" style="position:fixed; top: 800px; left: 100px; height: 73px; width: 73px;">
+				<!-- <div class="incp" style="position:fixed; top: 800px; left: 100px; height: 73px; width: 73px;">
 					<div class="cp-selectednumber">168</div>
 					<div style="color:white;line-height: 38px; height: 42px; width: 52.5px; font-size: 15px; top: 15.5px; left: 10.25px;">
 					一半
 					</div>
 					
 					
-				</div>
+				</div> -->
 				
 				
 				
@@ -128,10 +123,10 @@
 		<div class="enterdialogList" id="enterdialogList" onclick="EnterdialogList()">
 		<img src="../image/new-msg-3.png" />
 		</div>
-		<!-- 选中标签性能测试按钮
-		<div onclick="testSelectTag()" style="position: absolute;top: 26px;left: 100px;background: #f1f1f1;">
-			选中标签测试
-		</div>-->
+		<!-- 选中标签并发websocket测试按钮 -->
+		<!-- <div onclick="requestUserIds()" style="position: absolute;top: 26px;left: 100px;background: #f1f1f1;z-index:999;">
+			并发测试按钮 
+		</div> -->
 		<!-- 选中标签性能测试停止按钮
 		<div onclick="cleartimeout()" style="position: absolute;top: 52px;left: 100px;background: #f1f1f1;">
 			选中标签测试停止
@@ -149,6 +144,8 @@
 	<script type="text/javascript" src="../script/popup.js"></script>
 	<script type="text/javascript" src="../script/popcontext.js"></script>
 	<script type="text/javascript" src="http://xunta.so:3000/javascripts/websocket.io.js"></script>
+	<!-- 这是为了移动端web的调试 
+	<script src="../script/debuggap.js" type="text/javascript"></script>-->
 	
 	
 	<script type="text/javascript">
@@ -188,7 +185,7 @@
 			//requestTopMatchedUsers(userId,requestTopMUNum);//请求用户匹配缩略表,不能放在这里，因为不能同时请求,等请求cp返回且显示之后再请求这个方法，所以此方法放在responseToCPRequest(CP_list)中
 			
 			//2017.08.09  叶夷  显示我的标签
-			requestMyCP();
+			//requestMyCP();
 			
 			chat.init(userId,recevier);//注册用户，及用记接收消息的函数
 		}

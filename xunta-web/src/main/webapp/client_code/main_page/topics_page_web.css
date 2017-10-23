@@ -563,15 +563,29 @@ width:100%;
 	position:absolute;
 	//position:relative;
 	top:-6px;
-	left:50px;
+	//right:2px;
 	height:10px;
-	padding-left:3px;
+	padding-left:2px;
 	padding-right:2px;
 	line-height:10px;
 	color:#b48f4c;
 	font-size:10px;
 	background-color:#505050;
 	border-radius:40%;
+	//border:1px solid #757575;
+}
+
+.unSelectCPNode{
+	position:absolute;
+	top:-6px;
+	left:2px;
+	height:14px;
+	padding-left:3px;
+	padding-right:2px;
+	line-height:10px;
+	font-size:10px;
+	background-color:red;
+	border-radius:50%;
 	//border:1px solid #757575;
 }
 
