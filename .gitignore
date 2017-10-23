@@ -13,3 +13,5 @@ Servers/
 target/
 zoie-config.properties
 qqconnectconfig.properties
+/xunta-web/src/main/resources/jdbc.properties
+/xunta-web/src/main/resources/redis.properties
