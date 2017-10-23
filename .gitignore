@@ -13,3 +13,5 @@ Servers/
 target/
 zoie-config.properties
 qqconnectconfig.properties
+redis.properties
+jdbc.properties
