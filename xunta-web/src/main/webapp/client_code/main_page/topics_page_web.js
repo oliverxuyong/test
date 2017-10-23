@@ -360,13 +360,14 @@ function startPushSelectCpPresent(data){
 	//2017.10.17 叶夷   在我的标签中也要将选择人数改变
 	var myTagNode=$("#mytag"+cpid);
 	var myTagSelectNumber=myTagNode.find(".mytag-selectednumber");//这是先查看我的标签是否有选择人数
-	if(myTagSelectNumber==undefined){
+	if(myTagSelectNumber.length>0){
 		myTagSelectNumber.text(selectTagNumText);
 	}else{
 		myTagSelectNumber=$("<div></div>").attr("class","mytag-selectednumber").text(selectTagNumText);
 		myTagNode.append(myTagSelectNumber);
 	}
 	myTagSelectNumber.show();
+	myTagSelectNumber.css("right","2px");
 	//过一秒之后消失
 	timeOutSuccess = setTimeout(function() {
 		myTagSelectNumber.hide();
