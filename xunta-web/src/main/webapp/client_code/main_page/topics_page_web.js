@@ -1988,6 +1988,7 @@ function addTag() {
 
 //监听添加标签输入框是否有改变
 function showSearchTag() {
+	addCPID=undefined;
 	aData.splice(0,aData.length);// 清空数组
 	// 清空div中所有的子元素
 	var childList = document.getElementById('gov_search_suggest').childNodes;
