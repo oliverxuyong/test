@@ -126,9 +126,9 @@ public class CpOperationWSController {
 		String cpText = params.getString("cptext");
 		String timestamp = params.getString("timestamp");
 		BigInteger cpId = null;
-		if(!params.isNull("cpid")){
+		/*if(!params.isNull("cpid")){
 			cpId = new BigInteger(params.getString("cpid"));
-		}
+		}*/
 		
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "1108-2");
@@ -150,10 +150,11 @@ public class CpOperationWSController {
 			returnMsg="新增标签并选中";
 		} catch (DuplicateKeyException e) {
 			returnMsg="标签已存在，直接选中";
-			if(cpId==null){
-				concernPointDO = concernPointService.getConcernPointByText(cpText);
-				cpId = concernPointDO.getId();
-			}
+			concernPointDO = concernPointService.getConcernPointByText(cpText);
+			cpId = concernPointDO.getId();
+			/*if(cpId==null){
+				
+			}*/
 		} finally{
 			CpChoiceDetailDO cpChoiceDetailDO = cpOperateAction(uid,cpId,CpChoiceDetailDao.SELECTED,RecommendService.POSITIVE_SELECT);
 			if(cpChoiceDetailDO !=null){		
