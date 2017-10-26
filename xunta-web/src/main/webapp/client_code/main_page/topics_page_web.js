@@ -1972,18 +1972,18 @@ function removeByValue(arr, val) {
 // 弹出添加标签框
 function addTag() {
 	var _obj = $("#showatloaded");
-	var _h = 100;
-	var _w = _obj.width() - 80;
+	var _h = 80;
+	var _w = _obj.width() - 180;
 	var contextresult = [];
 	contextresult.push('<div id="entrytag">');
 	contextresult
 			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:searchToAddTag();}' maxlength='20'></p>");
 	contextresult
-			.push('<div class="btn-div" onclick="searchToAddTag()">添加</div>');
+			.push('<div class="btn-div" onclick="searchToAddTag()">确定</div>');
 	contextresult.push('</div>');
 	contextresult
 			.push('<div class="searchtag_suggest" id="gov_search_suggest"></div>');
-	alertWin(contextresult.join(''), "添加新的标签", _w, _h);
+	alertWin(contextresult.join(''), "添加'心语'", _w, _h);
 }
 
 //监听添加标签输入框是否有改变

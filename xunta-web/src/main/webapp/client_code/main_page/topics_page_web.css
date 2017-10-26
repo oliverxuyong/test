@@ -429,6 +429,10 @@ width:100%;
 	//FILTER:DropShadow(Color=#808080, OffX=5, OffY=5, Positive=1);
 	}
 	
+.large-incp{
+	background-color:rgba(247,247,247,0.4);
+}	
+	
 .incp div{
 	position:absolute;
 	text-align:center;
@@ -594,14 +598,22 @@ width:100%;
 	//color:#fccf63;
 }
 
+.yesItem,.noItem{
+	position:absolute;
+	display:none;
+	padding:2px;
+	color:#e4e4e4;
+	font-size:14px;
+}
+
 .yesItem{
-	position:absolute;
-	display:none;
+	left:0px;
 }
+
 .noItem{
-	position:absolute;
-	display:none;
+	right:0px;
 }
+
 .cover{
 	width: 387px; 
 	height: 620px; 
