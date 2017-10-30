@@ -27,9 +27,9 @@ import so.xunta.utils.RecommendPushUtil;
 @Service
 public class RecommendPushServiceImpl implements RecommendPushService {	
 	private final int U_TOP_NUM = 10;//推荐阈值，前U_TOP_NUM名的匹配用户如果排位发生了变化，就推送
-	private final int U_LISTEN_NUM = 10;  //比较的匹配列表长度
-	private final int CP_THRESHOLD = 10; //推荐阈值，更新后CP所处的最低排名
-	private final int CP_LISTEN_NUM = 10; //推荐阈值，更新前CP所处的最高排名
+	private final int U_LISTEN_NUM = 15;  //比较的匹配列表长度
+	private final int CP_THRESHOLD = 15; //推荐阈值，更新后CP所处的最低排名
+	private final int CP_LISTEN_NUM = 15; //推荐阈值，更新前CP所处的最高排名
 	
 	@Autowired
 	private U2uRelationDao u2uRelationDao;
