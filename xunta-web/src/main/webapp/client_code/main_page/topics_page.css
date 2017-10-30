@@ -19,7 +19,7 @@
 	position: absolute;
 	left:90px;
 	top:58px;
-	float:left;
+	display:none;
 }
 
 #showonlineoffline>img{

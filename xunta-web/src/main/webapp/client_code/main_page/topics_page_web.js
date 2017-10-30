@@ -64,6 +64,9 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	// 推荐标签动画开始之后再将"请求下一批"的按钮显现
 	$("#request_cp").show();
 	$("#request_cp").html("<div>+</div><div>更多标签</div>");
+	
+	//进入聊天列表显示
+	$("#enterdialogList").show();
 }
 
 //2017.10.12 叶夷   标签的完整文字内容,cpid为键，文字为值
@@ -2110,6 +2113,7 @@ function searchTag(suggestWrap,data){
 
 function response_user_selected_cp(datas){
 	var myTagContainer=$("#mytag-container");
+	myTagContainer.show();
 	var cp_arr=datas.cp_arr;
 	for(var i in cp_arr){
 		var cpid=cp_arr[i].cpid;

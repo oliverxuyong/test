@@ -232,6 +232,7 @@ width:100%;
 	border-top:1px solid #555555;
 	padding-bottom:8px;
 	//overflow-y:auto;
+	display:none;
 }
 /*我的标签最外层容器*/
 .search-head{
@@ -536,6 +537,7 @@ width:100%;
 	left:20px;
 	z-index:102;
 	//box-shadow:0 0 50px black;
+	display:none;
 }
 
 .enterdialogList img{
