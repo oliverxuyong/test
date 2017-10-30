@@ -85,15 +85,15 @@ function setDialogListNode(dialog,dialogContent){
 	dialogContent.css("left",dialogContentLeft);
 	
 	//设置文字内容的line-height
-	var dialogContentNameHeight=$(".dialog_content_name").css("height");
-	$(".dialog_content_name").css("line-height",(parseInt(dialogContentNameHeight)+10)+"px");
+	var dialogContentNameHeight=dialogContent.find(".dialog_content_name").css("height");
+	$(".dialog_content_name").css("line-height",(parseInt(dialogContentNameHeight))+"px");
 	$(".dialog_content_name").css("font-size",parseInt(dialogContentNameHeight)*0.7+"px");
 	
-	var dialogContentTimeHeight=$(".dialog_content_time").css("height");
+	var dialogContentTimeHeight=dialogContent.find(".dialog_content_time").css("height");
 	$(".dialog_content_time").css("line-height",dialogContentTimeHeight);
 	$(".dialog_content_time").css("font-size",parseInt(dialogContentTimeHeight)*0.5+"px");
 	
-	var dialogContentMsgHeight=$(".dialog_content_msg").css("height");
+	var dialogContentMsgHeight=dialogContent.find(".dialog_content_msg").css("height");
 	$(".dialog_content_msg").css("line-height",dialogContentMsgHeight);
 	$(".dialog_content_msg").css("font-size",parseInt(dialogContentMsgHeight)*0.65+"px");
 }

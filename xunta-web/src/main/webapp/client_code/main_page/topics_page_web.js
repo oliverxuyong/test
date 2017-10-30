@@ -216,8 +216,8 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 		cpTextHeight = cpTextSize * 2 + (6 * 2);
 		
 		// 分行情况下减小行之间的间距
-		var cpTextLineHeight=cpTextHeight/2-3;
-		cp_text.css("line-height", cpTextLineHeight + "px");
+		/*var cpTextLineHeight=cpTextHeight/2-3;
+		cp_text.css("line-height", cpTextLineHeight + "px");*/
 	}
 	
 	// 将cp文字div的大小设置
@@ -225,9 +225,6 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	cp_text.css("width", cpTextWidth + "px");
 	cp_text.css("font-size", cpTextSize);
 	cp_text.text(cpText);
-	
-	//叶夷  2017.10.12  选中标签加上两个选项
-	
 	
 	// 计算cp div的斜边的大小，即容纳其外圆的直径
 	var hypotenuse = parseInt(Math.sqrt(Math.pow(cpTextHeight, 2)
@@ -270,16 +267,16 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 		var cpInNodeTop = (hypotenuse - cpInNodeWidth) / 2-1;
 		cp_innode.css("top", cpInNodeTop);
 		cp_innode.css("left", cpInNodeTop);
-
+		
+		//外圆比内圆大的时候top值需要改变
+		var selectTagNumNodeTop=((hypotenuse - cpInNodeWidth)-(cpTextSize+5))/2;
+		selectTagNumNode.css("top", selectTagNumNodeTop + "px");
 	}
 	// 文字位置调整
 	cpTextTop = (cpInNodeWidth - cpTextHeight) / 2;
 	cpTextLeft = (cpInNodeWidth - cpTextWidth) / 2;
 	cp_text.css("top", cpTextTop);
 	cp_text.css("left", cpTextLeft);
-	
-	//选择标签的位置也要改变
-	selectTagNumNode.css("left", (cpInNodeWidth/5*3) + "px");
 	
 	// 2017.09.13 叶夷 判断标签之前的距离，需要获得cp_node的大小，然后再加上一个随即距离则是最外面圆的大小
 	var randowDistance=cpInNodeWidth*0.25;// 先按内圆计算,这是标签之间的随机距离,根据自身的大小判断，再加上个别相交
@@ -292,6 +289,9 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	cpNodeByDistance.css("width",cpNodeByDistanceWidth+"px");
 	cpNodeByDistance.css("height",cpNodeByDistanceWidth+"px");
 	
+	//选择标签的位置也要改变
+	selectTagNumNode.css("left", (cpNodeWidth/5*3) + "px");
+	
 	// 2017.09.13 叶夷 标签再加上一个圆之后居中
 	if(cpNodeByDistanceWidth>cpNodeWidth){
 		var cpNodeTop=parseInt((cpNodeByDistanceWidth-cpNodeWidth)/2);
@@ -299,9 +299,13 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 		cp_node.css("left", cpNodeTop+"px");
 	}
 	
-	var yesItem=$("<div></div>").attr("class","yesItem").text("收了");//收下按钮
-	var noItem=$("<div></div>").attr("class","noItem").text("消失");//消失按钮
-	cp_node.append(yesItem).append(noItem);
+	var yesItem=cp_node.find(".yesItem");
+	var noItem=cp_node.find(".noItem");
+	if(yesItem.length<=0 || noItem.length<=0){
+		yesItem=$("<div></div>").attr("class","yesItem").text("收了");//收下按钮
+		noItem=$("<div></div>").attr("class","noItem").text("消失");//消失按钮
+		cp_node.append(yesItem).append(noItem);
+	}
 	
 	return cpInNodeWidth;//这里返回是为了得到标签选择人数变化时的内圆大小
 }
@@ -322,6 +326,21 @@ function pushSelectCpPresent(data){
 	}
 }
 
+function addMyTagSelectTagNum(myTagSelectNumber,selectTagNumText){
+	if(myTagSelectNumber.length>0){
+		myTagSelectNumber.text(selectTagNumText);
+	}else{
+		myTagSelectNumber=$("<div></div>").attr("class","mytag-selectednumber").text(selectTagNumText);
+		myTagNode.append(selectTagNumText);
+	}
+	myTagSelectNumber.show();
+	myTagSelectNumber.css("right","2px");
+	//过一秒之后消失
+	timeOutSuccess = setTimeout(function() {
+		myTagSelectNumber.hide();
+	},5000);
+}
+
 //选择人数变化是推荐标签的位置需要调整，所以新建一个数组
 var cpValueForSelectNum=new Array();
 /**
@@ -340,171 +359,164 @@ function startPushSelectCpPresent(data){
 	//var selectTagNum =parseInt(Math.random()*999)+1;//测试版本
 	//var selectTagNum=999;
 	
-	var selectTagNumNode=$("#selectTagNum"+cpid);
-	//var selectTagNumNode=$("#"+cpid);//测试版本
-	var nowSelectTagNum=selectTagNumNode.text();
-	var selectTagNumText=selectTagNum;
-	if(selectTagNum>999){
-		selectTagNumText=999+"+";
-		selectTagNumNode.text(selectTagNumText);
-		selectTagNumNode.show();
-	}else if(selectTagNum<=0){
-		selectTagNumNode.hide();
-	}else{
-		selectTagNumNode.text(selectTagNumText);
-		selectTagNumNode.show();
-	}
-	
-	cpid=cpid.replace(/[^0-9]/ig,"");//测试版本需要
-	
 	//2017.10.17 叶夷   在我的标签中也要将选择人数改变
 	var myTagNode=$("#mytag"+cpid);
-	var myTagSelectNumber=myTagNode.find(".mytag-selectednumber");//这是先查看我的标签是否有选择人数
-	if(myTagSelectNumber.length>0){
-		myTagSelectNumber.text(selectTagNumText);
+	if(myTagNode.length>0){
+		selectTagNum=selectTagNum-1;
+		var selectTagNumText=selectTagNum;
+		var myTagSelectNumber=myTagNode.find(".mytag-selectednumber");//这是先查看我的标签是否有选择人数
+		if(selectTagNumText>999){
+			addMyTagSelectTagNum(myTagSelectNumber,(selectTagNumText+"+"));
+		}else if(selectTagNumText>0){
+			addMyTagSelectTagNum(myTagSelectNumber,selectTagNumText);
+		}
 	}else{
-		myTagSelectNumber=$("<div></div>").attr("class","mytag-selectednumber").text(selectTagNumText);
-		myTagNode.append(myTagSelectNumber);
-	}
-	myTagSelectNumber.show();
-	myTagSelectNumber.css("right","2px");
-	//过一秒之后消失
-	timeOutSuccess = setTimeout(function() {
-		myTagSelectNumber.hide();
-	},5000);
-	
-	//判断这个标签是否是需要相交的圆
-	var isInterset=false;;
-	for(var count=0;count<=intersetCPArray.length;count++){
-		var intersetCP=intersetCPArray[count];
-		if(cpid==intersetCP){
-			isInterset=true;
-			break;
-		}
-	}
-	
-	//接下来是标签的大小改变
-	var cpNodeByDistance=$("#outcpid"+cpid);
-	var cp_node=$("#cpid"+cpid);
-	var cp_innode=cp_node.find(".incp");
-	var cp_text=cp_innode.find("div");
-	var cpText=cp_text.text();
-	var cpTextSize =controlSize(selectTagNum,maxCPTextSize,minCPTextSize);
-	var cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
-
-	/*cp_innode.css("width",cpInNodeWidth);
-	cp_innode.css("height",cpInNodeWidth);*/
-	
-	var cpNodeByDistanceOldWidth=cpNodeByDistance.width();//保存大小改变之前的标签
-	
-	//传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div,选择的人数，再加上一个圆div（用来判断标签之前的距离）,选择人数div,判断是否相交
-	cpInNodeWidth=calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
-	cp_innode.animate({
-		width : cpInNodeWidth,
-		height : cpInNodeWidth
-	}, 1000);
-	
-	//如果标签扩大，计算出扩大的width
-	var changeWidth;
-	if(cpNodeByDistance.width()>cpNodeByDistanceOldWidth){
-		changeWidth=cpNodeByDistance.width()-cpNodeByDistanceOldWidth;
-	}
-	
-	//位置重新计算,left值不改变，然后通过中心点进行排序，通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
-	var cp_container = $("#cp-container");// 装推荐标签的容器
-	
-	//2.然后通过中心点进行排序
-	cpValue.sort(function(a,b){
-		var aX=((a.cpBottom-a.cpTop)/2)+a.cpBottom;
-		var bX=((b.cpBottom-b.cpTop)/2)+b.cpBottom;
-        return aX-bX;
-       });
-	
-	//测试代码
-	/*for(var a=0;a<cpValue.length;a++){
-		console.log("测试："+cpValue[a].cpNode+"->"+(((cpValue[a].cpBottom-cpValue[a].cpTop)/2)+cpValue[a].cpBottom));
-	}*/
-	
-	cpValueForSelectNum.splice(0, cpValueForSelectNum.length);
-	//通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
-	for (var index= 0; index < cpValue.length; index++) {
-		var cpObj = cpValue[index];// 存在的cp
-		var cpNodeID =cpObj.cpNode;// 存在的cpid
-		var cpLeft = cpObj.cpLeft;// 获得已有cp的最左边边界值
-		var cpRight = cpObj.cpRight;
-		var cpTop,cpBottom;
-		
-		//判断放大之后是否会超过边界
-		var right=cpLeft+cpRadius*2;
-		if(right>cp_container.width()){
-			cpLeft=cpLeft-changeWidth;
-		}
-		
-		var cpRadius;
-		var cpid1=cpNodeID.replace(/[^0-9]/ig,"");
-		if(cpid==cpid1){
-			cpRadius=$("#outcpid"+cpid).width()/2
+		var selectTagNumNode=$("#selectTagNum"+cpid);
+		//var selectTagNumNode=$("#"+cpid);//测试版本
+		var nowSelectTagNum=selectTagNumNode.text();
+		var selectTagNumText=selectTagNum;
+		if(selectTagNum>999){
+			selectTagNumText=999+"+";
+			selectTagNumNode.text(selectTagNumText);
+			selectTagNumNode.show();
+		}else if(selectTagNum<=0){
+			selectTagNumNode.hide();
 		}else{
-			cpRadius=(cpRight-cpLeft)/2;
+			selectTagNumNode.text(selectTagNumText);
+			selectTagNumNode.show();
 		}
-		var cpX = cpLeft + cpRadius;// 一开始圆心的x为start+cpRadius
-		var cpY = cp_container.height();//从下往上单轨迹扫描
-		// 1.遍历装cp容器的宽度,每次+1px
-		// start是要上升的cp的left的值，所以终点必须空出上升cp的width
-		for (;cpY>=cpRadius; cpY--) {
-			var isOverLay = false;// 判断是否重叠,false为不重叠
-			// 4.遍历所有已经存在的cp，判断哪些cp在这条轨迹范围内
-			for (var j = 0; j < cpValueForSelectNum.length; j++) {// 遍历已经存在的所有cp
-				var cpObj = cpValueForSelectNum[j];// 存在的cp
-				var cpNode = cpObj.getCpNode();// 存在的cpid
-				if(cpNodeID!=cpNode){
-					var cpLeftValue = cpObj.cpLeft;// 获得已有cp的最左边边界值
-					var cpRightValue = cpObj.cpRight;// 获得已有cp的最右边边界值
-					var cpTopValue = cpObj.cpTop;// 获得已有cp的最上边边界值
-					var cpBottomValue = cpObj.cpBottom;// 获得已有cp的最下边边界值
-
-					var nowCpRadius = (cpRightValue - cpLeftValue) / 2;// 现有cp的半径
-					var nowCpX = cpLeftValue + nowCpRadius;// 现有cp的圆心x周
-					var nowCpY = cpTopValue + nowCpRadius;
-
-					//console.log("")
-					//console.log("测试1："+cpX+" "+nowCpX+" "+cpY+" "+nowCpY+" "+cpRadius+" "+nowCpRadius);
-					//console.log("测试2："+(Math.sqrt(Math.pow((cpX - nowCpX), 2)
-					//		+ Math.pow((cpY - nowCpY), 2)))+"->"+(cpRadius + nowCpRadius))
-					if (Math.sqrt(Math.pow((cpX - nowCpX), 2)
-							+ Math.pow((cpY - nowCpY), 2)) <= (cpRadius + nowCpRadius)) {// 一旦相切则停止
-						isOverLay = true;
-						break;
-					}
-				}
-			}
-			if (isOverLay) {//一旦不相交
+	
+		cpid=cpid.replace(/[^0-9]/ig,"");//测试版本需要
+	
+		//判断这个标签是否是需要相交的圆
+		var isInterset=false;;
+		for(var count=0;count<=intersetCPArray.length;count++){
+			var intersetCP=intersetCPArray[count];
+			if(cpid==intersetCP){
+				isInterset=true;
 				break;
 			}
 		}
-		//console.log("测试3："+cpY);
-		cpTop=cpY-cpRadius;
-		bottom = cpTop +cpRadius*2;
-		right=cpLeft+cpRadius*2;
-		cpValueForSelectNum.push(new CP(cpNodeID, cpLeft, right, cpTop, bottom));
-		// cp容器的高度调整
-		cp_container.height(bottom+maxCPSize);
-	}
-	cpValue= [].concat(cpValueForSelectNum);
 	
-	//开始动画
-	for (var j = 0; j < cpValue.length; j++) {// 只需要从需要动画的cp个数开始上升，已经在前端的cp不动
-		var cp_nodeId = cpValue[j].getCpNode();
-		var cp_node = $("#" + cp_nodeId);
-		var left = cpValue[j].getCpLeft();
-		var top = cpValue[j].getCpTop();
-
-		cp_node.animate({
-			top : top + "px",
-			left:left+"px"
-		}, {
-			duration :1000
+		//接下来是标签的大小改变
+		var cpNodeByDistance=$("#outcpid"+cpid);
+		var cp_node=$("#cpid"+cpid);
+		var cp_innode=cp_node.find(".incp");
+		var cp_text=cp_innode.find("div");
+		var cpText=cp_text.text();
+		var cpTextSize =controlSize(selectTagNum,maxCPTextSize,minCPTextSize);
+		var cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
+		var cpNodeByDistanceOldWidth=cpNodeByDistance.width();//保存大小改变之前的标签
+	
+		//传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div,选择的人数，再加上一个圆div（用来判断标签之前的距离）,选择人数div,判断是否相交
+		cpInNodeWidth=calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
+		cp_innode.animate({
+			width : cpInNodeWidth,
+			height : cpInNodeWidth
+		}, 1000);
+	
+		//如果标签扩大，计算出扩大的width
+		var changeWidth;
+		if(cpNodeByDistance.width()>cpNodeByDistanceOldWidth){
+			changeWidth=cpNodeByDistance.width()-cpNodeByDistanceOldWidth;
+		}
+	
+		//位置重新计算,left值不改变，然后通过中心点进行排序，通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
+		var cp_container = $("#cp-container");// 装推荐标签的容器
+	
+		//2.然后通过中心点进行排序
+		cpValue.sort(function(a,b){
+			var aX=((a.cpBottom-a.cpTop)/2)+a.cpBottom;
+			var bX=((b.cpBottom-b.cpTop)/2)+b.cpBottom;
+			return aX-bX;
 		});
+	
+		//测试代码
+		/*for(var a=0;a<cpValue.length;a++){
+			console.log("测试："+cpValue[a].cpNode+"->"+(((cpValue[a].cpBottom-cpValue[a].cpTop)/2)+cpValue[a].cpBottom));
+		}*/
+	
+		cpValueForSelectNum.splice(0, cpValueForSelectNum.length);
+		//通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
+		for (var index= 0; index < cpValue.length; index++) {
+			var cpObj = cpValue[index];// 存在的cp
+			var cpNodeID =cpObj.cpNode;// 存在的cpid
+			var cpLeft = cpObj.cpLeft;// 获得已有cp的最左边边界值
+			var cpRight = cpObj.cpRight;
+			var cpTop,cpBottom;
+		
+			//判断放大之后是否会超过边界
+			var right=cpLeft+cpRadius*2;
+			if(right>cp_container.width()){
+				cpLeft=cpLeft-changeWidth;
+			}
+		
+			var cpRadius;
+			var cpid1=cpNodeID.replace(/[^0-9]/ig,"");
+			if(cpid==cpid1){
+				cpRadius=$("#outcpid"+cpid).width()/2
+			}else{
+				cpRadius=(cpRight-cpLeft)/2;
+			}
+			var cpX = cpLeft + cpRadius;// 一开始圆心的x为start+cpRadius
+			var cpY = cp_container.height();//从下往上单轨迹扫描
+			// 1.遍历装cp容器的宽度,每次+1px
+			// start是要上升的cp的left的值，所以终点必须空出上升cp的width
+			for (;cpY>=cpRadius; cpY--) {
+				var isOverLay = false;// 判断是否重叠,false为不重叠
+				// 4.遍历所有已经存在的cp，判断哪些cp在这条轨迹范围内
+				for (var j = 0; j < cpValueForSelectNum.length; j++) {// 遍历已经存在的所有cp
+					var cpObj = cpValueForSelectNum[j];// 存在的cp
+					var cpNode = cpObj.getCpNode();// 存在的cpid
+					if(cpNodeID!=cpNode){
+						var cpLeftValue = cpObj.cpLeft;// 获得已有cp的最左边边界值
+						var cpRightValue = cpObj.cpRight;// 获得已有cp的最右边边界值
+						var cpTopValue = cpObj.cpTop;// 获得已有cp的最上边边界值
+						var cpBottomValue = cpObj.cpBottom;// 获得已有cp的最下边边界值
+
+						var nowCpRadius = (cpRightValue - cpLeftValue) / 2;// 现有cp的半径
+						var nowCpX = cpLeftValue + nowCpRadius;// 现有cp的圆心x周
+						var nowCpY = cpTopValue + nowCpRadius;
+
+						//console.log("")
+						//console.log("测试1："+cpX+" "+nowCpX+" "+cpY+" "+nowCpY+" "+cpRadius+" "+nowCpRadius);
+						//console.log("测试2："+(Math.sqrt(Math.pow((cpX - nowCpX), 2)
+						//		+ Math.pow((cpY - nowCpY), 2)))+"->"+(cpRadius + nowCpRadius))
+						if (Math.sqrt(Math.pow((cpX - nowCpX), 2)
+							+ Math.pow((cpY - nowCpY), 2)) <= (cpRadius + nowCpRadius)) {// 一旦相切则停止
+							isOverLay = true;
+							break;
+						}
+					}
+				}
+				if (isOverLay) {//一旦不相交
+					break;
+				}
+			}
+			//console.log("测试3："+cpY);
+			cpTop=cpY-cpRadius;
+			bottom = cpTop +cpRadius*2;
+			right=cpLeft+cpRadius*2;
+			cpValueForSelectNum.push(new CP(cpNodeID, cpLeft, right, cpTop, bottom));
+			// cp容器的高度调整
+			cp_container.height(bottom+maxCPSize);
+		}
+		cpValue= [].concat(cpValueForSelectNum);
+	
+		//开始动画
+		for (var j = 0; j < cpValue.length; j++) {// 只需要从需要动画的cp个数开始上升，已经在前端的cp不动
+			var cp_nodeId = cpValue[j].getCpNode();
+			var cp_node = $("#" + cp_nodeId);
+			var left = cpValue[j].getCpLeft();
+			var top = cpValue[j].getCpTop();
+
+			cp_node.animate({
+				top : top + "px",
+				left:left+"px"
+			}, {
+				duration :1000
+			});
+		}
 	}
 	
 	//判断动画是否执行完
@@ -769,9 +781,10 @@ function chooseOneCP(cp_node,cp) {
 		//2.设置字体，目前设置为和标签文字的字体一样大
 		var cpNodeByDistance=$("#outcpid"+cpid);
 		
-		//防止变大之后标签超出边界，先保存变化之前的圆left值
+		//防止变大之后标签超出边界，先保存变化之前的圆left值和top值
 		var cpNodeByDistanceOldWidth=cpNodeByDistance.width();
 		var cpNodeByDistanceOldLeft=parseInt(cpNodeByDistance.css("left").replace(/[^0-9]/ig,""));
+		var cpNodeByDistanceOldTop=parseInt(cpNodeByDistance.css("top").replace(/[^0-9]/ig,""));
 		
 		var cp_innode=cp_node.find(".incp");
 		var cpInNodeWidth=parseInt(maxCPSize+10);//内圆大小扩大，目前给一个固定值，比最大圆大一点
@@ -788,10 +801,10 @@ function chooseOneCP(cp_node,cp) {
 		//3.改变整个标签的大小
 		//cp文字div, cp文字长度,cp文字大小，cp文字，外圆div，内圆div,内圆div大小,选择的人数，再加上一个圆div（用来判断标签之前的距离）,选择人数div,判断是否相交
 		calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
-		cp_innode.css("background-color","beige");
-		cp_innode.css("z-index","103");
+		cp_innode.css("background-color","rgba(247,247,247,0.4)");
+		cp_innode.css("z-index","104");
 		
-		//变大之后的标签如果超过变宽则left改变
+		//变大之后的标签如果超过边宽则left改变
 		var cp_container = $("#cp-container");// 装推荐标签的容器
 		var cpNodeByDistanceWidth=parseInt(cpNodeByDistance.width());
 		if((cpNodeByDistanceWidth+cpNodeByDistanceOldLeft)>cp_container.width()){
@@ -800,12 +813,21 @@ function chooseOneCP(cp_node,cp) {
 			cpNodeByDistance.css("left",cpNodeByDistanceLeft);
 		}
 		
+		//变大之后的标签如果超过屏幕的高则top改变
+		var cpNodeByDistanceOffsetTop=cpNodeByDistance.offset().top;
+		var cpNodeByDistanceOffsetBottom=cpNodeByDistanceOffsetTop+cpNodeByDistanceWidth;
+		var showAtLoadedHeight=$("#showatloaded").height();
+		if(cpNodeByDistanceOffsetBottom>showAtLoadedHeight){
+			var cpNodeByDistanceTop=cpNodeByDistanceOldTop-(cpNodeByDistanceOffsetBottom-showAtLoadedHeight);
+			cpNodeByDistance.css("top",cpNodeByDistanceTop);
+		}
+		
 		yesItem.show();
-		yesItem.css("z-index","103");
+		yesItem.css("z-index","104");
 		noItem.show();
-		var noItemLeft=cp_node.width()-cpTextSize*2;
-		noItem.css("left",noItemLeft);
-		noItem.css("z-index","103");
+		//var noItemLeft=cp_node.width()-cpTextSize*2;
+		//noItem.css("left",noItemLeft);
+		noItem.css("z-index","104");
 		//遮盖层
 		var coverDiv=$(".cover");
 		if(coverDiv.length<=0){
@@ -820,6 +842,7 @@ function chooseOneCP(cp_node,cp) {
 			yesItem.hide();
 			noItem.hide();
 			cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
+			cpNodeByDistance.css("top",cpNodeByDistanceOldTop+"px");
 			//恢复成原来大小再选择
 			cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
 			cp_innode.css("height", cpInNodeWidth);
@@ -835,6 +858,13 @@ function chooseOneCP(cp_node,cp) {
 			coverDiv.remove();
 			yesItem.hide();
 			noItem.hide();
+			
+			//取消点击事件，为了防止多次绑定点击事件
+			coverDiv.unbind();
+			yesItem.unbind();
+			noItem.unbind();
+			cp_node.unbind();
+			
 			cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			//恢复成原来大小再选择
 			cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
@@ -1026,6 +1056,15 @@ function addMyCp(cpid,text,selected_user_num){
 		myTag.click(function(){
 			unSelectCP(cpid);
 		});
+		
+		//将用户昵称文字大小放入我的标签的大小
+		var userNameTextSize=myTagContainer.width()/32;
+		if(userNameTextSize>15){
+			userNameTextSize=15;
+		}else if(userNameTextSize<12){
+			userNameTextSize=12;
+		}
+		myTag.css("font-size",userNameTextSize+"px");
 	
 		var myTagTextLength = length(text);
 		var myTagTextSize = parseInt(myTag.css("font-size"))+1;
@@ -1065,6 +1104,10 @@ function addMyCp(cpid,text,selected_user_num){
 		
 		//这是为了测试我的标签加上选择人数是否好看
 		var selectTagNumText=selected_user_num;
+		
+		//2017.10.24 叶夷  我的标签选择人数需要减1，减去自己
+		selectTagNumText=selectTagNumText-1;
+		
 		var myTagNode=$("#mytag"+cpid);
 		var myTagSelectNumber=myTagNode.find(".mytag-selectednumber");//这是先查看我的标签是否有选择人数
 		if(myTagSelectNumber==undefined){
@@ -1089,10 +1132,10 @@ function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 	var headerContainerHeight=parseInt($("#header-container").css("height"));
 	$("#header-container").css("height",headerContainerHeight+"px");
 	myTagContainer.css("height",myTagContainerHeight+"px");
-	$("#top-container").css("height",(headerContainerHeight+myTagContainerHeight+20)+"px");
+	$("#top-container").css("height",(headerContainerHeight+myTagContainerHeight+10)+"px");
 	var showatloadedHeight=parseInt($("#showatloaded").css("height"));
 	//var tagContaiderTop=parseInt($("#tag-container").css("top"));
-	$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight)+"px");
+	$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight-10)+"px");
 	//console.log("测试："+showatloadedHeight+" "+headerContainerHeight+" "+myTagContainerHeight+" "+tagContaiderTop);
 }
 
@@ -1104,8 +1147,11 @@ function unSelectCP(cpid){
 	var myTagHeight=myTag.height();
 	myTag.css("z-index",104);
 	var myTagSelectNumberNode=myTag.find(".mytag-selectednumber");
-	myTagSelectNumberNode.show();
-	myTagSelectNumberNode.css("right","2px");
+	var myTagSelectNumberText=parseInt(myTagSelectNumberNode.text());
+	if(myTagSelectNumberText>0){
+		myTagSelectNumberNode.show();
+		myTagSelectNumberNode.css("right","2px");
+	}
 	
 	//出现"x"
 	var unSelectCPNode=$(".unSelectCPNode");
@@ -1178,7 +1224,8 @@ function showUnSelectCP(data){
 		
 		// 将取消选择的标签重新绑定点击事件
 		cp_node.click(function() {
-			chooseCP(cp_node,cpid,text);
+			//chooseCP(cp_node,cpid,text);
+			chooseOneCP(cp_node,{cpid:cpid,cptext:text});
 		});
 }
 
@@ -1977,13 +2024,21 @@ function addTag() {
 	var contextresult = [];
 	contextresult.push('<div id="entrytag">');
 	contextresult
-			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:searchToAddTag();}' maxlength='20'></p>");
+			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:searchToAddTag();}'></p>");
 	contextresult
 			.push('<div class="btn-div" onclick="searchToAddTag()">确定</div>');
 	contextresult.push('</div>');
 	contextresult
 			.push('<div class="searchtag_suggest" id="gov_search_suggest"></div>');
 	alertWin(contextresult.join(''), "添加'心语'", _w, _h);
+	
+	//将添加标签的确定按钮两个字的字体大小调整
+	var btnIdvWidth=$(".btn-div").width();
+	var btnDivFontSize=btnIdvWidth/2;
+	if(btnDivFontSize>15){
+		btnDivFontSize=15;
+	}
+	$(".btn-div").css("font-size",btnDivFontSize+"px");
 }
 
 //监听添加标签输入框是否有改变
@@ -1996,28 +2051,8 @@ function showSearchTag() {
 	    document.getElementById('gov_search_suggest').removeChild(childList[0]);
 	}
 	var input_value = $("#pop_tagName").val();// 获得输入框的值
-	var strLength=input_value.length;
-	if(strLength<20){
-		responseSearchTag(input_value);// 通过输入框获得匹配的数据
-	}else{
-		toast_popup("输入框不能超过20个字符",2500);
-	}
+	responseSearchTag(input_value);// 通过输入框获得匹配的数据
 }
-/*//计算字符串长度(英文占1个字符，中文汉字占2个字符)
-function strlen(str){
-    var len = 0;
-    for (var i=0; i<str.length; i++) { 
-     var c = str.charCodeAt(i); 
-    //单字节加1 
-     if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) { 
-       len++; 
-     } 
-     else { 
-      len+=2; 
-     } 
-    } 
-    return len;
-}*/
 
 function searchTagData(id,text){
 	var obj = new Object();
@@ -2126,7 +2161,7 @@ function showUnreadNum(){
 	}
 }
 
-// 2017.08.23 叶夷 匹配人位置根据屏幕调整
+// 2017.08.23 叶夷 各个控件位置根据屏幕调整
 function showMatchedUsers(){
 	// 如今的装匹配人的宽高
 	var headerContainerHeight=parseInt($(".header-container").css("height"));

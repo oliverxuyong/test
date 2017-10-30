@@ -18,7 +18,7 @@
 #showonlineoffline {
 	position: absolute;
 	left:90px;
-	margin-top:58px;
+	top:58px;
 	float:left;
 }
 
@@ -58,6 +58,7 @@
 	font-size: 1em;
 	//background-color:#c3c3c3;
 	color:#a2a2a2;
+	cursor: default;
 }
 
 #alterUserimage {
@@ -114,20 +115,19 @@
 }
 
 .unread{
-//position:absolute; top:2px; right:0px; 
-position:relative; top:-5px; right:-6px;
-height:8px; 
-//width: 10px;
-display:inline;
-border:1px solid #f08080; border-radius:4px;
-font-size:8px;
-color:#B22222;
-background-color:#f8f8f8;
-//padding:1px;
-padding-left:2px;
-padding-right:2px;
-line-height: 10px;
-//text-align:center;
+	position:absolute;
+	top:-4px; 
+	right:-5px; 
+	height:12px; 
+	display:inline;
+	border:1px solid #f08080; 
+	border-radius:4px;
+	font-size:8px;
+	color:#B22222;
+	background-color:#f8f8f8;
+	padding-left:2px;
+	padding-right:2px;
+	line-height: 10px;
 }
 .selectTagNum{
 	position:absolute;
@@ -154,7 +154,7 @@ line-height: 10px;
 .getmoretopics{
 	margin:35px auto;
 	padding-bottom:4px;
-	width: 54px;
+	width: 60px;
 	text-align:center;
 	font-size:12px;
 	//background:url('../image/titbg.gif') center top repeat-x;

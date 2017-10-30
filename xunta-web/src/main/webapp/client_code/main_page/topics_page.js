@@ -98,13 +98,20 @@ var addCPID;//用来添加标签的cpid,没有则为空
 //标签添加
 function searchToAddTag(){
 	var suggestWrap = $('#gov_search_suggest');
-	var text = $("#pop_tagName").val();//获得输入框的值
-	if(lineNumber<=3){
-		var paraStr = userId + "','" + addCPID+"','"+text;
-		execRoot("add_self_cp('"+ paraStr +"')");
+	var text = excludeSpecial($("#pop_tagName").val());//获得输入框的值,并且过滤特殊字符
+	var strLength=text.length;//
+	if(strLength>20){
+		toast('标签长度不能超过20个字符');
+	}else if(strLength<=0){
+		toast("标签内容不能为空");
 	}else{
-		console.log("选中标签超过三行");
-		toast_popup("选中标签超过三行",2500);
+		if(lineNumber<=3){
+			var paraStr = userId + "','" + addCPID+"','"+text;
+			execRoot("add_self_cp('"+ paraStr +"')");
+		}else{
+			console.log("选中标签超过三行");
+			toast_popup("选中标签超过三行",2500);
+		}
 	}
 }
 

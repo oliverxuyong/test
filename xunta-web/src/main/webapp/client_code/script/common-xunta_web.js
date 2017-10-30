@@ -48,7 +48,7 @@ function toast(info) {
 }
 
 /**
- * 叶夷 2017.06.30 判断字符串长度，中文=英文的两倍
+ * 叶夷 2017.06.30 判断字符串长度，这是为了适应标签圆
  */
 function length(cpText) {
 	var len = 0;
@@ -61,6 +61,23 @@ function length(cpText) {
 		}else if(cpText.charCodeAt(i) >= 48 && cpText.charCodeAt(i) <= 57){//数字
 			len+=0.7;
 		}else {
+			len++;
+		}
+	}
+	return len;
+}
+/**
+ * 叶夷 2017.10.25 判断字符串长度，中文==英文两倍
+ */
+function strLength(cpText) {
+	var len = 0;
+	var cpLength=cpText.length;
+	for (var i = 0; i <cpLength; i++) {
+		if (cpText.charCodeAt(i) >=97 && cpText.charCodeAt(i) <=122
+				|| cpText.charCodeAt(i) >= 65 && cpText.charCodeAt(i) <= 90
+				|| cpText.charCodeAt(i) >= 48 && cpText.charCodeAt(i) <= 57) {//小写字母
+			len+=0.5;
+		} else {
 			len++;
 		}
 	}
