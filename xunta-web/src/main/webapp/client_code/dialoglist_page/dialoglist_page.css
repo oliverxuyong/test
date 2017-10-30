@@ -51,7 +51,12 @@ body{
     //padding-left: 10px;
     z-index: 13;}
 
-#dialog_list{font-size:14px; overflow-x:hidden;width:100%;height:634px;}
+#dialog_list{
+	//font-size:14px; 
+	//overflow-x:hidden;
+	width:100%;
+	//height:100%;
+	}
 	
 .unread{
 height:12px; 
