@@ -144,7 +144,7 @@ function appendElement(i, cpid,cp) {
 	cpAnimationLocation(cp_container,cpNodeByDistance,cpValue);
 }
 
-var minCPSize = 50;// 最小内圆的大小
+var minCPSize = $("body").width()/8;// 最小内圆的大小
 var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 12;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
