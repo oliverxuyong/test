@@ -10,7 +10,7 @@ body{position:relative}
 #header {float:left;
 	width:100%; height: 50px; 
 	/*background:url('../image/titbg.gif') center top repeat-x;background-size:8px;*/
-	background-color:#2b526c;
+	background-color:#405a6c;
 	border-bottom:1px solid #d0d0d0; z-index:12;}
 
 #goback{position:relative;height:50px;font-size:22px;float:left;z-index:15}
@@ -30,7 +30,7 @@ body{position:relative}
     z-index: 13;
     }
 
-#dialog_box{font-size:14px; background-color: #ffffff; overflow-x:hidden;height:100%; width:100%;
+#dialog_box{font-size:14px; background-color: #edf4f6; overflow-x:hidden;height:100%; width:100%;
 	border-bottom:1px solid #d8d8d8;}
 #msg_list {padding:15px;//padding-top:3px;}
 
@@ -50,7 +50,7 @@ body{position:relative}
 #dialog_box .my .detail .postsending{width:5px; position:absolute; top:-1px; left:-10px; border-bottom:1px solid gray;}
 #dialog_box .my .detail .postsendingfailed{width:4px; position:absolute; top:0px; left:-10px;}
 #dialog_box .other .user-pic{top:0; left:0}
-#dialog_box .other .detail{position:relative;margin-left:40px;background-color:#EAF0F4}
+#dialog_box .other .detail{position:relative;margin-left:40px;background-color:#ffffff}
 #dialog_box .other .recommend{border:1px solid #EE7700}
 #dialog_box .other .recommend .plus-logo{position:absolute; top:2px; right:-18px; width:12px; height:12px}
 #dialog_box .other .detail .postunread{width:7px; position:absolute; top:2px; right:-11px;}
