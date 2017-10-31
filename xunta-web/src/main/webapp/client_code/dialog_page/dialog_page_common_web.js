@@ -10,6 +10,7 @@ function backBtn(){
 		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
 			exec('dialoglist_page',"removeUnreadNum('"+toUserId+"')");
 			exec('dialoglist_page',"changeUnreadColor()");
+			exec('dialoglist_page',"requestDialogList()");
 			openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', '');
 		}else{
 			openWin('main_page', 'main_page/main_page.html', '');

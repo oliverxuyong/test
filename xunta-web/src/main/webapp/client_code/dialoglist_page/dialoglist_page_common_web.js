@@ -8,8 +8,8 @@ function backBtn(){
 	//聊天列表未读数去除
 	exec('dialoglist_page',"changeUnreadColor()");
 	
-	openWin('main_page', 'main_page/main_page.html', '');
-	//closeWin('dialoglist_page');
+	//openWin('main_page', 'main_page/main_page.html', '');
+	closeWin('dialoglist_page');
 }
 
 //关闭当前页，返回主界面   2016/12/25 deng
@@ -20,6 +20,12 @@ function closeBtn(){
 }
 
 function showDialogList(data){
+	//将聊天列表的数据放入之前先将存在的数据删除
+	var allDialog=$(".dialog");
+	for(var i=0;i<allDialog.length;i++){
+		allDialog.eq(i).remove();
+	}
+	
 	for(var d in data){
 		var createTime=data[d].create_time;//最新回复时间
 		var ifread=data[d].ifread;//是否有未读
