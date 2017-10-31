@@ -51,7 +51,8 @@ function showDialogList(data){
 
 function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
 	var dialog=$("<div></div>").attr("class", "dialog cursor").attr("id", toUserId);
-	var toUserImg="<img src="+toUserImgUrl+">";
+	//onerror是实现获得图片失败的时候放的默认图片,只要有一个图片路径就行
+	var toUserImg="<img src="+toUserImgUrl+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>";
 	var dialogContent=$("<div></div>").attr("class", "dialog_content");
 	
 	var dialogContentTop=$("<div></div>").attr("class", "dialog_content_top");
@@ -65,7 +66,7 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 	dialogContent.append(dialogContentTop).append(dialogContentMsg);
 	dialog.append(toUserImg).append(dialogContent);
 	
-	var dialogList=$("#dialog_list");
+  	var dialogList=$("#dialog_list");
 	dialogList.append(dialog);
 	
 	//设置聊天列表的各个大小
