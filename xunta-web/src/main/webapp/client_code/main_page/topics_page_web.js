@@ -1001,16 +1001,11 @@ function chooseCP(cp_innode,cpid,text,property){
 	if(property=="N"){
 		sendSelectCP(userId, cpid,text, property);
 	}else{
-		if(lineNumber<=3){
-			if(cp_innode!=null){
-				cp_innode.unbind();// 不可点击
-			}
-			showSelectTag(cpid,text);
-			sendSelectCP(userId, cpid,text, property);
-		}else{
-			console.log("选中标签超过三行");
-			toast_popup("选中标签超过三行",2500);
+		if(cp_innode!=null){
+			cp_innode.unbind();// 不可点击
 		}
+		showSelectTag(cpid,text);
+		sendSelectCP(userId, cpid,text, property);
 	}
 }
 
@@ -1048,12 +1043,8 @@ function showSelectTag(cpid,text){
 	toast_popup("选中标签成功",2500);
 }
 
-// 判断选择过的标签有多少行，从而判断选择过标签的框的height
-var lineNumber=2;
-
 function addMyCp(cpid,text,selected_user_num){
 	// 2017.09.14 叶夷 为了性能测试将选择标签的显示控制在3行以内
-	if(lineNumber<=3){
 		var myTagContainer=$("#mytag-container");
 		var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
 		myTagContainer.append(myTag);
@@ -1089,21 +1080,7 @@ function addMyCp(cpid,text,selected_user_num){
 		// 装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
 		var myTagMarginTop=parseInt(myTag.css("margin-top"));
 	
-		// 通过添加标签按钮是否超过容器的高度，超过则将容器扩大一行
-		var topContainerHeight=$("#top-container").height();
-		// console.log("测试:"+$("#addtag").offset().top);
-		var addTagBottom=$("#addtag").offset().top+myTagHeight;
-		if((topContainerHeight-addTagBottom)<0){// 超过空间
-			++lineNumber;
-		}
-	
-		var myTagContainerHeight;
-		if(lineNumber<=2){// 小于两行
-			myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
-		}else{
-			myTagContainerHeight=(myTagHeight+myTagMarginTop)*lineNumber+10;
-		}
-	
+		var myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
 		// 我的标签框高度改变了之后影响其他部分的高度
 		myTagContainerHeightChange(myTagContainer,myTagContainerHeight);
 		
@@ -1123,7 +1100,13 @@ function addMyCp(cpid,text,selected_user_num){
 		}
 		myTagSelectNumber.hide();
 		//end
-	}
+		
+		//将图片放在我的标签框右边遮住滑动条
+		$("#background-rightbar-mytag").show();
+		$("#background-rightbar-mytag").css("height",myTagContainerHeight);
+		
+		//滚动条直接滑倒底部
+		myTagContainer.scrollTop( myTagContainer[0].scrollHeight );
 }
 /**
  * 我的标签框高度改变了之后影响其他部分的高度
@@ -1214,19 +1197,7 @@ function showUnSelectCP(data){
 		var myTagMarginTop=parseInt(addtag.css("margin-top"));
 		var myTagHeight=addtag.height();
 		var tagChangeHeight=myTagHeight+myTagMarginTop;
-		var myTagContainerHeight;
-		if(lineNumber<=2){// 小于两行
-			myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
-		}else{
-			if(addTagBottom1-addTagBottom2>=tagChangeHeight){// 已经少了一行
-				--lineNumber;
-			}
-			myTagContainerHeight=(myTagHeight+myTagMarginTop)*lineNumber+10;
-		}
 		var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
-		// 我的标签框高度改变了之后影响其他部分的高度
-		myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
-		
 		// 将取消选择的标签重新绑定点击事件
 		cp_node.click(function() {
 			//chooseCP(cp_node,cpid,text);
