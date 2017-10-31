@@ -64,7 +64,7 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 	
 	//设置聊天列表的各个大小
 	var heightForWindow=$("body").height();
-	var dialogHeight=(heightForWindow-63)*0.11;
+	var dialogHeight=(heightForWindow-63)*0.1;
 	dialog.css("height",dialogHeight);
 	
 	//聊天列表动态布局
@@ -81,23 +81,22 @@ function setDialogListNode(dialog,dialogContent){
 	var dialogWidth=parseInt(dialog.css("width"));//获得聊天列表单个的高度
 	
 	//头像css设置
-	var toUserImgHeight=dialogHeight*0.7;//图片的高度是聊天列表单个高度的80%
+	var toUserImgHeight=dialogWidth*0.1026;//图片的高度是聊天列表宽度的0.1026
 	var toUserImgMargin=(dialogHeight-toUserImgHeight)/2;
 	var toUserImg=dialog.find("img");
 	toUserImg.css("height",toUserImgHeight);
 	toUserImg.css("width",toUserImgHeight);
-	toUserImg.css("margin-left",toUserImgMargin*1.5);
+	toUserImg.css("margin-left",toUserImgMargin*2);
 	toUserImg.css("margin-top",toUserImgMargin);
 	
 	//文字css设置
-	var dialogContentWidth=dialogWidth-toUserImgHeight-toUserImgMargin*3.5;
-	var dialogContentLeft=toUserImgHeight+toUserImgMargin*2;
+	var dialogContentWidth=dialogWidth-toUserImgHeight-(toUserImgMargin*5);
 	dialogContent.css("height",toUserImgHeight);
 	dialogContent.css("width",dialogContentWidth);
 	dialogContent.css("margin-top",toUserImgMargin);
-	dialogContent.css("left",dialogContentLeft);
+	dialogContent.css("margin-left",toUserImgMargin);
 	
-	dialogContent.css("margin-left",toUserImgMargin/2);
+	//dialogContent.css("margin-left",toUserImgMargin/2);
 	
 	//设置文字内容的line-height
 	var dialogContentNameHeight=dialogContent.find(".dialog_content_name").css("height");

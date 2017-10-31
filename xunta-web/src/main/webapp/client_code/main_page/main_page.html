@@ -183,6 +183,8 @@
 			//requestMyCP();
 			
 			chat.init(userId,recevier);//注册用户，及用记接收消息的函数
+			
+			//console.log("测试："+window.screen.width+" "+window.screen.height);
 		}
 		
 		//发送消息之后服务器返回的消息
@@ -307,9 +309,10 @@
 			var userImgMarginTop=parseInt(headerContainerHeight)-parseInt(userImgHeight);
 			$(".userimg").css("margin-top", userImgMarginTop+"px");
 			//头像大小位置和用户昵称大小位置
-			var userimgHeight=userimg.height();
-			var userimgMarginLeft=(parseInt(userImgWidth)-parseInt(userimgHeight))/2;
+			var headerContainerWidth=$(".header-container").width();
+			var userimgHeight=headerContainerWidth*0.129;
 			userimg.css("width",userimgHeight);//图片高宽一致
+			userimg.css("height",userimgHeight);//图片高宽一致
 			
 			//2017.10.25 叶夷   用户昵称如果超过3个字则加上...
 			var userNameText=userName;

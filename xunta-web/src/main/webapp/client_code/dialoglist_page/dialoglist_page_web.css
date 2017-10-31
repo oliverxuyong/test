@@ -28,7 +28,7 @@ html, body {
 
 .dialog_content{
 	//height: 80%;
-	float: right;
+	float: left;
 	//width: 300px;
 	//margin:1.5%;
 	border-bottom: 1px solid #585858;
