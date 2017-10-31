@@ -38,7 +38,7 @@ function showDialogList(data){
 	}
 	
 	//将聊天列表的外框的height设置
-	var dialogListOut=$(".dialoglistOut");
+	var dialogListOut=$("#dialog_list");
 	var dialogListOutHeight=$("body").height()-64;
 	dialogListOut.css("height",dialogListOutHeight+"px");
 }
@@ -67,11 +67,6 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 	var dialogHeight=(heightForWindow-63)*0.11;
 	dialog.css("height",dialogHeight);
 	
-	//设置聊天列表的大小
-	var dialogListHeight=dialogList.height();
-	dialogListHeight=dialogListHeight+dialogHeight+25;
-	dialogList.css("height",dialogListHeight+"px");
-	
 	//聊天列表动态布局
 	setDialogListNode(dialog,dialogContent);
 	
@@ -95,7 +90,7 @@ function setDialogListNode(dialog,dialogContent){
 	toUserImg.css("margin-top",toUserImgMargin);
 	
 	//文字css设置
-	var dialogContentWidth=dialogWidth-toUserImgHeight-toUserImgMargin*3;
+	var dialogContentWidth=dialogWidth-toUserImgHeight-toUserImgMargin*3.5;
 	var dialogContentLeft=toUserImgHeight+toUserImgMargin*2;
 	dialogContent.css("height",toUserImgHeight);
 	dialogContent.css("width",dialogContentWidth);
