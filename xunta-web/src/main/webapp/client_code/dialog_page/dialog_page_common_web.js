@@ -133,6 +133,7 @@ function showSameSelectCp(data){
 		var text=data.msg[i].text;
 		appendSameSelectCp(cpid,text);
 	}
+	sameSelectCpsWidth=0;
 }
 
 //选择过标签的width一个个相加，超过选择过标签的框则另起一行
