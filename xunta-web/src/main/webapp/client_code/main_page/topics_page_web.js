@@ -69,6 +69,10 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	$("#enterdialogList").show();
 	//推荐标签遮住滑动条显示
 	$("#background-rightbar").show();
+	//调整滚动条宽度
+	var scollWidth=document.getElementById("cp-show").offsetWidth-document.getElementById("cp-show").scrollWidth
+	$("#background-rightbar-mytag").css("width",scollWidth);
+	$("#background-rightbar").css("width",scollWidth);
 }
 
 //2017.10.12 叶夷   标签的完整文字内容,cpid为键，文字为值
@@ -616,7 +620,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	var containerWidth = cp_container.width();// 装cp容器的宽度，即扫描轨迹的x轴的总数
 
 	var top = -1;// 标签的top,用来和不同轨迹对比，将数值最大的赋值给top,可以知道标签可上升的最大高度
-	var left = 20;// 得到标签可上升的最大高度时left位置
+	var left = 15;// 得到标签可上升的最大高度时left位置
 
 	// 1.遍历装cp容器的宽度,每次+1px
 	// start是要上升的cp的left的值，所以终点必须空出上升cp的width
@@ -624,7 +628,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	if(startLength<cpWidth){
 		startLength=cpWidth;
 	}
-	for (var start = 20; start <= containerWidth - startLength-20; start++) {
+	for (var start = 15; start <= containerWidth - startLength-20; start++) {
 		// 2.从开始获得上升cp的圆心坐标和半径，以cp_container的左下点为(0,0)
 		var cpRadius = cpWidth / 2;// 半径就是要上升的cp的宽除以2
 		var cpX = start + cpRadius;// 一开始圆心的x为start+cpRadius
