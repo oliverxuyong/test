@@ -96,13 +96,13 @@ function setDialogListNode(d,dialog,dialogContent){
 	toUserImg.css("height",toUserImgHeight);
 	toUserImg.css("width",toUserImgHeight);
 	toUserImg.css("margin-left",toUserImgMargin*2);
-	toUserImg.css("margin-top",toUserImgMargin);
+	//toUserImg.css("margin-top",toUserImgMargin);
 	
 	//文字css设置
 	var dialogContentWidth=dialogWidth-toUserImgHeight-(toUserImgMargin*5);
 	dialogContent.css("height",dialogWidth*0.1026);
 	dialogContent.css("width",dialogContentWidth);
-	dialogContent.css("margin-top",toUserImgMargin);
+	//dialogContent.css("margin-top",toUserImgMargin);
 	dialogContent.css("margin-left",toUserImgMargin);
 	
 	//dialogContent.css("margin-left",toUserImgMargin/2);

@@ -1662,7 +1662,7 @@ function muAddImg(i,matchedUserArr,isFirst){
 		var muUserName=matchedUserArr[i].username;
 		
 		var muNode=$("<div></div>").attr("class","mu").attr("id","mu"+muId);
-		var muNodeImg=$("<img src='"+muImg+"'/>");
+		var muNodeImg=$("<img src="+muImg+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
 		muNode.append(muNodeImg);
 		$("#header-container").append(muNode);
 		
