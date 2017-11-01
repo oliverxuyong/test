@@ -8,8 +8,8 @@ function backBtn(){
 	//聊天列表未读数去除
 	exec('dialoglist_page',"changeUnreadColor()");
 	
-	//openWin('main_page', 'main_page/main_page.html', '');
-	closeWin('dialoglist_page');
+	openWin('main_page', 'main_page/main_page.html', '');
+	//closeWin('dialoglist_page');
 }
 
 //关闭当前页，返回主界面   2016/12/25 deng
