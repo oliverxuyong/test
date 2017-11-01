@@ -1080,7 +1080,7 @@ function addMyCp(cpid,text,selected_user_num){
 		// 装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
 		var myTagMarginTop=parseInt(myTag.css("margin-top"));
 	
-		var myTagContainerHeight=myTagHeight*2+myTagMarginTop*5;
+		var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
 		// 我的标签框高度改变了之后影响其他部分的高度
 		myTagContainerHeightChange(myTagContainer,myTagContainerHeight);
 		
@@ -1197,7 +1197,7 @@ function showUnSelectCP(data){
 		var myTagMarginTop=parseInt(addtag.css("margin-top"));
 		var myTagHeight=addtag.height();
 		var tagChangeHeight=myTagHeight+myTagMarginTop;
-		var myTagContainerHeight=myTagHeight*2+myTagMarginTop*5;
+		var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
 		var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
 		// 我的标签框高度改变了之后影响其他部分的高度
 		myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
