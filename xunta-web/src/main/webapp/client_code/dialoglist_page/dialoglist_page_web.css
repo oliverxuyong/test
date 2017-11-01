@@ -14,7 +14,7 @@ html, body {
 	//border-bottom:1px solid #525252;
 	//margin-top: 10px;
     padding-bottom: 10px;
-	//position:absolute;
+	position:absolute;
 }
 
 .dialog >img{

@@ -45,7 +45,7 @@ width:100%;
 }
 
 #background-rightbar-mytag{
-	float:right;
+	position:absolute;
 	right:0;
 	//bottom:0;
 	height:100%;

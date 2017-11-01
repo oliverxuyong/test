@@ -26,6 +26,10 @@ function showDialogList(data){
 		allDialog.eq(i).remove();
 	}
 	
+	//将聊天列表的外框的height设置
+	var dialogListOut=$("#dialog_list");
+	dialogListOut.css("top",64);
+	
 	for(var d in data){
 		var createTime=data[d].create_time;//最新回复时间
 		var ifread=data[d].ifread;//是否有未读
@@ -34,7 +38,7 @@ function showDialogList(data){
 		var toUserImgUrl=data[d].to_user_imgUrl;
 		var toUserName=data[d].to_user_name;
 		
-		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
+		appendDialogElement(d,createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
 	}
 	//从首页传过来的聊天列表的未读信息
 	if(unreadObjList.length>0){
@@ -43,13 +47,11 @@ function showDialogList(data){
 		}
 	}
 	
-	//将聊天列表的外框的height设置
-	var dialogListOut=$("#dialog_list");
 	var dialogListOutHeight=$("body").height()-64;
 	dialogListOut.css("height",dialogListOutHeight+"px");
 }
 
-function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
+function appendDialogElement(d,createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
 	var dialog=$("<div></div>").attr("class", "dialog cursor").attr("id", toUserId);
 	//onerror是实现获得图片失败的时候放的默认图片,只要有一个图片路径就行
 	var toUserImg="<img src="+toUserImgUrl+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>";
@@ -75,7 +77,7 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 	dialog.css("height",dialogHeight);
 	
 	//聊天列表动态布局
-	setDialogListNode(dialog,dialogContent);
+	setDialogListNode(d,dialog,dialogContent);
 	
 	dialog.click(function() {//绑定点击事件.
 		enterDialogPage(toUserId,toUserName);
@@ -83,10 +85,10 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 }
 
 //聊天列表动态布局
-function setDialogListNode(dialog,dialogContent){
+function setDialogListNode(d,dialog,dialogContent){
 	var dialogHeight=parseInt(dialog.css("height"));//获得聊天列表单个的高度
 	var dialogWidth=parseInt(dialog.css("width"));//获得聊天列表单个的高度
-	
+	dialog.css("top",(dialogHeight*d+10));
 	//头像css设置
 	var toUserImgHeight=dialogWidth*0.0943;//图片的高度是聊天列表宽度的0.1026
 	var toUserImgMargin=(dialogHeight-toUserImgHeight)/2;
@@ -197,10 +199,8 @@ function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 		var dialogImgMargin=parseInt(dialogImg.css("margin"));
 		
 		var unreadLeft=dialogImgWidth+dialogImgMargin;
-		unreadNumNode.css("margin-left",unreadLeft+"px");
-		//unreadNumNode.css("top",dialogImgMargin/2+"px");
-		
-		
+		unreadNumNode.css("left",unreadLeft+"px");
+		unreadNumNode.css("margin-top",dialogImgMargin/2+"px");
 	} else {//如果已有未读消息,则加上1:
 		unreadNum  = unreadParent.find('.unread').text();
 		unreadNum++;
