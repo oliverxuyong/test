@@ -88,7 +88,7 @@ function setDialogListNode(dialog,dialogContent){
 	var dialogWidth=parseInt(dialog.css("width"));//获得聊天列表单个的高度
 	
 	//头像css设置
-	var toUserImgHeight=dialogWidth*0.1026;//图片的高度是聊天列表宽度的0.1026
+	var toUserImgHeight=dialogWidth*0.0943;//图片的高度是聊天列表宽度的0.1026
 	var toUserImgMargin=(dialogHeight-toUserImgHeight)/2;
 	var toUserImg=dialog.find("img");
 	toUserImg.css("height",toUserImgHeight);
@@ -98,7 +98,7 @@ function setDialogListNode(dialog,dialogContent){
 	
 	//文字css设置
 	var dialogContentWidth=dialogWidth-toUserImgHeight-(toUserImgMargin*5);
-	dialogContent.css("height",toUserImgHeight);
+	dialogContent.css("height",dialogWidth*0.1026);
 	dialogContent.css("width",dialogContentWidth);
 	dialogContent.css("margin-top",toUserImgMargin);
 	dialogContent.css("margin-left",toUserImgMargin);
