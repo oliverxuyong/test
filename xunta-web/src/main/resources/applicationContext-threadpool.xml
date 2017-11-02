@@ -17,9 +17,9 @@
     <!-- 线程池 -->
     <bean id="threadPoolExecutor" class ="so.xunta.websocket.utils.WolfThreadExecutor">
         <!-- 核心线程数，默认为1 -->
-        <constructor-arg index="0" value="3"/>
+        <constructor-arg index="0" value="10"/>
         <!-- 最大线程数，默认为Integer.MAX_VALUE -->
-        <constructor-arg index="1" value="5"/>
+        <constructor-arg index="1" value="50"/>
         <!-- 线程池维护线程所允许的空闲时间，默认为60s -->
         <constructor-arg index="2" value="300"/>
         <constructor-arg index="3" value="SECONDS" type="java.util.concurrent.TimeUnit"  />

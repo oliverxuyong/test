@@ -46,14 +46,22 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 
 	
 	@Override
-	public void recordStatusBeforeUpdateTask(String uid,int updateType) {
+	public Boolean recordStatusBeforeUpdateTask(String uid,int updateType) {
 		if(updateType==RecommendService.SELECT_CP){
 			List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
-			RecommendPushUtil.getInstance().recordUserRecommendCps(uid, recommend_cps_previous);
+			Boolean ifRecordRecommendCpSuccess = RecommendPushUtil.getInstance().recordUserRecommendCps(uid, recommend_cps_previous);
+			if(!ifRecordRecommendCpSuccess){
+				return false;
+			}
 		}
 		List<String> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);
-		RecommendPushUtil.getInstance().recordUserMatchedUids(uid, matched_uids_previous);
-
+		Boolean ifRecordMatchedUserSuccess = RecommendPushUtil.getInstance().recordUserMatchedUids(uid, matched_uids_previous);
+		if(ifRecordMatchedUserSuccess){
+			return true;
+		}else{
+			return false;
+		}
+		
 	}
 
 	/**
@@ -74,6 +82,11 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 		return recommendPushDTO;
 	}
 
+	@Override
+	public void clearUserStatus(String uid) {
+		RecommendPushUtil.getInstance().removeUserData(uid);
+	}
+	
 	private void generatePushMatchedUsers(String uid, RecommendPushDTO recommendPushDTO){
 		List<String> matched_uids_previous = RecommendPushUtil.getInstance().getUserMatchedUids(uid);
 		List<String> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
@@ -124,10 +137,10 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 				pushMatchedUser.setImg_src(u.getImgUrl());
 				pushMatchedUser.setNew_rank(rank);
 	
-				logger.info("匹配用户: "+u.getName()+" rank:"+rank);
 				recommendPushDTO.addPushMatchedUser(pushMatchedUser);
 				rank++;
 			}
+			logger.info("产生匹配用户："+matched_uids_after.toString());
 		}
 	}	
 	

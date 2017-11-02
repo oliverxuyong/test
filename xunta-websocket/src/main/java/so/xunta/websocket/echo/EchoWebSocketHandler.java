@@ -2,9 +2,8 @@ package so.xunta.websocket.echo;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.PostConstruct;
 
@@ -60,14 +59,14 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		return users;
 	}
 
-	public static void setUsers(ArrayList<WebSocketSession> users) {
+	public static void setUsers(CopyOnWriteArrayList<WebSocketSession> users) {
 		EchoWebSocketHandler.users = users;
 	}
 
 	private static boolean isRunning = false;
 
 	static {
-		users = Collections.synchronizedList(new ArrayList<WebSocketSession>());
+		users = new CopyOnWriteArrayList<WebSocketSession>();
 		logger = Logger.getRootLogger();
 	}
 

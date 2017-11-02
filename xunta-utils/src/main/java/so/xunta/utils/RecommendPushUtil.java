@@ -15,12 +15,22 @@ public class RecommendPushUtil {
 		return recommendPushUtil;
 	}
 	
-	public void recordUserMatchedUids(String uid, List<String> matchedUids){
-		userPreviousMatchedUidsMap.put(uid, matchedUids);
+	public Boolean recordUserMatchedUids(String uid, List<String> matchedUids){
+		if(!userPreviousMatchedUidsMap.containsKey(uid)){
+			userPreviousMatchedUidsMap.put(uid, matchedUids);
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
-	public void recordUserRecommendCps(String uid,List<String> recommendCpids){
-		userPreviousRecommendCpsMap.put(uid, recommendCpids);
+	public Boolean recordUserRecommendCps(String uid,List<String> recommendCpids){
+		if(!userPreviousRecommendCpsMap.containsKey(uid)){
+			userPreviousRecommendCpsMap.put(uid, recommendCpids);
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	public List<String> getUserRecommendCps(String uid){
@@ -33,5 +43,10 @@ public class RecommendPushUtil {
 		List<String> matchedUids = userPreviousMatchedUidsMap.get(uid);
 		userPreviousMatchedUidsMap.remove(uid);
 		return matchedUids;
+	}
+	
+	public void removeUserData(String uid){
+		userPreviousRecommendCpsMap.remove(uid);
+		userPreviousMatchedUidsMap.remove(uid);
 	}
 }

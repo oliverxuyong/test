@@ -68,19 +68,33 @@ public class CpOperationPushTask implements Runnable{
 		/*Step1：执行记录任务，返回和我相关的用户*/
 		Set<String> pendingPushUids = recommendService.recordU2UChange(userId,cpId,property,selectType);
 		
-		/*Step2：获得在线的匹配用户列表，触发他们的更新任务*/
-		pendingPushUids.add(userId);
+		/*Step2: 触发自己的更新任务*/
+		updateAndPush(userId);
+		
+		/*Step3：获得在线的匹配用户列表，触发他们的更新任务*/
+		pendingPushUids.remove(userId);
 		filterOffLineUsers(pendingPushUids);
 		for(String uid:pendingPushUids){
-			WebSocketSession userSession = EchoWebSocketHandler.getUserById(Long.valueOf(uid));
-			if(userSession==null){
-				continue;
-			}
-			
-			/*更新前记录一次状态*/
-			recommendPushService.recordStatusBeforeUpdateTask(uid,selectType);
-			Boolean is_executed = recommendService.updateU2C(uid);
-			if(is_executed){
+			updateAndPush(uid);
+		}
+	
+		/*Step4： 为其他当前正在看这个CP的用户推送数字的变化*/
+		pushCpHeatChange();
+		
+		logger.info("==============================CpOperationPushTask 完成！===================================");
+	}
+	
+	private void updateAndPush(String uid){
+		WebSocketSession userSession = EchoWebSocketHandler.getUserById(Long.valueOf(uid));
+		if(userSession==null){
+			return;
+		}
+		
+		/*更新前记录一次状态*/
+		Boolean ifLastPushComlepted = recommendPushService.recordStatusBeforeUpdateTask(uid,selectType);
+		if(ifLastPushComlepted){
+			Boolean isExecuted = recommendService.updateU2C(uid);
+			if(isExecuted){
 				/*更新后执行一次和原先状态比较，有一定变化则产生推送*/
 				RecommendPushDTO recommendPushDTO = recommendPushService.generatePushDataAfterUpdateTask(uid,selectType);
 				List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
@@ -94,13 +108,12 @@ public class CpOperationPushTask implements Runnable{
 					logger.info("给id为”"+uid+"“ 的用户产生了CP推送,推送了 "+pushRecommendCpDTOs.size()+" 个");
 					pushRecommendCps(pushRecommendCpDTOs,userSession);
 				}
+			}else{
+				recommendPushService.clearUserStatus(uid);
 			}
+		}else{
+			logger.info("用户:"+uid+" 之前的推送任务还未结束，本次任务放弃！");
 		}
-	
-		/*Step3： 为其他当前正在看这个CP的用户推送数字的变化*/
-		pushCpHeatChange();
-		
-		logger.info("==============================CpOperationPushTask 完成！===================================");
 	}
 	
 	private void filterOffLineUsers(Set<String> userids) {
