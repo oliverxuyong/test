@@ -2095,6 +2095,11 @@ function searchTag(suggestWrap,data){
 function response_user_selected_cp(datas){
 	var myTagContainer=$("#mytag-container");
 	myTagContainer.show();
+	var backgroundRightbarMytagWidth=$("#background-rightbar-mytag").width();
+	myTagContainer.css("padding-right",backgroundRightbarMytagWidth);
+	//设置我的标签框width
+	var myTagContainerWidth=$("body").width()-backgroundRightbarMytagWidth-10;
+	myTagContainer.css("width",myTagContainerWidth);
 	var cp_arr=datas.cp_arr;
 	for(var i in cp_arr){
 		var cpid=cp_arr[i].cpid;

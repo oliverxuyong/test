@@ -238,7 +238,7 @@ width:100%;
 
 /*我的标签容器*/
 .mytag-container{
-	//width: 98%;/*这个百分比与下面两个padding百分比总合为1*/
+	width: 100%;/*这个百分比与下面两个padding百分比总合为1*/
 	padding-left:10px;
 	padding-right:20px;
 	height: 30%;
