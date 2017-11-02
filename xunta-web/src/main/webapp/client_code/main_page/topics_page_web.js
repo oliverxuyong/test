@@ -155,12 +155,12 @@ function appendElement(i, cpid,cp) {
 	cpAnimationLocation(cp_container,cpNodeByDistance,cpValue);
 }
 
-var minCPSize = $("body").width()/8;// 最小内圆的大小
+var minCPSize = $("body").width()/10;// 最小内圆的大小
 var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 12;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
 var maxCPTextNumber = 9;// cp文字最大的数量
-var maxselectTagNum = 50;// 影响标签大小的选择人数最小的数量
+var maxselectTagNum = 25;// 影响标签大小的选择人数最小的数量
 var minselectTagNum = 1;// 影响标签大小的选择人数最大的数量
 /**叶夷  2017.10.10  控制文字大小和内圆大小的方法*/
 function controlSize(selectTagNum,maxSize,minSize){
