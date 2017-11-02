@@ -1341,7 +1341,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			muNode.css("left",muNodeLeft);*/
 			
 			setMUPosition(i,matchedUserArr);//位置计算好
-			if(intersect){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
+			if(intersect && startMatchUserCount<=100){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
 				console.log("有一个圆会跟别的圆相交，重新再计算");
 				muNowData.splice(0, muNowData.length);
 				//$(".mu").find("img").remove();
@@ -1534,6 +1534,7 @@ function getMuChangeData(matchedUserArr){
 
 var intersect=true;//判断是否跟所有的圆都不相交，true为相交，false为不相交
 var matchUserContainerXStart,matchUserContainerXEnd,matchUserContainerYStart,matchUserContainerYEnd;//匹配人头像的范围
+var startMatchUserCount=0;//一开始循环的次数
 /**
  * 叶夷 2017.09.14 匹配人头像静态情况下的位置放置 1.随机找到一个(x,y)点，这个点必须在装匹配人列表的范围
  * 2.然后和存在的所有匹配人头像对比是否相交 3.如果相交则x++,x到达范围则y++,直到找到一个不会相交的点
@@ -1549,14 +1550,7 @@ function setMUPosition(i,matchedUserArr){
 	var headerContainer=$("#header-container");
 	
 	//定义radius
-	var radius;
-	if(i==0){
-		radius=headerContainer.width()/8/2;
-	}else if(i<10){
-		radius=muNowData[i-1].radius-1.5;
-	}else{
-		radius=muNowData[i-1].radius-1;
-	}
+	var radius=setMatchUsersSize(i);
 	
 	setBorder(headerContainer,radius);
 	// 1.1 在随机中设置几个特殊情况
@@ -1607,11 +1601,50 @@ function setMUPosition(i,matchedUserArr){
 		}
 	}
 	
+	++startMatchUserCount;
 	// 4.获得了不会相交的点之后,计算出top和left值
 	/*var muNodeTop=y-radius;
 	var muNodeLeft=x-radius;
 	muNode.css("top",muNodeTop);
 	muNode.css("left",muNodeLeft);*/
+}
+
+/**2017.11.02  叶夷  设置匹配圆的大小*/
+function setMatchUsersSize(i){
+	var radius;
+	if(i==0){
+		var userImageRadius=($("#topic_img").width()+10)/2;
+		radius=userImageRadius;
+	}else if(i==1){
+		radius=muNowData[i-1].radius*5/6;
+	}else if(i==2){
+		radius=muNowData[i-1].radius*5/6;
+	}else if(i==3){
+		radius=muNowData[i-1].radius*5/6;
+	}else if(i==4){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==5){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==6){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==7){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==8){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==9){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==10){
+		radius=muNowData[i-1].radius;
+	}else if(i==11){
+		radius=muNowData[i-1].radius;
+	}else if(i==12){
+		radius=muNowData[i-1].radius;
+	}else if(i==13){
+		radius=muNowData[i-1].radius;
+	}else if(i==14){
+		radius=muNowData[i-1].radius;
+	}
+	return radius;
 }
 
 function setBorder(headerContainer,radius){
@@ -1687,7 +1720,7 @@ function muAddImg(i,matchedUserArr,isFirst){
 		muNode.css("width",muWidth);
 		muNode.css("height",muWidth);
 		
-		var muImgWidth=muWidth-10;
+		var muImgWidth=muWidth-15;
 		var muImgMargin=(muWidth-muImgWidth)/2;
 		muNodeImg.css("margin-top",muImgMargin);
 		muNodeImg.css("margin-left",muImgMargin);
