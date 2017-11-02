@@ -22,16 +22,16 @@
     <body>
 		<!--div id="notification">通知栏</div-->
 		<div id="header">
-			<div id="title">
-			<div style="z-index:16;">LKJ;LKJ</div>
-			</div>
+			<span id="title">
+			LKJ;LKJ
+			</span>
 <div id="goback" onclick="backBtn()"><img src="../image/goback6.png" /></div>
 				
 		</div>
 		
 		<!-- 共同选择过的cp -->
 		<div class="selectCp-container" id="selectCp-container">
-			<div style="text-align:center;color:#f9f8f9;height:20px;line-height:20px;">共同选择的标签</div>
+			<div style="text-align:center;color:#5e5e5e;height:20px;line-height:20px;font-size:14px;">Ta和我的共同心语</div>
 		</div>
 		
 		<div id="dialog_box">
@@ -95,7 +95,7 @@
         
         var toUserId;//发送给的人
 		var toUserName;	//直接上屏用得着.
-        //var toUserImage;	//直接上屏时用得着.
+        var toUserImage;	//直接上屏时用得着.
 
 		var _tmpPageId;
 		var _topicPageSign;
@@ -128,7 +128,7 @@
     		"toUserImage" : toUserImage, */
     		toUserId = Parameter.toUserId;
     		toUserName = Parameter.toUserName;
-    		//toUserImage = Parameter.toUserImage;
+    		toUserImage = Parameter.toUserImage;
     		
             userAgent = Parameter.userAgent;
 

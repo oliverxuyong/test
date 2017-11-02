@@ -145,7 +145,20 @@ function  getHistoryMsg(userId,toUserId,firstMsgId){
  *	若标题字数过长则用省略号代替  9.14 FANG
  *  */
 function showTitle() {
-	$('#title').text('[ ' + cutStringIfTooLong(toUserName,14) + ' ]')
+	var titleTextContent=cutStringIfTooLong(toUserName,14);
+	//在聊天页title上加上头像
+	var userimg=$("<img >").attr("src",toUserImage);
+	$('#header').append(userimg);
+	var titleText=$('#title');
+	var titleTextWidth=titleText.height();
+	userimg.css("width",titleTextWidth);
+	userimg.css("height",titleTextWidth);
+	var titleTextTop=parseInt(titleText.css("margin-top"));
+	userimg.css("top",titleTextTop);
+	var titleTextLeft=($('#header').width()-parseInt(titleText.css("font-size"))*titleTextContent.length)/2-3-titleTextWidth;
+	userimg.css("left",titleTextLeft);
+	
+	titleText.text(titleTextContent);
 }
 
 /**

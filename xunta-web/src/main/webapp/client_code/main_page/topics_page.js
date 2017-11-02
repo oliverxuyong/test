@@ -105,13 +105,8 @@ function searchToAddTag(){
 	}else if(strLength<=0){
 		toast("标签内容不能为空");
 	}else{
-		if(lineNumber<=3){
-			var paraStr = userId + "','" + addCPID+"','"+text;
-			execRoot("add_self_cp('"+ paraStr +"')");
-		}else{
-			console.log("选中标签超过三行");
-			toast_popup("选中标签超过三行",2500);
-		}
+		var paraStr = userId + "','" + addCPID+"','"+text;
+		execRoot("add_self_cp('"+ paraStr +"')");
 	}
 }
 
@@ -165,11 +160,11 @@ function return_sendIfSelectedCP(jsonObj){
 }
 
 //进入聊天页，别人的uid和我的uid都需要
-function enterDialogPage(toUserId,toUserName) {
+function enterDialogPage(toUserId,toUserName,muImg) {
 	var pageParam = {
 		"toUserId" : toUserId,
 		"toUserName" : toUserName,// 这里是为了测试
-		// "toUserImage" : "",
+		"toUserImage" : muImg,
 		"userid" : userId,
 		"userName" : userName,
 		"userImage" : userImg,

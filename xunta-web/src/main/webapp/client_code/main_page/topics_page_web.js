@@ -64,6 +64,15 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	// 推荐标签动画开始之后再将"请求下一批"的按钮显现
 	$("#request_cp").show();
 	$("#request_cp").html("<div>+</div><div>更多标签</div>");
+	
+	//进入聊天列表显示
+	$("#enterdialogList").show();
+	//推荐标签遮住滑动条显示
+	$("#background-rightbar").show();
+	//调整滚动条宽度
+	var scollWidth=document.getElementById("cp-show").offsetWidth-document.getElementById("cp-show").scrollWidth
+	$("#background-rightbar-mytag").css("width",scollWidth);
+	$("#background-rightbar").css("width",scollWidth);
 }
 
 //2017.10.12 叶夷   标签的完整文字内容,cpid为键，文字为值
@@ -144,7 +153,7 @@ function appendElement(i, cpid,cp) {
 	cpAnimationLocation(cp_container,cpNodeByDistance,cpValue);
 }
 
-var minCPSize = 50;// 最小内圆的大小
+var minCPSize = $("body").width()/8;// 最小内圆的大小
 var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 12;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
@@ -611,7 +620,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	var containerWidth = cp_container.width();// 装cp容器的宽度，即扫描轨迹的x轴的总数
 
 	var top = -1;// 标签的top,用来和不同轨迹对比，将数值最大的赋值给top,可以知道标签可上升的最大高度
-	var left = 20;// 得到标签可上升的最大高度时left位置
+	var left = 15;// 得到标签可上升的最大高度时left位置
 
 	// 1.遍历装cp容器的宽度,每次+1px
 	// start是要上升的cp的left的值，所以终点必须空出上升cp的width
@@ -619,7 +628,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	if(startLength<cpWidth){
 		startLength=cpWidth;
 	}
-	for (var start = 20; start <= containerWidth - startLength-20; start++) {
+	for (var start = 15; start <= containerWidth - startLength-20; start++) {
 		// 2.从开始获得上升cp的圆心坐标和半径，以cp_container的左下点为(0,0)
 		var cpRadius = cpWidth / 2;// 半径就是要上升的cp的宽除以2
 		var cpX = start + cpRadius;// 一开始圆心的x为start+cpRadius
@@ -996,16 +1005,11 @@ function chooseCP(cp_innode,cpid,text,property){
 	if(property=="N"){
 		sendSelectCP(userId, cpid,text, property);
 	}else{
-		if(lineNumber<=3){
 			if(cp_innode!=null){
 				cp_innode.unbind();// 不可点击
 			}
 			showSelectTag(cpid,text);
 			sendSelectCP(userId, cpid,text, property);
-		}else{
-			console.log("选中标签超过三行");
-			toast_popup("选中标签超过三行",2500);
-		}
 	}
 }
 
@@ -1043,12 +1047,8 @@ function showSelectTag(cpid,text){
 	toast_popup("选中标签成功",2500);
 }
 
-// 判断选择过的标签有多少行，从而判断选择过标签的框的height
-var lineNumber=2;
-
 function addMyCp(cpid,text,selected_user_num){
 	// 2017.09.14 叶夷 为了性能测试将选择标签的显示控制在3行以内
-	if(lineNumber<=3){
 		var myTagContainer=$("#mytag-container");
 		var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
 		myTagContainer.append(myTag);
@@ -1084,21 +1084,7 @@ function addMyCp(cpid,text,selected_user_num){
 		// 装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
 		var myTagMarginTop=parseInt(myTag.css("margin-top"));
 	
-		// 通过添加标签按钮是否超过容器的高度，超过则将容器扩大一行
-		var topContainerHeight=$("#top-container").height();
-		// console.log("测试:"+$("#addtag").offset().top);
-		var addTagBottom=$("#addtag").offset().top+myTagHeight;
-		if((topContainerHeight-addTagBottom)<0){// 超过空间
-			++lineNumber;
-		}
-	
-		var myTagContainerHeight;
-		if(lineNumber<=2){// 小于两行
-			myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
-		}else{
-			myTagContainerHeight=(myTagHeight+myTagMarginTop)*lineNumber+10;
-		}
-	
+		var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
 		// 我的标签框高度改变了之后影响其他部分的高度
 		myTagContainerHeightChange(myTagContainer,myTagContainerHeight);
 		
@@ -1118,7 +1104,13 @@ function addMyCp(cpid,text,selected_user_num){
 		}
 		myTagSelectNumber.hide();
 		//end
-	}
+		
+		//将图片放在我的标签框右边遮住滑动条
+		$("#background-rightbar-mytag").show();
+		$("#background-rightbar-mytag").css("height",myTagContainerHeight);
+		
+		//滚动条直接滑倒底部
+		myTagContainer.scrollTop( myTagContainer[0].scrollHeight );
 }
 /**
  * 我的标签框高度改变了之后影响其他部分的高度
@@ -1209,15 +1201,7 @@ function showUnSelectCP(data){
 		var myTagMarginTop=parseInt(addtag.css("margin-top"));
 		var myTagHeight=addtag.height();
 		var tagChangeHeight=myTagHeight+myTagMarginTop;
-		var myTagContainerHeight;
-		if(lineNumber<=2){// 小于两行
-			myTagContainerHeight=myTagHeight*2+myTagMarginTop*3;
-		}else{
-			if(addTagBottom1-addTagBottom2>=tagChangeHeight){// 已经少了一行
-				--lineNumber;
-			}
-			myTagContainerHeight=(myTagHeight+myTagMarginTop)*lineNumber+10;
-		}
+		var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
 		var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
 		// 我的标签框高度改变了之后影响其他部分的高度
 		myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
@@ -1357,7 +1341,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			muNode.css("left",muNodeLeft);*/
 			
 			setMUPosition(i,matchedUserArr);//位置计算好
-			if(intersect){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
+			if(intersect && startMatchUserCount<=100){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
 				console.log("有一个圆会跟别的圆相交，重新再计算");
 				muNowData.splice(0, muNowData.length);
 				//$(".mu").find("img").remove();
@@ -1550,6 +1534,7 @@ function getMuChangeData(matchedUserArr){
 
 var intersect=true;//判断是否跟所有的圆都不相交，true为相交，false为不相交
 var matchUserContainerXStart,matchUserContainerXEnd,matchUserContainerYStart,matchUserContainerYEnd;//匹配人头像的范围
+var startMatchUserCount=0;//一开始循环的次数
 /**
  * 叶夷 2017.09.14 匹配人头像静态情况下的位置放置 1.随机找到一个(x,y)点，这个点必须在装匹配人列表的范围
  * 2.然后和存在的所有匹配人头像对比是否相交 3.如果相交则x++,x到达范围则y++,直到找到一个不会相交的点
@@ -1565,14 +1550,7 @@ function setMUPosition(i,matchedUserArr){
 	var headerContainer=$("#header-container");
 	
 	//定义radius
-	var radius;
-	if(i==0){
-		radius=headerContainer.width()/8/2;
-	}else if(i<10){
-		radius=muNowData[i-1].radius-1.5;
-	}else{
-		radius=muNowData[i-1].radius-1;
-	}
+	var radius=setMatchUsersSize(i);
 	
 	setBorder(headerContainer,radius);
 	// 1.1 在随机中设置几个特殊情况
@@ -1623,11 +1601,50 @@ function setMUPosition(i,matchedUserArr){
 		}
 	}
 	
+	++startMatchUserCount;
 	// 4.获得了不会相交的点之后,计算出top和left值
 	/*var muNodeTop=y-radius;
 	var muNodeLeft=x-radius;
 	muNode.css("top",muNodeTop);
 	muNode.css("left",muNodeLeft);*/
+}
+
+/**2017.11.02  叶夷  设置匹配圆的大小*/
+function setMatchUsersSize(i){
+	var radius;
+	if(i==0){
+		var userImageRadius=($("#topic_img").width()+10)/2;
+		radius=userImageRadius;
+	}else if(i==1){
+		radius=muNowData[i-1].radius*5/6;
+	}else if(i==2){
+		radius=muNowData[i-1].radius*5/6;
+	}else if(i==3){
+		radius=muNowData[i-1].radius*5/6;
+	}else if(i==4){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==5){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==6){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==7){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==8){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==9){
+		radius=muNowData[i-1].radius*9/10;
+	}else if(i==10){
+		radius=muNowData[i-1].radius;
+	}else if(i==11){
+		radius=muNowData[i-1].radius;
+	}else if(i==12){
+		radius=muNowData[i-1].radius;
+	}else if(i==13){
+		radius=muNowData[i-1].radius;
+	}else if(i==14){
+		radius=muNowData[i-1].radius;
+	}
+	return radius;
 }
 
 function setBorder(headerContainer,radius){
@@ -1682,7 +1699,7 @@ function muAddImg(i,matchedUserArr,isFirst){
 		var muUserName=matchedUserArr[i].username;
 		
 		var muNode=$("<div></div>").attr("class","mu").attr("id","mu"+muId);
-		var muNodeImg=$("<img src='"+muImg+"'/>");
+		var muNodeImg=$("<img src="+muImg+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
 		muNode.append(muNodeImg);
 		$("#header-container").append(muNode);
 		
@@ -1703,7 +1720,7 @@ function muAddImg(i,matchedUserArr,isFirst){
 		muNode.css("width",muWidth);
 		muNode.css("height",muWidth);
 		
-		var muImgWidth=muWidth-10;
+		var muImgWidth=muWidth-15;
 		var muImgMargin=(muWidth-muImgWidth)/2;
 		muNodeImg.css("margin-top",muImgMargin);
 		muNodeImg.css("margin-left",muImgMargin);
@@ -1712,7 +1729,7 @@ function muAddImg(i,matchedUserArr,isFirst){
 		// 点击事件
 		muNode.click(function() {
 			// 进入聊天页
-			enterDialogPage(muId,muUserName);
+			enterDialogPage(muId,muUserName,muImg);
 		});
 	}
 }
@@ -2110,6 +2127,12 @@ function searchTag(suggestWrap,data){
 
 function response_user_selected_cp(datas){
 	var myTagContainer=$("#mytag-container");
+	myTagContainer.show();
+	var backgroundRightbarMytagWidth=$("#background-rightbar-mytag").width();
+	myTagContainer.css("padding-right",backgroundRightbarMytagWidth);
+	//设置我的标签框width
+	var myTagContainerWidth=$("body").width()-backgroundRightbarMytagWidth-10;
+	myTagContainer.css("width",myTagContainerWidth);
 	var cp_arr=datas.cp_arr;
 	for(var i in cp_arr){
 		var cpid=cp_arr[i].cpid;

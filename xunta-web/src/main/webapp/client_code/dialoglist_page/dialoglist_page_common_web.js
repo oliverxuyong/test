@@ -8,8 +8,8 @@ function backBtn(){
 	//聊天列表未读数去除
 	exec('dialoglist_page',"changeUnreadColor()");
 	
-	//openWin('main_page', 'main_page/main_page.html', '');
-	closeWin('dialoglist_page');
+	openWin('main_page', 'main_page/main_page.html', '');
+	//closeWin('dialoglist_page');
 }
 
 //关闭当前页，返回主界面   2016/12/25 deng
@@ -20,6 +20,16 @@ function closeBtn(){
 }
 
 function showDialogList(data){
+	//将聊天列表的数据放入之前先将存在的数据删除
+	var allDialog=$(".dialog");
+	for(var i=0;i<allDialog.length;i++){
+		allDialog.eq(i).remove();
+	}
+	
+	//将聊天列表的外框的height设置
+	var dialogListOut=$("#dialog_list");
+	dialogListOut.css("top",64);
+	
 	for(var d in data){
 		var createTime=data[d].create_time;//最新回复时间
 		var ifread=data[d].ifread;//是否有未读
@@ -28,7 +38,7 @@ function showDialogList(data){
 		var toUserImgUrl=data[d].to_user_imgUrl;
 		var toUserName=data[d].to_user_name;
 		
-		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
+		appendDialogElement(d,createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
 	}
 	//从首页传过来的聊天列表的未读信息
 	if(unreadObjList.length>0){
@@ -36,14 +46,19 @@ function showDialogList(data){
 			unreadMsg(unreadObjList[i].user,unreadObjList[i].data,unreadObjList[i].postTimeStr,unreadObjList[i].touserId,unreadObjList[i].unreadNum);
 		}
 	}
+	
+	var dialogListOutHeight=$("body").height()-64;
+	dialogListOut.css("height",dialogListOutHeight+"px");
 }
 
-function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
+function appendDialogElement(d,createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
 	var dialog=$("<div></div>").attr("class", "dialog cursor").attr("id", toUserId);
-	var toUserImg="<img src="+toUserImgUrl+">";
+	//onerror是实现获得图片失败的时候放的默认图片,只要有一个图片路径就行
+	var toUserImg="<img src="+toUserImgUrl+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>";
 	var dialogContent=$("<div></div>").attr("class", "dialog_content");
 	
 	var dialogContentTop=$("<div></div>").attr("class", "dialog_content_top");
+	msg=cutStringIfTooLong(msg,17);
 	var dialogContentMsg=$("<div></div>").attr("class", "dialog_content_msg").text(msg);
 	
 	var dialogContentName=$("<div></div>").attr("class", "dialog_content_name").text(toUserName);
@@ -53,36 +68,44 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 	dialogContent.append(dialogContentTop).append(dialogContentMsg);
 	dialog.append(toUserImg).append(dialogContent);
 	
-	$("#dialog_list").append(dialog);
+  	var dialogList=$("#dialog_list");
+	dialogList.append(dialog);
+	
+	//设置聊天列表的各个大小
+	var heightForWindow=$("body").height();
+	var dialogHeight=(heightForWindow-63)*0.1;
+	dialog.css("height",dialogHeight);
 	
 	//聊天列表动态布局
-	setDialogListNode(dialog,dialogContent);
+	setDialogListNode(d,dialog,dialogContent);
 	
 	dialog.click(function() {//绑定点击事件.
-		enterDialogPage(toUserId,toUserName);
+		enterDialogPage(toUserId,toUserName,toUserImgUrl);
 	});
 }
 
 //聊天列表动态布局
-function setDialogListNode(dialog,dialogContent){
+function setDialogListNode(d,dialog,dialogContent){
 	var dialogHeight=parseInt(dialog.css("height"));//获得聊天列表单个的高度
 	var dialogWidth=parseInt(dialog.css("width"));//获得聊天列表单个的高度
-	
+	dialog.css("top",(dialogHeight*d+10));
 	//头像css设置
-	var toUserImgHeight=dialogHeight*0.8;//图片的高度是聊天列表单个高度的80%
+	var toUserImgHeight=dialogWidth*0.0943;//图片的高度是聊天列表宽度的0.1026
 	var toUserImgMargin=(dialogHeight-toUserImgHeight)/2;
 	var toUserImg=dialog.find("img");
 	toUserImg.css("height",toUserImgHeight);
 	toUserImg.css("width",toUserImgHeight);
-	toUserImg.css("margin",toUserImgMargin);
+	toUserImg.css("margin-left",toUserImgMargin*2);
+	//toUserImg.css("margin-top",toUserImgMargin);
 	
 	//文字css设置
-	var dialogContentWidth=dialogWidth-toUserImgHeight-toUserImgMargin*4;
-	var dialogContentLeft=toUserImgHeight+toUserImgMargin*2;
-	dialogContent.css("height",toUserImgHeight);
+	var dialogContentWidth=dialogWidth-toUserImgHeight-(toUserImgMargin*5);
+	dialogContent.css("height",dialogWidth*0.1026);
 	dialogContent.css("width",dialogContentWidth);
-	dialogContent.css("margin",toUserImgMargin);
-	dialogContent.css("left",dialogContentLeft);
+	//dialogContent.css("margin-top",toUserImgMargin);
+	dialogContent.css("margin-left",toUserImgMargin);
+	
+	//dialogContent.css("margin-left",toUserImgMargin/2);
 	
 	//设置文字内容的line-height
 	var dialogContentNameHeight=dialogContent.find(".dialog_content_name").css("height");
@@ -92,6 +115,7 @@ function setDialogListNode(dialog,dialogContent){
 	var dialogContentTimeHeight=dialogContent.find(".dialog_content_time").css("height");
 	$(".dialog_content_time").css("line-height",dialogContentTimeHeight);
 	$(".dialog_content_time").css("font-size",parseInt(dialogContentTimeHeight)*0.5+"px");
+	$(".dialog_content_time").css("margin-right",toUserImgMargin+"px");
 	
 	var dialogContentMsgHeight=dialogContent.find(".dialog_content_msg").css("height");
 	$(".dialog_content_msg").css("line-height",dialogContentMsgHeight);
@@ -175,10 +199,8 @@ function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 		var dialogImgMargin=parseInt(dialogImg.css("margin"));
 		
 		var unreadLeft=dialogImgWidth+dialogImgMargin;
-		unreadNumNode.css("margin-left",unreadLeft+"px");
-		//unreadNumNode.css("top",dialogImgMargin/2+"px");
-		
-		
+		unreadNumNode.css("left",unreadLeft+"px");
+		unreadNumNode.css("margin-top",dialogImgMargin/2+"px");
 	} else {//如果已有未读消息,则加上1:
 		unreadNum  = unreadParent.find('.unread').text();
 		unreadNum++;
@@ -221,7 +243,8 @@ function makeDialogListTop(respondeUserId){
 	$("#dialog_list").prepend(copyOneDialogDiv);
 	
 	var toUserName=copyOneDialogDiv.find(".dialog_content_name").text();
+	var toUserImg=copyOneDialogDiv.find("img").attr("src");
 	copyOneDialogDiv.click(function() {//绑定点击事件.
-		enterDialogPage(respondeUserId,toUserName);
+		enterDialogPage(respondeUserId,toUserName,toUserImg);
 	});
 }

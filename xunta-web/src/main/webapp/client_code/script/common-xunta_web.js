@@ -83,3 +83,12 @@ function strLength(cpText) {
 	}
 	return len;
 }
+
+//超过长度就截取
+function cutStringIfTooLong(str,maxLength){
+	if (str.length > maxLength) {//长度太长,就截短.
+		return str.substring(0, maxLength-1) + '…';
+	}else{
+		return str;			
+	}
+}

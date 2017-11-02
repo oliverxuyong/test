@@ -208,6 +208,7 @@ function callback_checkonmobileno(receivedData){
 		//new Toast({context:$('body'),message:'该手机号已经注册,请输入密码,然后登录.'}).show(); 
 
         $("#inputbox_password2login,#forgetpassword,#button_loginbymobilephone").show();
+        $("#inputbox_password2login").focus();
     }
 }
 

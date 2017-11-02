@@ -10,8 +10,11 @@ function backBtn(){
 		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
 			exec('dialoglist_page',"removeUnreadNum('"+toUserId+"')");
 			exec('dialoglist_page',"changeUnreadColor()");
+			exec('dialoglist_page',"requestDialogList()");
+			openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', '');
+		}else{
+			openWin('main_page', 'main_page/main_page.html', '');
 		}
-		openWin('main_page', 'main_page/main_page.html', '');
 	}else{
 		closeWin(_tmpPageId);
 	}
@@ -131,6 +134,7 @@ function showSameSelectCp(data){
 		var text=data.msg[i].text;
 		appendSameSelectCp(cpid,text);
 	}
+	sameSelectCpsWidth=0;
 }
 
 //选择过标签的width一个个相加，超过选择过标签的框则另起一行

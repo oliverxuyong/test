@@ -31,9 +31,9 @@
 			<div class="header-container" id="header-container">
 
 				<!-- 重新登录-->
-				<!--div id="showouseroprate">
+				<div id="showouseroprate">
 					<img src="../image/exit.png" onclick="logOff()">
-				</div-->
+				</div>
 				<!-- 信号 -->
 				<div id="showonlineoffline">
 					<img src="../image/dot-gray.png" onclick="wsConnect()">
@@ -41,7 +41,7 @@
 				
 				<!--头像-->
 				<div class="userimg">
-					<img id="topic_img"/>
+					<img id="topic_img" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
 					<div class="username" id="username"></div>
 				</div>
 				
@@ -67,6 +67,7 @@
 
 			<!-- 我的标签 -->
 			<div class="mytag-container" id="mytag-container">
+			<img id="background-rightbar-mytag" src="../image/background1-rightbar.jpg"><!--用来覆盖右边的滚动条 -->
 				<div style="width:37px;height:30px;line-height:28px;" onclick="addTag()" class="mytag add" id="addtag">+</div>
 				<!-- <div class="mytag"><img src="../image/acclaim-50x173.png"><span>阿斯蒂芬8后</span></div> -->
 				<!-- <div class="mytag" id="addtag2" onclick="addTag()" style="width:86px;"> 万有引力 					
@@ -183,6 +184,8 @@
 			//requestMyCP();
 			
 			chat.init(userId,recevier);//注册用户，及用记接收消息的函数
+			
+			//console.log("测试："+window.screen.width+" "+window.screen.height);
 		}
 		
 		//发送消息之后服务器返回的消息
@@ -280,6 +283,7 @@
 			}else{
 				$("#alterUserimage").show();
 			}*/
+			$(".userimg").show();
 			var userimg=$(".userimg>img");
 			userimg.attr("src", userImg);
 			var username=$("#username");
@@ -306,9 +310,10 @@
 			var userImgMarginTop=parseInt(headerContainerHeight)-parseInt(userImgHeight);
 			$(".userimg").css("margin-top", userImgMarginTop+"px");
 			//头像大小位置和用户昵称大小位置
-			var userimgHeight=userimg.height();
-			var userimgMarginLeft=(parseInt(userImgWidth)-parseInt(userimgHeight))/2;
+			var headerContainerWidth=$(".header-container").width();
+			var userimgHeight=headerContainerWidth*0.129;
 			userimg.css("width",userimgHeight);//图片高宽一致
+			userimg.css("height",userimgHeight);//图片高宽一致
 			
 			//2017.10.25 叶夷   用户昵称如果超过3个字则加上...
 			var userNameText=userName;
@@ -338,11 +343,26 @@
 			
 			//2017.10.25  叶夷   调整信号圆位置
 			var showOnLineOffLine=$("#showonlineoffline");
+			showOnLineOffLine.show();
+			//小绿点大小调整
+			var showOnLineOffLineImgWidth=$(".userimg").width()*0.2438;
+			showOnLineOffLine.find("img").css("width",showOnLineOffLineImgWidth);
+			showOnLineOffLine.find("img").css("height",showOnLineOffLineImgWidth);
+			//根据屏幕的宽度调整进入聊天列表按钮的大小
 			var showOnLineOffLineWidth=showOnLineOffLine.find("img").width();
-			var showOnLineOffLineTop=userImgMarginTop-4;
-			var showOnLineOffLineLeft=parseInt($(".userimg").css("margin-left"))+userimgHeight-showOnLineOffLineWidth+6;
+			var showOnLineOffLineTop=userImgMarginTop-showOnLineOffLineWidth*0.55;
+			var showOnLineOffLineLeft=parseInt($(".userimg").css("margin-left"))+userimgHeight-showOnLineOffLineWidth;
 			showOnLineOffLine.css("top",showOnLineOffLineTop+"px");
 			showOnLineOffLine.css("left",showOnLineOffLineLeft+"px");
+			
+			//.toastinline刚上线时,  这里会出一个 连接恢复 的提示. 刚上线时的这个提示可以取消.
+			//可以 用 设为不显的 方法 来取消. 等头像出来后, 再设为 显示. 头像出来了, 肯定是连接上了
+			$(".toastinline").show();
+			//进入聊天列表按钮大小
+			var enterdialogList=$("#enterdialogList");
+			var enterdialogListWidth=headerContainerWidth*0.066;
+			enterdialogList.find("img").css("width",enterdialogListWidth);
+			enterdialogList.find("img").css("height",enterdialogListWidth);
 		}
 
 		function retrievePageParams(pageParamsStr){
