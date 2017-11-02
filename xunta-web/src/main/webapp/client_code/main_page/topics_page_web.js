@@ -1343,16 +1343,23 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			muNode.css("left",muNodeLeft);*/
 			
 			setMUPosition(i,matchedUserArr);//位置计算好
-			/*if(intersect && startMatchUserCount<=100){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
+			log2root("muNowData的长度:"+muNowData.length);//为了解决出现位置没地放所报的错
+			log2root("是否有一个圆会跟别的圆相交，重新再计算: "+intersect+" "+startMatchUserCount);
+			if(intersect && startMatchUserCount<=100){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
 				//避免出现刚开始的时候匹配人的圆出现重复出现的情况，将前端页面匹配圆删除
 				
 				console.log("有一个圆会跟别的圆相交，重新再计算");
+				log2root("有一个圆会跟别的圆相交，重新再计算");
 				muNowData.splice(0, muNowData.length);
 				//$(".mu").find("img").remove();
 				for (var i = 0; i < matchedUserArr.length; i++) {
 					setMUPosition(i,matchedUserArr);//位置计算好
 				}
-			}*/
+				break;
+			}
+		}
+		log2root("圆计算好之后放入");
+		for (var i = 0; i < matchedUserArr.length; i++) {
 			muAddImg(i,matchedUserArr,true);
 		}
 	} else{
@@ -1598,11 +1605,14 @@ function setMUPosition(i,matchedUserArr){
 		if(isBreak){
 			break;
 		}
-		
 		++y;
 		if(y>=matchUserContainerYEnd){
 			y=matchUserContainerYStart;
 		}
+	}
+	
+	if(intersect){
+		muNowData.push(muPosition(muId,x, y, radius,muImg));
 	}
 	
 	++startMatchUserCount;
