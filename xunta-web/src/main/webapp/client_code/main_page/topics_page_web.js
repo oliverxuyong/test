@@ -1729,7 +1729,7 @@ function muAddImg(i,matchedUserArr,isFirst){
 		// 点击事件
 		muNode.click(function() {
 			// 进入聊天页
-			enterDialogPage(muId,muUserName);
+			enterDialogPage(muId,muUserName,muImg);
 		});
 	}
 }

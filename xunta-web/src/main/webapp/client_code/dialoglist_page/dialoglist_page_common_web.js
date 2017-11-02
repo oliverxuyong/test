@@ -80,7 +80,7 @@ function appendDialogElement(d,createTime,ifread,msg,toUserId,toUserImgUrl,toUse
 	setDialogListNode(d,dialog,dialogContent);
 	
 	dialog.click(function() {//绑定点击事件.
-		enterDialogPage(toUserId,toUserName);
+		enterDialogPage(toUserId,toUserName,toUserImgUrl);
 	});
 }
 
@@ -243,7 +243,8 @@ function makeDialogListTop(respondeUserId){
 	$("#dialog_list").prepend(copyOneDialogDiv);
 	
 	var toUserName=copyOneDialogDiv.find(".dialog_content_name").text();
+	var toUserImg=copyOneDialogDiv.find("img").attr("src");
 	copyOneDialogDiv.click(function() {//绑定点击事件.
-		enterDialogPage(respondeUserId,toUserName);
+		enterDialogPage(respondeUserId,toUserName,toUserImg);
 	});
 }

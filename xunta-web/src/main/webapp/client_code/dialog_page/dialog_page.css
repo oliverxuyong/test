@@ -11,7 +11,12 @@ body{position:relative}
 	width:100%; height: 50px; 
 	/*background:url('../image/titbg.gif') center top repeat-x;background-size:8px;*/
 	background-color:#405a6c;
-	border-bottom:1px solid #d0d0d0; z-index:12;}
+	border-bottom:1px solid #d0d0d0; z-index:12;
+	}
+	
+#header img{
+	position:absolute;
+}
 
 #goback{position:relative;height:50px;font-size:22px;float:left;z-index:15}
 #goback img{height:16px; width:22px; margin-top:16px;margin-left:17px;margin-right:10px;}
