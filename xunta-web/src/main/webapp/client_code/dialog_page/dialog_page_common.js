@@ -3,7 +3,7 @@ var replySenderName = 'null'//记录点击内容回复消息时被点击用户�
 var replyOpptid = 'null';
 function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后到这里(此时tmpPid="none");感叹号直接提交都到这里(此时tmpPid!=none).
 	if(inputValue == "660419"){//这句密码是为了打开index.html中的log记录.
-		openWin('root','index.html','');
+		openWin('root','index.html','showlog');
 		return;
 	}
 

@@ -100,7 +100,7 @@
     <script type="text/javascript" src="login/login.js"></script>
     <script type="text/javascript" src="login/login_web.js"></script>
 	<script type="text/javascript" src="script/common-xunta.js"></script>
-	<!--script type="text/javascript" src="script/common-xunta_web.js"></script-->
+	<script type="text/javascript" src="script/common-xunta_web.js"></script>
 	<script type="text/javascript" src="script/version_update.js"></script>
     <script type="text/javascript" src="index_page/index_web.js"></script>
      <script type="text/javascript" src="index_page/index.js"></script>
@@ -142,7 +142,9 @@
 			showLoadingtext(); //显示"正在.."文字
 			$("#logging").hide(); //0110  这个logging可以完全去掉.
 			$("#return").click(function() {//1.11 F 修改
-				openWin('main_page', 'main_page/main_page.html', '');//?0110 todo openwin方法要重新定义. index.html暂时没移动
+				log2root("我点击了返回区.");
+				//openWin('main_page', 'main_page/main_page.html', '');//?0110 todo openwin方法要重新定义. index.html暂时没移动
+				$("iframe").show();
 			});
 			readXuntaConfigXml();//读取本地xunta-config.xml,为某些全局变量赋值.
 			setPageTitle();//获得domain之后才能执行这一句.
