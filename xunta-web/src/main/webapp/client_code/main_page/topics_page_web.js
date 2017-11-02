@@ -1616,23 +1616,23 @@ function setMatchUsersSize(i){
 		var userImageRadius=($("#topic_img").width()+10)/2;
 		radius=userImageRadius;
 	}else if(i==1){
-		radius=muNowData[i-1].radius*5/6;
+		radius=muNowData[i-1].radius*6/7;
 	}else if(i==2){
-		radius=muNowData[i-1].radius*5/6;
+		radius=muNowData[i-1].radius*6/7;
 	}else if(i==3){
-		radius=muNowData[i-1].radius*5/6;
+		radius=muNowData[i-1].radius*6/7;
 	}else if(i==4){
-		radius=muNowData[i-1].radius*9/10;
+		radius=muNowData[i-1].radius*8/9;
 	}else if(i==5){
 		radius=muNowData[i-1].radius*9/10;
 	}else if(i==6){
-		radius=muNowData[i-1].radius*9/10;
+		radius=muNowData[i-1].radius*10/11;
 	}else if(i==7){
-		radius=muNowData[i-1].radius*9/10;
+		radius=muNowData[i-1].radius*11/12;
 	}else if(i==8){
-		radius=muNowData[i-1].radius*9/10;
+		radius=muNowData[i-1].radius*12/13;
 	}else if(i==9){
-		radius=muNowData[i-1].radius*9/10;
+		radius=muNowData[i-1].radius;
 	}else if(i==10){
 		radius=muNowData[i-1].radius;
 	}else if(i==11){
@@ -1648,7 +1648,7 @@ function setMatchUsersSize(i){
 }
 
 function setBorder(headerContainer,radius){
-	matchUserContainerXStart=headerContainer.width()/2+radius;// 从屏幕的二分之一开始
+	matchUserContainerXStart=headerContainer.width()/2;// 从屏幕的二分之一开始
 	matchUserContainerXEnd=headerContainer.width()-radius-5;// 到屏幕留出10的空隙结束
 	matchUserContainerYStart=radius+5;// y轴从5开始，给留出一点空隙
 	matchUserContainerYEnd=headerContainer.height()-radius-5;// y轴结束的范围给留出一点空隙
