@@ -34,13 +34,13 @@
 				<div id="showouseroprate">
 					<img src="../image/exit.png" onclick="logOff()">
 				</div>
-				<!-- 信号 -->
-				<div id="showonlineoffline">
-					<img src="../image/dot-gray.png" onclick="wsConnect()">
-				</div>
 				
 				<!--头像-->
 				<div class="userimg">
+					<!-- 信号 -->
+					<div id="showonlineoffline">
+						<img src="../image/dot-gray.png" onclick="wsConnect()">
+					</div>
 					<img id="topic_img" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
 					<div class="username" id="username"></div>
 				</div>
@@ -345,15 +345,15 @@
 			var showOnLineOffLine=$("#showonlineoffline");
 			showOnLineOffLine.show();
 			//小绿点大小调整
-			var showOnLineOffLineImgWidth=userimg.width()*0.2438;
-			showOnLineOffLine.find("img").css("width",showOnLineOffLineImgWidth);
-			showOnLineOffLine.find("img").css("height",showOnLineOffLineImgWidth);
+			//var showOnLineOffLineImgWidth=userimg.width()*0.2438;
+			//showOnLineOffLine.find("img").css("width",showOnLineOffLineImgWidth);
+			//showOnLineOffLine.find("img").css("height",showOnLineOffLineImgWidth);
 			//根据屏幕的宽度调整进入聊天列表按钮的大小
-			var showOnLineOffLineWidth=showOnLineOffLine.find("img").width();
-			var showOnLineOffLineTop=userImgMarginTop-showOnLineOffLineWidth*0.55;
-			var showOnLineOffLineLeft=parseInt($(".userimg").css("margin-left"))+userimgHeight-showOnLineOffLineWidth;
-			showOnLineOffLine.css("top",showOnLineOffLineTop+"px");
-			showOnLineOffLine.css("left",showOnLineOffLineLeft+"px");
+			//var showOnLineOffLineWidth=showOnLineOffLine.find("img").width();
+			//var showOnLineOffLineTop=userImgMarginTop-showOnLineOffLineWidth*0.55;
+			//var showOnLineOffLineLeft=parseInt($(".userimg").css("margin-left"))+userimgHeight-showOnLineOffLineWidth;
+			//showOnLineOffLine.css("top",showOnLineOffLineTop+"px");
+			//showOnLineOffLine.css("left",showOnLineOffLineLeft+"px");
 			
 			//.toastinline刚上线时,  这里会出一个 连接恢复 的提示. 刚上线时的这个提示可以取消.
 			//可以 用 设为不显的 方法 来取消. 等头像出来后, 再设为 显示. 头像出来了, 肯定是连接上了

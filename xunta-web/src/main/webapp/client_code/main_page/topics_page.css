@@ -17,13 +17,15 @@
 
 #showonlineoffline {
 	position: absolute;
-	left:90px;
-	top:58px;
+	left: 13%;
+	top: 35%;
 	display:none;
+	width: 3%;
+	height: 7%;
 }
 
 #showonlineoffline>img{
-	height: 17px; width:17px;
+	height: 100%; width:100%;
 }
 
 #showouseroprate{
