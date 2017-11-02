@@ -520,9 +520,9 @@ width:100%;
 .othertag{
 	position:absolute; 
 	height:100%; 
-	width:100%;
+	width:99%;
 	overflow-x:hidden;
-	//margin:2% 3% 2% 3%;
+	margin-left:1%;
 	//background-color:white;
 }
 

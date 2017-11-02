@@ -70,7 +70,9 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	//推荐标签遮住滑动条显示
 	$("#background-rightbar").show();
 	//调整滚动条宽度
-	var scollWidth=document.getElementById("cp-show").offsetWidth-document.getElementById("cp-show").scrollWidth
+	/*console.log("测试："+document.getElementById("cp-show").offsetWidth
+			+" "+document.getElementById("cp-show").scrollWidth);*/
+	var scollWidth=document.getElementById("cp-show").offsetWidth-document.getElementById("cp-show").scrollWidth+1;
 	$("#background-rightbar-mytag").css("width",scollWidth);
 	$("#background-rightbar").css("width",scollWidth);
 }
@@ -620,7 +622,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	var containerWidth = cp_container.width();// 装cp容器的宽度，即扫描轨迹的x轴的总数
 
 	var top = -1;// 标签的top,用来和不同轨迹对比，将数值最大的赋值给top,可以知道标签可上升的最大高度
-	var left = 15;// 得到标签可上升的最大高度时left位置
+	var left = 0;// 得到标签可上升的最大高度时left位置
 
 	// 1.遍历装cp容器的宽度,每次+1px
 	// start是要上升的cp的left的值，所以终点必须空出上升cp的width
@@ -628,7 +630,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	if(startLength<cpWidth){
 		startLength=cpWidth;
 	}
-	for (var start = 15; start <= containerWidth - startLength-20; start++) {
+	for (var start = 0; start <= containerWidth - startLength-20; start++) {
 		// 2.从开始获得上升cp的圆心坐标和半径，以cp_container的左下点为(0,0)
 		var cpRadius = cpWidth / 2;// 半径就是要上升的cp的宽除以2
 		var cpX = start + cpRadius;// 一开始圆心的x为start+cpRadius
@@ -1341,15 +1343,17 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			muNode.css("left",muNodeLeft);*/
 			
 			setMUPosition(i,matchedUserArr);//位置计算好
-			if(intersect && startMatchUserCount<=100){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
+			/*if(intersect && startMatchUserCount<=100){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
+				//避免出现刚开始的时候匹配人的圆出现重复出现的情况，将前端页面匹配圆删除
+				
 				console.log("有一个圆会跟别的圆相交，重新再计算");
 				muNowData.splice(0, muNowData.length);
 				//$(".mu").find("img").remove();
-				showMatchPeople(matchedUserArr);
-				break;
-			}
+				for (var i = 0; i < matchedUserArr.length; i++) {
+					setMUPosition(i,matchedUserArr);//位置计算好
+				}
+			}*/
 			muAddImg(i,matchedUserArr,true);
-			
 		}
 	} else{
 		
@@ -1720,7 +1724,7 @@ function muAddImg(i,matchedUserArr,isFirst){
 		muNode.css("width",muWidth);
 		muNode.css("height",muWidth);
 		
-		var muImgWidth=muWidth-15;
+		var muImgWidth=muWidth-10;
 		var muImgMargin=(muWidth-muImgWidth)/2;
 		muNodeImg.css("margin-top",muImgMargin);
 		muNodeImg.css("margin-left",muImgMargin);
