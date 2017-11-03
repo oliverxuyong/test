@@ -1627,7 +1627,7 @@ function setMUPosition(i,matchedUserArr){
 function setMatchUsersSize(i){
 	var radius;
 	if(i==0){
-		var userImageRadius=($("#topic_img").width()+10)/2;
+		var userImageRadius=($("#userimg>img").width()+10)/2;
 		radius=userImageRadius;
 	}else if(i==1){
 		radius=muNowData[i-1].radius*6/7;
