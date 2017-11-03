@@ -847,11 +847,14 @@ function chooseOneCP(cp_node,cp) {
 			coverDiv.css("width",$(window).width());
 			coverDiv.css("height",$(window).height());
 		}
+		//console.log("测试："+coverDiv.data("events")["click"]); 
 		coverDiv.click(function(){
 			cp_innode.css("z-index","");
-			coverDiv.remove();
 			yesItem.hide();
 			noItem.hide();
+			yesItem.unbind();
+			noItem.unbind();
+			//cp_node.unbind();
 			cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			cpNodeByDistance.css("top",cpNodeByDistanceOldTop+"px");
 			//恢复成原来大小再选择
@@ -861,20 +864,35 @@ function chooseOneCP(cp_node,cp) {
 			cp_innode.css("background-color","rgba(255,255,255,0.3)");
 			//cp_innode.css("opacity","0.3");
 			calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
+			$(".cover").unbind();
+			$(".cover").remove();
+			
+			//event.stopPropagation();阻止事件冒泡。
+			//这是为了防止选中标签之后取消再次点击时，点击cover，cover删除之后cp_node的点击事件又再次触发
+			//这里初步估计是因为点击事件冒泡，导致cover外层的div被触发了
+			//但是无法解释第一次点击标签时，点击cover，事件没有冒泡的原因?
+			event.stopPropagation();
 		});
 		
 		//绑定点击事件
 		yesItem.click(function() {
-			cp_innode.css("z-index","");
-			coverDiv.remove();
-			yesItem.hide();
-			noItem.hide();
+			/*var $events =cp_node.find(".yesItem").data("events");
+			if( $events && $events["click"] ){
+				console.log("yesItem绑定");
+			}else{
+				console.log("yesItem未绑定");
+			}*/
 			
 			//取消点击事件，为了防止多次绑定点击事件
-			coverDiv.unbind();
+			$(".cover").unbind();
 			yesItem.unbind();
 			noItem.unbind();
 			cp_node.unbind();
+			
+			cp_innode.css("z-index","");
+			$(".cover").remove();
+			yesItem.hide();
+			noItem.hide();
 			
 			cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			//恢复成原来大小再选择
@@ -889,7 +907,8 @@ function chooseOneCP(cp_node,cp) {
 		
 		noItem.click(function() {
 			cp_innode.css("z-index","");
-			coverDiv.remove();
+			$(".cover").unbind();
+			$(".cover").remove();
 			cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			//现变小
 			cp_innode.animate({
@@ -1168,13 +1187,15 @@ function unSelectCP(cpid){
 			myTag.css("height",myTagHeight+"px");
 			myTag.css("z-index","");
 			myTagSelectNumberNode.hide();
-			coverDiv.remove();
+			$(".cover").unbind();
+			$(".cover").remove();
 		});
 		//点击"x"才取消选择
 		unSelectCPNode.click(function() {
 			myTag.unbind();
 			sendUnSelectCP(cpid);
-			coverDiv.remove();
+			$(".cover").unbind();
+			$(".cover").remove();
 		});
 	}
 }
@@ -1191,6 +1212,7 @@ function showUnSelectCP(data){
 	
 	//点击"x"才取消选择
 		var cp_node=$("#cpid"+cpid);
+		
 		var text=cp_node.find(".incp").text();
 		console.log(cpid + "-> 取消选择");
 		cp_node.css("opacity", "1");
@@ -1207,6 +1229,13 @@ function showUnSelectCP(data){
 		var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
 		// 我的标签框高度改变了之后影响其他部分的高度
 		myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
+		
+		var $events =cp_node.data("events");
+		if( $events && $events["click"] ){
+			console.log("yesItem绑定");
+		}else{
+			console.log("yesItem未绑定");
+		}
 		
 		// 将取消选择的标签重新绑定点击事件
 		cp_node.click(function() {
