@@ -1654,38 +1654,48 @@ function setMUPosition(i,matchedUserArr){
 
 /**2017.11.02  叶夷  设置匹配圆的大小*/
 function setMatchUsersSize(i){
+	var bodyWidth=$("body").width();
 	var radius;
 	if(i==0){
-		var userImageRadius=($("#topic_img").width()+10)/2;
-		radius=userImageRadius;
+		radius=bodyWidth*0.075;
 	}else if(i==1){
-		radius=muNowData[i-1].radius*6/7;
+		radius=bodyWidth*0.066;
 	}else if(i==2){
-		radius=muNowData[i-1].radius*6/7;
+		radius=bodyWidth*0.058;
 	}else if(i==3){
-		radius=muNowData[i-1].radius*6/7;
+		radius=bodyWidth*0.051;
 	}else if(i==4){
-		radius=muNowData[i-1].radius*8/9;
+		radius=bodyWidth*0.045;
 	}else if(i==5){
-		radius=muNowData[i-1].radius*9/10;
+		radius=bodyWidth*0.038;
 	}else if(i==6){
-		radius=muNowData[i-1].radius*10/11;
+		radius=bodyWidth*0.035;
 	}else if(i==7){
-		radius=muNowData[i-1].radius*11/12;
+		radius=bodyWidth*0.030;
 	}else if(i==8){
-		radius=muNowData[i-1].radius*12/13;
+		radius=bodyWidth*0.028;
 	}else if(i==9){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.026;
 	}else if(i==10){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.024;
 	}else if(i==11){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.024;
 	}else if(i==12){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.024;
 	}else if(i==13){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.022;
 	}else if(i==14){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.022;
+	}else if(i==15){
+		radius=bodyWidth*0.022;
+	}else if(i==16){
+		radius=bodyWidth*0.020;
+	}else if(i==17){
+		radius=bodyWidth*0.018;
+	}else if(i==18){
+		radius=bodyWidth*0.016;
+	}else if(i==19){
+		radius=bodyWidth*0.014;
 	}
 	return radius;
 }
