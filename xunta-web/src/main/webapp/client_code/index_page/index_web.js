@@ -174,9 +174,14 @@ function removeIframe(P_winName){
 }
 
 function removeAllIframes(){
-        $("iframe").remove();
+   $("iframe").remove();
 }
-        
+
+function hideAllIframes(){
+	$("iframe").hide();
+}
+
+
 var dialogPageArray = new Array();//这个变量定义在index.html页面时使用本地测试发现获取不到。写在这里是可以的
 var zIndex = 1;//页面层叠次数。要设为全局变量，页面层叠次数最高的才会显示到顶层
 
@@ -191,14 +196,18 @@ function closeWin(winName){//这个方法马上调用本地的openWin_Root(),是
 
 function openWin_Root(winName, winUrl, data) {
     if(winName == "root"){
-    removeAllIframes();
-    $("#logging").show();
-    /*
+    	//removeAllIframes();
+    	hideAllIframes();
+    	
+    	/*
         currentPageObj =  $("body");
-        currentPageObj.css("zIndex",zIndex);//不知为什么, 这样显不出来.
+        console.log(":::::::::::"+currentPageObj.html());
+        currentPageObj.css("z-Index",1000000);//不知为什么, 这样显不出来.
         setCurrentPageId(winName);
         zIndex = zIndex+1;
         */
+      $("#logging").show();
+        
         return
     }
 
@@ -209,7 +218,7 @@ function openWin_Root(winName, winUrl, data) {
         console.log(winName+"  页面已经开启过，直接显示该页面");
        //通过z_index来设置页面堆叠顺序，来控制页面显示到顶层。z_index不懂可以去w3c查资料
        	currentPageObj = $("#"+winName);
-        currentPageObj.css("zIndex",zIndex);
+        currentPageObj.css("z-index",zIndex);
         setCurrentPageId(winName);//原来漏掉了这句,不加的话,再次打开同一页面会收不到toast消息.
     }else if(pageOpenStatus == false){
         console.log(winName+"  页面没有开启过，创建新页面并前台显示.");
