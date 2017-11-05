@@ -31,9 +31,9 @@
 			<div class="header-container" id="header-container">
 
 				<!-- 重新登录-->
-				<div id="showouseroprate">
+				<!-- div id="showouseroprate">
 					<img src="../image/exit.png" onclick="logOff()">
-				</div>
+				</div-->
 				
 				<!--头像-->
 				<div id="userinfo">
@@ -42,7 +42,7 @@
 						<div id="showonlineoffline">
 							<img src="../image/dot-gray.png" onclick="wsConnect()" />
 						</div>
-						<img onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
+						<img onclick="ask2LogOff()" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
 					</div>
 					<div class="username" id="username"></div>
 				</div>
@@ -189,6 +189,14 @@
 			
 			//console.log("测试："+window.screen.width+" "+window.screen.height);
 		}
+		
+		//点击 我的头像,询问是否退出登录,如果是,则退出:
+		function ask2LogOff(){
+			//待叶夷完善:
+			logOff();
+			
+		}
+		
 		
 		//发送消息之后服务器返回的消息
         function recevier(obj) {

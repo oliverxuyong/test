@@ -64,7 +64,7 @@ width:100%;
 	//padding-top:21px;
 	//height:87%;
 }
-
+/*
 #createnewtopic {
 	//left: 11px;
 	width:33%;
@@ -149,7 +149,7 @@ width:100%;
 	width:18px;
 	height:18px;
 }
-
+/*
 .recentmsg {
 	//float:clear;
 	color: #686868;
@@ -239,7 +239,7 @@ width:100%;
 /*我的标签容器*/
 .mytag-container{
 	width: 100%;/*这个百分比与下面两个padding百分比总合为1*/
-	padding-left:10px;
+	padding-left:9px;
 	padding-right:20px;
 	height: 30%;
 	float: left;
