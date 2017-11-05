@@ -549,15 +549,16 @@ width:100%;
 	//padding-top:8px;
 	//padding-left:10px;
 	position:fixed;
-	bottom:2%;
-	left:4%;
+	bottom:3%;
+	left:5%;
 	z-index:102;
 	//box-shadow:0 0 50px black;
 	display:none;
+	height:4%;/*这里设一个值,下面的img高度才能起作用.*/
 }
 
 .enterdialogList>img{
-	//height:35px;
+	height:100%;
 	width:23%;
 	box-shadow:0 0 50px black;
 }
