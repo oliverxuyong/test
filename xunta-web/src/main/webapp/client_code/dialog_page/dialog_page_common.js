@@ -150,13 +150,15 @@ function showTitle() {
 	var userimg=$("<img src="+toUserImage+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
 	$('#header').append(userimg);
 	var titleText=$('#title');
-	var titleTextWidth=titleText.height();
+	var titleTextWidth=titleText.height()/32*26;//头像小一点.
 	userimg.css("width",titleTextWidth);
 	userimg.css("height",titleTextWidth);
 	var titleTextTop=parseInt(titleText.css("margin-top"));
+	titleTextTop = titleTextTop*11/7;//再往下拉一点.
 	userimg.css("top",titleTextTop);
+	userimg.css("border-radius","50%");//弄成圆形.
 	var titleTextLeft=($('#header').width()-parseInt(titleText.css("font-size"))*titleTextContent.length)/2-3-titleTextWidth;
-	userimg.css("left",titleTextLeft);
+	userimg.css("left",titleTextLeft-2);//向左移一点.
 	
 	titleText.text(titleTextContent);
 }
