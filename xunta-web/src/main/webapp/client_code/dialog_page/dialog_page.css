@@ -2,9 +2,17 @@ input[type="text"], select, button {
 	-webkit-appearance: none;
 }/*去掉iphone中的默认样式,如input的内阴影等.*/
 
+html, body {
+	height: 100%;
+	width: 100%;
+	margin:0px;
+	background-color: #ffffff;
+	//z-index:-99;
+}
 
-
-body{position:relative}
+body{position:relative;
+	overflow:hidden;
+}
 
 #notification {font-size:7px;  position:fixed; top:32px; right:5px}
 #header {float:left;

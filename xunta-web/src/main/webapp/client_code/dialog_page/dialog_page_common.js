@@ -97,7 +97,14 @@ function verifyInputText(obj){//对输入框提交的字符串进行合法性预
 
 function adjustWidthsHeights() {
 	if( userAgent[0] == "PC" ){//PC和手机浏览器在body宽度上不一致.暂时用这个判断来弥补:
-		document.getElementById("inputbox").style.width = $("#inputframe").width() - 70 + "px";
+		console.log("============userAgent[0]======="+userAgent[0]); 
+		
+		
+		document.getElementById("inputbox").style.width = $("#inputframe").width() - 70 + 6 + "px";
+		console.log("============$(#inputframe).width()======="+$("#inputframe").width()); 
+		console.log("============document.getElementById(inputbox).style.width======="+document.getElementById("inputbox").style.width);
+		
+		
 	}else{
 		document.getElementById("inputbox").style.width = $("#inputframe").width() - 68 + "px";
 	}
@@ -106,7 +113,7 @@ function adjustWidthsHeights() {
 	if(selectCpContainerDisplay== "none"){
 		document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
 	}else{
-		document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height()-$("#selectCp-container").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
+		document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height()-$("#selectCp-container").height() - 6-7
 	}
 }
 
