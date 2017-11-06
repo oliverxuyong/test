@@ -10,7 +10,7 @@ body{position:relative}
 #header {float:left;
 	width:100%; height: 50px; 
 	/*background:url('../image/titbg.gif') center top repeat-x;background-size:8px;*/
-	background-color:#405a6c;
+	background-color:#3e4b49;
 	border-bottom:1px solid #d0d0d0; z-index:12;
 	}
 	
@@ -35,8 +35,15 @@ body{position:relative}
     z-index: 13;
     }
 
-#dialog_box{font-size:14px; background-color: #edf4f6; overflow-x:hidden;height:100%; width:100%;
-	border-bottom:1px solid #d8d8d8;}
+#dialog_box{
+	font-size:14px; 
+	background-color: #f6f6f6; 
+	//background:url('../image/dialog-background2.jpg');
+	//background-size:cover; 
+	overflow-x:hidden;height:100%; width:100%;
+	border-bottom:1px solid #d8d8d8;
+	}
+
 #msg_list {padding:15px;//padding-top:3px;}
 
 #loadingwrap{height:40px;width:100%;margin-bottom:40px;margin-top:150px}

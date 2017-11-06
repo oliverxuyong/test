@@ -26,7 +26,7 @@ width:100%;
 	//overflow-y:scroll;
 	-webkit-overflow-scrolling: touch;
 	overflow:hidden;
-	background: url(../image/background1.jpg) no-repeat;
+	background: url(../image/background2-lessblue.jpg) no-repeat;
 	background-size:100% 100%;
 	
 }
@@ -617,7 +617,10 @@ width:100%;
 
 
 .add{
-	//color:#fccf63;
+	color:#cccccc;
+	border:1px solid #a5a5a5;
+	background-color:rgba(34,34,34,0.9);
+	font-size: 23px;
 }
 
 .yesItem,.noItem{

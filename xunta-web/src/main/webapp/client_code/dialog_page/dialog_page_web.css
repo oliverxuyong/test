@@ -25,13 +25,12 @@ html, body {
 	//position:absolute;
 	top:32px;
 	width:96.8%;
-	background:white;
 	padding:1.6%;
 	padding-top:0px;
-	padding-bottom:0px;
+	padding-bottom:7px;
 	//height:20px;
 	display:none;
-	background:#d8d8d8;
+	background:#ffffff;
 }
 
 .selectCp{
@@ -44,4 +43,5 @@ html, body {
     letter-spacing:1px;
     border:1px solid #a1a4a7;
     color:#5e5e5e;
+    background-color:#f3f3f3;
 }
