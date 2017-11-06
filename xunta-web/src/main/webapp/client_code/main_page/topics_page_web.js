@@ -1699,49 +1699,52 @@ function setMUPosition(i,matchedUserArr){
 
 /**2017.11.02  叶夷  设置匹配圆的大小*/
 function setMatchUsersSize(i){
-	var bodyWidth=$("body").width();
-	var radius;
+	var muContainerWidth=$("#header-container").width()-$("#header-container").width()/2-10;
+	var muContainerHeight=$("#header-container").height()-10;
+	var muContainerArea=muContainerWidth*muContainerHeight;
+	var area;
 	if(i==0){
-		radius=bodyWidth*0.075;
+		area=muContainerArea*0.075;
 	}else if(i==1){
-		radius=bodyWidth*0.066;
+		area=muContainerArea*0.066;
 	}else if(i==2){
-		radius=bodyWidth*0.058;
+		area=muContainerArea*0.058;
 	}else if(i==3){
-		radius=bodyWidth*0.051;
+		area=muContainerArea*0.051;
 	}else if(i==4){
-		radius=bodyWidth*0.045;
+		area=muContainerArea*0.045;
 	}else if(i==5){
-		radius=bodyWidth*0.038;
+		area=muContainerArea*0.038;
 	}else if(i==6){
-		radius=bodyWidth*0.035;
+		area=muContainerArea*0.035;
 	}else if(i==7){
-		radius=bodyWidth*0.030;
+		area=muContainerArea*0.030;
 	}else if(i==8){
-		radius=bodyWidth*0.028;
+		area=muContainerArea*0.028;
 	}else if(i==9){
-		radius=bodyWidth*0.026;
+		area=muContainerArea*0.026;
 	}else if(i==10){
-		radius=bodyWidth*0.024;
+		area=muContainerArea*0.024;
 	}else if(i==11){
-		radius=bodyWidth*0.024;
+		area=muContainerArea*0.024;
 	}else if(i==12){
-		radius=bodyWidth*0.024;
+		area=muContainerArea*0.024;
 	}else if(i==13){
-		radius=bodyWidth*0.022;
+		area=muContainerArea*0.022;
 	}else if(i==14){
-		radius=bodyWidth*0.022;
+		area=muContainerArea*0.022;
 	}else if(i==15){
-		radius=bodyWidth*0.022;
+		area=muContainerArea*0.022;
 	}else if(i==16){
-		radius=bodyWidth*0.020;
+		area=muContainerArea*0.020;
 	}else if(i==17){
-		radius=bodyWidth*0.018;
+		area=muContainerArea*0.018;
 	}else if(i==18){
-		radius=bodyWidth*0.016;
+		area=muContainerArea*0.016;
 	}else if(i==19){
-		radius=bodyWidth*0.014;
+		area=muContainerArea*0.014;
 	}
+	var radius=Math.sqrt(area/Math.PI);
 	return radius;
 }
 
