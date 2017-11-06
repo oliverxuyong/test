@@ -36,12 +36,14 @@
 				</div>
 				
 				<!--头像-->
-				<div class="userimg">
-					<!-- 信号 -->
-					<div id="showonlineoffline">
-						<img src="../image/dot-gray.png" onclick="wsConnect()">
+				<div id="userinfo">
+					<div id="userimg">
+						<!-- 信号 -->
+						<div id="showonlineoffline">
+							<img src="../image/dot-gray.png" onclick="wsConnect()" />
+						</div>
+						<img onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
 					</div>
-					<img id="topic_img" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
 					<div class="username" id="username"></div>
 				</div>
 				
@@ -283,8 +285,8 @@
 			}else{
 				$("#alterUserimage").show();
 			}*/
-			$(".userimg").show();
-			var userimg=$(".userimg>img");
+			$("#userimg").show();
+			var userimg=$("#userimg>img");
 			userimg.attr("src", userImg);
 			var username=$("#username");
 			
@@ -304,16 +306,16 @@
 			}, 1000);
 			
 			//2017.08.23 叶夷   我的头像和昵称框位置
-			var headerContainerHeight=$(".header-container").css("height");
-			var userImgHeight=$(".userimg").css("height");
-			var userImgWidth=$(".userimg").css("width");
-			var userImgMarginTop=parseInt(headerContainerHeight)-parseInt(userImgHeight);
-			$(".userimg").css("margin-top", userImgMarginTop+"px");
+			//var headerContainerHeight=$(".header-container").css("height");
+			//var userImgHeight=$(".userimg").css("height");
+			//var userImgWidth=$(".userimg").css("width");
+			//var userImgMarginTop=parseInt(headerContainerHeight)-parseInt(userImgHeight);
+			//$(".userimg").css("margin-top", userImgMarginTop+"px");
 			//头像大小位置和用户昵称大小位置
 			var headerContainerWidth=$(".header-container").width();
-			var userimgHeight=headerContainerWidth*0.129;
-			userimg.css("width",userimgHeight);//图片高宽一致
-			userimg.css("height",userimgHeight);//图片高宽一致
+			//var userimgHeight=headerContainerWidth*0.129;
+			//userimg.css("width",userimgHeight);//图片高宽一致
+			//userimg.css("height",userimgHeight);//图片高宽一致
 			
 			//2017.10.25 叶夷   用户昵称如果超过3个字则加上...
 			var userNameText=userName;
@@ -322,6 +324,7 @@
 				userNameText=userNameText.substring(0,6)+"...";
 			} 
 			//2017.10.25  叶夷  将昵称的大小调整
+			/*
 			var userNameTextSize=userimgHeight/strLength(userNameText);
 			
 			//不让让字体太小,也不能太大
@@ -333,10 +336,10 @@
 			}else{
 				userNameTextSize=16;
 			}
-			
-			username.css("font-size",userNameTextSize+"px");
-			usernameHeight=parseInt(userImgHeight)-parseInt(userimgHeight);
-			username.css("height",(userNameTextSize+10)+"px");//这里加6是高度比字体的大小大约多了6个像素
+			*/
+			//username.css("font-size",userNameTextSize+"px");
+			//usernameHeight=parseInt(userImgHeight)-parseInt(userimgHeight);
+			//username.css("height",(userNameTextSize+10)+"px");//这里加6是高度比字体的大小大约多了6个像素
 			//var usernameMaiginTop=(usernameHeight-6-userNameTextSize-6)/2;
 			//username.css("margin-top",usernameMaiginTop+"px");
 			username.text(userNameText);
@@ -359,10 +362,11 @@
 			//可以 用 设为不显的 方法 来取消. 等头像出来后, 再设为 显示. 头像出来了, 肯定是连接上了
 			$(".toastinline").show();
 			//进入聊天列表按钮大小
-			var enterdialogList=$("#enterdialogList");
+			/*var enterdialogList=$("#enterdialogList");
 			var enterdialogListWidth=headerContainerWidth*0.066;
 			enterdialogList.find("img").css("width",enterdialogListWidth);
 			enterdialogList.find("img").css("height",enterdialogListWidth);
+			*/
 		}
 
 		function retrievePageParams(pageParamsStr){
