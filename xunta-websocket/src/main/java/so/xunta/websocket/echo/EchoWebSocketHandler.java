@@ -139,6 +139,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			recommendTaskPool.execute(recommendUpdateTask);
 			
 		} else {
+			
 		}
 	}
 	
@@ -282,14 +283,14 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			if (_userid.equals(userid)) {
 				//logger.info("用户重复连接websocket,移除原来的session" + u.getAttributes().get(Constants.WEBSOCKET_USERNAME));
 				users.remove(u);
-				/*不需要手动关闭session
-				 * if (u.isOpen()) {
+				
+				if (u.isOpen()) {
 					try {
 						u.close();
-					} catch (IOException e) {
+					} catch (Exception e) {
 						logger.info(e.getMessage()+"用户连接已关闭，无法重复close");
 					}
-				}*/
+				}
 			}
 		}
 	}
