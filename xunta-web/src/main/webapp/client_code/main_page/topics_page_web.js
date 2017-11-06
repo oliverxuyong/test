@@ -160,7 +160,7 @@ var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 12;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
 var maxCPTextNumber = 9;// cp文字最大的数量
-var maxselectTagNum = 25;// 影响标签大小的选择人数最小的数量
+var maxselectTagNum = 10;// 影响标签大小的选择人数最小的数量
 var minselectTagNum = 1;// 影响标签大小的选择人数最大的数量
 /**叶夷  2017.10.10  控制文字大小和内圆大小的方法*/
 function controlSize(selectTagNum,maxSize,minSize){
@@ -1356,20 +1356,20 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		muNowData.push(muPosition(14,471.9,129.3, 16,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
 		muNowData.push(muPosition(15,321, 48.5, 15.5,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));*/
 		
-		// 2017.09.06 叶夷
+		/*// 2017.09.06 叶夷
 		// matchedUserArr.length改成现有的匹配人div的数量，因为匹配人数量有可能比这个数量少,会导致后面的对比产生null异常
 		for (var i = 0; i < matchedUserArr.length; i++) {
 			//var muNode=$("#mutemp"+(i+1));// 这是已经放在页面的匹配人头像div
 			
 			//这是测试
-			/*var muNodeWidth=muNode.width();
+			var muNodeWidth=muNode.width();
 			var radius=muNodeWidth/2;// 这是半径
 			var x=muNowData[i].x;
 			var y=muNowData[i].y;
 			var muNodeTop=y-radius;
 			var muNodeLeft=x-radius;
 			muNode.css("top",muNodeTop);
-			muNode.css("left",muNodeLeft);*/
+			muNode.css("left",muNodeLeft);
 			
 			setMUPosition(i,matchedUserArr);//位置计算好
 			//log2root("muNowData的长度:"+muNowData.length);//为了解决出现位置没地放所报的错
@@ -1386,11 +1386,32 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 				}
 				break;
 			}
+		}*/
+		
+		//接下来就是遍历匹配人改变后的数组，将相交的匹配圆一点点移动
+		for(var c=0;c<notIntersectCount;c++){
+			//2017.11.06 叶夷  将匹配人初始化状态更改为使用排斥力算法
+			muChangeData=[].concat(muNowData);
+			getMuChangeData(matchedUserArr,true);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			setPositionAndNotIntersect();
+			muChangeDataIfIntersect();//判断是否相交
+			
+			//排名改变之后就将改变的数组数值复制到muNowData中，再清空muChangeData
+			muNowData=[].concat(muChangeData);
+			muChangeData.splice(0, muChangeData.length);
+			averageForChangeX.splice(0, averageForChangeX.length);
+			averageForChangeY.splice(0, averageForChangeY.length);
+			//log2root("匹配圆初始化第"+(c+1)+"次");
+			console.log("匹配圆初始化第"+(c+1)+"次");
+			if(!intersect){
+				break;
+			}
 		}
-		//log2root("圆计算好之后放入");
+		
+		/*//log2root("圆计算好之后放入");
 		for (var i = 0; i < matchedUserArr.length; i++) {
 			muAddImg(i,matchedUserArr,true);
-		}
+		}*/
 	} else{
 		
 		//测试
@@ -1399,22 +1420,37 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		setPositionAndNotIntersect();*/
 		
 		circleEnd = false;//动画开始
-		muChangeData=[].concat(muNowData);
-		getMuChangeData(matchedUserArr);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
 		
-		//接下来就是遍历匹配人改变后的数组，将相交的匹配圆一点点移动
-		changeCount=0;
-		while(true){
-			var allOver=setPositionAndNotIntersect();
-			if(allOver || (changeCount>maxChangeCount)){
+		//判断是否相交的次数
+		for(var c=0;c<notIntersectCount;c++){
+			muChangeData=[].concat(muNowData);
+			getMuChangeData(matchedUserArr,false);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			//接下来就是遍历匹配人改变后的数组，将相交的匹配圆一点点移动
+			changeCount=0;
+			while(true){
+				var allOver=setPositionAndNotIntersect();
+				if(allOver || (changeCount>maxChangeCount)){
+					break;
+				}
+				++changeCount;
+				console.log("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
+			}
+			muChangeDataIfIntersect();//判断是否相交
+			//排名改变之后就将改变的数组数值复制到muNowData中，再清空muChangeData
+			muNowData=[].concat(muChangeData);
+			muChangeData.splice(0, muChangeData.length);
+			averageForChangeX.splice(0, averageForChangeX.length);
+			averageForChangeY.splice(0, averageForChangeY.length);
+			
+			console.log("匹配圆变化是否相交 第"+(c+1)+"次");
+			if(!intersect){
 				break;
 			}
-			++changeCount;
-			//console.log("排名改变第"+changeCount+"次循环");
+			getMuChangeData(matchedUserArr,true);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
 		}
 		
-		for(var j=0;j<muChangeData.length;j++){//开始移动
-			var oneMuData=muChangeData[j];
+		for(var j=0;j<muNowData.length;j++){//开始移动
+			var oneMuData=muNowData[j];
 			var radius=oneMuData.radius;
 			var muDiv=$("#mu"+oneMuData.userid);
 			
@@ -1426,19 +1462,28 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			var muNodeLeft=endX-radius;
 			animateForMu(muDiv, muNodeLeft,muNodeTop, aniSecond * 0.4);
 		}
-		//排名改变之后就将改变的数组数值复制到muNowData中，再清空muChangeData
-		muNowData=[].concat(muChangeData);
-		muChangeData.splice(0, muChangeData.length);
-		averageForChangeX.splice(0, averageForChangeX.length);
-		averageForChangeY.splice(0, averageForChangeY.length);
-		
-		
 		//这是为了解决排名改变还没有计算完新的排名又出现的问题
 		timeOutSuccess=setTimeout(function(){
 			muDataQueueEnd(matchedUserArr);
 		},aniSecond * 0.4);
 	}
 }
+
+/**2017.11.06 叶夷  判断muChangeData中的圆是否相交*/
+function muChangeDataIfIntersect(){
+	for(var a=0;a<muChangeData.length;a++){
+		var id=muChangeData[a].userid;
+		var x=muChangeData[a].x;
+		var y=muChangeData[a].y;
+		var radius=muChangeData[a].radius;
+		intersect=isIntersect(id,x,y,radius,muChangeData);
+		if(!intersect){// 不相交
+			isBreak=true;
+			break;
+		}
+	}
+}
+
 
 function muDataQueueEnd(matchedUserArr){
 	removeByValue(muDataQueue, matchedUserArr);
@@ -1450,7 +1495,7 @@ function muDataQueueEnd(matchedUserArr){
 	}
 }
 
-function getMuChangeData(matchedUserArr){
+function getMuChangeData(matchedUserArr,isFirst){
 	//将muNowData的数据和改变的排名数据计算之后获得新的muNewData，即下面的muNewData
 	for(var i = 0; i < matchedUserArr.length; i++){//将排名改变的数据遍历
 		var muserid = matchedUserArr[i].userid;// 这是匹配人id
@@ -1460,7 +1505,7 @@ function getMuChangeData(matchedUserArr){
 		//这里是判断一开始的时候匹配用户没有满的情况
 		if(i>muChangeData.length-1){
 			setMUPosition(i,matchedUserArr);
-			muAddImg(i,matchedUserArr,false);
+			muAddImg(i,matchedUserArr,isFirst);
 			muChangeData=[].concat(muNowData);
 		}
 		var radius=muChangeData[i].radius;
@@ -1620,7 +1665,7 @@ function setMUPosition(i,matchedUserArr){
 	for(var j=matchUserContainerYStart;j<=matchUserContainerYEnd;j++){
 		var isBreak=false;
 		for(var i=matchUserContainerXStart;i<=matchUserContainerXEnd;i++){
-			intersect=isIntersect(muId,x,y,radius);
+			intersect=isIntersect(muId,x,y,radius,muNowData);
 			if(!intersect){// 不相交
 				muNowData.push(muPosition(muId,x, y, radius,muImg));
 				isBreak=true;
@@ -1654,38 +1699,48 @@ function setMUPosition(i,matchedUserArr){
 
 /**2017.11.02  叶夷  设置匹配圆的大小*/
 function setMatchUsersSize(i){
+	var bodyWidth=$("body").width();
 	var radius;
 	if(i==0){
-		var userImageRadius=($("#userimg>img").width()+10)/2;
-		radius=userImageRadius;
+		radius=bodyWidth*0.070;
 	}else if(i==1){
-		radius=muNowData[i-1].radius*6/7;
+		radius=bodyWidth*0.064;
 	}else if(i==2){
-		radius=muNowData[i-1].radius*6/7;
+		radius=bodyWidth*0.058;
 	}else if(i==3){
-		radius=muNowData[i-1].radius*6/7;
+		radius=bodyWidth*0.051;
 	}else if(i==4){
-		radius=muNowData[i-1].radius*8/9;
+		radius=bodyWidth*0.045;
 	}else if(i==5){
-		radius=muNowData[i-1].radius*9/10;
+		radius=bodyWidth*0.038;
 	}else if(i==6){
-		radius=muNowData[i-1].radius*10/11;
+		radius=bodyWidth*0.035;
 	}else if(i==7){
-		radius=muNowData[i-1].radius*11/12;
+		radius=bodyWidth*0.030;
 	}else if(i==8){
-		radius=muNowData[i-1].radius*12/13;
+		radius=bodyWidth*0.028;
 	}else if(i==9){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.026;
 	}else if(i==10){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.024;
 	}else if(i==11){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.024;
 	}else if(i==12){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.024;
 	}else if(i==13){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.022;
 	}else if(i==14){
-		radius=muNowData[i-1].radius;
+		radius=bodyWidth*0.022;
+	}else if(i==15){
+		radius=bodyWidth*0.022;
+	}else if(i==16){
+		radius=bodyWidth*0.020;
+	}else if(i==17){
+		radius=bodyWidth*0.018;
+	}else if(i==18){
+		radius=bodyWidth*0.016;
+	}else if(i==19){
+		radius=bodyWidth*0.014;
 	}
 	return radius;
 }
@@ -1700,7 +1755,7 @@ function setBorder(headerContainer,radius){
  * 叶夷 2017.09.14 判断是否和其他匹配人相交，true相交，false不相交
  * notContrast,不用对比的点位置，没有的话就为空
  */
-function isIntersect(id,x,y,radius){
+function isIntersect(id,x,y,radius,muNowData){
 	var flag=false;// 相交为true;不相交为false
 	if(muNowData.length>0){
 		for(var index in muNowData){
@@ -1784,7 +1839,8 @@ var averageForChangeY=new Array();//y位置变化的平均值
 var changeTotalX=0;//在n次之前累计的变化总数
 var changeTotalY=0;
 var changeCount=0;//这是循环变化的次数
-var maxChangeCount=1000;//这是最大的循环变化的次数,超过1000次则不需要再循环
+var maxChangeCount=50;//这是最大的循环变化的次数,超过1000次则不需要再循环
+var notIntersectCount=20;//判断不相交的最大次数
 
 /**2017.09.26 叶夷 从一个匹配人开始，然后计算边框和其它匹配人共同作用的排斥力(排斥力即移动的距离，目前是距离的倒数*大小,即距离越近和质量越大，排斥力越大),知道这个距离在0~1之间，则算是平衡下来停下*/
 function setPositionAndNotIntersect(){
