@@ -1402,7 +1402,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			averageForChangeX.splice(0, averageForChangeX.length);
 			averageForChangeY.splice(0, averageForChangeY.length);
 			//log2root("匹配圆初始化第"+(c+1)+"次");
-			//console.log("匹配圆初始化第"+(c+1)+"次");
+			console.log("匹配圆初始化第"+(c+1)+"次");
 			if(!intersect){
 				break;
 			}
@@ -1433,7 +1433,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 					break;
 				}
 				++changeCount;
-				//console.log("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
+				console.log("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
 			}
 			muChangeDataIfIntersect();//判断是否相交
 			//排名改变之后就将改变的数组数值复制到muNowData中，再清空muChangeData
@@ -1442,7 +1442,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			averageForChangeX.splice(0, averageForChangeX.length);
 			averageForChangeY.splice(0, averageForChangeY.length);
 			
-			//console.log("匹配圆变化是否相交 第"+(c+1)+"次");
+			console.log("匹配圆变化是否相交 第"+(c+1)+"次");
 			if(!intersect){
 				break;
 			}
@@ -1699,52 +1699,49 @@ function setMUPosition(i,matchedUserArr){
 
 /**2017.11.02  叶夷  设置匹配圆的大小*/
 function setMatchUsersSize(i){
-	var muContainerWidth=$("#header-container").width()-$("#header-container").width()/2-10;
-	var muContainerHeight=$("#header-container").height()-10;
-	var muContainerArea=muContainerWidth*muContainerHeight;
-	var area;
+	var bodyWidth=$("body").width();
+	var radius;
 	if(i==0){
-		area=muContainerArea*0.075;
+		radius=bodyWidth*0.070;
 	}else if(i==1){
-		area=muContainerArea*0.066;
+		radius=bodyWidth*0.064;
 	}else if(i==2){
-		area=muContainerArea*0.058;
+		radius=bodyWidth*0.058;
 	}else if(i==3){
-		area=muContainerArea*0.051;
+		radius=bodyWidth*0.051;
 	}else if(i==4){
-		area=muContainerArea*0.045;
+		radius=bodyWidth*0.045;
 	}else if(i==5){
-		area=muContainerArea*0.038;
+		radius=bodyWidth*0.038;
 	}else if(i==6){
-		area=muContainerArea*0.035;
+		radius=bodyWidth*0.035;
 	}else if(i==7){
-		area=muContainerArea*0.030;
+		radius=bodyWidth*0.030;
 	}else if(i==8){
-		area=muContainerArea*0.028;
+		radius=bodyWidth*0.028;
 	}else if(i==9){
-		area=muContainerArea*0.026;
+		radius=bodyWidth*0.026;
 	}else if(i==10){
-		area=muContainerArea*0.024;
+		radius=bodyWidth*0.024;
 	}else if(i==11){
-		area=muContainerArea*0.024;
+		radius=bodyWidth*0.024;
 	}else if(i==12){
-		area=muContainerArea*0.024;
+		radius=bodyWidth*0.024;
 	}else if(i==13){
-		area=muContainerArea*0.022;
+		radius=bodyWidth*0.022;
 	}else if(i==14){
-		area=muContainerArea*0.022;
+		radius=bodyWidth*0.022;
 	}else if(i==15){
-		area=muContainerArea*0.022;
+		radius=bodyWidth*0.022;
 	}else if(i==16){
-		area=muContainerArea*0.020;
+		radius=bodyWidth*0.020;
 	}else if(i==17){
-		area=muContainerArea*0.018;
+		radius=bodyWidth*0.018;
 	}else if(i==18){
-		area=muContainerArea*0.016;
+		radius=bodyWidth*0.016;
 	}else if(i==19){
-		area=muContainerArea*0.014;
+		radius=bodyWidth*0.014;
 	}
-	var radius=Math.sqrt(area/Math.PI);
 	return radius;
 }
 
