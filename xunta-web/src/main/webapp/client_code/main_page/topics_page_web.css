@@ -621,6 +621,12 @@ width:100%;
 	border:1px solid #a5a5a5;
 	background-color:rgba(34,34,34,0.9);
 	font-size: 23px;
+	width:37px;
+	height:30px;
+	line-height:25px;
+	
+	
+	
 }
 
 .yesItem,.noItem{
