@@ -50,7 +50,17 @@ function requestCP(userId,requestNum,currentPage){//调用根页面上的同名�
 
 //叶夷   2017.06.16  发送"标签选中"
 function sendSelectCP(userId,cpid,text, property){
-	var paraStr = userId + "','" + cpid + "','" +text+"','"+ property;
+	//选中标签先判断是否是推荐的标签，如果是则在选择标签的时候加上标记返回后台
+	var isPushCP;
+	for(var index in pushCPIdArray){
+		var pushCpID=pushCPIdArray[index];
+		if(pushCpID==cpid){
+			isPushCP=true;
+			break;
+		}
+	}
+	
+	var paraStr = userId + "','" + cpid + "','" +text+"','"+ property+"','"+isPushCP;
 	execRoot("sendSelectedCP('"+ paraStr +"')");
 }
 
@@ -241,7 +251,15 @@ function push_matched_user(newMuData) {
 	}
 }
 
+//2017.11.07  叶夷   用一个数组将后台推荐的标签存储起来，在选择的时候判断是否是推荐的标签
+var pushCPIdArray=new Array();
 //2017.09.04 叶夷    CP推荐
 function pushCP(data){
+	//将推荐的标签装入数组中
+	var cpWrap=data.cp_wrap;
+	for(var index in cpWrap){
+		pushCPIdArray.push( cpWrap[index].cpid);
+	}
+	
 	responseToCPRequest(data);
 }
