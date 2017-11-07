@@ -26,7 +26,7 @@ width:100%;
 	//overflow-y:scroll;
 	-webkit-overflow-scrolling: touch;
 	overflow:hidden;
-	background: url(../image/background1.jpg) no-repeat;
+	background: url(../image/background2-lessblue.jpg) no-repeat;
 	background-size:100% 100%;
 	
 }
@@ -64,7 +64,7 @@ width:100%;
 	//padding-top:21px;
 	//height:87%;
 }
-
+/*
 #createnewtopic {
 	//left: 11px;
 	width:33%;
@@ -149,7 +149,7 @@ width:100%;
 	width:18px;
 	height:18px;
 }
-
+/*
 .recentmsg {
 	//float:clear;
 	color: #686868;
@@ -239,7 +239,7 @@ width:100%;
 /*我的标签容器*/
 .mytag-container{
 	width: 100%;/*这个百分比与下面两个padding百分比总合为1*/
-	padding-left:10px;
+	padding-left:9px;
 	padding-right:20px;
 	height: 30%;
 	float: left;
@@ -549,15 +549,16 @@ width:100%;
 	//padding-top:8px;
 	//padding-left:10px;
 	position:fixed;
-	bottom:2%;
-	left:4%;
+	bottom:3%;
+	left:5%;
 	z-index:102;
 	//box-shadow:0 0 50px black;
 	display:none;
+	height:4%;/*这里设一个值,下面的img高度才能起作用.*/
 }
 
 .enterdialogList>img{
-	//height:35px;
+	height:100%;
 	width:23%;
 	box-shadow:0 0 50px black;
 }
@@ -616,7 +617,16 @@ width:100%;
 
 
 .add{
-	//color:#fccf63;
+	color:#cccccc;
+	border:1px solid #a5a5a5;
+	background-color:rgba(34,34,34,0.9);
+	font-size: 23px;
+	width:37px;
+	height:30px;
+	line-height:25px;
+	
+	
+	
 }
 
 .yesItem,.noItem{

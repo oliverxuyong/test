@@ -90,7 +90,7 @@ function setDialogListNode(d,dialog,dialogContent){
 	var dialogWidth=parseInt(dialog.css("width"));//获得聊天列表单个的高度
 	dialog.css("top",(dialogHeight*d+10));
 	//头像css设置
-	var toUserImgHeight=dialogWidth*0.0943;//图片的高度是聊天列表宽度的0.1026
+	var toUserImgHeight=dialogWidth*0.087;//图片的高度是聊天列表宽度的0.1026
 	var toUserImgMargin=(dialogHeight-toUserImgHeight)/2;
 	var toUserImg=dialog.find("img");
 	toUserImg.css("height",toUserImgHeight);
@@ -115,10 +115,10 @@ function setDialogListNode(d,dialog,dialogContent){
 	var dialogContentTimeHeight=dialogContent.find(".dialog_content_time").css("height");
 	$(".dialog_content_time").css("line-height",dialogContentTimeHeight);
 	$(".dialog_content_time").css("font-size",parseInt(dialogContentTimeHeight)*0.5+"px");
-	$(".dialog_content_time").css("margin-right",toUserImgMargin+"px");
+	//$(".dialog_content_time").css("margin-right",toUserImgMargin+"px");
 	
 	var dialogContentMsgHeight=dialogContent.find(".dialog_content_msg").css("height");
-	$(".dialog_content_msg").css("line-height",dialogContentMsgHeight);
+	//$(".dialog_content_msg").css("line-height",dialogContentMsgHeight);
 	$(".dialog_content_msg").css("font-size",parseInt(dialogContentMsgHeight)*0.65+"px");
 }
  
