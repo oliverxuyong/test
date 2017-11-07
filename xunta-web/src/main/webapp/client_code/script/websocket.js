@@ -243,6 +243,20 @@ function requestUserIds(){
 		WS_Send(json_obj);
 	}
 }
+//2017.11.07 叶夷  用户打开聊天页则发一个接口给后台
+function request_openDialogPage(userId , toUserId){
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("用户打开聊天页则发一个接口给后台:userId="+userId);
+		var json_obj = {
+			 _interface:"1110-1",
+			 interface_name: "request_openDialogPage",
+			 userid:userId.toString(),
+			 toUserId: toUserId.toString(),
+			 timestamp:""
+		};
+		WS_Send(json_obj);
+	}
+}
 
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");

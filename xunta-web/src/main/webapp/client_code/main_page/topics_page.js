@@ -192,6 +192,9 @@ function enterDialogPage(toUserId,toUserName,muImg) {
 	
 	// openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
 	openWin(toUserId, 'dialog_page/dialog_page.html', JSON.stringify(pageParam));
+	//打开了聊天页的时候将数据传给后台
+	var paraStr = userId + "','" + toUserId;
+	execRoot("request_openDialogPage('"+ paraStr +"')");
 }
 
 // 2017.07.26 叶夷 进入聊天列表页，需要我的id
