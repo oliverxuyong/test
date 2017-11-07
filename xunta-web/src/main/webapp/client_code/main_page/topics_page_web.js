@@ -1477,10 +1477,10 @@ function muChangeDataIfIntersect(){
 		var y=muChangeData[a].y;
 		var radius=muChangeData[a].radius;
 		intersect=isIntersect(id,x,y,radius,muChangeData);
-		if(!intersect){// 不相交
+		/*if(!intersect){// 不相交
 			isBreak=true;
 			break;
-		}
+		}*/
 	}
 }
 
