@@ -70,9 +70,9 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	//推荐标签遮住滑动条显示
 	$("#background-rightbar").show();
 	//调整滚动条宽度
-	/*console.log("测试："+document.getElementById("cp-show").offsetWidth
+	/*console.log("测试2："+document.getElementById("cp-show").offsetWidth
 			+" "+document.getElementById("cp-show").scrollWidth);*/
-	var scollWidth=document.getElementById("cp-show").offsetWidth-document.getElementById("cp-show").scrollWidth+1;
+	var scollWidth=document.getElementById("cp-show").offsetWidth-document.getElementById("cp-show").scrollWidth+2;
 	if(scollWidth>1){
 		$("#background-rightbar").css("width",scollWidth);
 	}
@@ -1131,7 +1131,9 @@ function addMyCp(cpid,text,selected_user_num){
 		//end
 		
 		//调整滚动条宽度
-		var scollWidth=document.getElementById("mytag-container").offsetWidth-document.getElementById("mytag-container").scrollWidth+1;
+		/*console.log("测试1："+document.getElementById("mytag-container").offsetWidth+
+				" "+document.getElementById("mytag-container").scrollWidth);*/
+		var scollWidth=document.getElementById("mytag-container").offsetWidth-document.getElementById("mytag-container").scrollWidth+2;
 		if(scollWidth>1){
 			$("#background-rightbar-mytag").css("width",scollWidth);
 		}
