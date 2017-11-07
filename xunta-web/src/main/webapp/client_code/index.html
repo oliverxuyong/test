@@ -54,7 +54,7 @@
         		<div class="clear"></div>
         		<input id="inputbox_password2login" value="输入登录密码" onfocus="if(this.value=='输入登录密码') {this.value='';this.type='password'}" onblur="if(this.value=='') {this.value='输入登录密码';this.type='text'}" style="display: inline;" onkeypress="if(event.keyCode==13){Javascript:loginbymobilephone()}">
         		<input id="inputbox_password2register" value="设置登录密码" onfocus="if(this.value=='设置登录密码') {this.value='';this.type='password'}" onblur="if(this.value=='') {this.value='设置登录密码';this.type='text'}" >
-        		<input id="inputbox_resetpassword" value="重设登录密码" onfocus="if(this.value=='重设登录密码';type='password') {this.value=''}" onblur="if(this.value=='') {this.value='重设登录密码';this.type='text'}" >        		<div id="forgetpassword" onclick="forgetPassword()">忘了</div>
+        		<input id="inputbox_resetpassword" value="重设登录密码" onfocus="if(this.value=='重设登录密码' && type='password') {this.value=''}" onblur="if(this.value=='') {this.value='重设登录密码';this.type='text'}" >        		<div id="forgetpassword" onclick="forgetPassword()">忘了</div>
         		<div id="button_registerbymobilephone" onclick="registerbymobilephone()"><div id="button_font">注册并登录</div></div>
         		<div id="button_resetandloginbymobilephone" onclick="resetandloginbymobilephone()"><div id="button_font">重设密码并登录</div></div>
         		<div id="button_loginbymobilephone" onclick="loginbymobilephone()"><div id="button_font">登录</div></div>

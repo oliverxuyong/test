@@ -7,13 +7,13 @@
     left: 3.5%;	
 }
 
-.username {
+#username {
     text-align: center;
-    font-size: 88%;
+    font-size: 15px;
     color: #a2a2a2;
     cursor: default;
     position: absolute;
-    bottom: 13px;
+    //bottom: 13px;
     left: 0;
     right: 0;
 }
@@ -22,7 +22,7 @@
 	height: 38%;
 	width: 100%;
     position: absolute;
-    bottom: 13%;
+    bottom: 30px;
     /* padding-top: 100%; */
     /* padding-bottom: 0%; */
 }
@@ -36,16 +36,18 @@
 
 #showonlineoffline {
     position: absolute;
-    right: 7%;
-    top: -13%;
+    left: 63%;
+    top: 0;
     display: none;
-    width: 20px;
-    height: 20px;
+    //width: 20px;
+    height: 22%;
 }
 
 #showonlineoffline>img{
-	height: 77%; 
+	height: 100%; 
 	//width:7%;
+	position:relative;
+	top:-60%
 }
 
 #showouseroprate{
