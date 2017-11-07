@@ -43,8 +43,10 @@
 							<img src="../image/dot-gray.png" onclick="wsConnect()" />
 						</div>
 						<img onclick="ask2LogOff()" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
+						<div id="username"></div>
+					
 					</div>
-					<div class="username" id="username"></div>
+					
 				</div>
 				
 				<!--2017.07.04  叶夷   匹配人列表 -->
@@ -70,7 +72,9 @@
 			<!-- 我的标签 -->
 			<div class="mytag-container" id="mytag-container">
 			<img id="background-rightbar-mytag" src="../image/background1-rightbar.jpg"><!--用来覆盖右边的滚动条 -->
-				<div  class="mytag add" id="addtag" onclick='addTag()'>+</div>
+				<div  class="mytag" id="addtag" onclick='addTag()'>
+					<!-- img src="../image/plus3.jpg"-->
+				</div>
 				<!-- <div class="mytag"><img src="../image/acclaim-50x173.png"><span>阿斯蒂芬8后</span></div> -->
 				<!-- <div class="mytag" id="addtag2" onclick="addTag()" style="width:86px;"> 万有引力 					
 					<div class="mytag-selectednumber">123</div>
@@ -117,10 +121,11 @@
 			
 		</div>
 		
-		<!-- "聊天"文字容器-->
+		<!-- "进入聊天列表按钮"用fixed后,不论放在哪里,都只看屏幕的长宽.-->
 		<div class="enterdialogList" id="enterdialogList" onclick="EnterdialogList()">
-		<img src="../image/new-msg-3.png" />
+			<img src="../image/new-msg-3.png" />
 		</div>
+
 		<!-- 选中标签并发websocket测试按钮 -->
 		<!-- <div onclick="requestUserIds()" style="position: absolute;top: 26px;left: 100px;background: #f1f1f1;z-index:999;">
 			并发测试按钮 
