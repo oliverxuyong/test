@@ -240,22 +240,23 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	cp_text.text(cpText);
 	
 	// 计算cp div的斜边的大小，即容纳其外圆的直径
+	/*console.log("测试："+Math.pow(cpTextHeight, 2)+" "+Math.pow(cpTextWidth, 2)
+			+" "+Math.sqrt(Math.pow(cpTextHeight, 2)+ Math.pow(cpTextWidth, 2)));*/
 	var hypotenuse = parseInt(Math.sqrt(Math.pow(cpTextHeight, 2)
 			+ Math.pow(cpTextWidth, 2))) + 1;
-	
 	
 	//2017.08.14 叶夷 加上标签的选择人数 
 	selectTagNumNode.css("font-size",cpTextSize+"px");
 	selectTagNumNode.css("height", (cpTextSize+5) + "px");
 	selectTagNumNode.css("line-height", (cpTextSize+5) + "px");
-	//加上了标签的选择人数外圆的大小增大
-	if (cpInNodeWidth > hypotenuse){
-		//cpInNodeWidth=parseInt(cpInNodeWidth)+parseInt(cpTextSize)+2; //标签选择人数已经放在右上角，所以内圆大小不用增加选择人数的空间
+	//加上了标签的选择人数外圆的大小增大,标签选择人数已经放在右上角，所以内圆大小不用增加选择人数的空间
+	/*if (cpInNodeWidth > hypotenuse){
+		cpInNodeWidth=parseInt(cpInNodeWidth)+parseInt(cpTextSize)+2; 
 		cp_innode.css("height", cpInNodeWidth);
 		cp_innode.css("width", cpInNodeWidth);
 	}else{
 		hypotenuse=parseInt(hypotenuse)+parseInt(cpTextSize)+5; 
-	}
+	}*/
 	if(selectTagNum<=0){
 		selectTagNumNode.hide();
 	}else{
