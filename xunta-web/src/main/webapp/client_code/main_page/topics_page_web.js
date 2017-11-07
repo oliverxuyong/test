@@ -205,7 +205,8 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth
 	}
 	
 	//限制了文字内容和长度之后对圆进行大小计算
-	calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
+	cpInNodeWidth=calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
+	return cpInNodeWidth;
 }
 
 function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset){
@@ -425,8 +426,8 @@ function startPushSelectCpPresent(data){
 		//传入的参数是：cp文字div, cp文字大小，cp文字，外圆div，内圆div,选择的人数，再加上一个圆div（用来判断标签之前的距离）,选择人数div,判断是否相交
 		cpInNodeWidth=calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
 		cp_innode.animate({
-			width : cpInNodeWidth,
-			height : cpInNodeWidth
+			width : cpInNodeWidth+"px",
+			height : cpInNodeWidth+"px"
 		}, 1000);
 	
 		//如果标签扩大，计算出扩大的width
