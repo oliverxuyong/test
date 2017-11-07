@@ -73,8 +73,10 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	/*console.log("测试："+document.getElementById("cp-show").offsetWidth
 			+" "+document.getElementById("cp-show").scrollWidth);*/
 	var scollWidth=document.getElementById("cp-show").offsetWidth-document.getElementById("cp-show").scrollWidth+1;
-	$("#background-rightbar-mytag").css("width",scollWidth);
-	$("#background-rightbar").css("width",scollWidth);
+	if(scollWidth>1){
+		$("#background-rightbar").css("width",scollWidth);
+	}
+	//$("#background-rightbar-mytag").css("width",scollWidth);
 }
 
 //2017.10.12 叶夷   标签的完整文字内容,cpid为键，文字为值
@@ -1125,6 +1127,12 @@ function addMyCp(cpid,text,selected_user_num){
 		}
 		myTagSelectNumber.hide();
 		//end
+		
+		//调整滚动条宽度
+		var scollWidth=document.getElementById("mytag-container").offsetWidth-document.getElementById("mytag-container").scrollWidth+1;
+		if(scollWidth>1){
+			$("#background-rightbar-mytag").css("width",scollWidth);
+		}
 		
 		//将图片放在我的标签框右边遮住滑动条
 		$("#background-rightbar-mytag").show();
