@@ -100,7 +100,7 @@ function adjustWidthsHeights() {
 		console.log("============userAgent[0]======="+userAgent[0]); 
 		
 		
-		document.getElementById("inputbox").style.width = $("#inputframe").width() - 70 + 6 + "px";
+		document.getElementById("inputbox").style.width = $("#inputframe").width() - 70 + 6 + "px";//后来发现pc上的chrome的输入框与回车钮间距过大.原因不明,先加6调到合适. xu2017.11.06
 		console.log("============$(#inputframe).width()======="+$("#inputframe").width()); 
 		console.log("============document.getElementById(inputbox).style.width======="+document.getElementById("inputbox").style.width);
 		
