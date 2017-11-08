@@ -1944,7 +1944,10 @@ function setPositionAndNotIntersect(){
 		var headerContainer=$("#header-container");
 		setBorder(headerContainer,radius);
 		if(x<=matchUserContainerXStart){//出现在几种情况1.距离为0~10个像素之间；2.距离为负数
-			moveStartX=Math.cbrt(headerContainerSize+moveWidth);
+			//console.log("测试1："+Math.pow(27,1/3) );
+			//console.log("测试2："+Math.cbrt(27));
+			//moveStartX=Math.cbrt(headerContainerSize+moveWidth);
+			moveStartX=Math.pow((headerContainerSize+moveWidth),1/3);
 			//moveStartX=moveMaxRange*2;
 		}else{
 			moveStartX=1/Math.pow((x-matchUserContainerXStart), 3)*moveWidth*headerContainerSize;
@@ -1953,7 +1956,8 @@ function setPositionAndNotIntersect(){
 			}
 		}
 		if(x>=matchUserContainerXEnd){
-			moveEndX=-Math.cbrt(headerContainerSize+moveWidth);
+			//moveEndX=-Math.cbrt(headerContainerSize+moveWidth);
+			moveEndX=-Math.pow((headerContainerSize+moveWidth),1/3);
 			//moveEndX=-moveMaxRange*2;
 		}else{
 			moveEndX=-1/Math.pow((x-matchUserContainerXEnd), 3)*moveWidth*headerContainerSize;
@@ -1962,7 +1966,8 @@ function setPositionAndNotIntersect(){
 			}
 		}
 		if(y<=matchUserContainerYStart){
-			moveStartY=Math.cbrt(headerContainerSize+moveWidth);
+			//moveStartY=Math.cbrt(headerContainerSize+moveWidth);
+			moveStartY=Math.pow((headerContainerSize+moveWidth),1/3);
 			//moveStartY=moveMaxRange*2;
 		}else{
 			moveStartY=1/Math.pow((y-matchUserContainerYStart),3)*moveWidth*headerContainerSize;
@@ -1971,7 +1976,8 @@ function setPositionAndNotIntersect(){
 			}
 		}
 		if(y>=matchUserContainerYEnd){
-			moveEndY=-Math.cbrt(headerContainerSize+moveWidth);
+			//moveEndY=-Math.cbrt(headerContainerSize+moveWidth);
+			moveEndY=-Math.pow((headerContainerSize+moveWidth),1/3);
 			//moveEndY=-moveMaxRange*2;
 		}else{
 			moveEndY=-1/Math.pow((y-matchUserContainerYEnd), 3)*moveWidth*headerContainerSize;
