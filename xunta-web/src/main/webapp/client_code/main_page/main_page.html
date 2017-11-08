@@ -138,7 +138,8 @@
 	</div> <!--End of <div id="showatloaded" class="showatloaded"> -->
 	
 </body>
-<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../script/jquery.nicescroll.min.js"></script>
 	<script type="text/javascript" src="../script/common-xunta.js"></script>
 	<script type="text/javascript" src="../script/common-xunta_web.js"></script>
 	<script type="text/javascript" src="../script/popup.js"></script>
@@ -435,5 +436,14 @@
 			return obj;
 		}
 		
+		//解决滚动条隐藏在火狐浏览器不兼容的问题
+		$("#cp-show").niceScroll({ 
+			cursorwidth:"0px", 
+			cursorborder:"0"
+		})
+		$("#mytag-container").niceScroll({ 
+			cursorwidth:"0px", 
+			cursorborder:"0"
+		})
 	</script>
 </html>
