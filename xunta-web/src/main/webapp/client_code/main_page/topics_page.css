@@ -9,13 +9,14 @@
 
 #username {
     text-align: center;
-    font-size: 15px;
+    font-size: 100%;
     color: #a2a2a2;
     cursor: default;
     position: absolute;
     //bottom: 13px;
     left: 0;
     right: 0;
+    //zoom:85%;
 }
 
 #userimg {
@@ -37,7 +38,7 @@
 #showonlineoffline {
     position: absolute;
     left: 63%;
-    top: 0;
+    top: -2px;
     display: none;
     //width: 20px;
     height: 22%;
@@ -47,7 +48,7 @@
 	height: 100%; 
 	//width:7%;
 	position:relative;
-	top:-60%
+	top:-68%
 }
 
 #showouseroprate{
