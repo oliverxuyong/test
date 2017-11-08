@@ -249,24 +249,13 @@ width:100%;
 	overflow-y:auto;
 	overflow-x:hidden;
 	display:none;
+	/*解决滚动条隐藏在IE浏览器不兼容的问题  */
+    -ms-overflow-style: none;
 }
 
 #mytag-container::-webkit-scrollbar {
 width:0px;
 height:0px;
-}
-//解决滚动条隐藏在IE浏览器不兼容的问题
-.mytag-container{
-    -ms-scroll-chaining: chained;
-    -ms-overflow-style: none;
-    -ms-content-zooming: zoom;
-    -ms-scroll-rails: none;
-    -ms-content-zoom-limit-min: 100%;
-    -ms-content-zoom-limit-max: 500%;
-    -ms-scroll-snap-type: proximity;
-    -ms-scroll-snap-points-x: snapList(100%, 200%, 300%, 400%, 500%);
-    -ms-overflow-style: none;
-    //overflow: auto;
 }
 
 /*我的标签最外层容器*/
@@ -543,24 +532,13 @@ height:0px;
 	overflow-x:hidden;
 	margin-left:1.8%;
 	//background-color:white;
+	/**解决滚动条隐藏在IE浏览器不兼容的问题*/
+    -ms-overflow-style: none;
 }
 
 .othertag::-webkit-scrollbar {
 width:0px;
 height:0px;
-}
-//解决滚动条隐藏在IE浏览器不兼容的问题
-.othertag{
-    -ms-scroll-chaining: chained;
-    -ms-overflow-style: none;
-    -ms-content-zooming: zoom;
-    -ms-scroll-rails: none;
-    -ms-content-zoom-limit-min: 100%;
-    -ms-content-zoom-limit-max: 500%;
-    -ms-scroll-snap-type: proximity;
-    -ms-scroll-snap-points-x: snapList(100%, 200%, 300%, 400%, 500%);
-    -ms-overflow-style: none;
-    //overflow: auto;
 }
 
 .othertagtext{
