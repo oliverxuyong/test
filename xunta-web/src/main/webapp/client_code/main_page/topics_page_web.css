@@ -240,7 +240,7 @@ width:100%;
 .mytag-container{
 	width: 100%;/*这个百分比与下面两个padding百分比总合为1*/
 	padding-left:9px;
-	padding-right:20px;
+	padding-right:19px;
 	height: 30%;
 	float: left;
 	border-bottom:1px solid #555555;
@@ -250,6 +250,12 @@ width:100%;
 	overflow-x:hidden;
 	display:none;
 }
+
+#mytag-container::-webkit-scrollbar {
+width:0px;
+height:0px;
+}
+
 /*我的标签最外层容器*/
 .search-head{
 	border:1px solid #ccc;
@@ -524,6 +530,11 @@ width:100%;
 	overflow-x:hidden;
 	margin-left:1.8%;
 	//background-color:white;
+}
+
+#cp-show::-webkit-scrollbar {
+width:0px;
+height:0px;
 }
 
 .othertagtext{

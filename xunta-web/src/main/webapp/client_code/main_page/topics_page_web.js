@@ -68,14 +68,14 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	//进入聊天列表显示
 	$("#enterdialogList").show();
 	//推荐标签遮住滑动条显示
-	$("#background-rightbar").show();
+	/*$("#background-rightbar").show();
 	//调整滚动条宽度
 	console.log("测试2："+document.getElementById("cp-show").offsetWidth
 			+" "+document.getElementById("cp-show").scrollWidth);
 	var scollWidth=document.getElementById("cp-show").offsetWidth-document.getElementById("cp-show").scrollWidth+2;
 	if(scollWidth>2){
 		$("#background-rightbar").css("width",scollWidth);
-	}
+	}*/
 	//$("#background-rightbar-mytag").css("width",scollWidth);
 }
 
@@ -634,7 +634,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	if(startLength<cpWidth){
 		startLength=cpWidth;
 	}
-	for (var start = 0; start <= containerWidth - startLength-20; start++) {
+	for (var start = 0; start <= containerWidth - startLength; start++) {
 		// 2.从开始获得上升cp的圆心坐标和半径，以cp_container的左下点为(0,0)
 		var cpRadius = cpWidth / 2;// 半径就是要上升的cp的宽除以2
 		var cpX = start + cpRadius;// 一开始圆心的x为start+cpRadius
@@ -1133,14 +1133,14 @@ function addMyCp(cpid,text,selected_user_num){
 		//调整滚动条宽度
 		/*console.log("测试1："+document.getElementById("mytag-container").offsetWidth+
 				" "+document.getElementById("mytag-container").scrollWidth);*/
-		var scollWidth=document.getElementById("mytag-container").offsetWidth-document.getElementById("mytag-container").scrollWidth+2;
+		/*var scollWidth=document.getElementById("mytag-container").offsetWidth-document.getElementById("mytag-container").scrollWidth+2;
 		if(scollWidth>2){
 			$("#background-rightbar-mytag").css("width",scollWidth);
 		}
 		
 		//将图片放在我的标签框右边遮住滑动条
 		$("#background-rightbar-mytag").show();
-		$("#background-rightbar-mytag").css("height",myTagContainerHeight);
+		$("#background-rightbar-mytag").css("height",myTagContainerHeight);*/
 		
 		//滚动条直接滑倒底部
 		myTagContainer.scrollTop( myTagContainer[0].scrollHeight );
@@ -2239,8 +2239,9 @@ function searchTag(suggestWrap,data){
 function response_user_selected_cp(datas){
 	var myTagContainer=$("#mytag-container");
 	myTagContainer.show();
-	var backgroundRightbarMytagWidth=$("#background-rightbar-mytag").width();
-	myTagContainer.css("padding-right",backgroundRightbarMytagWidth);
+	/*var backgroundRightbarMytagWidth=$("#background-rightbar-mytag").width();
+	myTagContainer.css("padding-right",backgroundRightbarMytagWidth);*/
+	var backgroundRightbarMytagWidth=parseInt(myTagContainer.css("padding-right"));
 	//设置我的标签框width
 	var myTagContainerWidth=$("body").width()-backgroundRightbarMytagWidth-10;
 	myTagContainer.css("width",myTagContainerWidth);
