@@ -53,4 +53,9 @@ public class MatchedUsersWSController {
 		returnJson.put("matched_user_arr", matchedUserArr);
 		socketService.chat2one(session, returnJson);
 	}
+	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1110-1")
+	public void wantTalk(WebSocketSession session, TextMessage message){
+		//啥也不做
+	}
 }

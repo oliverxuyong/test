@@ -89,21 +89,28 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String userid = session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString();
+		String clientIP = session.getRemoteAddress().toString();
 		logger.info("客户端"+userid+"请求：" + message.getPayload());
 	
 	
 		org.json.JSONObject obj = null;
+		String _interface = null;
+		String addition_type = null;
 		try {
 			obj = new org.json.JSONObject(message.getPayload());
 			User user = userService.findUser(Long.valueOf(userid));
-			loggerService.log(userid, user.getName(),obj.toString());
+			_interface = obj.get("_interface").toString();
+			if(obj.has("isPushCP")&&obj.getString("isPushCP").equals("true")){
+				addition_type = "isPushCP";
+			}
+			loggerService.log(userid, user.getName(),clientIP,obj.toString(),_interface,addition_type,user.getUserGroup());
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			session.sendMessage(new TextMessage("json数据格式错误"));
 			return;
 		}
 
-		String _interface = obj.get("_interface").toString();
 	//	logger.info("_interface:" + _interface);
 		websocketContext.executeMethod(_interface, session, message);
 	}
@@ -119,26 +126,26 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	
 	private void userOnline(WebSocketSession session) {
 		Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
+		String clientIP = session.getRemoteAddress().toString();
 		if (!checkExist(session)) {
 			users.add(session);
 			User u = userService.findUser(userid);
 			
 			if(session.getAttributes().get("boot").equals("yes"))
 			{
-				logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  打开应用上线");
-			}else{
-				logger.info("用户"+u.getUserId()+"  "+u.getName()+"恢复连接");
+				loggerService.log(userid.toString(), u.getName(),clientIP,"用户上线","登录",null,u.getUserGroup());
+				//logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  打开应用上线");
+			}/*else{
+				//logger.info("用户"+u.getUserId()+"  "+u.getName()+"恢复连接");
 				
 				//re_sendMsg(userid,5); //zheng 先取消，以后的更新任务还会有类似的功能
-			}
+			}*/
 			
 			recommendService.initRecommendParm(u);
 			cpShowingService.initUserShowingCps(u.getUserId()+"");
 			
 			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask(recommendService,userid+"");
 			recommendTaskPool.execute(recommendUpdateTask);
-			
-		} else {
 			
 		}
 	}
@@ -169,6 +176,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
 			Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
+			String clientIP = session.getRemoteAddress().toString();
 			users.remove(session);	
 			if(status.equals(CloseStatus.SERVICE_RESTARTED)){
 				logger.info("用户:"+userid+" WebSocketSession服务重启");
@@ -178,7 +186,8 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			recommendService.syncLastUpdateTime(u);
 			cpShowingService.clearUserShowingCps(userid+"");
 			
-			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason()+";"+status.getCode());
+			loggerService.log(userid.toString(), u.getName(), clientIP,"用户离线","登出",null,u.getUserGroup());
+		//	logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason()+";"+status.getCode());
 	}
 
 	/**

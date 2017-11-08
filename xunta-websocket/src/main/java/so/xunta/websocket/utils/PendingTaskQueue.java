@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import so.xunta.server.CpShowingService;
+import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
@@ -30,6 +31,8 @@ public class PendingTaskQueue {
 	private CpShowingService cpShowingService;
 	@Autowired
 	private SocketService socketService;
+	@Autowired
+	private LoggerService loggerService;
 	
 	private List<String> taskSerializeList = Collections.synchronizedList(new LinkedList<String>());
 
@@ -67,14 +70,14 @@ public class PendingTaskQueue {
 				String userId1 = parms[1];
 				String cpId1 = parms[2];
 				String propert1 = parms[3];
-				CpOperationPushTask t1= new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,RecommendService.SELECT_CP,propert1,socketService);
+				CpOperationPushTask t1= new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,RecommendService.SELECT_CP,propert1,socketService,loggerService);
 				returnTasks.add(t1);
 				break;
 			case RECOMMEND_CANCELCP:
 				String userId2 = parms[1];
 				String cpId2 = parms[2];
 				String propert2 = parms[3];
-				CpOperationPushTask t2 = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId2,cpId2,RecommendService.UNSELECT_CP,propert2,socketService);
+				CpOperationPushTask t2 = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId2,cpId2,RecommendService.UNSELECT_CP,propert2,socketService,loggerService);
 				returnTasks.add(t2);
 				break;
 			case RECOMMEND_UPDARW:

@@ -13,6 +13,7 @@ import so.xunta.beans.PushMatchedUserDTO;
 import so.xunta.beans.PushRecommendCpDTO;
 import so.xunta.beans.RecommendPushDTO;
 import so.xunta.server.CpShowingService;
+import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
@@ -24,16 +25,18 @@ public class CpOperationPushTask implements Runnable{
 	private RecommendService recommendService;	
 	private RecommendPushService recommendPushService;
 	private CpShowingService cpShowingService;
+	private LoggerService loggerService;
 	
 	private String cpId;
 	private String userId;
 	private int selectType;
 	private String property;
+	private String clientIP;
 	
 	Logger logger =Logger.getLogger(CpOperationPushTask.class);
 	
 	public CpOperationPushTask(RecommendService recommendService,RecommendPushService recommendPushService,
-			CpShowingService cpShowingService, String userId,String cpId, int selectType, String property, SocketService socketService) {
+			CpShowingService cpShowingService, String userId,String cpId, int selectType, String property, SocketService socketService,LoggerService loggerService) {
 		this.recommendService = recommendService;
 		this.recommendPushService = recommendPushService;
 		this.userId = userId;
@@ -42,6 +45,7 @@ public class CpOperationPushTask implements Runnable{
 		this.cpShowingService = cpShowingService;
 		this.selectType = selectType;
 		this.property = property;
+		this.loggerService = loggerService;
 	}
 	
 	public String getCpId() {
@@ -89,6 +93,7 @@ public class CpOperationPushTask implements Runnable{
 		if(userSession==null){
 			return;
 		}
+		clientIP = userSession.getRemoteAddress().toString();
 		
 		/*更新前记录一次状态*/
 		Boolean ifLastPushComlepted = recommendPushService.recordStatusBeforeUpdateTask(uid,selectType);
@@ -148,6 +153,7 @@ public class CpOperationPushTask implements Runnable{
 		returnJson.put("interface_name", "push_matched_user");
 		returnJson.put("new_user_arr", newUserArr);
 		socketService.chat2one(session, returnJson);
+		
 	}
 	
 	private void pushRecommendCps(List<PushRecommendCpDTO> pushRecommendCpDTOs,WebSocketSession session){
@@ -174,6 +180,7 @@ public class CpOperationPushTask implements Runnable{
 		returnJson.put("interface_name", "PushCP");
 		returnJson.put("cp_wrap", cpWrap);
 		socketService.chat2one(session, returnJson);
+		loggerService.log(userId, userId, clientIP, returnJson.toString(), "2105-1", null, null);
 	}
 
 	private void pushCpHeatChange(){
@@ -188,6 +195,7 @@ public class CpOperationPushTask implements Runnable{
 				returnJson.put("cpid",cpId);
 				returnJson.put("howmanypeople_selected", cpSelectUserCounts);
 				socketService.chat2one(userSession,returnJson);
+				loggerService.log(userId, userId, clientIP, returnJson.toString(), "2105-1", null, null);
 			}
 		}
 	}
