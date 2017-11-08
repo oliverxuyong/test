@@ -2243,8 +2243,8 @@ function response_user_selected_cp(datas){
 	myTagContainer.css("padding-right",backgroundRightbarMytagWidth);*/
 	var backgroundRightbarMytagWidth=parseInt(myTagContainer.css("padding-right"));
 	//设置我的标签框width
-	var myTagContainerWidth=$("body").width()-backgroundRightbarMytagWidth-10;
-	myTagContainer.css("width",myTagContainerWidth);
+	//右侧遮盖条取消后, 这里不需要了设置了.var myTagContainerWidth=$("body").width()-backgroundRightbarMytagWidth-10;
+	//myTagContainer.css("width",myTagContainerWidth);
 	var cp_arr=datas.cp_arr;
 	for(var i in cp_arr){
 		var cpid=cp_arr[i].cpid;
