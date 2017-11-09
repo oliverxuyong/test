@@ -212,6 +212,7 @@ width:100%;
 	z-index:102;
 	//margin-left:6px;
 	top:0%;
+	
 }
 
 /*装头像和名字的容器*/
@@ -238,9 +239,9 @@ width:100%;
 
 /*我的标签容器*/
 .mytag-container{
-	width: 97.6%;/*这个百分比与下面两个padding百分比总合为1*/
-	padding-left:1.4%;
-	padding-right:1%;
+	width: 97%;/*这个百分比与下面两个padding百分比总合为1*/
+	padding-left:3%;
+	padding-right:0%;
 	height: 30%;
 	float: left;
 	border-bottom:1px solid #555555;
@@ -424,6 +425,8 @@ height:0px;
 #cp-container{
 //padding-left:20px;
 //margin-left:20px;	
+    //margin-top: 4%;
+    //padding-top: 15%;
 }
 	
 .cp{ 
@@ -529,9 +532,10 @@ height:0px;
 .othertag{
 	position:absolute; 
 	height:100%; 
-	width:98.2%;
+	width:96.4%;
 	overflow-x:hidden;
 	margin-left:1.8%;
+	margin-right:1.8%;
 	//background-color:white;
 	/**解决滚动条隐藏在IE浏览器不兼容的问题*/
     -ms-overflow-style: none;
@@ -584,7 +588,7 @@ height:0px;
 	float: left;
     text-align: center;
     border-radius: 25px;
-    margin-left: 10px;
+    margin-right: 10px;
     margin-top:0.8%;
     //margin-bottom:5px;
     //margin-right:6px;
