@@ -26,6 +26,7 @@
     bottom: 30px;
     /* padding-top: 100%; */
     /* padding-bottom: 0%; */
+    display:none;
 }
 
 #userimg>img {
