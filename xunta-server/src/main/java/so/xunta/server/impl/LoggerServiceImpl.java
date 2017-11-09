@@ -15,8 +15,8 @@ public class LoggerServiceImpl implements LoggerService {
 	@Autowired
 	private LoggerDao loggerDao;
 	@Override
-	public void log(String userId,String username,String info) {
-		UserVisitLogger logger = new UserVisitLogger(userId, username, info);
+	public void log(String userId,String username,String clientIP,String info,String requestType, String addition_type, String whereUserFrom) {
+		UserVisitLogger logger = new UserVisitLogger(userId, username, clientIP, info, requestType, addition_type, whereUserFrom);
 		loggerDao.logInfo(logger);
 	}
 

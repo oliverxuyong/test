@@ -23,6 +23,7 @@ import so.xunta.server.ConcernPointService;
 import so.xunta.server.CpChoiceDetailService;
 import so.xunta.server.CpChoiceService;
 import so.xunta.server.CpShowingService;
+import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
@@ -55,6 +56,8 @@ public class CpOperationWSController {
 	private ConcernPointService concernPointService;
 	@Autowired
 	private CpChoiceService cpChoiceService;
+	@Autowired
+	private LoggerService loggerService;
 	
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1102-1")
@@ -172,6 +175,11 @@ public class CpOperationWSController {
 		socketService.chat2one(session, returnJson);
 	}
 	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "9108-1")
+	public void wantAddSelfCp(WebSocketSession session, TextMessage message){
+		//消息预处理时已经记录了日志，什么也不需要做
+	}
+	
 	private CpChoiceDetailDO cpOperateAction(Long uid, BigInteger cpid, String selectType, String property){
 		CpChoiceDetailDO cpChoiceDetailDO = new CpChoiceDetailDO();
 		cpChoiceDetailDO.setUser_id(uid);
@@ -209,7 +217,7 @@ public class CpOperationWSController {
 		}else{
 			selectTypeRec = RecommendService.UNSELECT_CP;
 		}
-		CpOperationPushTask cpOperationPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,socketService);
+		CpOperationPushTask cpOperationPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,socketService,loggerService);
 		recommendTaskPool.execute(cpOperationPushTask);
 		return cpChoiceDetailDO;
 	}

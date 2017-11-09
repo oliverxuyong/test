@@ -371,8 +371,8 @@ public class LoginController {
 				response.addCookie(cookie);
 			}
 			request.getSession().setAttribute("setcookies", cookies);
-			loggerService.log(uid, name, type + "授权登录成功获取用户信息");
-			System.out.println("授权登录成功获取用户信息");
+		//	loggerService.log(uid, name, type + "授权登录成功获取用户信息");
+			logger.info("授权登录成功获取用户信息");
 			// request.getRequestDispatcher("/client_code/index.html").forward(request,
 			// response);
 			String domainWithContext = getDomainWithContext(request);
@@ -478,7 +478,6 @@ public class LoginController {
 		try {
 			out = response.getWriter();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 

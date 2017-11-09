@@ -6,7 +6,7 @@ position:fixed;
 	height:100%;
 	background-color: #ffffff;
 	cursor:auto;
-	//Verdana 鐎涙ぞ缍� 閸滐拷 Tahoma
+	//Verdana 字体 和 Tahoma
 	//font-family:Verdana;
 	//font-family:Tahoma;
 	//color:#191970;
@@ -58,7 +58,7 @@ width:100%;
 	margin-top: 120px;
 	margin-right: 10px;
 	margin-left: 8px;
-	font-family: '瀵邦喛钂嬮梿鍛寸拨', Arial;
+	font-family: '微软雅黑', Arial;
 	//color: #303030;
 	z-index:100;
 	//padding-top:21px;
@@ -182,7 +182,7 @@ width:100%;
 }
 
 /**
-*  瀵顢嬮幖婊呭偍
+*  弹框搜索
 */
 ._searchDiv{
 	position:fixed;
@@ -238,9 +238,9 @@ width:100%;
 
 /*我的标签容器*/
 .mytag-container{
-	width: 100%;/*这个百分比与下面两个padding百分比总合为1*/
-	padding-left:9px;
-	padding-right:19px;
+	width: 97.6%;/*这个百分比与下面两个padding百分比总合为1*/
+	padding-left:1.4%;
+	padding-right:1%;
 	height: 30%;
 	float: left;
 	border-bottom:1px solid #555555;
@@ -249,9 +249,10 @@ width:100%;
 	overflow-y:auto;
 	overflow-x:hidden;
 	display:none;
+	padding-bottom:2.5%;
+	//padding-top:1%;	
 	/*解决滚动条隐藏在IE浏览器不兼容的问题  */
-    -ms-overflow-style: none;
-}
+    -ms-overflow-style: none;}
 
 #mytag-container::-webkit-scrollbar {
 width:0px;
@@ -379,10 +380,10 @@ height:0px;
 	padding-top: 8px;
 	padding-left: 39px;
 	font-size: 10px;
-	/*start:閸欒泛銇�
-		鐟欙絽鍠呴梻顕�顣介敍姘躬閻╂瓕绻涢惃鍕眽娑擃厽鐦℃稉顏冩眽閺堬拷閸氬簼绔存稉顏嗘祲鏉╃偟娈戠拠婵嬵暯閹垫挸绱戞慨瀣矒闁喚娲婃稉瀣桨閻ㄥ嫪姹夐敍灞藉娑撳﹨绻栨稉顏勭潣閹呮畱娴ｆ粎鏁ら弰顖涚闂勩倖璇為崝锟�*/
+	/*start:叶夷
+		解决问题：在相连的人中每个人最后一个相连的话题打开始终遮盖下面的人，加上这个属性的作用是清除浮动*/
 	overflow-y:hidden;
-	/*end:閸欒泛銇�*/
+	/*end:叶夷*/
 }
 .topicMsgMoreDiv{
 	text-align: right;
@@ -584,8 +585,8 @@ height:0px;
     text-align: center;
     border-radius: 25px;
     margin-left: 10px;
-    margin-top:5px;
-    margin-bottom:5px;
+    margin-top:0.8%;
+    //margin-bottom:5px;
     //margin-right:6px;
     font-size:.8em;
     letter-spacing:1px;
