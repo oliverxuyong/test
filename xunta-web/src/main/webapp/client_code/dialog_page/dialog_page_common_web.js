@@ -151,6 +151,15 @@ function appendSameSelectCp(cpid,text){
 	var selectCp = $("<div></div>").attr("class", "selectCp").text(text);
 	selectCpContainer.append(selectCp);
 	
+	//将用户昵称文字大小放入我的标签的大小
+	var userNameTextSize=selectCpContainer.width()/32;
+	if(userNameTextSize>15){
+		userNameTextSize=15;
+	}else if(userNameTextSize<12){
+		userNameTextSize=12;
+	}
+	selectCp.css("font-size",userNameTextSize+"px");
+	
 	var selectCpTextLength = length(text);
 	var selectCpTextSize = parseInt(selectCp.css("font-size"))+1;
 	var selectCpWidth=selectCpTextLength*selectCpTextSize+20;
