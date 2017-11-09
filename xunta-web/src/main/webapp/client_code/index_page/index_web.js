@@ -24,6 +24,10 @@ function setBodyHeightWidth() {//刚启动被调用一次,以后窗口resize也�
 		//bodyWidth = windowWidth*paddingFactor;
 		//bodyHeith = windowHeight*paddingFactor;
 		setBodyCSS4Mobile();//设满屏,也许不需要宽高参数了.
+		
+		//2017.11.09 叶夷   如果是手机端则body和html去掉边框线
+		$("html").css("border",0);
+		$("body").css("border",0);
 	}
 	//console.log('window innerHeight :' + windowHeight);
 	//console.log('window innerWidth :' + windowWidth);
@@ -59,6 +63,15 @@ function setBodyCSS4Mobile(){
 	//if (userAgent[0] == "PC"){//使用了全局变量.
  		$(".iframe_windows").css("height",(bodyHeight-2)+"px");//它在iframe未打开前不起作用.
  		$(".iframe_windows").css("width",(bodyWidth-2)+"px");
+ 		
+ 		//2017.11.09 叶夷   如果是手机端则iframe去掉padding
+ 		if (userAgent[0] != "PC"){
+ 			var iframe=$(".iframe_windows");
+ 			iframe.css("padding-top",0);
+ 			iframe.css("padding-bottom",0);
+ 			iframe.css("padding-left",0);
+ 			iframe.css("padding-right",0);
+		}
  	//}else{
  		//$(".iframe_windows").css("height","100%");//它在iframe未打开前不起作用.
  		//$(".iframe_windows").css("width","100%");
