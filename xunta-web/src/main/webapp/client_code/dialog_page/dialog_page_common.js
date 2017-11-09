@@ -108,13 +108,13 @@ function adjustWidthsHeights() {
 	}else{
 		document.getElementById("inputbox").style.width = $("#inputframe").width() - 68 + "px";
 	}
-	//2017.08.30 叶夷  聊天页加上了共同选择的标签，聊天信息框的高度还需要减去共同选择标签框的高度
+	/*//2017.08.30 叶夷  聊天页加上了共同选择的标签，聊天信息框的高度还需要减去共同选择标签框的高度
 	var selectCpContainerDisplay=$("#selectCp-container").css("display");
 	if(selectCpContainerDisplay== "none"){
 		document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height() - 6 + "px";//如果不多减一点(这里-5),会出滚动条.
 	}else{
 		document.getElementById("dialog_box").style.height = $("#inputframe").offset().top - $("#header").height()-$("#selectCp-container").height() - 6-7
-	}
+	}*/
 }
 
 function  getHistoryMsg(userId,toUserId,firstMsgId){

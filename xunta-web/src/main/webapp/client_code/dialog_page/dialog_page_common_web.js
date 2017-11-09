@@ -170,7 +170,7 @@ function appendSameSelectCp(cpid,text){
 	selectCp.css("height",selectCpHeight+"px");
 	selectCp.css("line-height",selectCpHeight+"px");
 	
-	//判断选择的标签是否另起一行
+/*	//判断选择的标签是否另起一行
 	sameSelectCpsWidth=sameSelectCpsWidth+selectCpWidth+parseInt(selectCp.css("margin-left"));
 	var selectCpContainerWidth=parseInt(selectCpContainer.width());
 	if(sameSelectCpsWidth>selectCpContainerWidth){//需要另起一行
@@ -179,15 +179,17 @@ function appendSameSelectCp(cpid,text){
 	}
 	//通过选择过的标签计算选择标签框的高度
 	var selectCpContainerHeight=(selectCpHeight+parseInt(selectCp.css("margin-top")))*lineNumber+30;
-	selectCpContainer.css("height",selectCpContainerHeight+"px");
-	
+	selectCpContainer.css("height",selectCpContainerHeight+"px");*/
+	/*log2root("测试1:"+document.body.clientHeight);
 	//选择标签框大小调整好之后调整下面的大小
 	adjustWidthsHeights();
+	log2root("测试2:"+document.body.clientHeight);*/
 }
 //调整显示聊天页消息框的height
 function setDialogBoxHeight(){
 	var selectCpContainerHeight=$("#selectCp-container").height();
 	var dialogBoxHeight=$("body").height()-34-50-selectCpContainerHeight-7;
+	//log2root("测试3:"+document.body.clientHeight);
 	$("#dialog_box").css("height",dialogBoxHeight);
-	log2root("测试2:"+$("body").height()+" "+selectCpContainerHeight+" "+dialogBoxHeight);
+	//log2root("测试4:"+document.body.clientHeight+" "+selectCpContainerHeight+" "+dialogBoxHeight);
 }

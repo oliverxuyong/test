@@ -48,7 +48,7 @@ body{position:relative;
 	background-color: #f6f6f6; 
 	//background:url('../image/dialog-background2.jpg');
 	//background-size:cover; 
-	overflow-x:hidden;height:100%; width:100%;
+	overflow-x:hidden;height:auto; width:100%;
 	border-bottom:1px solid #d8d8d8;
 	}
 
