@@ -17,7 +17,7 @@
 .selectCp-container{
 	float:left;
 	//position:absolute;
-	top:32px;
+	//top:32px;
 	width:96.8%;
 	padding:1.6%;
 	padding-top:0px;
@@ -25,6 +25,8 @@
 	//height:20px;
 	display:none;
 	background:#ffffff;
+	z-index:12;
+	position:relative;
 }
 
 .selectCp{

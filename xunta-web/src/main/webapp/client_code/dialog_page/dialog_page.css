@@ -20,6 +20,7 @@ body{position:relative;
 	/*background:url('../image/titbg.gif') center top repeat-x;background-size:8px;*/
 	background-color:#3e4b49;
 	border-bottom:1px solid #d0d0d0; z-index:12;
+	position:relative;
 	}
 	
 #header img{
@@ -48,11 +49,12 @@ body{position:relative;
 	background-color: #f6f6f6; 
 	//background:url('../image/dialog-background2.jpg');
 	//background-size:cover; 
-	overflow-x:hidden;height:auto; width:100%;
+	overflow-x:hidden;height:100%; width:100%;
 	border-bottom:1px solid #d8d8d8;
+	position:absolute;
 	}
 
-#msg_list {padding:15px;//padding-top:3px;}
+#msg_list {padding:15px;padding-bottom:34px;}
 
 #loadingwrap{height:40px;width:100%;margin-bottom:40px;margin-top:150px}
 #loading{position:relative; top:0px; left: 50%; width:160px;height:100%;margin-left:-70px; padding:10px; }

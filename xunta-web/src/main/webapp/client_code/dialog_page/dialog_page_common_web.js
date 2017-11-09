@@ -137,7 +137,7 @@ function showSameSelectCp(data){
 	sameSelectCpsWidth=0;
 	
 	//调整显示聊天页消息框的height
-	setDialogBoxHeight();
+	//setDialogBoxHeight();
 }
 
 //选择过标签的width一个个相加，超过选择过标签的框则另起一行
@@ -186,7 +186,7 @@ function appendSameSelectCp(cpid,text){
 	log2root("测试2:"+document.body.clientHeight);*/
 }
 //调整显示聊天页消息框的height
-function setDialogBoxHeight(){
+/*function setDialogBoxHeight(){
 	var selectCpContainer=$("#selectCp-container");
 	var selectCpContainerHeight;
 	if(selectCpContainer.css("display")=="none"){
@@ -198,4 +198,4 @@ function setDialogBoxHeight(){
 	//log2root("测试3:"+document.body.clientHeight);
 	$("#dialog_box").css("height",dialogBoxHeight);
 	//log2root("测试4:"+document.body.clientHeight+" "+selectCpContainerHeight+" "+dialogBoxHeight);
-}
+}*/
