@@ -1413,7 +1413,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			muChangeData.splice(0, muChangeData.length);
 			averageForChangeX.splice(0, averageForChangeX.length);
 			averageForChangeY.splice(0, averageForChangeY.length);
-			//log2root("匹配圆初始化第"+(c+1)+"次");
+			log2root("匹配圆初始化第"+(c+1)+"次"+"->intersect="+intersect);
 			console.log("匹配圆初始化第"+(c+1)+"次");
 			if(!intersect){
 				break;
@@ -1767,11 +1767,11 @@ function setBorder(headerContainer,radius){
  * 叶夷 2017.09.14 判断是否和其他匹配人相交，true相交，false不相交
  * notContrast,不用对比的点位置，没有的话就为空
  */
-function isIntersect(id,x,y,radius,muNowData){
+function isIntersect(id,x,y,radius,tempMuNowData){
 	var flag=false;// 相交为true;不相交为false
-	if(muNowData.length>0){
-		for(var index in muNowData){
-			var onePosition=muNowData[index];
+	if(tempMuNowData.length>0){
+		for(var index in tempMuNowData){
+			var onePosition=tempMuNowData[index];
 			var idForContrast=onePosition.userid;
 			if(id!=idForContrast){
 				var radiusForContrast=onePosition.radius;
@@ -2152,6 +2152,9 @@ function removeByValue(arr, val) {
 
 // 弹出添加标签框
 function addTag() {
+	//2017.11.09 叶夷  只要点击一次添加标签按钮则发送一个接口给后台
+	execRoot("sendClickAddTagMsg()");
+	
 	var _obj = $("#showatloaded");
 	var _h = 80;
 	var _w = _obj.width() - 180;

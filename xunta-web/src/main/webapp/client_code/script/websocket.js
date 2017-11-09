@@ -257,6 +257,16 @@ function request_openDialogPage(userId , toUserId){
 		WS_Send(json_obj);
 	}
 }
+//2017.11.09 叶夷  只要点击一次添加标签按钮则发送一个接口给后台
+function sendClickAddTagMsg(){
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("只要点击一次添加标签按钮则发送一个接口给后台");
+		var json_obj = {
+			 _interface:"9108-1"
+		};
+		WS_Send(json_obj);
+	}
+}
 
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");

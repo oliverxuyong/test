@@ -187,8 +187,14 @@ function appendSameSelectCp(cpid,text){
 }
 //调整显示聊天页消息框的height
 function setDialogBoxHeight(){
-	var selectCpContainerHeight=$("#selectCp-container").height();
-	var dialogBoxHeight=$("body").height()-34-50-selectCpContainerHeight-7;
+	var selectCpContainer=$("#selectCp-container");
+	var selectCpContainerHeight;
+	if(selectCpContainer.css("display")=="none"){
+		selectCpContainerHeight=0;
+	}else{
+		selectCpContainerHeight=selectCpContainer.height()+7;
+	}
+	var dialogBoxHeight=$("body").height()-34-50-selectCpContainerHeight;
 	//log2root("测试3:"+document.body.clientHeight);
 	$("#dialog_box").css("height",dialogBoxHeight);
 	//log2root("测试4:"+document.body.clientHeight+" "+selectCpContainerHeight+" "+dialogBoxHeight);
