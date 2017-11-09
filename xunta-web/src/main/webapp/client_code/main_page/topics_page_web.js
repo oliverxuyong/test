@@ -1517,7 +1517,7 @@ function getMuChangeData(matchedUserArr,isFirst){
 		//这里是判断一开始的时候匹配用户没有满的情况
 		if(i>muChangeData.length-1){
 			setMUPosition(i,matchedUserArr);
-			muAddImg(i,matchedUserArr,isFirst);
+			muAddImg(i,matchedUserArr,true);
 			muChangeData=[].concat(muNowData);
 		}
 		var radius=muChangeData[i].radius;
