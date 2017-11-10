@@ -40,15 +40,11 @@ function showDialogList(data){
 		
 		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
 	}
-	//从首页传过来的聊天列表的未读信息
-	if(unreadObjList.length>0){
-		for(var i in unreadObjList){
-			unreadMsg(unreadObjList[i].user,unreadObjList[i].data,unreadObjList[i].postTimeStr,unreadObjList[i].touserId,unreadObjList[i].unreadNum);
-		}
-	}
-	
 	var dialogListOutHeight=$("body").height()-64-10;
 	dialogListOut.css("height",dialogListOutHeight+"px");
+	
+	/**2017.11.10  叶夷  将获取未读消息和之前的消息列表内容分隔*/
+    setUnreadObjList()
 }
 
 function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
@@ -186,6 +182,16 @@ function getWeek(date){
 	return week;
 }
 
+/**2017.11.10  叶夷  将获取未读消息和之前的消息列表内容分隔*/
+function setUnreadObjList(){
+	//从首页传过来的聊天列表的未读信息
+	if(unreadObjList.length>0){
+		for(var i in unreadObjList){
+			unreadMsg(unreadObjList[i].user,unreadObjList[i].data,unreadObjList[i].postTimeStr,unreadObjList[i].touserId,unreadObjList[i].unreadNum);
+		}
+	}
+}
+
 //未读消息数提示，最新消息内容和最新时间更新
 function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 	var unreadParent=$("#"+respondeUserId);
@@ -248,4 +254,35 @@ function makeDialogListTop(respondeUserId){
 	copyOneDialogDiv.click(function() {//绑定点击事件.
 		enterDialogPage(respondeUserId,toUserName,toUserImg);
 	});
+}
+//2017.11.10   当聊天列表消息存在的时候将未读消息装进unreadObjList中
+function dialogListExistAddunreadObjList(user,data,postTimeStr,respondeUserId,unreadNum){
+	//var unreadNum=1;
+	if(unreadObjList.length!=0){
+		var isExit=false;
+		for(var j in unreadObjList){
+			var unReadObj=unreadObjList[j];
+			if(unReadObj.touserId==respondeUserId){//这个用户已经存在，未读数加1
+				unreadNum++;
+				unreadObjList[j]=new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum);
+				isExit=true;
+				break;
+			}
+		}
+		if(isExit=false){
+			unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
+		}
+	}else{
+		unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
+	}
+}
+//2017.11.10 叶夷   创建跟我聊天的人的id和未读消息数一一对应的对象，为了保存数组
+function unreadObj(user,data,postTimeStr,touserId,unreadNum){
+	var obj = new Object();
+	obj.user=user;
+	obj.data=data;
+	obj.postTimeStr=postTimeStr;
+	obj.touserId=touserId;
+	obj.unreadNum=unreadNum;
+	return obj;
 }

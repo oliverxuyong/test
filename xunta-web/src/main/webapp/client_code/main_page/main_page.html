@@ -241,6 +241,7 @@
             		//聊天列表未读消息提示
             		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
             			exec("dialoglist_page", "unreadMsg('"+user+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"')");
+            			exec("dialoglist_page", "dialogListExistAddunreadObjList('"+user+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"')");
             		}else{//聊天页表没有打开才将未读信息保存好
             			//2017.08.16   装所有的未读信息，为了将数组传给聊天列表
                 		var unreadNum=1;

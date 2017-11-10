@@ -8,9 +8,9 @@ function backBtn(){
 		
 		//聊天列表未读数去除
 		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
-			exec('dialoglist_page',"removeUnreadNum('"+toUserId+"')");
-			exec('dialoglist_page',"changeUnreadColor()");
+			exec('dialoglist_page',"removeUnreadObjList('"+toUserId+"')");
 			exec('dialoglist_page',"requestDialogList()");
+			exec('dialoglist_page',"changeUnreadColor()");
 			openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', '');
 		}else{
 			openWin('main_page', 'main_page/main_page.html', '');
