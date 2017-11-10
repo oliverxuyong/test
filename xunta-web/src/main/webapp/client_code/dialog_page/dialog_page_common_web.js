@@ -75,12 +75,12 @@ function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory) {//�
 	content_P = $("<div class='detail'></div>").text(content);
 	
 	if(myOrOther=="my"){
-		var postsending = $("<img class='postsending' src='../image/jumpingbean.gif'/>");
+		var postsending = $("<img class='postsending' src='../image/jumpingbean.gif' onerror=javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg' >");
 		content_P.append(postsending);
 	}
 	
 	senderName_P = $("<div class='nc'></div>").text(senderName);
-	senderImg = $("<img />").attr("src", senderImage);
+	senderImg = $("<img onerror=javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'>").attr("src", senderImage);
 	////上面一句简化为这一句.那些属性目前没有用处.
 	senderImg_Div = $("<div class='user-pic'></div>").append(senderImg);
 	senderDiv = $("<div class='user "+myOrOther+"'></div>").attr("id", msgId);
