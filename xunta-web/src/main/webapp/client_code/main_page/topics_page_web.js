@@ -1404,7 +1404,12 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		for(var c=0;c<notIntersectCount;c++){
 			//2017.11.06 叶夷  将匹配人初始化状态更改为使用排斥力算法
 			muChangeData=[].concat(muNowData);
-			getMuChangeData(matchedUserArr,true);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			
+			if(c==0){
+				getMuChangeData(matchedUserArr,true);
+			}else{
+				getMuChangeData(matchedUserArr,false);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			}
 			setPositionAndNotIntersect();
 			muChangeDataIfIntersect();//判断是否相交
 			
@@ -1413,7 +1418,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			muChangeData.splice(0, muChangeData.length);
 			averageForChangeX.splice(0, averageForChangeX.length);
 			averageForChangeY.splice(0, averageForChangeY.length);
-			log2root("匹配圆初始化第"+(c+1)+"次"+"->intersect="+intersect);
+			//log2root("匹配圆初始化第"+(c+1)+"次"+"->intersect="+intersect);
 			console.log("匹配圆初始化第"+(c+1)+"次");
 			if(!intersect){
 				break;
@@ -1436,7 +1441,11 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		//判断是否相交的次数
 		for(var c=0;c<notIntersectCount;c++){
 			muChangeData=[].concat(muNowData);
-			getMuChangeData(matchedUserArr,false);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			if(c==0){
+				getMuChangeData(matchedUserArr,true);
+			}else{
+				getMuChangeData(matchedUserArr,false);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			}
 			//接下来就是遍历匹配人改变后的数组，将相交的匹配圆一点点移动
 			changeCount=0;
 			while(true){
@@ -1455,10 +1464,10 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			averageForChangeY.splice(0, averageForChangeY.length);
 			
 			console.log("匹配圆变化是否相交 第"+(c+1)+"次");
-			if(!intersect){
+			if(!intersect){//不相交
 				break;
 			}
-			getMuChangeData(matchedUserArr,true);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			muNowData.splice(0, muNowData.length);
 		}
 		
 		for(var j=0;j<muNowData.length;j++){//开始移动
@@ -1489,10 +1498,9 @@ function muChangeDataIfIntersect(){
 		var y=muChangeData[a].y;
 		var radius=muChangeData[a].radius;
 		intersect=isIntersect(id,x,y,radius,muChangeData);
-		/*if(!intersect){// 不相交
-			isBreak=true;
+		if(intersect){// 相交
 			break;
-		}*/
+		}
 	}
 }
 
@@ -1507,7 +1515,9 @@ function muDataQueueEnd(matchedUserArr){
 	}
 }
 
-function getMuChangeData(matchedUserArr,isFirst){
+//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换，后面的判断是判断是否为第一次判段相交
+//true代码第一次判断相交页面需要加上匹配圆div，如果不是则不需要
+function getMuChangeData(matchedUserArr,isFirstIntersect){
 	//将muNowData的数据和改变的排名数据计算之后获得新的muNewData，即下面的muNewData
 	for(var i = 0; i < matchedUserArr.length; i++){//将排名改变的数据遍历
 		var muserid = matchedUserArr[i].userid;// 这是匹配人id
@@ -1517,7 +1527,9 @@ function getMuChangeData(matchedUserArr,isFirst){
 		//这里是判断一开始的时候匹配用户没有满的情况
 		if(i>muChangeData.length-1){
 			setMUPosition(i,matchedUserArr);
-			muAddImg(i,matchedUserArr,true);
+			if(isFirstIntersect){
+				muAddImg(i,matchedUserArr,true);
+			}
 			muChangeData=[].concat(muNowData);
 		}
 		var radius=muChangeData[i].radius;
@@ -1851,8 +1863,8 @@ var averageForChangeY=new Array();//y位置变化的平均值
 var changeTotalX=0;//在n次之前累计的变化总数
 var changeTotalY=0;
 var changeCount=0;//这是循环变化的次数
-var maxChangeCount=50;//这是最大的循环变化的次数,超过1000次则不需要再循环
-var notIntersectCount=20;//判断不相交的最大次数
+var maxChangeCount=10;//这是最大的循环变化的次数,超过1000次则不需要再循环
+var notIntersectCount=10;//判断不相交的最大次数
 
 /**2017.09.26 叶夷 从一个匹配人开始，然后计算边框和其它匹配人共同作用的排斥力(排斥力即移动的距离，目前是距离的倒数*大小,即距离越近和质量越大，排斥力越大),知道这个距离在0~1之间，则算是平衡下来停下*/
 function setPositionAndNotIntersect(){
