@@ -628,6 +628,21 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	var top = -1;// 标签的top,用来和不同轨迹对比，将数值最大的赋值给top,可以知道标签可上升的最大高度
 	var left = 0;// 得到标签可上升的最大高度时left位置
 
+	//将cpValueArray排序，取最下面的10个标签
+	var cpValueSortArray;
+	if(cpValueArray.length>=20){
+		cpValueSortArray=cpValueArray.slice((cpValueArray.length-20),cpValueArray.length);
+	}else{
+		cpValueSortArray=cpValueArray.slice(0,cpValueArray.length);
+	}
+	cpValueSortArray.sort(function(a, b) {
+		return b.getCpBottom() - a.getCpBottom();
+	});
+	
+	//2017.11.10 叶夷，为了测试推荐标签位置错误,查看是否已经存在的标签没有记录下来
+	console.log("测试已经存在的标签是否成功取最下面10个且保存下来:cpValueSortArray.length="+cpValueSortArray.length);
+	log2root("测试已经存在的标签是否成功取最下面10个且保存下来:cpValueSortArray.length="+cpValueSortArray.length);
+	
 	// 1.遍历装cp容器的宽度,每次+1px
 	// start是要上升的cp的left的值，所以终点必须空出上升cp的width
 	var startLength=cp_node.find(".cp").width();
@@ -646,17 +661,6 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 
 		// 用两个数组容器来装轨迹内已经存在的cp中两个最低的圆
 		var cpTwo = new Array();
-
-		//将cpValueArray排序，取最下面的10个标签
-		var cpValueSortArray;
-		if(cpValueArray.length>=20){
-			cpValueSortArray=cpValueArray.slice((cpValueArray.length-20),cpValueArray.length);
-		}else{
-			cpValueSortArray=cpValueArray.slice(0,20);
-		}
-		cpValueSortArray.sort(function(a, b) {
-			return b.getCpBottom() - a.getCpBottom();
-		});
 		
 		// 4.遍历所有已经存在的cp，判断哪些cp在这条轨迹范围内
 		for (var j = 0; j < cpValueSortArray.length; j++) {// 遍历已经存在的所有cp
@@ -730,6 +734,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	right = left + cpWidth;
 	bottom = top + cpHeight;
 	cpValueArray.push(new CP(cp_node.attr("id"), left, right, top, bottom));
+	
 	// cp容器的高度调整
 	cp_container.height(bottom);
 }
@@ -1418,7 +1423,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			muChangeData.splice(0, muChangeData.length);
 			averageForChangeX.splice(0, averageForChangeX.length);
 			averageForChangeY.splice(0, averageForChangeY.length);
-			//log2root("匹配圆初始化第"+(c+1)+"次"+"->intersect="+intersect);
+			log2root("匹配圆初始化第"+(c+1)+"次"+"->intersect="+intersect);
 			console.log("匹配圆初始化第"+(c+1)+"次");
 			if(!intersect){
 				break;
@@ -1454,6 +1459,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 					break;
 				}
 				++changeCount;
+				log2root("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
 				console.log("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
 			}
 			muChangeDataIfIntersect();//判断是否相交
@@ -1462,7 +1468,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			muChangeData.splice(0, muChangeData.length);
 			averageForChangeX.splice(0, averageForChangeX.length);
 			averageForChangeY.splice(0, averageForChangeY.length);
-			
+			log2root("匹配圆变化是否相交 第"+(c+1)+"次");
 			console.log("匹配圆变化是否相交 第"+(c+1)+"次");
 			if(!intersect){//不相交
 				break;
