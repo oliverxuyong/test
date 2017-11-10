@@ -1109,9 +1109,9 @@ function addMyCp(cpid,text,selected_user_num){
 		// 装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
 		var myTagMarginTop=parseInt(myTag.css("margin-top"));
 	
-		var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
+		/*var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
 		// 我的标签框高度改变了之后影响其他部分的高度
-		myTagContainerHeightChange(myTagContainer,myTagContainerHeight);
+		myTagContainerHeightChange(myTagContainer,myTagContainerHeight);*/
 		
 		//这是为了测试我的标签加上选择人数是否好看
 		var selectTagNumText=selected_user_num;
@@ -1153,7 +1153,7 @@ function addMyCp(cpid,text,selected_user_num){
  * @param headerContainerHeight
  *            改变的高度
  */
-function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
+/*function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 	var headerContainerHeight=parseInt($("#header-container").css("height"));
 	$("#header-container").css("height",headerContainerHeight+"px");
 	myTagContainer.css("height",myTagContainerHeight+"px");
@@ -1162,7 +1162,7 @@ function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 	//var tagContaiderTop=parseInt($("#tag-container").css("top"));
 	$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight-10)+"px");
 	//console.log("测试："+showatloadedHeight+" "+headerContainerHeight+" "+myTagContainerHeight+" "+tagContaiderTop);
-}
+}*/
 
 //2017.10.20 叶夷  在取消标签发送给后台之前
 function unSelectCP(cpid){
@@ -1233,21 +1233,21 @@ function showUnSelectCP(data){
 		
 		// 取消的时候将高度还原
 		// 获得点击取消选择标签时位置变化之后的添加标签的top值
-		var addTagBottom2=addtag.offset().top
-		var myTagMarginTop=parseInt(addtag.css("margin-top"));
-		var myTagHeight=addtag.height();
-		var tagChangeHeight=myTagHeight+myTagMarginTop;
-		var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
-		var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
+		//var addTagBottom2=addtag.offset().top
+		//var myTagMarginTop=parseInt(addtag.css("margin-top"));
+		//var myTagHeight=addtag.height();
+		//var tagChangeHeight=myTagHeight+myTagMarginTop;
+		//var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
+		//var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
 		// 我的标签框高度改变了之后影响其他部分的高度
-		myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
+		//myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
 		
-		var $events =cp_node.data("events");
+		/*var $events =cp_node.data("events");
 		if( $events && $events["click"] ){
 			console.log("yesItem绑定");
 		}else{
 			console.log("yesItem未绑定");
-		}
+		}*/
 		
 		// 将取消选择的标签重新绑定点击事件
 		cp_node.click(function() {
