@@ -89,7 +89,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String userid = session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString();
-		String clientIP = session.getRemoteAddress().toString();
+		String clientIP = session.getRemoteAddress().toString().substring(1);
 		logger.info("客户端"+userid+"请求：" + message.getPayload());
 	
 	
@@ -176,7 +176,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
 			Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
-			String clientIP = session.getRemoteAddress().toString();
+			String clientIP = session.getRemoteAddress().toString().substring(1);
 			users.remove(session);	
 			if(status.equals(CloseStatus.SERVICE_RESTARTED)){
 				logger.info("用户:"+userid+" WebSocketSession服务重启");

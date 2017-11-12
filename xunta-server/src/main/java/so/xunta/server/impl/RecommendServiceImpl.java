@@ -329,7 +329,7 @@ public class RecommendServiceImpl implements RecommendService {
 			String property = selectedCp.getProperty();
 			Double cpWeight = concernPointDao.getConcernPointById(selectedCpid).getWeight().doubleValue();
 			Double relateScore = u2uRelationDao.getRelatedUserScore(uid, changedUid);
-			logger.info("selectedCp: "+selectedCpid+" ; " + is_selected +" ; "+ property +" ; "+ cpWeight +" ; "+ relateScore);
+			//logger.info("selectedCp: "+selectedCpid+" ; " + is_selected +" ; "+ property +" ; "+ cpWeight +" ; "+ relateScore);
 			
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
