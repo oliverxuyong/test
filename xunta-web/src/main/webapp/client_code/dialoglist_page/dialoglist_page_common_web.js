@@ -38,20 +38,16 @@ function showDialogList(data){
 		var toUserImgUrl=data[d].to_user_imgUrl;
 		var toUserName=data[d].to_user_name;
 		
-		appendDialogElement(d,createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
+		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
 	}
-	//从首页传过来的聊天列表的未读信息
-	if(unreadObjList.length>0){
-		for(var i in unreadObjList){
-			unreadMsg(unreadObjList[i].user,unreadObjList[i].data,unreadObjList[i].postTimeStr,unreadObjList[i].touserId,unreadObjList[i].unreadNum);
-		}
-	}
-	
-	var dialogListOutHeight=$("body").height()-64;
+	var dialogListOutHeight=$("body").height()-64-10;
 	dialogListOut.css("height",dialogListOutHeight+"px");
+	
+	/**2017.11.10  叶夷  将获取未读消息和之前的消息列表内容分隔*/
+    setUnreadObjList()
 }
 
-function appendDialogElement(d,createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
+function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
 	var dialog=$("<div></div>").attr("class", "dialog cursor").attr("id", toUserId);
 	//onerror是实现获得图片失败的时候放的默认图片,只要有一个图片路径就行
 	var toUserImg="<img src="+toUserImgUrl+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>";
@@ -71,13 +67,13 @@ function appendDialogElement(d,createTime,ifread,msg,toUserId,toUserImgUrl,toUse
   	var dialogList=$("#dialog_list");
 	dialogList.append(dialog);
 	
-	//设置聊天列表的各个大小
+	/*//设置聊天列表的各个大小
 	var heightForWindow=$("body").height();
 	var dialogHeight=(heightForWindow-63)*0.1;
-	dialog.css("height",dialogHeight);
+	dialog.css("height",dialogHeight);*/
 	
 	//聊天列表动态布局
-	setDialogListNode(d,dialog,dialogContent);
+	setDialogListNode(dialog,dialogContent);
 	
 	dialog.click(function() {//绑定点击事件.
 		enterDialogPage(toUserId,toUserName,toUserImgUrl);
@@ -85,10 +81,10 @@ function appendDialogElement(d,createTime,ifread,msg,toUserId,toUserImgUrl,toUse
 }
 
 //聊天列表动态布局
-function setDialogListNode(d,dialog,dialogContent){
+function setDialogListNode(dialog,dialogContent){
 	var dialogHeight=parseInt(dialog.css("height"));//获得聊天列表单个的高度
 	var dialogWidth=parseInt(dialog.css("width"));//获得聊天列表单个的高度
-	dialog.css("top",(dialogHeight*d+10));
+	//dialog.css("top",(dialogHeight*d+10));
 	//头像css设置
 	var toUserImgHeight=dialogWidth*0.087;//图片的高度是聊天列表宽度的0.1026
 	var toUserImgMargin=(dialogHeight-toUserImgHeight)/2;
@@ -186,6 +182,16 @@ function getWeek(date){
 	return week;
 }
 
+/**2017.11.10  叶夷  将获取未读消息和之前的消息列表内容分隔*/
+function setUnreadObjList(){
+	//从首页传过来的聊天列表的未读信息
+	if(unreadObjList.length>0){
+		for(var i in unreadObjList){
+			unreadMsg(unreadObjList[i].user,unreadObjList[i].data,unreadObjList[i].postTimeStr,unreadObjList[i].touserId,unreadObjList[i].unreadNum);
+		}
+	}
+}
+
 //未读消息数提示，最新消息内容和最新时间更新
 function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 	var unreadParent=$("#"+respondeUserId);
@@ -195,12 +201,13 @@ function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 		//未读消息的位置
 		//头像的位置
 		var dialogImg=$(".dialog").find("img");
-		var dialogImgWidth=parseInt(dialogImg.css("width"));
-		var dialogImgMargin=parseInt(dialogImg.css("margin"));
+		var dialogImgWidth=dialogImg.width();
+		var dialogImgMargin=parseInt(dialogImg.css("margin-left"));
 		
-		var unreadLeft=dialogImgWidth+dialogImgMargin;
+		var unreadNumNodeHeight=unreadNumNode.height();
+		var unreadLeft=dialogImgWidth+dialogImgMargin-unreadNumNodeHeight;
 		unreadNumNode.css("left",unreadLeft+"px");
-		unreadNumNode.css("margin-top",dialogImgMargin/2+"px");
+		unreadNumNode.css("margin-top",-unreadNumNodeHeight/2+"px");
 	} else {//如果已有未读消息,则加上1:
 		unreadNum  = unreadParent.find('.unread').text();
 		unreadNum++;
@@ -247,4 +254,35 @@ function makeDialogListTop(respondeUserId){
 	copyOneDialogDiv.click(function() {//绑定点击事件.
 		enterDialogPage(respondeUserId,toUserName,toUserImg);
 	});
+}
+//2017.11.10   当聊天列表消息存在的时候将未读消息装进unreadObjList中
+function dialogListExistAddunreadObjList(user,data,postTimeStr,respondeUserId,unreadNum){
+	//var unreadNum=1;
+	if(unreadObjList.length!=0){
+		var isExit=false;
+		for(var j in unreadObjList){
+			var unReadObj=unreadObjList[j];
+			if(unReadObj.touserId==respondeUserId){//这个用户已经存在，未读数加1
+				unreadNum++;
+				unreadObjList[j]=new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum);
+				isExit=true;
+				break;
+			}
+		}
+		if(isExit=false){
+			unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
+		}
+	}else{
+		unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
+	}
+}
+//2017.11.10 叶夷   创建跟我聊天的人的id和未读消息数一一对应的对象，为了保存数组
+function unreadObj(user,data,postTimeStr,touserId,unreadNum){
+	var obj = new Object();
+	obj.user=user;
+	obj.data=data;
+	obj.postTimeStr=postTimeStr;
+	obj.touserId=touserId;
+	obj.unreadNum=unreadNum;
+	return obj;
 }

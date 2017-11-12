@@ -628,6 +628,21 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	var top = -1;// 标签的top,用来和不同轨迹对比，将数值最大的赋值给top,可以知道标签可上升的最大高度
 	var left = 0;// 得到标签可上升的最大高度时left位置
 
+	//将cpValueArray排序，取最下面的10个标签
+	var cpValueSortArray;
+	if(cpValueArray.length>=20){
+		cpValueSortArray=cpValueArray.slice((cpValueArray.length-20),cpValueArray.length);
+	}else{
+		cpValueSortArray=cpValueArray.slice(0,cpValueArray.length);
+	}
+	cpValueSortArray.sort(function(a, b) {
+		return b.getCpBottom() - a.getCpBottom();
+	});
+	
+	//2017.11.10 叶夷，为了测试推荐标签位置错误,查看是否已经存在的标签没有记录下来
+	console.log("测试已经存在的标签是否成功取最下面10个且保存下来:cpValueSortArray.length="+cpValueSortArray.length);
+	log2root("测试已经存在的标签是否成功取最下面10个且保存下来:cpValueSortArray.length="+cpValueSortArray.length);
+	
 	// 1.遍历装cp容器的宽度,每次+1px
 	// start是要上升的cp的left的值，所以终点必须空出上升cp的width
 	var startLength=cp_node.find(".cp").width();
@@ -646,17 +661,6 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 
 		// 用两个数组容器来装轨迹内已经存在的cp中两个最低的圆
 		var cpTwo = new Array();
-
-		//将cpValueArray排序，取最下面的10个标签
-		var cpValueSortArray;
-		if(cpValueArray.length>=20){
-			cpValueSortArray=cpValueArray.slice((cpValueArray.length-20),cpValueArray.length);
-		}else{
-			cpValueSortArray=cpValueArray.slice(0,20);
-		}
-		cpValueSortArray.sort(function(a, b) {
-			return b.getCpBottom() - a.getCpBottom();
-		});
 		
 		// 4.遍历所有已经存在的cp，判断哪些cp在这条轨迹范围内
 		for (var j = 0; j < cpValueSortArray.length; j++) {// 遍历已经存在的所有cp
@@ -730,6 +734,7 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	right = left + cpWidth;
 	bottom = top + cpHeight;
 	cpValueArray.push(new CP(cp_node.attr("id"), left, right, top, bottom));
+	
 	// cp容器的高度调整
 	cp_container.height(bottom);
 }
@@ -1109,9 +1114,9 @@ function addMyCp(cpid,text,selected_user_num){
 		// 装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
 		var myTagMarginTop=parseInt(myTag.css("margin-top"));
 	
-		var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
+		/*var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
 		// 我的标签框高度改变了之后影响其他部分的高度
-		myTagContainerHeightChange(myTagContainer,myTagContainerHeight);
+		myTagContainerHeightChange(myTagContainer,myTagContainerHeight);*/
 		
 		//这是为了测试我的标签加上选择人数是否好看
 		var selectTagNumText=selected_user_num;
@@ -1153,7 +1158,7 @@ function addMyCp(cpid,text,selected_user_num){
  * @param headerContainerHeight
  *            改变的高度
  */
-function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
+/*function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 	var headerContainerHeight=parseInt($("#header-container").css("height"));
 	$("#header-container").css("height",headerContainerHeight+"px");
 	myTagContainer.css("height",myTagContainerHeight+"px");
@@ -1162,7 +1167,7 @@ function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 	//var tagContaiderTop=parseInt($("#tag-container").css("top"));
 	$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight-10)+"px");
 	//console.log("测试："+showatloadedHeight+" "+headerContainerHeight+" "+myTagContainerHeight+" "+tagContaiderTop);
-}
+}*/
 
 //2017.10.20 叶夷  在取消标签发送给后台之前
 function unSelectCP(cpid){
@@ -1233,21 +1238,21 @@ function showUnSelectCP(data){
 		
 		// 取消的时候将高度还原
 		// 获得点击取消选择标签时位置变化之后的添加标签的top值
-		var addTagBottom2=addtag.offset().top
-		var myTagMarginTop=parseInt(addtag.css("margin-top"));
-		var myTagHeight=addtag.height();
-		var tagChangeHeight=myTagHeight+myTagMarginTop;
-		var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
-		var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
+		//var addTagBottom2=addtag.offset().top
+		//var myTagMarginTop=parseInt(addtag.css("margin-top"));
+		//var myTagHeight=addtag.height();
+		//var tagChangeHeight=myTagHeight+myTagMarginTop;
+		//var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
+		//var addTagBottom=addtag.offset().top+addtag.height()-$("#header-container").height();
 		// 我的标签框高度改变了之后影响其他部分的高度
-		myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
+		//myTagContainerHeightChange($("#mytag-container"),myTagContainerHeight);
 		
-		var $events =cp_node.data("events");
+		/*var $events =cp_node.data("events");
 		if( $events && $events["click"] ){
 			console.log("yesItem绑定");
 		}else{
 			console.log("yesItem未绑定");
-		}
+		}*/
 		
 		// 将取消选择的标签重新绑定点击事件
 		cp_node.click(function() {
@@ -1404,7 +1409,12 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		for(var c=0;c<notIntersectCount;c++){
 			//2017.11.06 叶夷  将匹配人初始化状态更改为使用排斥力算法
 			muChangeData=[].concat(muNowData);
-			getMuChangeData(matchedUserArr,true);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			
+			if(c==0){
+				getMuChangeData(matchedUserArr,true);
+			}else{
+				getMuChangeData(matchedUserArr,false);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			}
 			setPositionAndNotIntersect();
 			muChangeDataIfIntersect();//判断是否相交
 			
@@ -1436,7 +1446,11 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 		//判断是否相交的次数
 		for(var c=0;c<notIntersectCount;c++){
 			muChangeData=[].concat(muNowData);
-			getMuChangeData(matchedUserArr,false);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			if(c==0){
+				getMuChangeData(matchedUserArr,true);
+			}else{
+				getMuChangeData(matchedUserArr,false);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			}
 			//接下来就是遍历匹配人改变后的数组，将相交的匹配圆一点点移动
 			changeCount=0;
 			while(true){
@@ -1445,6 +1459,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 					break;
 				}
 				++changeCount;
+				log2root("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
 				console.log("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
 			}
 			muChangeDataIfIntersect();//判断是否相交
@@ -1453,12 +1468,12 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			muChangeData.splice(0, muChangeData.length);
 			averageForChangeX.splice(0, averageForChangeX.length);
 			averageForChangeY.splice(0, averageForChangeY.length);
-			
+			log2root("匹配圆变化是否相交 第"+(c+1)+"次");
 			console.log("匹配圆变化是否相交 第"+(c+1)+"次");
-			if(!intersect){
+			if(!intersect){//不相交
 				break;
 			}
-			getMuChangeData(matchedUserArr,true);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+			muNowData.splice(0, muNowData.length);
 		}
 		
 		for(var j=0;j<muNowData.length;j++){//开始移动
@@ -1489,10 +1504,9 @@ function muChangeDataIfIntersect(){
 		var y=muChangeData[a].y;
 		var radius=muChangeData[a].radius;
 		intersect=isIntersect(id,x,y,radius,muChangeData);
-		/*if(!intersect){// 不相交
-			isBreak=true;
+		if(intersect){// 相交
 			break;
-		}*/
+		}
 	}
 }
 
@@ -1507,7 +1521,9 @@ function muDataQueueEnd(matchedUserArr){
 	}
 }
 
-function getMuChangeData(matchedUserArr,isFirst){
+//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换，后面的判断是判断是否为第一次判段相交
+//true代码第一次判断相交页面需要加上匹配圆div，如果不是则不需要
+function getMuChangeData(matchedUserArr,isFirstIntersect){
 	//将muNowData的数据和改变的排名数据计算之后获得新的muNewData，即下面的muNewData
 	for(var i = 0; i < matchedUserArr.length; i++){//将排名改变的数据遍历
 		var muserid = matchedUserArr[i].userid;// 这是匹配人id
@@ -1517,7 +1533,9 @@ function getMuChangeData(matchedUserArr,isFirst){
 		//这里是判断一开始的时候匹配用户没有满的情况
 		if(i>muChangeData.length-1){
 			setMUPosition(i,matchedUserArr);
-			muAddImg(i,matchedUserArr,true);
+			if(isFirstIntersect){
+				muAddImg(i,matchedUserArr,true);
+			}
 			muChangeData=[].concat(muNowData);
 		}
 		var radius=muChangeData[i].radius;
@@ -1851,8 +1869,8 @@ var averageForChangeY=new Array();//y位置变化的平均值
 var changeTotalX=0;//在n次之前累计的变化总数
 var changeTotalY=0;
 var changeCount=0;//这是循环变化的次数
-var maxChangeCount=50;//这是最大的循环变化的次数,超过1000次则不需要再循环
-var notIntersectCount=20;//判断不相交的最大次数
+var maxChangeCount=10;//这是最大的循环变化的次数,超过1000次则不需要再循环
+var notIntersectCount=10;//判断不相交的最大次数
 
 /**2017.09.26 叶夷 从一个匹配人开始，然后计算边框和其它匹配人共同作用的排斥力(排斥力即移动的距离，目前是距离的倒数*大小,即距离越近和质量越大，排斥力越大),知道这个距离在0~1之间，则算是平衡下来停下*/
 function setPositionAndNotIntersect(){

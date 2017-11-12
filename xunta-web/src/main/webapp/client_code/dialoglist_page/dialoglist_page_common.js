@@ -39,7 +39,18 @@ function enterDialogPage(toUserId,toUserName) {
 	openWin(toUserId,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
 }
 
-//未读消息去除
+/*//未读消息去除
 function removeUnreadNum(toUserId) {
 	$('#' + toUserId).find('.unread').remove()
+}*/
+//未读消息去除
+function removeUnreadObjList(toUserId){
+	for(var i in unreadObjList){
+		if(unreadObjList[i].touserId==toUserId){
+			var index = unreadObjList.indexOf(unreadObjList[i]);
+			if (index > -1) {
+				unreadObjList.splice(index, 1);
+			}
+		}
+	}
 }

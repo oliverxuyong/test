@@ -9,12 +9,12 @@ html, body {
 }
 
 .dialog{
-	//height:11%;
+	height:9%;
 	width:100%;
 	//border-bottom:1px solid #525252;
 	//margin-top: 10px;
     padding-bottom: 10px;
-	position:absolute;
+	//position:absolute;
 }
 
 .dialog >img{
