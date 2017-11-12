@@ -126,21 +126,21 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	
 	private void userOnline(WebSocketSession session) {
 		Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
-		String clientIP = session.getRemoteAddress().toString();
+		String clientIP = session.getRemoteAddress().toString().substring(1);
 		if (!checkExist(session)) {
 			users.add(session);
 			User u = userService.findUser(userid);
 			
-			if(session.getAttributes().get("boot").equals("yes"))
+			/*if(session.getAttributes().get("boot").equals("yes"))
 			{
-				loggerService.log(userid.toString(), u.getName(),clientIP,"用户上线","登录",null,u.getUserGroup());
+				
 				//logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  打开应用上线");
-			}/*else{
+			}else{
 				//logger.info("用户"+u.getUserId()+"  "+u.getName()+"恢复连接");
 				
 				//re_sendMsg(userid,5); //zheng 先取消，以后的更新任务还会有类似的功能
 			}*/
-			
+			loggerService.log(userid.toString(), u.getName(),clientIP,"用户上线","登录",null,u.getUserGroup());
 			recommendService.initRecommendParm(u);
 			cpShowingService.initUserShowingCps(u.getUserId()+"");
 			
