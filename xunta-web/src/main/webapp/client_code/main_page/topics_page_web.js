@@ -94,7 +94,7 @@ function appendElement(i, cpid,cp) {
 	
 	// 这是cp的选择人数
 	var selectTagNum =cp.howmanypeople_selected;
-	//var selectTagNum =parseInt(Math.random()*999)+1;
+	//var selectTagNum =parseInt(Math.random()*10);
 	
 	// 先随机推荐标签字体的大小，在这里留一个可以控制字体大小的入口
 	/*var cpTextSize = Math.random() * 8 + 12;
@@ -164,7 +164,7 @@ function appendElement(i, cpid,cp) {
 
 var minCPSize = $("body").width()/8;// 最小内圆的大小
 var maxCPSize = 100;// 最大内圆的大小
-var minCPTextSize = 12;// cp文字大小的最小值
+var minCPTextSize = 13;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
 var maxCPTextNumber = 9;// cp文字最大的数量
 var maxselectTagNum = 10;// 影响标签大小的选择人数最小的数量
@@ -299,7 +299,7 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	cp_text.css("left", cpTextLeft);
 	
 	// 2017.09.13 叶夷 判断标签之前的距离，需要获得cp_node的大小，然后再加上一个随即距离则是最外面圆的大小
-	var randowDistance=cpInNodeWidth*0.25;// 先按内圆计算,这是标签之间的随机距离,根据自身的大小判断，再加上个别相交
+	var randowDistance=cpInNodeWidth*0.45;// 先按内圆计算,这是标签之间的随机距离,根据自身的大小判断，再加上个别相交
 	//var randowDistance=10;
 	/*if(isInterset){
 		randowDistance=-(cpNodeWidth*0.3);
