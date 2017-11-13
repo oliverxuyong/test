@@ -254,17 +254,17 @@
                 			for(var j in unreadObjList){
                 				var unReadObj=unreadObjList[j];
                 				if(unReadObj.getTouserId()==respondeUserId){//这个用户已经存在，未读数加1
-                					unreadNum++;
-                					unreadObjList[j]=new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum);
+                					unReadObj.unreadNum++;
+                					unreadObjList[j]=new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unReadObj.unreadNum);
                 					isExit=true;
                 					break;
                 				}
                 			}
                 			if(isExit=false){
-                				unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
+                				unreadObjList.push(new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unreadNum));
                 			}
                 		}else{
-                			unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
+                			unreadObjList.push(new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unreadNum));
                 		}
             		}
             		
@@ -461,9 +461,10 @@
 		}
 		
 		//2017.08.16 叶夷   创建跟我聊天的人的id和未读消息数一一对应的对象，为了保存数组
-		function unreadObj(user,data,postTimeStr,touserId,unreadNum){
+		function unreadObj(user,imgUrl,data,postTimeStr,touserId,unreadNum){
 			var obj = new Object();
 			obj.user=user;
+			obj.imgUrl=imgUrl;
 			obj.data=data;
 			obj.postTimeStr=postTimeStr;
 			obj.touserId=touserId;

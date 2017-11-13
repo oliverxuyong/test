@@ -187,7 +187,7 @@ function setUnreadObjList(){
 	//从首页传过来的聊天列表的未读信息
 	if(unreadObjList.length>0){
 		for(var i in unreadObjList){
-			unreadMsg(unreadObjList[i].user,unreadObjList[i].data,unreadObjList[i].postTimeStr,unreadObjList[i].touserId,unreadObjList[i].unreadNum);
+			unreadMsg(unreadObjList[i].user,unreadObjList[i].imgUrl,unreadObjList[i].data,unreadObjList[i].postTimeStr,unreadObjList[i].touserId,unreadObjList[i].unreadNum);
 		}
 	}
 }
@@ -216,6 +216,7 @@ function unreadMsg(toUserName,toUserImg,data,postTimeStr,respondeUserId,unreadNu
 		unreadNum  = unreadParent.find('.unread').text();
 		unreadNum++;
 		unreadParent.find('.unread').text(unreadNum);
+		unreadParent.find('.unread').css("opacity","1");
 	}
 	
 	updateDialogContentAndTime(toUserName,toUserImg,data,postTimeStr,respondeUserId);
