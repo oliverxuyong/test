@@ -245,9 +245,6 @@ function responseTopMatchedUsers(muData) {
 	//2017.11.13 等推荐标签动画完成再进行匹配人位置算法
 	timeOutSuccess = setTimeout(function() {
 		showMatchPeople(matchedUserArr);// 显示匹配人列表
-		
-		//匹配人显示完毕之后再请求我的标签
-		requestMyCP();
 	},2000);
 }
 
