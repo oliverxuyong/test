@@ -206,6 +206,9 @@
 		
 		//发送消息之后服务器返回的消息
         function recevier(obj) {
+        	console.log("测试发送消息后台返回结果："+JSON.stringify(obj));
+        	log2root("测试发送消息后台返回结果："+JSON.stringify(obj));
+			
         		respondeUserId=JSON.stringify(obj.user.userId);
         		user = JSON.stringify(obj.user.name);
         		data = JSON.stringify(obj.data);

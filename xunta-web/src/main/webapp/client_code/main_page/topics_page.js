@@ -94,7 +94,8 @@ function responseSearchTag(text){
         data:{text:text},
         async:false,
         success:function(data, textStatus) {
-        	//console.log("标签搜索请求成功"+data);
+        	console.log("测试标签搜索后台返回结果："+JSON.stringify(data));
+        	log2root("测试标签搜索后台返回结果："+JSON.stringify(data));
         	sendKeyWordToBack(text,data);
         },
         error:function(data, textStatus) {
@@ -180,14 +181,17 @@ function enterDialogPage(toUserId,toUserName,muImg) {
 		"userImage" : userImg,
 		"server_domain" : domain,
 		"userAgent" : userAgent,
-		"topicPageSign" : "yes"
+		"topicPageSign" : ""
 	};
 	console.log("enterDialogPage toUserId=" + toUserId + "|toUserName="
 			+ toUserName);
 	
-	//在打开聊天页的时候请求共同选择的标签
 	if(window.parent.document.getElementById(toUserId)!=null ){//聊天列表打开过
+		//在打开聊天页的时候请求共同选择的标签
 		exec(toUserId, "requestSelectCP()");
+		
+		//将_topicPageSign赋值为""
+		exec(toUserId, "setTopicPageSignIsNull()");
 	}
 	
 	// openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));

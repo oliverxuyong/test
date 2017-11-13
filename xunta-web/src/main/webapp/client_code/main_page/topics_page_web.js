@@ -2199,17 +2199,12 @@ function addTag() {
 //监听添加标签输入框是否有改变
 function showSearchTag() {
 	addCPID=undefined;
-	aData.splice(0,aData.length);// 清空数组
-	// 清空div中所有的子元素
-	var childList = document.getElementById('gov_search_suggest').childNodes;
-	for(var i=0,len=childList.length;i<len;i++){
-	    document.getElementById('gov_search_suggest').removeChild(childList[0]);
-	}
+	//aData.splice(0,aData.length);// 清空数组
 	var input_value = $("#pop_tagName").val();// 获得输入框的值
 	responseSearchTag(input_value);// 通过输入框获得匹配的数据
 }
 
-function searchTagData(id,text){
+/*function searchTagData(id,text){
 	var obj = new Object();
 	obj.id= id;
 	obj.text= text;
@@ -2221,23 +2216,25 @@ function searchTagData(id,text){
 	};
 	return obj;
 }
-
-var aData = [];
+*/
+//var aData = [];
 // 通过输入框获得匹配的数据
 function sendKeyWordToBack(input_value,data) {
+	//2017.11.13 叶夷  在后台返回数据之后再清空，避免出现ajax不同步的情况，导致搜索标签出现添加两次的情况
+	// 清空div中所有的子元素
+	var childList = document.getElementById('gov_search_suggest').childNodes;
+	for(var i=0,len=childList.length;i<len;i++){
+	    document.getElementById('gov_search_suggest').removeChild(childList[0]);
+	}
+	
 	var suggestWrap = $('#gov_search_suggest');
 	
 	for(var i in data){
-		aData.push(searchTagData(data[i].id,data[i].text));
-	}
-	
-	// 获得的搜索结果循环
-	for(var data in aData){
-		searchTag(suggestWrap,aData[data]);
+		searchTag(suggestWrap,data[i]);
 	}
 	
 	// 输入框为空的话，结果不显示
-	if(input_value!="" && aData.length!=0){
+	if(input_value!="" && data.length!=0){
 		$("#htmlObj").css("height","200px");
 		suggestWrap.show();
 	}else{
@@ -2249,6 +2246,9 @@ function sendKeyWordToBack(input_value,data) {
 function searchTag(suggestWrap,data){
 	var cpid=data.id;
 	var text=data.text;
+	
+	//console.log("测试添加标签搜索结果显示："+cpid+"->"+text);
+	//log2root("测试添加标签搜索结果显示："+cpid+"->"+text);
 	
 	var searchtag = $("<div></div>")/* .attr("id","searchtag" + data) */.text(text);// 文字div
 	suggestWrap.append(searchtag);

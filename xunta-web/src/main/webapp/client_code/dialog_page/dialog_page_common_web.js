@@ -1,23 +1,25 @@
 //返回上一页   2016/12/25 deng
 function backBtn(){
 	if(_topicPageSign == 'yes'){
-		execRoot("setCurrentPageId('main_page')");
-		
-		//退出聊天列表时首页的未读消息数去除
-		exec('main_page',"removeUnreadNum()");
-		
-		//聊天列表未读数去除
-		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
-			exec('dialoglist_page',"removeUnreadObjList('"+toUserId+"')");
-			exec('dialoglist_page',"requestDialogList()");
-			exec('dialoglist_page',"changeUnreadColor()");
-			openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', '');
-		}else{
-			openWin('main_page', 'main_page/main_page.html', '');
-		}
+		execRoot("setCurrentPageId('dialoglist_page')");
+		exec('dialoglist_page',"removeUnreadObjList('"+toUserId+"')");
+		exec('dialoglist_page',"requestDialogList()");
+		exec('dialoglist_page',"changeUnreadColor()");
+		openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', '');
 	}else{
-		closeWin(_tmpPageId);
+		closeWin(toUserId);
 	}
+}
+
+/**2017.11.13 叶夷  为了成功记录从不同的入口进入聊天页面
+ * 如果在main_page中进入，_topicPageSign=="";
+ * 如果在dialoglist_page进入，_topicPageSign=="yes"
+ * 但是如果先从dialoglist_page进入，_topicPageSign=="yes"已经保存
+ * 之后再从main_page中进入，_topicPageSign依然=="yes"，不会重新赋值，所以在这里加上一个方法
+ * 在main_page中进入的时候，将_topicPageSign赋值为"";
+ * */
+function setTopicPageSignIsNull(){
+	_topicPageSign = "";
 }
 
 //关闭当前页，返回主界面   2016/12/25 deng
