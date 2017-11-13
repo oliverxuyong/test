@@ -180,14 +180,17 @@ function enterDialogPage(toUserId,toUserName,muImg) {
 		"userImage" : userImg,
 		"server_domain" : domain,
 		"userAgent" : userAgent,
-		"topicPageSign" : "yes"
+		"topicPageSign" : ""
 	};
 	console.log("enterDialogPage toUserId=" + toUserId + "|toUserName="
 			+ toUserName);
 	
-	//在打开聊天页的时候请求共同选择的标签
 	if(window.parent.document.getElementById(toUserId)!=null ){//聊天列表打开过
+		//在打开聊天页的时候请求共同选择的标签
 		exec(toUserId, "requestSelectCP()");
+		
+		//将_topicPageSign赋值为""
+		exec(toUserId, "setTopicPageSignIsNull()");
 	}
 	
 	// openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
