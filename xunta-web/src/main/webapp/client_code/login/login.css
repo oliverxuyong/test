@@ -63,7 +63,7 @@ color:#666666;//display:none
 	right: 0;
 	margin: auto;
 	top: 78%;
-	height:30%;
+	height:20%;/*原来是30%,在Ie上会超出低框*/
 	width: 88%;
 	font-size: 10px;
 	text-align: center;
