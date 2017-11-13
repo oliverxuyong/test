@@ -138,7 +138,8 @@ function  getHistoryMsg(userId,toUserId,firstMsgId){
         data:data,
         async:false,
         success:function(data, textStatus) {
-        	console.log("聊天记录请求成功"+data);
+        	console.log("测试聊天记录请求后台返回结果："+JSON.stringify(data));
+        	log2root("测试聊天记录请求后台返回结果："+JSON.stringify(data));
         	showDialogHistory(data);
         },
         error:function(data, textStatus) {
@@ -184,11 +185,11 @@ function requestSelectCP(){
         	matched_user_id:toUserId},
         async:false,
         success:function(data, textStatus) {
-        	console.log("请求共同选择的标签成功");
+        	console.log("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
+        	log2root("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
         	showSameSelectCp(data);
         },
         error:function(data, textStatus) {
-            console.log("请求共同选择的标签成功");
         	return;
         }
     });

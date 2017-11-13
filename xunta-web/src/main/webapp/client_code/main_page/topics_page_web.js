@@ -2199,7 +2199,7 @@ function addTag() {
 //监听添加标签输入框是否有改变
 function showSearchTag() {
 	addCPID=undefined;
-	aData.splice(0,aData.length);// 清空数组
+	//aData.splice(0,aData.length);// 清空数组
 	// 清空div中所有的子元素
 	var childList = document.getElementById('gov_search_suggest').childNodes;
 	for(var i=0,len=childList.length;i<len;i++){
@@ -2222,7 +2222,7 @@ function showSearchTag() {
 	return obj;
 }
 */
-var aData = [];
+//var aData = [];
 // 通过输入框获得匹配的数据
 function sendKeyWordToBack(input_value,data) {
 	var suggestWrap = $('#gov_search_suggest');
@@ -2245,8 +2245,8 @@ function searchTag(suggestWrap,data){
 	var cpid=data.id;
 	var text=data.text;
 	
-	console.log("测试添加标签搜索结果显示："+cpid+"->"+text);
-	log2root("测试添加标签搜索结果显示："+cpid+"->"+text);
+	//console.log("测试添加标签搜索结果显示："+cpid+"->"+text);
+	//log2root("测试添加标签搜索结果显示："+cpid+"->"+text);
 	
 	var searchtag = $("<div></div>")/* .attr("id","searchtag" + data) */.text(text);// 文字div
 	suggestWrap.append(searchtag);

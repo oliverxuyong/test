@@ -10,7 +10,8 @@ function requestDialogList(){
         },
         async:false,
         success:function(data, textStatus) {
-        	console.log("聊天列表请求成功"+data);
+        	console.log("测试聊天列表请求后台返回结果："+JSON.stringify(data));
+        	log2root("测试聊天列表请求后台返回结果："+JSON.stringify(data));
         	showDialogList(data);
         },
         error:function(data, textStatus) {

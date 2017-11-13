@@ -94,7 +94,8 @@ function responseSearchTag(text){
         data:{text:text},
         async:false,
         success:function(data, textStatus) {
-        	//console.log("标签搜索请求成功"+data);
+        	console.log("测试标签搜索后台返回结果："+JSON.stringify(data));
+        	log2root("测试标签搜索后台返回结果："+JSON.stringify(data));
         	sendKeyWordToBack(text,data);
         },
         error:function(data, textStatus) {
