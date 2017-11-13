@@ -2209,7 +2209,7 @@ function showSearchTag() {
 	responseSearchTag(input_value);// 通过输入框获得匹配的数据
 }
 
-function searchTagData(id,text){
+/*function searchTagData(id,text){
 	var obj = new Object();
 	obj.id= id;
 	obj.text= text;
@@ -2221,23 +2221,18 @@ function searchTagData(id,text){
 	};
 	return obj;
 }
-
+*/
 var aData = [];
 // 通过输入框获得匹配的数据
 function sendKeyWordToBack(input_value,data) {
 	var suggestWrap = $('#gov_search_suggest');
 	
 	for(var i in data){
-		aData.push(searchTagData(data[i].id,data[i].text));
-	}
-	
-	// 获得的搜索结果循环
-	for(var data in aData){
-		searchTag(suggestWrap,aData[data]);
+		searchTag(suggestWrap,data[i]);
 	}
 	
 	// 输入框为空的话，结果不显示
-	if(input_value!="" && aData.length!=0){
+	if(input_value!="" && data.length!=0){
 		$("#htmlObj").css("height","200px");
 		suggestWrap.show();
 	}else{
@@ -2249,6 +2244,9 @@ function sendKeyWordToBack(input_value,data) {
 function searchTag(suggestWrap,data){
 	var cpid=data.id;
 	var text=data.text;
+	
+	console.log("测试添加标签搜索结果显示："+cpid+"->"+text);
+	log2root("测试添加标签搜索结果显示："+cpid+"->"+text);
 	
 	var searchtag = $("<div></div>")/* .attr("id","searchtag" + data) */.text(text);// 文字div
 	suggestWrap.append(searchtag);
