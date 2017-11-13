@@ -2,8 +2,8 @@
 function backBtn(){
 	if(_topicPageSign == 'yes'){
 		execRoot("setCurrentPageId('dialoglist_page')");
-		exec('dialoglist_page',"removeUnreadObjList('"+toUserId+"')");
-		exec('dialoglist_page',"requestDialogList()");
+		exec('dialoglist_page',"removeUnreadNum('"+toUserId+"')");
+		//exec('dialoglist_page',"requestDialogList()");
 		exec('dialoglist_page',"changeUnreadColor()");
 		openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', '');
 	}else{

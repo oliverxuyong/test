@@ -193,8 +193,12 @@ function setUnreadObjList(){
 }
 
 //未读消息数提示，最新消息内容和最新时间更新
-function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
+function unreadMsg(toUserName,toUserImg,data,postTimeStr,respondeUserId,unreadNum){
 	var unreadParent=$("#"+respondeUserId);
+	if(unreadParent.length==0){//未读消息更改的同时判断聊天列表中是否有这个人的存在，如果不存在则将它加上且置顶
+		unreadParent=makeDialogListTop(toUserName,toUserImg,respondeUserId);
+	}
+	
 	if (unreadParent.find('.unread').length==0) {//如果没有未读消息,则加上一个1;
 		var unreadNumNode = $("<div></div>").attr("class", "unread").text(unreadNum);
 		unreadParent.append(unreadNumNode);
@@ -214,18 +218,18 @@ function unreadMsg(user,data,postTimeStr,respondeUserId,unreadNum){
 		unreadParent.find('.unread').text(unreadNum);
 	}
 	
-	updateDialogContentAndTime(user,data,postTimeStr,respondeUserId);
+	updateDialogContentAndTime(toUserName,toUserImg,data,postTimeStr,respondeUserId);
 }
 
 //把聊天列表的内容和时间更新
-function updateDialogContentAndTime(user,data,postTimeStr,respondeUserId){
+function updateDialogContentAndTime(toUserName,toUserImg,data,postTimeStr,respondeUserId){
 	var unreadParent=$("#"+respondeUserId);
 	//内容
 	var dialog_content_msg=unreadParent.find(".dialog_content_msg");
-	if(user==""){
+	if(toUserName==""){
 		dialog_content_msg.text(data);
 	}else{
-		dialog_content_msg.text(user+"："+data);
+		dialog_content_msg.text(toUserName+"："+data);
 	}
 	
 	//把时间更新
@@ -241,48 +245,25 @@ function changeUnreadColor(){
 }
 
 /**2017.10.16 叶夷  聊天列表消息置顶*/
-function makeDialogListTop(respondeUserId){
+function makeDialogListTop(toUserName,toUserImg,respondeUserId){
 	var oneDialogDiv=$("#"+respondeUserId);
-	var copyOneDialogDiv=oneDialogDiv.clone();
-	
-	//先将节点从dialog_list删除再放入第一位中
-	oneDialogDiv.remove();
+	var copyOneDialogDiv;
+	if(oneDialogDiv.length<=0){//判断聊天列表中是否有这个人的存在，如果不存在则将它加上且置顶
+		copyOneDialogDiv=$(".dialog").eq(0).clone();
+		copyOneDialogDiv.attr("id",respondeUserId);
+		copyOneDialogDiv.find(".img").attr("src",toUserImg);
+		copyOneDialogDiv.find(".dialog_content_name").text(toUserName);
+		copyOneDialogDiv.find('.unread').remove();
+	}else{
+		copyOneDialogDiv=oneDialogDiv.clone();
+		
+		//先将节点从dialog_list删除再放入第一位中
+		oneDialogDiv.remove();
+	}
 	$("#dialog_list").prepend(copyOneDialogDiv);
-	
-	var toUserName=copyOneDialogDiv.find(".dialog_content_name").text();
-	var toUserImg=copyOneDialogDiv.find("img").attr("src");
 	copyOneDialogDiv.click(function() {//绑定点击事件.
 		enterDialogPage(respondeUserId,toUserName,toUserImg);
 	});
-}
-//2017.11.10   当聊天列表消息存在的时候将未读消息装进unreadObjList中
-function dialogListExistAddunreadObjList(user,data,postTimeStr,respondeUserId,unreadNum){
-	//var unreadNum=1;
-	if(unreadObjList.length!=0){
-		var isExit=false;
-		for(var j in unreadObjList){
-			var unReadObj=unreadObjList[j];
-			if(unReadObj.touserId==respondeUserId){//这个用户已经存在，未读数加1
-				unreadNum++;
-				unreadObjList[j]=new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum);
-				isExit=true;
-				break;
-			}
-		}
-		if(isExit=false){
-			unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
-		}
-	}else{
-		unreadObjList.push(new unreadObj(user,data,postTimeStr,respondeUserId,unreadNum));
-	}
-}
-//2017.11.10 叶夷   创建跟我聊天的人的id和未读消息数一一对应的对象，为了保存数组
-function unreadObj(user,data,postTimeStr,touserId,unreadNum){
-	var obj = new Object();
-	obj.user=user;
-	obj.data=data;
-	obj.postTimeStr=postTimeStr;
-	obj.touserId=touserId;
-	obj.unreadNum=unreadNum;
-	return obj;
+	
+	return copyOneDialogDiv;
 }
