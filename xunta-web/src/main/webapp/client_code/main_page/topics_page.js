@@ -147,6 +147,7 @@ function return_add_self_cp(data){
     });
 }*/
 function requestMyCP(){
+	firstRequestMyCp=false;
 	execRoot("request_user_selected_cp('"+ userId +"')");
 }
 

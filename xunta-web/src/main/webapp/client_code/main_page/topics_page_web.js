@@ -9,8 +9,10 @@ var requestCPSuccese=false;
 
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
-	//请求了推荐标签之后请求我的标签
-	requestMyCP();
+	if(firstRequestMyCp==true){
+		//请求了推荐标签之后请求我的标签
+		requestMyCP();
+	 }
 	
 	$("#showatloaded").show();// 首页开始显示
 	
