@@ -2200,11 +2200,6 @@ function addTag() {
 function showSearchTag() {
 	addCPID=undefined;
 	//aData.splice(0,aData.length);// 清空数组
-	// 清空div中所有的子元素
-	var childList = document.getElementById('gov_search_suggest').childNodes;
-	for(var i=0,len=childList.length;i<len;i++){
-	    document.getElementById('gov_search_suggest').removeChild(childList[0]);
-	}
 	var input_value = $("#pop_tagName").val();// 获得输入框的值
 	responseSearchTag(input_value);// 通过输入框获得匹配的数据
 }
@@ -2225,6 +2220,13 @@ function showSearchTag() {
 //var aData = [];
 // 通过输入框获得匹配的数据
 function sendKeyWordToBack(input_value,data) {
+	//2017.11.13 叶夷  在后台返回数据之后再清空，避免出现ajax不同步的情况，导致搜索标签出现添加两次的情况
+	// 清空div中所有的子元素
+	var childList = document.getElementById('gov_search_suggest').childNodes;
+	for(var i=0,len=childList.length;i<len;i++){
+	    document.getElementById('gov_search_suggest').removeChild(childList[0]);
+	}
+	
 	var suggestWrap = $('#gov_search_suggest');
 	
 	for(var i in data){
