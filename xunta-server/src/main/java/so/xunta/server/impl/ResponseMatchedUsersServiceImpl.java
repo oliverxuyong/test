@@ -30,15 +30,15 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 	public List<User> getMatchedUsers(Long userid,int topNum) {
 		
 		Set<Tuple> userSet= u2uRelationDao.getRelatedUsersByRank(userid.toString(), FIRST_USER_RANK, topNum-1);
-		List<Long> uids = new ArrayList<Long>();
+		List<User> matchedUsers = new ArrayList<User>();
 		for(Tuple userTuple:userSet){
 			if(userTuple.getScore()<=0){
 				break;
 			}
 			String matchedUserid = userTuple.getElement();
-			uids.add(Long.valueOf(matchedUserid));
+			matchedUsers.add(userDao.findUserByUserid((Long.valueOf(matchedUserid))));
 		}
-		List<User> matchedUsers= userDao.findUserInIds(uids);	
+
 		return matchedUsers;
 	}
 
