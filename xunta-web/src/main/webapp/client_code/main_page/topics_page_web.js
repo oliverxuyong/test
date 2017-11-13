@@ -9,12 +9,6 @@ var requestCPSuccese=false;
 
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
-	// 叶夷 2017.07.11 等请求cp返回之后再请求用户匹配缩略表
-	 if(firstRequestTopMatchedUsers==true){
-		 requestTopMatchedUsers(userId,requestTopMUNum); 
-		 //addMPData();
-	 }
-	 
 	$("#showatloaded").show();// 首页开始显示
 	
 	// 获得一批推荐标签数据进行位置，大小和动画的设置
@@ -77,6 +71,12 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 		$("#background-rightbar").css("width",scollWidth);
 	}*/
 	//$("#background-rightbar-mytag").css("width",scollWidth);
+	
+	// 叶夷 2017.07.11 等请求cp返回之后再请求用户匹配缩略表
+	if(firstRequestTopMatchedUsers==true){
+		requestTopMatchedUsers(userId,requestTopMUNum); 
+		//addMPData();
+	}
 }
 
 //2017.10.12 叶夷   标签的完整文字内容,cpid为键，文字为值
@@ -1730,47 +1730,50 @@ function setMUPosition(i,matchedUserArr){
 /**2017.11.02  叶夷  设置匹配圆的大小*/
 function setMatchUsersSize(i){
 	var bodyWidth=$("body").width();
+	var bodyHeight=$("body").height();
 	var radius;
+	//Math.pow((headerContainerSize+moveWidth),1/3);
+	var a=Math.pow((bodyHeight/1000),1/4);
 	if(i==0){
-		radius=bodyWidth*0.070;
+		radius=bodyWidth*0.070*a;
 	}else if(i==1){
-		radius=bodyWidth*0.064;
+		radius=bodyWidth*0.064*a;
 	}else if(i==2){
-		radius=bodyWidth*0.058;
+		radius=bodyWidth*0.058*a;
 	}else if(i==3){
-		radius=bodyWidth*0.051;
+		radius=bodyWidth*0.051*a;
 	}else if(i==4){
-		radius=bodyWidth*0.045;
+		radius=bodyWidth*0.045*a;
 	}else if(i==5){
-		radius=bodyWidth*0.038;
+		radius=bodyWidth*0.038*a;
 	}else if(i==6){
-		radius=bodyWidth*0.035;
+		radius=bodyWidth*0.035*a;
 	}else if(i==7){
-		radius=bodyWidth*0.030;
+		radius=bodyWidth*0.030*a;
 	}else if(i==8){
-		radius=bodyWidth*0.028;
+		radius=bodyWidth*0.028*a;
 	}else if(i==9){
-		radius=bodyWidth*0.026;
+		radius=bodyWidth*0.026*a;
 	}else if(i==10){
-		radius=bodyWidth*0.024;
+		radius=bodyWidth*0.024*a;
 	}else if(i==11){
-		radius=bodyWidth*0.024;
+		radius=bodyWidth*0.024*a;
 	}else if(i==12){
-		radius=bodyWidth*0.024;
+		radius=bodyWidth*0.024*a;
 	}else if(i==13){
-		radius=bodyWidth*0.022;
+		radius=bodyWidth*0.022*a;
 	}else if(i==14){
-		radius=bodyWidth*0.022;
+		radius=bodyWidth*0.022*a;
 	}else if(i==15){
-		radius=bodyWidth*0.022;
+		radius=bodyWidth*0.022*a;
 	}else if(i==16){
-		radius=bodyWidth*0.020;
+		radius=bodyWidth*0.020*a;
 	}else if(i==17){
-		radius=bodyWidth*0.018;
+		radius=bodyWidth*0.018*a;
 	}else if(i==18){
-		radius=bodyWidth*0.016;
+		radius=bodyWidth*0.016*a;
 	}else if(i==19){
-		radius=bodyWidth*0.014;
+		radius=bodyWidth*0.014*a;
 	}
 	return radius;
 }
@@ -1870,7 +1873,7 @@ var changeTotalX=0;//在n次之前累计的变化总数
 var changeTotalY=0;
 var changeCount=0;//这是循环变化的次数
 var maxChangeCount=10;//这是最大的循环变化的次数,超过1000次则不需要再循环
-var notIntersectCount=10;//判断不相交的最大次数
+var notIntersectCount=3;//判断不相交的最大次数
 
 /**2017.09.26 叶夷 从一个匹配人开始，然后计算边框和其它匹配人共同作用的排斥力(排斥力即移动的距离，目前是距离的倒数*大小,即距离越近和质量越大，排斥力越大),知道这个距离在0~1之间，则算是平衡下来停下*/
 function setPositionAndNotIntersect(){
