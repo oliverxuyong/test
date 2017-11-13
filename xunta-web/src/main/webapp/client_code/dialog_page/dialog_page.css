@@ -61,6 +61,12 @@ body{position:relative;
 #loading img{float:left}
 #loadingtext{float:left;margin-left:10px;padding-top: 5px;font-size:12px;}
 
+#dialog-bottom-space{
+	height:40px;
+	width:100%;
+	background-color:#f6f6f6;
+}
+
 #dialog_box .user-pic,.topic-box .right .user-pic {width:32px;height:32px;border-radius:16px;overflow:hidden}
 #dialog_box .user-pic{position:absolute;top:0;right:0;}
 #dialog_box .user-pic img,.topic-box .right .user-pic img{width:100%;height:100%}
