@@ -241,10 +241,11 @@ function enterMatchUsersPage(){
 //2017.07.07 叶夷 这是用户刚开始打开网页的时候请求的后端返回的匹配人列表
 function responseTopMatchedUsers(muData) {
 	var matchedUserArr = muData.matched_user_arr;// 获得后台发送的匹配人排名信息数组
-	showMatchPeople(matchedUserArr);// 显示匹配人列表
 	
-	//匹配人显示完毕之后再请求我的标签
-	requestMyCP();
+	//2017.11.13 等推荐标签动画完成再进行匹配人位置算法
+	timeOutSuccess = setTimeout(function() {
+		showMatchPeople(matchedUserArr);// 显示匹配人列表
+	},2000);
 }
 
 // 2017.07.07 叶夷 匹配用户改变
