@@ -63,8 +63,8 @@ public class U2uRelationDaoImp implements U2uRelationDao {
 
 	@Override
 	public Double getRelatedUserScore(String myuid, String relateUid) {
-		Jedis jedis=null;
-		Double score =0.0;
+		Jedis jedis = null;
+		Double score = null;
 		myuid = keyPrefix + myuid ;
 		try {
 			jedis = redisUtil.getJedis();
@@ -73,6 +73,9 @@ public class U2uRelationDaoImp implements U2uRelationDao {
 			logger.error("getRelatedUserScore error:", e);
 		}finally{
 			jedis.close();
+		}
+		if(score == null){
+			score=0.0;
 		}
 		return score;
 	}

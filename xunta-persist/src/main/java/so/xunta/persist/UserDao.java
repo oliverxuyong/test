@@ -40,10 +40,4 @@ public interface UserDao {
 	 **/ 
 	public List<User> findUserByGroup(Long userid);
 	
-	//获得关联的用户数
-	public int getLinkedUserCounts(Long userid);
-	
-	//获得所有排序好的关联的用户
-	public List<Long> getLinkedUserIds(Long userid, int start, int amount);
-	
 }

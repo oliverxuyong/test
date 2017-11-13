@@ -329,10 +329,13 @@ public class RecommendServiceImpl implements RecommendService {
 			String property = selectedCp.getProperty();
 			Double cpWeight = concernPointDao.getConcernPointById(selectedCpid).getWeight().doubleValue();
 			Double relateScore = u2uRelationDao.getRelatedUserScore(uid, changedUid);
+			//logger.info("selectedCp: "+selectedCpid+" ; " + is_selected +" ; "+ property +" ; "+ cpWeight +" ; "+ relateScore);
 			
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
-					u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)==null){
+						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+					}
 				}else{
 					 //为取消标签时，如果在更新之前并未选中过，说明是选择又取消，应该什么都不做，只有选中过，取消才有意义
 					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)!=null){
@@ -341,7 +344,9 @@ public class RecommendServiceImpl implements RecommendService {
 				}
 			}else{
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
-					u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)==null){
+						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+					}
 				}else{
 					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)!=null){
 						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);

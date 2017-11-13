@@ -21,11 +21,12 @@
 
 #userimg {
 	height: 38%;
-	width: 100%;
+	width: 100%;/*这个宽度不设,则代码读出来的宽度值为0,从而使昵称截短的计算失效*/
     position: absolute;
     bottom: 30px;
     /* padding-top: 100%; */
     /* padding-bottom: 0%; */
+    display:none;
 }
 
 #userimg>img {

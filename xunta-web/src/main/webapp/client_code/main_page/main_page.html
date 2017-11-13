@@ -356,7 +356,7 @@
 		
 		function userNameTextAdj(userNameObj,userNameText,userImgWidth){
 			userNameObj.hide();
-			//userNameText = "NameOju用户用户merNameOju用户用";
+			//userNameText = "NameOju用户merNameOjumerNammerNam";
 			//先隐藏. 设最大文字,最小文字(可以比11px小一些).
 			/*先让昵称文字最大
 				如果一行,则结束
@@ -366,17 +366,20 @@
 				如果一行半到两行之间,则结束
 				如果一行到一行半之间,则减字到刚好一行.*/
 			//var usernameLength=strLength(userNameText);
-			var sizeMax = userImgWidth/5;//头像下一排最多只能排6个字.两排最多12个字.
-			
-			var sizeMin=10;//头像下一排最多只能排6个字.两排最多12个字.
+			var sizeMax = Math.round(userImgWidth/5);//头像下一排最多只能排6个字.两排最多12个字.
+			var sizeMin=8;//头像下一排最多只能排6个字.两排最多12个字.
+			if (sizeMin >= sizeMax) {sizeMin = sizeMax - 3}
 			//var maxTextNumber=0;
 			var textSize = sizeMax;
-			var lineNum=0;
-			for(textSize = sizeMax; textSize >= sizeMin;textSize=textSize-1) {
+			var lineNum=5;
+			for(textSize = sizeMax; ;textSize=textSize-1) {
 				lineNum = getTextLineNum(userNameObj,textSize,userNameText);
-				if (lineNum == 1) {
+				if (lineNum == "nochange") {
+					textSize=textSize+1;
+					lineNum = 3;
 					break;
-				}
+					}
+				if (lineNum == 1) {break;}
 			}
 			
 			if (lineNum != 1){
@@ -390,16 +393,27 @@
 			userNameObj.show();
 			
 			function getTextLineNum(userNameObj,textSize,text){
+				var userNmHeight_Before = parseInt(userNameObj.css("height"));//
 				setUserNameCSS(userNameObj,textSize,text);
-				var userNmHeight = parseInt(userNameObj.css("height"));//
-				if (userNmHeight < textSize*1.8) {return 1;}
-				if (userNmHeight > textSize*2 && userNmHeight < textSize*3) {return 2;}
-				if (userNmHeight > textSize*3) {return 3;}
+				var userNmHeight_After = parseInt(userNameObj.css("height"));//
+				if (userNmHeight_After == userNmHeight_Before){return "nochange";}		
+				if (userNmHeight_After <= (textSize+2)*1.9) {return 1;}
+				if (userNmHeight_After > (textSize+2)*1.9 && userNmHeight_After <= (textSize+2)*2.9) {return 2;}
+				if (userNmHeight_After > (textSize+2)*2.9) {return 3;}
 			}
+			
+			function getUserNmHeight(userNameObj,textSize,userNameText){
+				
+				
+			}
+			
+			
 			
 			function reduceTextNum(userNameObj,textSize,text,lineNum){
 				var textHasEnd = text + "end";
 				var lineNumBefore = lineNum;
+				//if (lineNumBefore > 3) {lineNumBefore = 3;}//传进来的参数最大就是3,再多行也赋为3.
+			
 				var lineNumAfter;
 				for(var i=0;i<1000;i++) {
 					//lineNumBefore = getTextLineNum(userNameObj,textSize,textHasEnd);

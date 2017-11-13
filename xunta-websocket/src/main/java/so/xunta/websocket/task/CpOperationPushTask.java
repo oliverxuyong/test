@@ -93,7 +93,7 @@ public class CpOperationPushTask implements Runnable{
 		if(userSession==null){
 			return;
 		}
-		clientIP = userSession.getRemoteAddress().toString();
+		clientIP = userSession.getRemoteAddress().toString().substring(1);
 		
 		/*更新前记录一次状态*/
 		Boolean ifLastPushComlepted = recommendPushService.recordStatusBeforeUpdateTask(uid,selectType);
