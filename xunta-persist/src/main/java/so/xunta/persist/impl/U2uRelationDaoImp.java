@@ -41,7 +41,9 @@ public class U2uRelationDaoImp implements U2uRelationDao {
 		} catch (Exception e) {
 			logger.error("updateUserRelationValue error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 	}
 
@@ -56,7 +58,9 @@ public class U2uRelationDaoImp implements U2uRelationDao {
 		} catch (Exception e) {
 			logger.error("getRelatedUsersByRank error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return users;
 	}
@@ -72,7 +76,9 @@ public class U2uRelationDaoImp implements U2uRelationDao {
 		} catch (Exception e) {
 			logger.error("getRelatedUserScore error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		if(score == null){
 			score=0.0;

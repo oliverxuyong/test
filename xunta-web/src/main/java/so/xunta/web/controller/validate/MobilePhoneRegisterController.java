@@ -453,7 +453,7 @@ public class MobilePhoneRegisterController {
 		if (mobiles == null) {
 			return false;
 		}
-		Pattern p = Pattern.compile("^[1][3,4,5,7,8][0-9]{9}$");
+		Pattern p = Pattern.compile("^[1][3,4,5,6,7,8][0-9]{9}$");
 		Matcher m = p.matcher(mobiles);
 		System.out.println(m.matches() + "---");
 		return m.matches();

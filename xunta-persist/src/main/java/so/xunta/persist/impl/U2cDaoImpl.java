@@ -42,7 +42,9 @@ public class U2cDaoImpl implements U2cDao {
 		} catch (Exception e) {
 			logger.error("getUserCpsByRank error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return cps;
 	}
@@ -58,7 +60,9 @@ public class U2cDaoImpl implements U2cDao {
 		} catch (Exception e) {
 			logger.error("updateUserCpValue error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return score;
 	}
@@ -75,7 +79,9 @@ public class U2cDaoImpl implements U2cDao {
 		} catch (Exception e) {
 			logger.error("updateUserBatchCpValue error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}		
 	}
 	
@@ -94,7 +100,9 @@ public class U2cDaoImpl implements U2cDao {
 		} catch (Exception e) {
 			logger.error("setUserCpsPresented error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 	}
 	
@@ -110,7 +118,9 @@ public class U2cDaoImpl implements U2cDao {
 		} catch (Exception e) {
 			logger.error("ifUserCpInited error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return ifexist;
 	}
@@ -130,7 +140,9 @@ public class U2cDaoImpl implements U2cDao {
 		} catch (Exception e) {
 			logger.error("ifneedReplenish error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return false;
 	}

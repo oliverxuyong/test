@@ -32,7 +32,9 @@ public class C2uPresentDaoImpl implements C2uPresentDao{
 		} catch (Exception e) {
 			logger.error("setCpPresentUser error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}	
 	}
 
@@ -48,7 +50,9 @@ public class C2uPresentDaoImpl implements C2uPresentDao{
 		} catch (Exception e) {
 			logger.error("getCpPresentUsers error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}	
 		return returnUids;
 	}
@@ -64,7 +68,9 @@ public class C2uPresentDaoImpl implements C2uPresentDao{
 		} catch (Exception e) {
 			logger.error("deleteCpPresentUser error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}	
 		
 	}

@@ -219,6 +219,10 @@ public class TemplateMessageUtils {
                 //log.error("获取token失败 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));
             }
         }
-        return token.getAccessToken();
+        if(token !=null ){
+        	return token.getAccessToken();
+        }else{
+        	return "";
+        }
     }
 }

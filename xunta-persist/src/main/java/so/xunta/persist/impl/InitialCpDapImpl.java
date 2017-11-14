@@ -30,14 +30,16 @@ public class InitialCpDapImpl implements InitialCpDao {
 	@Override
 	public boolean ifexist(){
 		Jedis jedis=null;
-		Boolean ifexist =null;
+		Boolean ifexist =false;
 		try {
 			jedis = redisUtil.getJedis();
 			ifexist = jedis.exists(key);
 		}catch(Exception e){
 			logger.error("init error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return ifexist;
 	}
@@ -51,7 +53,9 @@ public class InitialCpDapImpl implements InitialCpDao {
 		}catch(Exception e){
 			logger.error("setCps error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 	}
 
@@ -72,7 +76,9 @@ public class InitialCpDapImpl implements InitialCpDao {
 		}catch(Exception e){
 			logger.error("getInitialCps error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return returncps;
 	}
@@ -96,7 +102,9 @@ public class InitialCpDapImpl implements InitialCpDao {
 		}catch(Exception e){
 			logger.error("getRandomCps error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return returncps;
 	}

@@ -525,7 +525,7 @@ public class LoginController {
 						image = finduser.getImgUrl();
 					}
 					responseCookieAndHtml(request, response, uid, uid, image, name, type, null);
-				} else {
+				} else if(out!=null){
 					out.println("很抱歉，我们没能正确获取到您的信息，原因是： " + userInfoBean.getMsg());
 				}
 			}
