@@ -234,8 +234,8 @@
         		    execRoot(str);
         		    
         		    if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过,实现置顶
-        		    	exec("dialoglist_page", "updateDialogContentAndTime('','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
-            			exec("dialoglist_page", "makeDialogListTop('" + window_id +"')");
+        		    	exec("dialoglist_page", "updateDialogContentAndTime('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
+            			exec("dialoglist_page", "makeDialogListTop('" + user+"','"+imgUrl+"','"+window_id +"')");
             		}
             	} else { 
             		myOrOther="other";

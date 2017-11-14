@@ -825,7 +825,8 @@ function chooseOneCP(cp_node,cp) {
 		noItem.css("font-size",cpTextSize+"px");
 		//3.改变整个标签的大小
 		//cp文字div, cp文字长度,cp文字大小，cp文字，外圆div，内圆div,内圆div大小,选择的人数，再加上一个圆div（用来判断标签之前的距离）,选择人数div,判断是否相交
-		calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
+		//2017.11.14 叶夷  (cpTextSize+2)标签放大之后字体放大两号
+		calCircle1(cp_text, cpTextLength,(parseInt(cpTextSize)+2), cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
 		cp_innode.css("background-color","rgba(247,247,247,0.4)");
 		cp_innode.css("z-index","104");
 		

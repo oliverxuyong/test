@@ -227,10 +227,13 @@ function updateDialogContentAndTime(toUserName,toUserImg,data,postTimeStr,respon
 	var unreadParent=$("#"+respondeUserId);
 	//内容
 	var dialog_content_msg=unreadParent.find(".dialog_content_msg");
+	var msg;
 	if(toUserName==""){
-		dialog_content_msg.text(data);
+		msg=cutStringIfTooLong(data,17);
+		dialog_content_msg.text(msg);
 	}else{
-		dialog_content_msg.text(toUserName+"："+data);
+		msg=cutStringIfTooLong((toUserName+"："+data),17);
+		dialog_content_msg.text(msg);
 	}
 	
 	//把时间更新
