@@ -319,7 +319,7 @@ public class MobilePhoneRegisterController {
 			String third_party_id =  "null";
 			String type ="Phone";
 			
-			User new_user = new User(userId, third_party_id, nickname,"http://42.121.136.225:8888/user-pic2.jpg", type, groupname, Timestamp.valueOf(new Date().toString()));
+			User new_user = new User(userId, third_party_id, nickname,"http://42.121.136.225:8888/user-pic2.jpg", type, groupname, new Timestamp(System.currentTimeMillis()));
 			new_user.setThird_party_id(idWorker.nextId()+"");
 			new_user.setPassword(password);
 			new_user.setPhonenumber(phonenumber);
@@ -453,7 +453,7 @@ public class MobilePhoneRegisterController {
 		if (mobiles == null) {
 			return false;
 		}
-		Pattern p = Pattern.compile("^[1][3,4,5,8][0-9]{9}$");
+		Pattern p = Pattern.compile("^[1][3,4,5,7,8][0-9]{9}$");
 		Matcher m = p.matcher(mobiles);
 		System.out.println(m.matches() + "---");
 		return m.matches();
