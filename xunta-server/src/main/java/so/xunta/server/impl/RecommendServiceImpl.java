@@ -234,6 +234,9 @@ public class RecommendServiceImpl implements RecommendService {
 	public void initRecommendParm(User u) {
 		logger.info("用户: "+ u.getName()+" 初始化推荐参数任务开始");
 		Timestamp lastUpdateTime = u.getLast_update_time();
+		if(lastUpdateTime==null){
+			lastUpdateTime = new Timestamp(System.currentTimeMillis());
+		}
 		userLastUpdateTimeDao.setUserLastUpdateTime(u.getUserId().toString(), lastUpdateTime.toString());
 		String uid = u.getUserId().toString();
 		Boolean ifInited = u2cDao.ifUserCpInited(uid);
@@ -293,7 +296,13 @@ public class RecommendServiceImpl implements RecommendService {
 			return;
 		}
 		logger.info("用户: "+ u.getName()+" 下线，将更新时间同步到数据库");
-		Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(u.getUserId().toString()));
+		String userLastUpdateTimeStr = userLastUpdateTimeDao.getUserLastUpdateTime(u.getUserId().toString());
+		Timestamp lastUpdateTime = null;
+		if(userLastUpdateTimeStr == null){
+			lastUpdateTime = new Timestamp(System.currentTimeMillis());
+		}else{
+			lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(u.getUserId().toString()));
+		}
 		u.setLast_update_time(lastUpdateTime);
 		userDao.updateUser(u);
 	}
