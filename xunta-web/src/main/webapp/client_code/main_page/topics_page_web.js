@@ -1153,8 +1153,10 @@ function addMyCp(cpid,text,selected_user_num){
 		$("#background-rightbar-mytag").show();
 		$("#background-rightbar-mytag").css("height",myTagContainerHeight);*/
 		
-		//滚动条直接滑倒底部
-		myTagContainer.scrollTop( myTagContainer[0].scrollHeight );
+		//第一次我的标签显示不用滚动条直接滑倒底部
+		if(firstRequestMyCp!=true){
+			myTagContainer.scrollTop( myTagContainer[0].scrollHeight );
+		}
 }
 /**
  * 我的标签框高度改变了之后影响其他部分的高度
@@ -2288,6 +2290,7 @@ function response_user_selected_cp(datas){
 		var selected_user_num =cp_arr[i].selected_user_num
 		addMyCp(cpid,text,selected_user_num);
 	}
+	firstRequestMyCp=false;
 }
 
 // 2017.08.09 叶夷 添加标签之后的显示
