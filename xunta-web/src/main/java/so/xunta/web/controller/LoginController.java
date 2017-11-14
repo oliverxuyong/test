@@ -6,8 +6,12 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -29,6 +33,7 @@ import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
 import so.xunta.utils.IdWorker;
 import so.xunta.websocket.config.Constants;
+import so.xunta.websocket.utils.WeChatShareLinksUtils;
 import weibo4j.Account;
 import weibo4j.Users;
 import weibo4j.model.WeiboException;
@@ -48,7 +53,7 @@ public class LoginController {
 
 	@Autowired
 	LoggerService loggerService;
-	
+
 	static Logger logger = Logger.getRootLogger();
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
@@ -142,9 +147,10 @@ public class LoginController {
 	 *                             response.sendRedirect(redirect_url);
 	 * 
 	 *                             } catch (QQConnectException e) {
-	 *                             logger.error(e.getMessage(), e); } catch (IOException e)
-	 *                             { // TODO Auto-generated catch block
-	 *                             logger.error(e.getMessage(), e); } }
+	 *                             logger.error(e.getMessage(), e); } catch
+	 *                             (IOException e) { // TODO Auto-generated
+	 *                             catch block logger.error(e.getMessage(), e);
+	 *                             } }
 	 */
 
 	@RequestMapping("/weibo_login")
@@ -197,6 +203,7 @@ public class LoginController {
 
 	/**
 	 * 从微信公众号登录
+	 * 
 	 * @author 叶夷
 	 */
 	@RequestMapping("/wxpnCallback")
@@ -251,10 +258,10 @@ public class LoginController {
 		// 更新已关注的用户openid
 		// TempInsertOpenidUtils.updateOpenid();
 
-		//如果有些用户的openid没有保存，则登录时保存更新
+		// 如果有些用户的openid没有保存，则登录时保存更新
 		User user = userDao.findUserByThirdPartyId(unionid);
 		if (user != null && user.getOpenid() == null) {
-			System.out.println("user openid: " +openid);
+			System.out.println("user openid: " + openid);
 			user.setOpenid(openid);
 			userDao.updateUser(user);
 		}
@@ -305,9 +312,9 @@ public class LoginController {
 		JSONObject userInfoJson = new JSONObject(userInfo);
 		String nickname = new String(userInfoJson.get("nickname").toString().getBytes("ISO-8859-1"), "UTF-8");
 		String sex = userInfoJson.get("sex").toString();
-		//String province = userInfoJson.get("province").toString();
-		//String city = userInfoJson.get("city").toString();
-	//	String country = userInfoJson.get("country").toString();
+		// String province = userInfoJson.get("province").toString();
+		// String city = userInfoJson.get("city").toString();
+		// String country = userInfoJson.get("country").toString();
 		String unionid = userInfoJson.get("unionid").toString();
 		// 获取wechat头像并保存本地
 		String headImgUrl = userInfoJson.get("headimgurl").toString();
@@ -341,11 +348,11 @@ public class LoginController {
 			Cookie cookie_unionid = new Cookie("unionid", unionid);
 			Cookie cookie_imageUrl = new Cookie("image", image);
 			Cookie cookie_openid = new Cookie("openid", openid);
-			
+
 			System.out.println("============");
-			System.out.println("openid: "+openid);
+			System.out.println("openid: " + openid);
 			System.out.println("============");
-			
+
 			System.out.println("image:" + image);
 			System.out.println("name:haha" + name);
 			Cookie cookie_type = new Cookie("type", type);
@@ -364,14 +371,13 @@ public class LoginController {
 			cookies.add(cookie_type);
 			cookies.add(cookie_unionid);
 			cookies.add(cookie_openid);
-			
 
 			for (Cookie cookie : cookies) {
 				// cookie.setMaxAge(24*60*60*30);
 				response.addCookie(cookie);
 			}
 			request.getSession().setAttribute("setcookies", cookies);
-		//	loggerService.log(uid, name, type + "授权登录成功获取用户信息");
+			// loggerService.log(uid, name, type + "授权登录成功获取用户信息");
 			logger.info("授权登录成功获取用户信息");
 			// request.getRequestDispatcher("/client_code/index.html").forward(request,
 			// response);
@@ -482,7 +488,7 @@ public class LoginController {
 		}
 
 		try {
-			//这里有空指针异常
+			// 这里有空指针异常
 			AccessToken accessTokenObj = (new Oauth()).getAccessTokenByQueryString(request.getQueryString(),
 					request.getParameter("state"));
 			String code = request.getParameter("code");
@@ -562,6 +568,22 @@ public class LoginController {
 		response.setContentType("text/json");
 		try {
 			response.getWriter().write("ok");
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
+	/** 生成微信权限验证的参数，传到前端去验证,为了自定义微信分享链接*/
+	@RequestMapping("/sendShareLinksMsg")
+	public void sendWeChatShareLinkMsg(HttpServletRequest request, HttpServletResponse response)
+			throws UnsupportedEncodingException {
+		String url = request.getParameter("url");
+		
+		WeChatShareLinksUtils weChatShareLinksUtils=new WeChatShareLinksUtils();
+		JSONObject ret=weChatShareLinksUtils.makeWXTicket(url);
+		try {
+			System.out.println("执行sendWeChatShareLinkMsg...");
+			response.getWriter().write(ret.toString());
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 		}
