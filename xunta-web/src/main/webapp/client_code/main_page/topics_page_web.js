@@ -863,7 +863,14 @@ function chooseOneCP(cp_node,cp) {
 			coverDiv.css("height",$(window).height());
 		}
 		//console.log("测试："+coverDiv.data("events")["click"]); 
+		//2017.11.15 叶夷  点击标签时进入聊天列表的按钮必须被黑布隐藏
+		var enterdialogList=$("#enterdialogList");
+		enterdialogList.css("z-index","101");
+		
 		coverDiv.click(function(){
+			//2017.11.15 叶夷  点击标签时进入聊天列表的按钮必须被黑布隐藏
+			enterdialogList.css("z-index","102");
+			
 			cp_innode.css("z-index","");
 			yesItem.hide();
 			noItem.hide();
@@ -891,6 +898,9 @@ function chooseOneCP(cp_node,cp) {
 		
 		//绑定点击事件
 		yesItem.click(function() {
+			//2017.11.15 叶夷  选择标签之后进入聊天列表的按钮必须浮现
+			enterdialogList.css("z-index","102");
+			
 			/*var $events =cp_node.find(".yesItem").data("events");
 			if( $events && $events["click"] ){
 				console.log("yesItem绑定");
@@ -921,6 +931,9 @@ function chooseOneCP(cp_node,cp) {
 		});
 		
 		noItem.click(function() {
+			//2017.11.15 叶夷  标签消失之后进入聊天列表的按钮必须浮现
+			enterdialogList.css("z-index","102");
+			
 			cp_innode.css("z-index","");
 			$(".cover").unbind();
 			$(".cover").remove();
