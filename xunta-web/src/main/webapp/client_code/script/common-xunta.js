@@ -44,7 +44,7 @@ function specialLettersDecoding(str){
 
 function cutStringIfTooLong(str,maxLength){
 	if (str.length > maxLength) {//长度太长,就截短.
-		return str.substring(0, maxLength-1) + '…';
+		return str.substring(0, maxLength-1) + " …";
 	}else{
 		return str;			
 	}

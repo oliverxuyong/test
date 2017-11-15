@@ -1212,6 +1212,7 @@ function unSelectCP(cpid){
 	//取消选择我的标签先放大出现"x"和选择人数再消失
 	var myTagHeight=myTag.height();
 	myTag.css("z-index",104);
+	myTag.attr("class","mytag mytagclick");
 	var myTagSelectNumberNode=myTag.find(".mytag-selectednumber");
 	var myTagSelectNumberText=parseInt(myTagSelectNumberNode.text());
 	if(myTagSelectNumberText>0){
@@ -1237,20 +1238,22 @@ function unSelectCP(cpid){
 		coverDiv.css("z-index",103);
 		
 		//2017.11.15 叶夷  点击我的标签后出现删除和取消按钮
-		var deleteButton=showButton("deleteButton",buttonText);//删除按钮
+		var deleteButton=showButton("deleteButton","删除");//删除按钮
 		deleteButton.click(function() {
+			deleteButton.remove();
+			cancelButton.remove();
 			myTag.unbind();
 			sendUnSelectCP(cpid);
 			$(".cover").unbind();
 			$(".cover").remove();
 		});
-		var cancelButton=showButton("cancelButton",buttonText);//取消按钮
+		var cancelButton=showButton("cancelButton","取消");//取消按钮
 		cancelButton.click(function(){
-			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode);
+			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight);
 		});
 		
 		coverDiv.click(function(){
-			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode);
+			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight);
 		});
 		/*//点击"x"才取消选择
 		unSelectCPNode.click(function() {
@@ -1270,7 +1273,7 @@ function showButton(className,buttonText){
 }
 
 /**当点击我的标签，取消选择或者点击黑布的时候*/
-function cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode){
+function cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight){
 	deleteButton.remove();
 	cancelButton.remove();
 	myTag.css("height",myTagHeight+"px");
@@ -1278,6 +1281,7 @@ function cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberN
 	myTagSelectNumberNode.hide();
 	$(".cover").unbind();
 	$(".cover").remove();
+	myTag.attr("class","mytag");
 }
 
 // 叶夷 2017.08.08 取消选中的标签

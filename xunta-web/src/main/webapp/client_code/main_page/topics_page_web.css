@@ -683,16 +683,35 @@ height:0px;
 }
 
 .deleteButton{
-	position:fixed;
+	position: fixed;
 	z-index:104;
-	width:10%;
-	height:10%;
+	width: 100px;
+	height: 100px;
 	border:1px solid red;
+	top: 36%;
+	color: white;
+	text-align: center;
+	border-radius: 50%;
+	background-color: rgba(255,255,255,0.3);
+	line-height: 100px;
+	left: 20%;
+	cursor: pointer;
 }
 .cancelButton{
-	position:fixed;
+	position: fixed;
 	z-index:104;
-	width:10%;
-	height:10%;
+	width: 100px;
+	height: 100px;
+	border:1px solid black;
+	top: 36%;
+	color: white;
+	text-align: center;
+	border-radius: 50%;
+	background-color: rgba(255,255,255,0.3);
+	line-height: 100px;
+	right: 20%;
+	cursor: pointer;
+}
+.mytagclick{
 	border:1px solid red;
 }
