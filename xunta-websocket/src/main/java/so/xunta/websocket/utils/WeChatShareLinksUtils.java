@@ -57,8 +57,8 @@ public class WeChatShareLinksUtils {
 	   String requestUrl = apiTicketUrl.replace("ACCESS_TOKEN", accessToken);
 	   // 发起GET请求获取凭证
 	   String jsonStr=wsGetAccessToken.httpsRequest(requestUrl, "GET", null);
-	   //JSONObject jsonObject =new JSONObject(jsonStr);
-	   return jsonStr;
+	   JSONObject jsonObject =new JSONObject(jsonStr);
+	   return jsonObject.getString("ticket");
 	}
 	
 	//字节数组转换为十六进制字符串
