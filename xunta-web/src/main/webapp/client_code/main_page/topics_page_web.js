@@ -863,7 +863,14 @@ function chooseOneCP(cp_node,cp) {
 			coverDiv.css("height",$(window).height());
 		}
 		//console.log("测试："+coverDiv.data("events")["click"]); 
+		//2017.11.15 叶夷  点击标签时进入聊天列表的按钮必须被黑布隐藏
+		var enterdialogList=$("#enterdialogList");
+		enterdialogList.css("z-index","101");
+		
 		coverDiv.click(function(){
+			//2017.11.15 叶夷  点击标签时进入聊天列表的按钮必须被黑布隐藏
+			enterdialogList.css("z-index","102");
+			
 			cp_innode.css("z-index","");
 			yesItem.hide();
 			noItem.hide();
@@ -891,6 +898,9 @@ function chooseOneCP(cp_node,cp) {
 		
 		//绑定点击事件
 		yesItem.click(function() {
+			//2017.11.15 叶夷  选择标签之后进入聊天列表的按钮必须浮现
+			enterdialogList.css("z-index","102");
+			
 			/*var $events =cp_node.find(".yesItem").data("events");
 			if( $events && $events["click"] ){
 				console.log("yesItem绑定");
@@ -921,6 +931,9 @@ function chooseOneCP(cp_node,cp) {
 		});
 		
 		noItem.click(function() {
+			//2017.11.15 叶夷  标签消失之后进入聊天列表的按钮必须浮现
+			enterdialogList.css("z-index","102");
+			
 			cp_innode.css("z-index","");
 			$(".cover").unbind();
 			$(".cover").remove();
@@ -1153,8 +1166,10 @@ function addMyCp(cpid,text,selected_user_num){
 		$("#background-rightbar-mytag").show();
 		$("#background-rightbar-mytag").css("height",myTagContainerHeight);*/
 		
-		//滚动条直接滑倒底部
-		myTagContainer.scrollTop( myTagContainer[0].scrollHeight );
+		//第一次我的标签显示不用滚动条直接滑倒底部
+		if(firstRequestMyCp!=true){
+			myTagContainer.scrollTop( myTagContainer[0].scrollHeight );
+		}
 }
 /**
  * 我的标签框高度改变了之后影响其他部分的高度
@@ -2288,6 +2303,7 @@ function response_user_selected_cp(datas){
 		var selected_user_num =cp_arr[i].selected_user_num
 		addMyCp(cpid,text,selected_user_num);
 	}
+	firstRequestMyCp=false;
 }
 
 // 2017.08.09 叶夷 添加标签之后的显示

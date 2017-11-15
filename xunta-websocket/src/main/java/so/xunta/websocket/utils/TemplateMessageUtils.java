@@ -1,17 +1,8 @@
 package so.xunta.websocket.utils;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.ConnectException;
-import java.net.URL;
-import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
-import so.xunta.beans.Token;
 
 /**
  * 发送模版消息功能
@@ -19,8 +10,8 @@ import so.xunta.beans.Token;
  */
 public class TemplateMessageUtils {
 	
-	private final static String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	private static Logger logger = Logger.getRootLogger();
+	private static WeChatUtils wsGetAccessToken=new WeChatUtils();
     /**
 
      * @method sendWechatmsgToUser
@@ -42,7 +33,7 @@ public class TemplateMessageUtils {
     			String first, String waitingTask, String notificationType, String notificationTime,String remark){
     	
         String tmpurl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
-        String token = getToken("wxdac88d71df6be268", "753b50cf29b6b08e733e357cc0ed348c");  //微信凭证，access_token
+        String token = wsGetAccessToken.getToken("wxdac88d71df6be268", "753b50cf29b6b08e733e357cc0ed348c");  //微信凭证，access_token
         
         System.out.println("============================");
         System.out.println("token: "+token);
@@ -91,7 +82,7 @@ public class TemplateMessageUtils {
             System.out.println(json);
             System.out.println("============================");
             
-            String result = httpsRequest(url, "POST", json.toString());
+            String result = wsGetAccessToken.httpsRequest(url, "POST", json.toString());
             JSONObject resultJson = new JSONObject(result);
             String errmsg = (String) resultJson.get("errmsg");
             
@@ -108,7 +99,7 @@ public class TemplateMessageUtils {
         return "error";
     }
     
-    private static String httpsRequest(String requestUrl, String requestMethod, String outputStr){
+    /*private static String httpsRequest(String requestUrl, String requestMethod, String outputStr){
         try {
             URL url = new URL(requestUrl);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
@@ -147,7 +138,7 @@ public class TemplateMessageUtils {
             System.out.println("https请求异常：{}");
         }
         return null;
-    }
+    }*/
     
     /**
      * @method packJsonmsg
@@ -199,7 +190,7 @@ public class TemplateMessageUtils {
      * @param appid 凭证
      * @param appsecret 密钥
      * @return
-     */
+     *//*
     public static String getToken(String appid, String appsecret) {
         Token token = null;
         String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
@@ -219,10 +210,6 @@ public class TemplateMessageUtils {
                 //log.error("获取token失败 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));
             }
         }
-        if(token !=null ){
-        	return token.getAccessToken();
-        }else{
-        	return "";
-        }
-    }
+        return token.getAccessToken();
+    }*/
 }
