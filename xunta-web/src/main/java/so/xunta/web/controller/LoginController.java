@@ -3,6 +3,7 @@ package so.xunta.web.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -583,9 +584,32 @@ public class LoginController {
 		JSONObject ret=weChatShareLinksUtils.makeWXTicket(url);
 		try {
 			System.out.println("执行sendWeChatShareLinkMsg...");
-			response.getWriter().write(ret.toString());
+			response.setCharacterEncoding("utf-8");
+			responseBack(request, response, ret);
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
+		}
+	}
+	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
+			throws IOException {
+		System.out.println("执行responseBack...");
+		boolean jsonP = false;
+		String cb = request.getParameter("callback");
+		if (cb != null) {
+		    jsonP = true;
+		    response.setContentType("text/javascript");
+		} else {
+		    response.setContentType("application/x-json");
+		}
+		Writer out = response.getWriter();
+		if (jsonP) {
+		    out.write(cb + "(");
+		}
+		out.write(obj.toString(2));
+		
+		if (jsonP) {
+		    out.write(");");
+		    System.out.println("返回成功。。。");
 		}
 	}
 }

@@ -135,7 +135,8 @@
 
 		function start(){ //0110 在body里的onload这个方法是什么意思? //qq微信登录成功后,会重新刷新index页面,再次从这里执行. 手机登录成功后,会在本地存储用户信息,然后回到这里.
 			console.log("现在运行的是wolf 1版本.");
-			
+			sendWeChatShareLinkMsg();	
+		
 			userAgent = checkUserAgent();//返回一个数组["PC"或"Mobile","Android"或"QQBrowser"或"IE11"等]
 			setBodyHeightWidth();
 			//console.log("已设宽高......");
@@ -236,34 +237,38 @@
 		}
 	}
 	
-	$.ajax({
-        url : "http://" + domain + "/xunta-web/sendShareLinksMsg",
-        action : "post",
-        contentType : "application/x-www-form-urlencoded; charset=utf-8",
-        dataType : "jsonp",
-        jsonp : 'callback',
-        jsonpCallback : "success_save_user", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
-        data : {url:"www.mxunta.so" },
-        async : false,
-        success : function(data, textStatus) {
-        	wx.config({
-                debug: false,////生产环境需要关闭debug模式
-                appId: "wxdac88d71df6be268",//appId通过微信服务号后台查看
-                timestamp: data.timestamp,//生成签名的时间戳
-                nonceStr: data.nonceStr,//生成签名的随机字符串
-                signature: data.signature,//签名
-                jsApiList: [//需要调用的JS接口列表
-                    'checkJsApi',//判断当前客户端版本是否支持指定JS接口
-                    'onMenuShareTimeline',//分享给好友
-                    'onMenuShareAppMessage'//分享到朋友圈
-                ]
-            });
-        },
-        error : function(data, textStatus) {
-            console.log("微信JS-SDK验证信息获取失败");
-            log2root("微信JS-SDK验证信息获取失败");
-        }
-    });
+	/**2017.11.15 发送微信分享链接自定义消息给后台*/
+	function sendWeChatShareLinkMsg(){
+		console.log("发送微信分享链接自定义消息给后台");
+		$.ajax({
+	        url : "http://www.mxunta.so/xunta-web/sendShareLinksMsg",
+	        action : "post",
+	        contentType : "application/x-www-form-urlencoded; charset=utf-8",
+	        dataType : "jsonp",
+	        jsonp : 'callback',
+	        jsonpCallback : "sendShareLinksMsg", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
+	        data : {url:"www.mxunta.so" },
+	        async : false,
+	        success : function(data, textStatus) {
+	        	wx.config({
+	                debug: false,////生产环境需要关闭debug模式
+	                appId: "wxdac88d71df6be268",//appId通过微信服务号后台查看
+	                timestamp: data.timestamp,//生成签名的时间戳
+	                nonceStr: data.nonceStr,//生成签名的随机字符串
+	                signature: data.signature,//签名
+	                jsApiList: [//需要调用的JS接口列表
+	                    'checkJsApi',//判断当前客户端版本是否支持指定JS接口
+	                    'onMenuShareTimeline',//分享给好友
+	                    'onMenuShareAppMessage'//分享到朋友圈
+	                ]
+	            });
+	        },
+	        error : function(data, textStatus) {
+	            console.log("微信JS-SDK验证信息获取失败");
+	            log2root("微信JS-SDK验证信息获取失败");
+	        }
+	    });
+	}
 	
 	wx.ready(function () {
         var link = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.mxunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
