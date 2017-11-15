@@ -105,7 +105,7 @@
     <script type="text/javascript" src="index_page/index_web.js"></script>
      <script type="text/javascript" src="index_page/index.js"></script>
      <script type="text/javascript" src="script/popup.js"></script>
-    <!--2017.11.14 叶夷  微信JS-SDK是微信公众平台面向网页开发者提供的基于微信内的网页开发工具包。在需要调用JS接口的页面引入如下JS文件 -->
+     <!--2017.11.14 叶夷  微信JS-SDK是微信公众平台面向网页开发者提供的基于微信内的网页开发工具包。在需要调用JS接口的页面引入如下JS文件 -->
     <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
      
 <!--body以上完全相同-->
@@ -134,9 +134,10 @@
         window.onload = start;//window.onload = readyMethod();//后面加括号是不对的,但是会造成什么问题还待查.xu 1.28
 
 		function start(){ //0110 在body里的onload这个方法是什么意思? //qq微信登录成功后,会重新刷新index页面,再次从这里执行. 手机登录成功后,会在本地存储用户信息,然后回到这里.
-			console.log("现在运行的是wolf 1版本.");
+			//log2root("开始进行JS-SDK验证");
 			sendWeChatShareLinkMsg();	
-		
+			
+			console.log("现在运行的是wolf 1版本.");
 			userAgent = checkUserAgent();//返回一个数组["PC"或"Mobile","Android"或"QQBrowser"或"IE11"等]
 			setBodyHeightWidth();
 			//console.log("已设宽高......");
@@ -239,7 +240,10 @@
 	
 	/**2017.11.15 发送微信分享链接自定义消息给后台*/
 	function sendWeChatShareLinkMsg(){
+		var url= location.href.split('#').toString();
+		alert("url="+url);
 		console.log("发送微信分享链接自定义消息给后台");
+		log2root("发送微信分享链接自定义消息给后台");
 		$.ajax({
 	        url : "http://www.mxunta.so/xunta-web/sendShareLinksMsg",
 	        action : "post",
@@ -247,11 +251,11 @@
 	        dataType : "jsonp",
 	        jsonp : 'callback',
 	        jsonpCallback : "sendShareLinksMsg", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
-	        data : {url:"www.mxunta.so" },
+	        data : {url:url },
 	        async : false,
 	        success : function(data, textStatus) {
 	        	wx.config({
-	                debug: false,////生产环境需要关闭debug模式
+	                debug: true,////生产环境需要关闭debug模式
 	                appId: "wxdac88d71df6be268",//appId通过微信服务号后台查看
 	                timestamp: data.timestamp,//生成签名的时间戳
 	                nonceStr: data.nonceStr,//生成签名的随机字符串
@@ -262,57 +266,70 @@
 	                    'onMenuShareAppMessage'//分享到朋友圈
 	                ]
 	            });
+	        	wx.ready(function () {
+	        		alert("微信JS-SDK成功");
+	        		log2root("微信JS-SDK成功");
+                	console.log("微信JS-SDK连接成功");
+	        		
+	                var link = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.mxunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+	                var protocol = window.location.protocol;
+	                var host = window.location.host;
+	                //分享朋友圈
+	                wx.onMenuShareTimeline({
+	                    title: 'xunta',
+	                    link: link,
+	                    imgUrl: '',// 自定义图标
+	                    trigger: function (res) {
+	                        // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回.
+	                        //alert('click shared');
+	                    },
+	                    success: function (res) {
+	                        alert('shared success'+link);
+	                        //some thing you should do
+	                    },
+	                    cancel: function (res) {
+	                        alert('shared cancle'+link);
+	                    },
+	                    fail: function (res) {
+	                        //alert(JSON.stringify(res));
+	                    }
+	                });
+
+	    			//分享给好友
+	              	timeOutSuccess = setTimeout(function() {
+	              		shareAppMessage();
+	              	},2000);
+	                
+	                wx.error(function (res) {
+	                	alert("微信JS-SDK连接失败");
+	                	log2root("微信JS-SDK连接失败");
+	                	console.log("微信JS-SDK连接失败");
+	                });
+	            });
 	        },
 	        error : function(data, textStatus) {
+	        	//alert("微信JS-SDK验证信息获取失败");
 	            console.log("微信JS-SDK验证信息获取失败");
 	            log2root("微信JS-SDK验证信息获取失败");
 	        }
 	    });
 	}
-	
-	wx.ready(function () {
-        var link = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.mxunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
-        var protocol = window.location.protocol;
-        var host = window.location.host;
-        //分享朋友圈
-        wx.onMenuShareTimeline({
-            title: 'xunta',
-            link: link,
-            imgUrl: '',// 自定义图标
-            trigger: function (res) {
-                // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回.
-                //alert('click shared');
-            },
-            success: function (res) {
-                //alert('shared success');
-                //some thing you should do
-            },
-            cancel: function (res) {
-                //alert('shared cancle');
-            },
-            fail: function (res) {
-                //alert(JSON.stringify(res));
-            }
-        });
-      	//分享给好友
-        wx.onMenuShareAppMessage({
+	//分享给朋友
+	function shareAppMessage(){
+		wx.onMenuShareAppMessage({
             title: 'xunta', // 分享标题
             desc: '这是一个自定义的描述！', // 分享描述
-            link: link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-            imgUrl:'', // 自定义图标
+            link: "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.mxunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect", // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl:"http://www.mxunta.so:80/xunta-web/useravatar/thumb_img_804622010041896960/jpg/image", // 自定义图标
             type: 'link', // 分享类型,music、video或link，不填默认为link
             dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
             success: function () {
-                // 用户确认分享后执行的回调函数
+            	alert('shared success'+link);
             },
             cancel: function () {
-                // 用户取消分享后执行的回调函数
+            	alert('shared cancle'+link);
             }
         });
-        wx.error(function (res) {
-        	log2root("微信JS-SDK连接失败");
-        	console.log("微信JS-SDK连接失败");
-        });
-    });
+	}
 	</script>
 </html>
