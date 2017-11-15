@@ -1219,40 +1219,66 @@ function unSelectCP(cpid){
 		myTagSelectNumberNode.css("right","2px");
 	}
 	
-	//出现"x"
+	/*//出现"x"
 	var unSelectCPNode=$(".unSelectCPNode");
 	if(unSelectCPNode.length<=0){
 		unSelectCPNode=$("<div></div>").attr("class","unSelectCPNode").text("x");
 		myTag.append(unSelectCPNode);
 		unSelectCPNode.css("z-index",105);
-	}
+	}*/
 	
 	//加上一块黑布
 	var coverDiv=$(".cover");
 	if(coverDiv.length<=0){
 		coverDiv=$("<div></div>").attr("class","cover");
-		$("#mytag-container").append(coverDiv);
+		$("body").append(coverDiv);
 		coverDiv.css("width",$(window).width());
 		coverDiv.css("height",$(window).height());
 		coverDiv.css("z-index",103);
-		coverDiv.click(function(){
-			unSelectCPNode.remove();
-			myTag.css("height",myTagHeight+"px");
-			myTag.css("z-index","");
-			myTagSelectNumberNode.hide();
-			$(".cover").unbind();
-			$(".cover").remove();
-		});
-		//点击"x"才取消选择
-		unSelectCPNode.click(function() {
+		
+		//2017.11.15 叶夷  点击我的标签后出现删除和取消按钮
+		var deleteButton=showButton("deleteButton",buttonText);//删除按钮
+		deleteButton.click(function() {
 			myTag.unbind();
 			sendUnSelectCP(cpid);
 			$(".cover").unbind();
 			$(".cover").remove();
 		});
+		var cancelButton=showButton("cancelButton",buttonText);//取消按钮
+		cancelButton.click(function(){
+			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode);
+		});
+		
+		coverDiv.click(function(){
+			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode);
+		});
+		/*//点击"x"才取消选择
+		unSelectCPNode.click(function() {
+			myTag.unbind();
+			sendUnSelectCP(cpid);
+			$(".cover").unbind();
+			$(".cover").remove();
+		});*/
+		
 	}
 }
+//这个按钮在body下
+function showButton(className,buttonText){
+	var button=$("<div></div>").attr("class",className).text(buttonText);
+	$("body").append(button);
+	return button;
+}
 
+/**当点击我的标签，取消选择或者点击黑布的时候*/
+function cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode){
+	deleteButton.remove();
+	cancelButton.remove();
+	myTag.css("height",myTagHeight+"px");
+	myTag.css("z-index","");
+	myTagSelectNumberNode.hide();
+	$(".cover").unbind();
+	$(".cover").remove();
+}
 
 // 叶夷 2017.08.08 取消选中的标签
 function showUnSelectCP(data){
