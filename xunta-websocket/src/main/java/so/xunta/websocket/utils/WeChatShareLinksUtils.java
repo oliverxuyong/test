@@ -42,8 +42,8 @@ public class WeChatShareLinksUtils {
 			System.out.println("WeChatController.makeWXTicket=====End");
 		}
 
-		ret.put("url", url);
-		ret.put("jsapi_ticket", jsApiTicket);
+		//ret.put("url", url);
+		//ret.put("jsapi_ticket", jsApiTicket);
 		ret.put("nonceStr", nonceStr);
 		ret.put("timestamp", timestamp);
 		ret.put("signature", signature);
