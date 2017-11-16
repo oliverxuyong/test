@@ -250,7 +250,8 @@ width:100%;
 	overflow-y:auto;
 	overflow-x:hidden;
 	display:none;
-	padding-bottom:2.5%;
+	padding-bottom:0.7%;
+	padding-top:0.7%;
 	//padding-top:1%;	
 	/*解决滚动条隐藏在IE浏览器不兼容的问题  */
     -ms-overflow-style: none;}
@@ -259,6 +260,69 @@ width:100%;
 width:0px;
 height:0px;
 }
+
+
+.mytag{
+	float: left;
+    text-align: center;
+    border-radius: 25px;
+    padding:1px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top:1.2%;
+    //margin-bottom:5px;
+    margin-right:6px;
+    font-size:.8em;
+    letter-spacing:1px;
+    border:1px solid gray;
+    //width:37px;
+    height:20px;
+    line-height:20px;
+    cursor:pointer;
+    color:white;
+    background-color:rgba(66,66,66,0.9);
+    text-shadow:1px 1px 0.3em black; 
+    box-shadow:1px 1px 1px black;
+    position:relative;/*设为relative,下级的absolute才能生效*/
+}
+
+#addtag{
+	color:#cccccc;
+	border:1px solid #a5a5a5;
+	//background-color:rgba(34,34,34,0.9);
+	//font-size: 23px;
+	width:3%;
+	height:30px;
+	//line-height:25px;
+	background:url('../image/plus3.jpg') center center no-repeat;
+	background-size:100% 100%;
+}
+
+#samplemytag {display:none}
+/*
+#addtag>img{
+	height:20px;
+	width:20px;
+}*/
+
+.mytag-selectednumber{
+	position:absolute;
+	//position:relative;
+	top:-6px;
+	//right:2px;
+	height:10px;
+	padding-left:2px;
+	padding-right:2px;
+	line-height:10px;
+	color:#b48f4c;
+	font-size:10px;
+	background-color:#505050;
+	border-radius:40%;
+	//border:1px solid #757575;
+}
+
+
+
 
 /*我的标签最外层容器*/
 .search-head{
@@ -584,44 +648,6 @@ height:0px;
 	box-shadow:0 0 50px black;
 }
 
-.mytag{
-	float: left;
-    text-align: center;
-    border-radius: 25px;
-    margin-right: 10px;
-    margin-top:0.8%;
-    //margin-bottom:5px;
-    //margin-right:6px;
-    font-size:.8em;
-    letter-spacing:1px;
-    border:1px solid gray;
-    width:37px;
-    height:30px;
-    line-height:28px;
-    cursor:pointer;
-    color:white;
-    background-color:rgba(66,66,66,0.9);
-    text-shadow:1px 1px 0.3em black; 
-    box-shadow:1px 1px 1px black;
-    position:relative;/*设为relative,下级的absolute才能生效*/
-}
-
-.mytag-selectednumber{
-	position:absolute;
-	//position:relative;
-	top:-6px;
-	//right:2px;
-	height:10px;
-	padding-left:2px;
-	padding-right:2px;
-	line-height:10px;
-	color:#b48f4c;
-	font-size:10px;
-	background-color:#505050;
-	border-radius:40%;
-	//border:1px solid #757575;
-}
-
 .unSelectCPNode{
 	position:absolute;
 	top:-6px;
@@ -635,24 +661,6 @@ height:0px;
 	border-radius:50%;
 	//border:1px solid #757575;
 }
-
-
-#addtag{
-	color:#cccccc;
-	border:1px solid #a5a5a5;
-	//background-color:rgba(34,34,34,0.9);
-	//font-size: 23px;
-	width:37px;
-	height:30px;
-	//line-height:25px;
-	background:url('../image/plus3.jpg') center center no-repeat;
-	background-size:100% 100%;
-}
-/*
-#addtag>img{
-	height:20px;
-	width:20px;
-}*/
 
 
 .yesItem,.noItem{
