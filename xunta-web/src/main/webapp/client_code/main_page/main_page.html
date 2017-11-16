@@ -306,6 +306,9 @@
 			$("#userimg").show();
 			var userimg=$("#userimg>img");
 			userimg.attr("src", userImg);
+			userimg.css("height", userimg.css("width"));//让头像的高=宽,保证正方形.
+			
+			
 			//if ( projectType == "WEB" ){
 			//	if ( userAgent[0] == "PC" ){
 			//		$("#userimage").css("right","32px");//向左让出右侧的滚动条.
