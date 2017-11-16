@@ -878,6 +878,8 @@ function chooseOneCP(cp_node,cp) {
 		enterdialogList.css("z-index","101");
 		
 		coverDiv.click(function(){
+			autoOverflow();
+			
 			//2017.11.15 叶夷  点击标签时进入聊天列表的按钮必须被黑布隐藏
 			enterdialogList.css("z-index","102");
 			
@@ -909,6 +911,7 @@ function chooseOneCP(cp_node,cp) {
 		
 		//绑定点击事件
 		yesItem.click(function() {
+			autoOverflow();
 			cpNodeByDistance.remove();
 			
 			//2017.11.15 叶夷  选择标签之后进入聊天列表的按钮必须浮现
@@ -945,6 +948,7 @@ function chooseOneCP(cp_node,cp) {
 		});
 		
 		noItem.click(function() {
+			autoOverflow();
 			cpNodeByDistance.remove();
 			
 			//2017.11.15 叶夷  标签消失之后进入聊天列表的按钮必须浮现
@@ -1240,6 +1244,7 @@ function unSelectCP(cpid){
 		//2017.11.15 叶夷  点击我的标签后出现删除和取消按钮
 		var deleteButton=showButton("buttons delete","删除");//删除按钮
 		deleteButton.click(function() {
+			autoOverflow();
 			deleteButton.remove();
 			cancelButton.remove();
 			myTag.unbind();
@@ -1249,10 +1254,12 @@ function unSelectCP(cpid){
 		});
 		var cancelButton=showButton("buttons cancel","取消");//取消按钮
 		cancelButton.click(function(){
+			autoOverflow();
 			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight);
 		});
 		
 		coverDiv.click(function(){
+			autoOverflow();
 			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight);
 		});
 		/*//点击"x"才取消选择
@@ -2605,6 +2612,7 @@ function updUserImg(){
     $("#imghead").attr("src", userImg);
     
     coverDiv.click(function() {
+    	autoOverflow();
     	closeImageBox();
 	});
 }
@@ -2618,14 +2626,29 @@ function addCover(parentDiv,opacity){
 	if(opacity!=undefined){
 		coverDiv.css("opacity",opacity);
 	}
-	document.getElementsByTagName('.cover').ontouchstart = function(e){ e.preventDefault(); }
+	
+	//当打开cover的时候将我的标签框和推荐标签框禁止滚动
+	hiddenOverflow();
+	
 	return coverDiv;
+}
+
+/**2017.11.16 叶夷 在打开遮盖层的时候我的标签框和推荐标签框禁止滚动*/
+function hiddenOverflow(){
+	$("#mytag-container").css("overflow","hidden");
+	$("#cp-show").css("overflow","hidden");
+}
+/**2017.11.16 叶夷 在取消遮盖层的时候我的标签框和推荐标签框可以滚动*/
+function autoOverflow(){
+	$("#mytag-container").css("overflow","");
+	$("#cp-show").css("overflow","");
 }
 
 /*
 关闭头像更改窗口
 */
 function closeImageBox() {
+	autoOverflow();
 	$("#ImageBox").hide();
 	$(".cover").remove();
 }
