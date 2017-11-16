@@ -271,3 +271,27 @@ function pushCP(data){
 	
 	responseToCPRequest(data);
 }
+
+/*
+将选中图片上传到服务器
+*/
+function upload() {
+	var formData = new FormData();
+	formData.append('userid', userId);
+	formData.append('file', $('#file')[0].files[0]);
+	$.ajax({
+		url : "http://"+domain+"/xunta-web/upload", //server script to process data
+		type : 'POST',
+		beforeSend : beforeSendHandler,
+		data : formData,
+		dataType : 'JSON',
+		timeout : 5000,
+		cache : false,
+		contentType : false,
+		processData : false
+	}).done(function(ret) {
+		afterSuccessAlterUserImage(ret);
+	}).fail(function(ret) {
+		toast("传输失败，请检查网络");
+	});
+}

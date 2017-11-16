@@ -864,13 +864,8 @@ function chooseOneCP(cp_node,cp) {
 		//noItem.css("left",noItemLeft);
 		noItem.css("z-index","104");
 		//遮盖层
-		var coverDiv=$(".cover");
-		if(coverDiv.length<=0){
-			coverDiv=$("<div></div>").attr("class","cover");
-			cp_node.append(coverDiv);
-			coverDiv.css("width",$(window).width());
-			coverDiv.css("height",$(window).height());
-		}
+		var coverDiv=addCover(cp_node);
+		
 		//console.log("测试："+coverDiv.data("events")["click"]); 
 		//2017.11.15 叶夷  点击标签时进入聊天列表的按钮必须被黑布隐藏
 		var enterdialogList=$("#enterdialogList");
@@ -1229,13 +1224,7 @@ function unSelectCP(cpid){
 	}*/
 	
 	//加上一块黑布
-	var coverDiv=$(".cover");
-	if(coverDiv.length<=0){
-		coverDiv=$("<div></div>").attr("class","cover");
-		$("body").append(coverDiv);
-		coverDiv.css("width",$(window).width());
-		coverDiv.css("height",$(window).height());
-		coverDiv.css("z-index",103);
+	var coverDiv=addCover($("body"));
 		
 		//2017.11.15 叶夷  点击我的标签后出现删除和取消按钮
 		var deleteButton=showButton("buttons delete","删除");//删除按钮
@@ -1263,7 +1252,6 @@ function unSelectCP(cpid){
 			$(".cover").remove();
 		});*/
 		
-	}
 }
 //这个按钮在body下
 function showButton(className,buttonText){
@@ -2598,3 +2586,131 @@ function sendWS(testWS,userId) {
 	console.log("执行WS发送.接口:" + json_obj._interface);
 }
 /**end*/
+
+/**2017.11.15 叶夷  修改头像功能*/
+function updUserImg(){
+    $("#ImageBox").show();
+    var coverDiv=addCover($("body"),0.2);
+    $("#imghead").attr("src", userImg);
+    
+    coverDiv.click(function() {
+    	closeImageBox();
+	});
+}
+/**2017.11.15 添加遮盖层的方法,parentDiv是cover的父级，opacity是cover的透明度，目前只有更改头像的时候用到*/
+function addCover(parentDiv,opacity){
+	var coverDiv=$(".cover");
+	if(coverDiv.length<=0){
+		coverDiv=$("<div></div>").attr("class","cover");
+		parentDiv.append(coverDiv);
+	}
+	if(opacity!=undefined){
+		coverDiv.css("opacity",opacity);
+	}
+	return coverDiv;
+}
+
+/*
+关闭头像更改窗口
+*/
+function closeImageBox() {
+	$("#ImageBox").hide();
+	$(".cover").remove();
+}
+
+/*
+本地预览选中图片
+*/
+function previewImage(file) {
+	if (!validate_edit_logo(file)) {//验证文件格式
+		return;
+	}
+	var MAXWIDTH = 170;
+	var MAXHEIGHT = 170;
+	var div = document.getElementById('preview');
+	if (file.files && file.files[0]) {
+		div.innerHTML = '<img id=imghead>';
+		var img = document.getElementById('imghead');
+		img.onload = function() {
+			var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+			img.width = rect.width;
+			img.height = rect.height;
+			img.style.marginLeft = rect.left + 'px';
+			img.style.marginTop = rect.top + 'px';
+		}
+		var reader = new FileReader();
+		reader.onload = function(evt) {
+			img.src = evt.target.result;
+		}
+		reader.readAsDataURL(file.files[0]);
+	} else {
+		var sFilter = 'filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src="';
+		file.select();
+		var src = document.selection.createRange().text;
+		div.innerHTML = '<img id=imghead>';
+		var img = document.getElementById('imghead');
+		img.filters.item('DXImageTransform.Microsoft.AlphaImageLoader').src = src;
+		var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+		status = ('rect:' + rect.top + ',' + rect.left + ',' + rect.width + ',' + rect.height);
+		div.innerHTML = "<div id=divhead style='width:" + rect.width + "px;height:" + rect.height + "px;margin-top:" + rect.top + "px;margin-left:" + rect.left + "px;" + sFilter + src + "\"'></div>";
+	}
+	$("#upload").show();
+}
+
+function afterSuccessAlterUserImage(ret){
+	toast(ret.msg);
+	userImg = ret.image_url+"?"+ new Date().getTime();
+	$("#userimg>img").attr("src", userImg);
+	/*start: 叶夷    2017年3月20日
+	 *  跨页面修改头像
+	 */
+	//exec("topics_page","alterTopicImg('"+userImg+"')");
+	/*end: 叶夷*/
+	//$("#topic_img").attr("src", userImg);
+	//document.getElementById("userImg").src=userImg;
+	console.log($("#userimg>img").src);
+	console.log("头像上传成功后,打印一下返回的数据,应该有一个image_url的项和值,如果没有需要调整:"+JSON.stringify(ret));
+	这一步需要测试: window.localStorage.setItem('image', userImg);
+	//这个方法需要创建,并且测试: setCookie("image",userImage);
+}
+
+/*
+验证文件格式
+*/
+function validate_edit_logo(file) {
+	$("#upload").attr("disabled", false);
+	if (!/.(gif|jpg|jpeg|png)$/.test($("#file").val())) {
+		toast("图片类型必须是.gif,jpeg,jpg,png中的一种");
+		$("#upload").attr("disabled", true);
+		return false;
+	}
+	return true;
+}
+/*
+设置图片显示大小
+*/
+function clacImgZoomParam(maxWidth, maxHeight, width, height) {
+	var param = {
+		top : 0,
+		left : 0,
+		width : width,
+		height : height
+	};
+	if (width > maxWidth || height > maxHeight) {
+		rateWidth = width / maxWidth;
+		rateHeight = height / maxHeight;
+		if (rateWidth > rateHeight) {
+			param.width = maxWidth;
+			param.height = Math.round(height / rateWidth);
+		} else {
+			param.width = Math.round(width / rateHeight);
+			param.height = maxHeight;
+		}
+	}
+	param.left = Math.round((maxWidth - param.width) / 2);
+	param.top = Math.round((maxHeight - param.height) / 2);
+	return param;
+}
+function beforeSendHandler() {
+	console.log("beforesend");
+}
