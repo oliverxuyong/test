@@ -1238,7 +1238,7 @@ function unSelectCP(cpid){
 		coverDiv.css("z-index",103);
 		
 		//2017.11.15 叶夷  点击我的标签后出现删除和取消按钮
-		var deleteButton=showButton("deleteButton","删除");//删除按钮
+		var deleteButton=showButton("buttons delete","删除");//删除按钮
 		deleteButton.click(function() {
 			deleteButton.remove();
 			cancelButton.remove();
@@ -1247,7 +1247,7 @@ function unSelectCP(cpid){
 			$(".cover").unbind();
 			$(".cover").remove();
 		});
-		var cancelButton=showButton("cancelButton","取消");//取消按钮
+		var cancelButton=showButton("buttons cancel","取消");//取消按钮
 		cancelButton.click(function(){
 			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight);
 		});

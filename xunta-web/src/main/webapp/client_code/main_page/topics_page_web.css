@@ -682,35 +682,24 @@ height:0px;
 	left:0px;
 }
 
-.deleteButton{
+.buttons{
 	position: fixed;
 	z-index:104;
-	width: 100px;
-	height: 100px;
+	width: 40%;
+	height: 50px;
 	border:1px solid red;
 	top: 36%;
 	color: white;
 	text-align: center;
-	border-radius: 50%;
 	background-color: rgba(255,255,255,0.3);
-	line-height: 100px;
-	left: 20%;
+	line-height: 50px;
 	cursor: pointer;
+	margin-left: 5%;
+	margin-right: 5%;
 }
-.cancelButton{
-	position: fixed;
-	z-index:104;
-	width: 100px;
-	height: 100px;
+.cancel{
 	border:1px solid black;
-	top: 36%;
-	color: white;
-	text-align: center;
-	border-radius: 50%;
-	background-color: rgba(255,255,255,0.3);
-	line-height: 100px;
-	right: 20%;
-	cursor: pointer;
+	right: 0px;
 }
 .mytagclick{
 	border:1px solid red;
