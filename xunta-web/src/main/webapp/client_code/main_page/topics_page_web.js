@@ -835,7 +835,7 @@ function chooseOneCP(cp_node,cp) {
 		var cpTextSize=cp_text.css("font-size").replace(/[^0-9]/ig,"");
 		var cpText=fullTextArray[cpid];
 		var cpTextLength=cpText.length;
-		var selectTagNumNode=$("#selectTagNum"+cpid);
+		var selectTagNumNode=cp_node.find("mytag-selectednumber");
 		var selectTagNum=selectTagNumNode.text();
 		yesItem.css("font-size",cpTextSize+"px");
 		noItem.css("font-size",cpTextSize+"px");
