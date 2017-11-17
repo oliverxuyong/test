@@ -1125,39 +1125,23 @@ function addMyCp(cpid,text,selected_user_num){
 	// 2017.09.14 叶夷 为了性能测试将选择标签的显示控制在3行以内
 		var myTagContainer=$("#mytag-container");
 		var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
+		var sampleMyTagFontSize = $("#samplemytag").css("font-size");
+		myTag.css("font-size",sampleMyTagFontSize);
 		myTagContainer.append(myTag);
 	
 		myTag.click(function(){
 			unSelectCP(cpid);
 		});
 		
-		//将用户昵称文字大小放入我的标签的大小
-		var userNameTextSize=myTagContainer.width()/32;
-		if(userNameTextSize>15){
-			userNameTextSize=15;
-		}else if(userNameTextSize<12){
-			userNameTextSize=12;
-		}
-		myTag.css("font-size",userNameTextSize+"px");
-	
-		var myTagTextLength = length(text);
-		var myTagTextSize = parseInt(myTag.css("font-size"))+1;
-		var myTagWidth=myTagTextLength*myTagTextSize+20;
-		var myTagHeight=myTagTextSize*2-4;
-	
-		// 每个我选择的标签的大小适配
-		myTag.css("width", myTagWidth+"px");
-		myTag.css("height", myTagHeight+"px");
-		myTag.css("line-height", myTagHeight+"px");
-	
 		// 随时在我的标签后面加上“+”
 		$("#addtag").remove();
-		var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+(myTagHeight-5)+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
+		//var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+(myTagHeight-5)+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
+		var addTag=$("<div onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag");
+		addTag.css("height", $("#samplemytag").css("height"));
 		myTagContainer.append(addTag);
 	
 		// 装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
-		var myTagMarginTop=parseInt(myTag.css("margin-top"));
-	
+		//var myTagMarginTop=parseInt(myTag.css("margin-top"));
 		/*var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
 		// 我的标签框高度改变了之后影响其他部分的高度
 		myTagContainerHeightChange(myTagContainer,myTagContainerHeight);*/
@@ -1196,6 +1180,8 @@ function addMyCp(cpid,text,selected_user_num){
 			myTagContainer.scrollTop( myTagContainer[0].scrollHeight );
 		}
 }
+
+
 /**
  * 我的标签框高度改变了之后影响其他部分的高度
  * 
