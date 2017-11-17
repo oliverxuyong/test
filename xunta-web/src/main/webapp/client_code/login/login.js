@@ -142,6 +142,17 @@ function showLogin(){
     $("#login").show();//这两句是xu增加的.2016.3.12
     $("#welcomepicture_container").show();
     
+    
+    //2017.11.17  叶夷  在这里判断如果是PC和ipad,则三个登录方式都显示，如果是移动端，则只有手机登录
+    showLoginMode();
+}
+/**2017.11.17  叶夷  在这里判断如果是PC和ipad,则三个登录方式都显示，如果是移动端，则只有手机登录*/
+function showLoginMode(){
+	console.log("判断终端类型 "+userAgent);
+	if(userAgent[0]=="Mobile"){
+		$("#login").children("div").eq(0).hide();
+		$("#login").children("div").eq(1).hide();
+	}
 }
 
 function hideLogin(){
