@@ -244,7 +244,7 @@
 		console.log("发送微信分享链接自定义消息给后台");
 		log2root("发送微信分享链接自定义消息给后台");
 		$.ajax({
-	        url : "http://www.mxunta.so/xunta-web/sendShareLinksMsg",
+	        url : "http://www.xunta.so/xunta-web/sendShareLinksMsg",
 	        action : "post",
 	        contentType : "application/x-www-form-urlencoded; charset=utf-8",
 	        dataType : "jsonp",
@@ -270,14 +270,15 @@
 	        		log2root("微信JS-SDK成功");
                 	console.log("微信JS-SDK连接成功");
 	        		
-	                var link = "http://www.mxunta.so/wxShareLinksLogin";
+	                var link = "http://www.xunta.so/wxShareLinksLogin";
+	                var imgUrl = "../image/xun.jpg";
 	                var protocol = window.location.protocol;
 	                var host = window.location.host;
 	                //分享朋友圈
 	                wx.onMenuShareTimeline({
 	                    title: 'xunta',
 	                    link: link,
-	                    imgUrl: '',// 自定义图标
+	                    imgUrl: imgUrl,// 自定义图标
 	                    trigger: function (res) {
 	                        // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回.
 	                        //alert('click shared');
@@ -296,10 +297,10 @@
 
 	    			//分享给好友
 	              	wx.onMenuShareAppMessage({
-            			title: 'xunta', // 分享标题
-            			desc: '这是一个自定义的描述！', // 分享描述
+            			title: '寻Ta', // 分享标题
+            			desc: '发出"心语", 找到心灵相通的Ta', // 分享描述
            				link: link,
-            			imgUrl:"http://www.mxunta.so:80/xunta-web/useravatar/thumb_img_804622010041896960/jpg/image", // 自定义图标
+            			imgUrl:imgUrl, // 自定义图标
             			type: 'link', // 分享类型,music、video或link，不填默认为link
             			dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
             			success: function () {
