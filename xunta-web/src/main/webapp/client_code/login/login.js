@@ -118,6 +118,7 @@ function checkUser(userInfoJsonStr) {//读取localStorage之后到这里.
         },
         error : function(data, textStatus) {//网线拔了后,浏览器会报jquery无网错误,但不会走到这里.
          	console.log("checkUser出错,拖拉机停止.")
+         	log2root("checkUser出错,拖拉机停止.")
         	clickLoadingtextEvent();
         	//showLogin();
         }
@@ -298,6 +299,7 @@ function callback_loginbymobilephone(receivedData){
         toast("手机登录成功,进入主页...");
     }else{
         console.log("手机登录不成功:"+receivedData.code+"|"+receivedData.message);
+        log2root("手机登录不成功:"+receivedData.code+"|"+receivedData.message);
         toast(receivedData.message);
     }
 }

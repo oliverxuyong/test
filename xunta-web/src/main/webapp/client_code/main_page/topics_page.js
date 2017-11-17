@@ -100,6 +100,7 @@ function responseSearchTag(text){
         },
         error:function(data, textStatus) {
             console.log("标签搜索请求错误"+data);
+            log2root("标签搜索请求错误"+data);
         	return;
         }
     });

@@ -16,6 +16,7 @@ function requestDialogList(){
         },
         error:function(data, textStatus) {
             console.log("聊天列表请求错误"+data);
+            log2root("聊天列表请求错误"+data);
         	return;
         }
     });

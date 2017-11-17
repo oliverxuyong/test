@@ -229,12 +229,14 @@ function openWin_Root(winName, winUrl, data) {
 	
     if(pageOpenStatus == true){
         console.log(winName+"  页面已经开启过，直接显示该页面");
+        log2root(winName+"  页面已经开启过，直接显示该页面");
        //通过z_index来设置页面堆叠顺序，来控制页面显示到顶层。z_index不懂可以去w3c查资料
        	currentPageObj = $("#"+winName);
         currentPageObj.css("z-index",zIndex);
         setCurrentPageId(winName);//原来漏掉了这句,不加的话,再次打开同一页面会收不到toast消息.
     }else if(pageOpenStatus == false){
         console.log(winName+"  页面没有开启过，创建新页面并前台显示.");
+        log2root(winName+"  页面没有开启过，创建新页面并前台显示.");
         //openNewWin(winName, winUrl, JSON.parse(data));
         openNewWin(winName, winUrl, data);
     }
@@ -246,6 +248,7 @@ function openNewWin(winName, winUrl, data){
     iframeObj.css("zIndex",zIndex);
     iframeObj.load(function() {
         console.log('创建页面:' + winName);
+        log2root('创建页面:' + winName);
         if (data != "") {
             //var script = "start(" + JSON.stringify(data) + ")";
             var script = "start(" + data + ")";
@@ -296,10 +299,12 @@ function checkDialogPageOpenStatus(pageId){//每次打开新的聊天窗口页�
     }
     dialogPageArray.push(pageId);
     console.log("dialogPageArray中push进一个pageid="+pageId);
+    log2root("dialogPageArray中push进一个pageid="+pageId);
     if (dialogPageArray.length > 10) {//当队列数组中超过10个页面后，要删除第一个页面,shift()方法的作用是移除第一个角标并返回角标上对应的值
         var deleteTopicPageName = dialogPageArray.shift();//获取数据中第一个角标位的值,先进先出的队列机制
         closeWin(deleteTopicPageName);
         console.log("打开的页面已超过10个,关闭最早打开的页面,pageid="+deleteTopicPageName);
+        log2root("打开的页面已超过10个,关闭最早打开的页面,pageid="+deleteTopicPageName);
     }
     return false;
 }
@@ -313,8 +318,10 @@ function removeFromdialogPageArray(winName){
         }
         dialogPageArray.pop();//删除多余的最新push进的pageid,因为已经前移了.
         console.log("从dialogPageArray里删除了一个pageid="+winName+"|它在队列中排第"+index);
+        log2root("从dialogPageArray里删除了一个pageid="+winName+"|它在队列中排第"+index);
     }else{
 	    console.log("要删除dialogPageArray里的一个pageid,却发现没有.-"+winName);
+	    log2root("要删除dialogPageArray里的一个pageid,却发现没有.-"+winName);
     }
 }
 

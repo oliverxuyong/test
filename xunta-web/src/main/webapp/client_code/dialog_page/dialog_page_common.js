@@ -36,8 +36,10 @@ function afterCheckedSendPosterSuccess(tmpPid, SendPosterSuccess) {//一般发�
 	if (SendPosterSuccess) {
 		alert(SendPosterSuccess);
 		console.log("afterCheckedSendPosterSuccess 成功了,不作为");
+		log2root("afterCheckedSendPosterSuccess 成功了,不作为");
 	} else {//取消跳豆,加上感叹号,并绑定点击再请求的事件:
 		console.log("afterCheckedSendPosterSuccess 失败, 取消跳豆,加上感叹号.");
+		log2root("afterCheckedSendPosterSuccess 失败, 取消跳豆,加上感叹号.");
 		var thePosterElement = $("#dialog_box").find("#" + tmpPid);
 		thePosterElement.find(".postsending").attr('src', "../image/acclaim-50x173.png");
 		thePosterElement.click(function() {
@@ -146,6 +148,7 @@ function  getHistoryMsg(userId,toUserId,firstMsgId){
         },
         error:function(data, textStatus) {
             console.log("聊天记录请求错误"+data);
+            log2root("聊天记录请求错误"+data);
         	return;
         }
     });

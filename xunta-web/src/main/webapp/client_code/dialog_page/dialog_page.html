@@ -178,9 +178,11 @@
 			//console.log("历史消息,延时检查 停止loading图标 isSuccess:" + isSuccess);
 			if (isSuccess) {//无事可做.
 				console.log("历史消息,延时检查说成功了 对话页");
+				log2root("历史消息,延时检查说成功了 对话页");
 				$("#loading img").attr("src", "../image/threedotmoving.jpg");
 			} else {
 				console.log("历史消息,延时检查说没成功");
+				log2root("历史消息,延时检查说没成功");
 				$("#loadingtext").text("网络有点慢,等会儿点击这里再试试.");
 				$("#loadingwrap").click(function(evt) {//填加再次请求的点击事件:
 //					alert("点击了");
