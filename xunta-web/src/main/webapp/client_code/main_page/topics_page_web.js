@@ -1144,7 +1144,8 @@ function addMyCp(cpid,text,selected_user_num){
  * @param headerContainerHeight
  *            改变的高度
  */
-/*function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
+/*
+function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 	var headerContainerHeight=parseInt($("#header-container").css("height"));
 	$("#header-container").css("height",headerContainerHeight+"px");
 	myTagContainer.css("height",myTagContainerHeight+"px");
@@ -1154,6 +1155,25 @@ function addMyCp(cpid,text,selected_user_num){
 	$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight-10)+"px");
 	//console.log("测试："+showatloadedHeight+" "+headerContainerHeight+" "+myTagContainerHeight+" "+tagContaiderTop);
 }*/
+
+
+function setTagContainerHeight(){
+	var headerContainerHeight=$("#header-container").outerHeight(true);
+	//$("#header-container").css("height",headerContainerHeight+"px");
+	//myTagContainer.css("height",myTagContainerHeight+"px");
+	var myTagContainerHeight = $("#mytag-container").outerHeight(true);
+	$("#top-container").css("height",(headerContainerHeight+myTagContainerHeight)+8+"px");
+	//var showatloadedHeight = $("#showatloaded").outerHeight(true);
+	
+	//var tagContaiderTop=parseInt($("#tag-container").css("top"));
+	
+	
+	//$("#tag-container").css("height",(showatloadedHeight-headerContainerHeight-myTagContainerHeight-10)+"px");
+	//console.log("测试："+showatloadedHeight+" "+headerContainerHeight+" "+myTagContainerHeight+" "+tagContaiderTop);
+}
+
+
+
 
 //2017.10.20 叶夷  在取消标签发送给后台之前
 function unSelectCP(cpid){

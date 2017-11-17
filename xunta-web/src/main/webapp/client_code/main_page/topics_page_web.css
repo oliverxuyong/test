@@ -269,7 +269,7 @@ height:0px;
     padding:1px;
     padding-left: 8px;
     padding-right: 8px;
-    margin-top:1.2%;
+    margin-top:1.2%;//这里必须是百分数,计划我的标签框高度时要用到.
     //margin-bottom:5px;
     margin-right:6px;
     font-size:.8em;
