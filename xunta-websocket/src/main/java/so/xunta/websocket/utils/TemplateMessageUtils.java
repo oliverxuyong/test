@@ -10,8 +10,8 @@ import org.json.JSONObject;
  */
 public class TemplateMessageUtils {
 	
-	private static Logger logger = Logger.getRootLogger();
-	private static WeChatUtils wsGetAccessToken=new WeChatUtils();
+	private Logger logger = Logger.getRootLogger();
+	private WeChatUtils wsGetAccessToken=new WeChatUtils();
     /**
 
      * @method sendWechatmsgToUser
@@ -28,7 +28,7 @@ public class TemplateMessageUtils {
      * @参数@return
      * @返回类型：String "error/success"
      */
-    public static String sendWechatmsgToUser
+    public String sendWechatmsgToUser
     	(String touser, String templat_id, String clickurl, String topcolor, 
     			String first, String waitingTask, String notificationType, String notificationTime,String remark){
     	
@@ -151,7 +151,7 @@ public class TemplateMessageUtils {
      * @参数@return 
      * @返回类型：JSONObject
      */
-    private static JSONObject packJsonmsg(String first, String waitingTask, String notificationType, String notificationTime,String remark){
+    private JSONObject packJsonmsg(String first, String waitingTask, String notificationType, String notificationTime,String remark){
         JSONObject json = new JSONObject();
         try {
             JSONObject jsonFirst = new JSONObject();
