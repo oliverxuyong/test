@@ -37,7 +37,7 @@ public class SendWeChatTemplateMsgController {
 		String result=templateMessageUtils.sendWechatmsgToUser(
 				openid, 
 				"JRfluXjVBtHF3ADwA6AwP4laOMyLY9pGJao6brmIo_M", 
-				"http://www.mxunta.so",
+				"http://www.xunta.so",
 				"#FF0000",
 				"您有一个未读消息",
 				content, 

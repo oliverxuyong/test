@@ -170,7 +170,7 @@ var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 13;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
 var maxCPTextNumber = 9;// cp文字最大的数量
-var maxselectTagNum = 10;// 影响标签大小的选择人数最小的数量
+var maxselectTagNum = 30;// 影响标签大小的选择人数最小的数量
 var minselectTagNum = 1;// 影响标签大小的选择人数最大的数量
 /**叶夷  2017.10.10  控制文字大小和内圆大小的方法*/
 function controlSize(selectTagNum,maxSize,minSize){
@@ -835,7 +835,7 @@ function chooseOneCP(cp_node,cp) {
 		var cpTextSize=cp_text.css("font-size").replace(/[^0-9]/ig,"");
 		var cpText=fullTextArray[cpid];
 		var cpTextLength=cpText.length;
-		var selectTagNumNode=$("#selectTagNum"+cpid);
+		var selectTagNumNode=cp_node.find("mytag-selectednumber");
 		var selectTagNum=selectTagNumNode.text();
 		yesItem.css("font-size",cpTextSize+"px");
 		noItem.css("font-size",cpTextSize+"px");
