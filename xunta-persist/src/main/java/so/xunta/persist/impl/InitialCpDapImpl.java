@@ -72,6 +72,7 @@ public class InitialCpDapImpl implements InitialCpDao {
 			Set<Tuple> cps = jedis.zrevrangeWithScores(key, 0, INIT_COUNTS);
 			for(Tuple cp:cps){
 				returncps.put(cp.getElement(),cp.getScore());
+				logger.info(cp.getElement()+":"+cp.getScore());
 			}
 		}catch(Exception e){
 			logger.error("getInitialCps error:", e);
