@@ -11,13 +11,14 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.http.ParseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 /**
  * @author Beyond
  */
 public class HttpSender {
-
+	private static Logger logger = Logger.getRootLogger();
 	/**
 	 * 
 	 * @param url
@@ -144,7 +145,7 @@ public class HttpSender {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 }

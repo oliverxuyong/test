@@ -3,9 +3,11 @@ package so.xunta.server.impl;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -18,28 +20,49 @@ import so.xunta.server.SocketService;
  */
 @Service
 public class SocketServiceImpl implements SocketService {
+	Logger logger =Logger.getLogger(SocketServiceImpl.class);
 
 	@Override
 	public void chat2one(WebSocketSession receiver, JSONObject msg) {
-		System.out.println("chat2one: "+msg);
-		try {
-			if(receiver.isOpen()){
-				receiver.sendMessage(new TextMessage(msg.toString()));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(receiver==null){
+			logger.info("用户中途下线 session为null，中止传输!");
+			return;
 		}
+		logger.info("chat2one: "+msg);
+		synchronized (receiver) {
+			if(receiver.isOpen()){
+				try {
+					receiver.sendMessage(new TextMessage(msg.toString()));
+				} catch (IOException e) {
+					logger.error("发送失败："+e.getMessage(),e);
+					try {
+						receiver.close(CloseStatus.SERVICE_RESTARTED);
+						receiver.sendMessage(new TextMessage(msg.toString()));
+					} catch (IOException e1) {
+						logger.error("session服务重启失败："+e1.getMessage(),e1);
+					}
+				}
+			}
+		}		
+		
 	}
 	
 	@Override
 	public void chat2one(WebSocketSession receiver, JSONArray msg) {
-		try {
+		synchronized (receiver) {
 			if(receiver.isOpen()){
-				receiver.sendMessage(new TextMessage(msg.toString()));
+				try {
+					receiver.sendMessage(new TextMessage(msg.toString()));
+				} catch (IOException e) {
+					logger.error("发送失败"+e.getMessage(),e);
+					try {
+						receiver.close(CloseStatus.SERVICE_RESTARTED);
+					} catch (IOException e1) {
+						logger.error(e1.getMessage(),e1);
+					}
+				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		}		
 	}
 
 	@Override

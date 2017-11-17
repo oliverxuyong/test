@@ -1,0 +1,232 @@
+
+#userinfo{
+    height: 100%;
+    width:13%;
+    position: absolute;
+    bottom: 0;
+    left: 3.5%;	
+}
+
+#username {
+    text-align: center;
+    font-size: 100%;
+    color: #a2a2a2;
+    cursor: default;
+    position: absolute;
+    //bottom: 13px;
+    left: 0;
+    right: 0;
+    //zoom:85%;
+}
+
+#userimg {
+	height: 38%;
+	width: 100%;/*这个宽度不设,则代码读出来的宽度值为0,从而使昵称截短的计算失效*/
+    position: absolute;
+    bottom: 30px;
+    /* padding-top: 100%; */
+    /* padding-bottom: 0%; */
+    display:none;
+}
+
+#userimg>img {
+//	position:relative;
+	height: 90%;
+	width: 100%;
+	border-radius: 29%;
+}
+
+#showonlineoffline {
+    position: absolute;
+    left: 63%;
+    top: -2px;
+    display: none;
+    //width: 20px;
+    height: 22%;
+}
+
+#showonlineoffline>img{
+	height: 100%; 
+	//width:7%;
+	position:relative;
+	top:-80%
+}
+
+#showouseroprate{
+	position: absolute;
+	left:12px;
+	margin-top:10px;
+	float:left;
+	opacity:0.5;
+}
+
+#showouseroprate>img{
+	height: 17px; width:15px;
+}
+/*
+#account {
+	font-size: 20px;
+	position: fixed;
+	top: 43px;
+	right: 10px;
+	border: 1px solid #CCCCCC;
+	border-radius: 5px;
+	background-color: #dfDaaa;
+	padding: 4px;
+	padding-left: 6px;
+	padding-right: 6px;
+	display: none;
+}*/
+
+
+
+#alterUserimage {
+	margin-top: 7px;
+	text-align: right;
+	height: 22px;
+	font-size: 14px;
+	border-bottom: 1px solid #cccccc
+}
+
+#logOff {
+	margin-top: 4px;
+	font-size: 18px;
+	float: right;
+}
+#logOff div {
+	float: left;
+	font-size: 14px;
+	padding: 3px
+}
+#logOff img {
+	float: right;
+	height: 16px;
+	width: 16px;
+	margin-top: 3px;
+	margin-right: 2px
+}
+
+
+
+#topbar{
+	position:fixed;
+	top:0px;left:0px;
+	height: 55px;
+	width:100%;
+	filter:alpha;opacity:0.7;
+	//background-color: #ffffff;
+	//z-index: 1;
+}
+
+#topspace{
+	height: 40px;
+	background: url('../image/titbg.gif') center top repeat-x;
+	background-size:8px;
+}
+
+#launchtopic-text {float:left;font-size:14px; height:18px;position:relative;top:1px;right:-5px}
+
+.topic {
+	//margin-top: 13px;
+	margin-bottom: 30px;
+	padding-right: 5px;
+	border-top: 1px solid #f8f8f8;
+}
+
+.unread{
+	position:absolute;
+	top:-4px; 
+	right:-5px; 
+	height:12px; 
+	display:inline;
+	border:1px solid #f08080; 
+	border-radius:4px;
+	font-size:8px;
+	color:#B22222;
+	background-color:#f8f8f8;
+	padding-left:2px;
+	padding-right:2px;
+	line-height: 10px;
+}
+.selectTagNum{
+	position:absolute;
+	top: 54.5px;
+	width: 100%;
+	text-align: center;
+}
+
+.latesttime {
+	float: right;
+	color: #888888;
+	font-size: 12px;
+	margin-top:2px;
+	background-color:#ffffff;
+}
+
+#replyInfo{
+	display:inline;
+}
+
+.nickname{
+	color:#191970
+}
+.getmoretopics{
+	margin:35px auto;
+	padding-bottom:4px;
+	width: 60px;
+	text-align:center;
+	font-size:12px;
+	//background:url('../image/titbg.gif') center top repeat-x;
+	background-color:@d2d2d2;
+	border-radius: 10px;
+	display:none;
+	background-size:8px;
+}
+
+.tag-name{
+    width: 97%;
+    height: 73%;
+    outline: 0;
+    border: 0;
+    resize: none;
+    margin-top: 6px;
+    margin-left: 3%;
+    background-color:rgba(0,0,0,0);
+    border-bottom: 1px solid #a09e9e;
+}
+
+.addtag-div{
+	height: 40px;
+	margin: 0;
+	padding: 0;
+	width:80%;
+	float:left;
+}
+
+.searchtag_suggest{
+	width:78%;
+	height:100px;
+	float:left;
+	top:-10px;
+	padding-left:2%;
+	/*border:1px solid #f1f1f1;*/
+	display:none;
+	overflow-y:auto;
+}
+
+.myTagFail{
+	//width:5px;
+	height:14px; 
+	//position:absolute; 
+	//top:-1px; 
+	//left:-10px; 
+	//border-bottom:1px solid gray;
+	
+}
+
+#htmlobj{
+	color:red;
+	
+	
+	
+}

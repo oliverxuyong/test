@@ -118,6 +118,7 @@ function checkUser(userInfoJsonStr) {//读取localStorage之后到这里.
         },
         error : function(data, textStatus) {//网线拔了后,浏览器会报jquery无网错误,但不会走到这里.
          	console.log("checkUser出错,拖拉机停止.")
+         	log2root("checkUser出错,拖拉机停止.")
         	clickLoadingtextEvent();
         	//showLogin();
         }
@@ -141,6 +142,17 @@ function showLogin(){
     $("#login").show();//这两句是xu增加的.2016.3.12
     $("#welcomepicture_container").show();
     
+    
+    //2017.11.17  叶夷  在这里判断如果是PC和ipad,则三个登录方式都显示，如果是移动端，则只有手机登录
+    showLoginMode();
+}
+/**2017.11.17  叶夷  在这里判断如果是PC和ipad,则三个登录方式都显示，如果是移动端，则只有手机登录*/
+function showLoginMode(){
+	console.log("判断终端类型 "+userAgent);
+	if(userAgent[0]=="Mobile"){
+		$("#login").children("div").eq(0).hide();
+		$("#login").children("div").eq(1).hide();
+	}
 }
 
 function hideLogin(){
@@ -169,6 +181,7 @@ function show_mobilephoneloginform(){//打开手机登录/注册页面,先把不
     $("#inputbox_nickname").hide();
     $("#inputbox_nickname").val("输入昵称");
     $("#inputbox_password2login,#inputbox_password2register,#inputbox_resetpassword").hide();
+	$("#inputbox_password2login").attr('type','text');
     $("#inputbox_password2login").val("输入登录密码");
     $("#inputbox_resetpassword").val("重设登录密码");
     $("#inputbox_password2register").val("设置登录密码");
@@ -198,10 +211,16 @@ function callback_checkonmobileno(receivedData){
     console.log(receivedData.ifexist);//手机号已存在则返回yes,否则为no.
     if (receivedData.ifexist == "no"){//若手机号是新号,则显图形码输入框及短信码按钮.
         toast("该手机号为新号.请输入图形验证码,然后请求发送短信验证码.");
+
+		//new Toast({context:$('body'),message:'该手机号为新号.请输入图形验证码,然后请求发送短信验证码.'}).show(); 
+
         $("#graphcode,#graphcode img,#changegraphcode,#inputbox_graphcode,#button_requestSendSMSCode").show();
     }else{//如果已存在,显示密码输入框及登录大按钮.
         toast("该手机号已经注册,请输入密码,然后登录.");
+		//new Toast({context:$('body'),message:'该手机号已经注册,请输入密码,然后登录.'}).show(); 
+
         $("#inputbox_password2login,#forgetpassword,#button_loginbymobilephone").show();
+        $("#inputbox_password2login").focus();
     }
 }
 
@@ -291,6 +310,7 @@ function callback_loginbymobilephone(receivedData){
         toast("手机登录成功,进入主页...");
     }else{
         console.log("手机登录不成功:"+receivedData.code+"|"+receivedData.message);
+        log2root("手机登录不成功:"+receivedData.code+"|"+receivedData.message);
         toast(receivedData.message);
     }
 }
@@ -469,4 +489,3 @@ function userInfoToJson(userType, userUid, userName, userImage, P_unionid) {
     };
     return userInfo;
 }
-

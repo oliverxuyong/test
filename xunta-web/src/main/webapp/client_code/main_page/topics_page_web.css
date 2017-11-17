@@ -1,0 +1,721 @@
+body {
+position:fixed;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height:100%;
+	background-color: #ffffff;
+	cursor:auto;
+	//Verdana 字体 和 Tahoma
+	//font-family:Verdana;
+	//font-family:Tahoma;
+	//color:#191970;
+	overflow-y:hidden;
+	overflow-x:hidden;
+}
+
+#imageundertopiclist{width:60%;height:300px; position:fixed; right:0px; bottom:0px; z-index:-99;opacity:0.3;display:none;
+/*filter:alpha;*/
+}
+
+#showatloaded{
+//position:fixed;
+width:100%; 
+	//display:none;
+	height:100%;
+	//overflow-y:scroll;
+	-webkit-overflow-scrolling: touch;
+	overflow:hidden;
+	background: url(../image/background2-lessblue.jpg) no-repeat;
+	background-size:100% 100%;
+	
+}
+
+#showatloaded #background-rightbar{
+	position:absolute;
+	right:0;
+	bottom:0;
+	height:100%;
+	width: 20px;
+	z-index: 999;
+}
+
+#background-rightbar{
+	display:none;
+}
+
+#background-rightbar-mytag{
+	position:absolute;
+	right:0;
+	//bottom:0;
+	height:100%;
+	width: 24px;
+	z-index: 999;
+	display:none;
+}
+
+.topic_list {
+	margin-top: 120px;
+	margin-right: 10px;
+	margin-left: 8px;
+	font-family: '微软雅黑', Arial;
+	//color: #303030;
+	z-index:100;
+	//padding-top:21px;
+	//height:87%;
+}
+/*
+#createnewtopic {
+	//left: 11px;
+	width:33%;
+	height:59px;
+	//background:#f8f8f8;
+	border-radius:6px;
+	box-shadow:0px 2px 4px rgba(34, 25, 25, 0.2);
+	float:right;
+	margin-right:18px;
+	margin-bottom:10px;
+}
+
+.topic_top{
+	//left: 11px;
+	width:100%;
+	height:69px;
+	//margin-bottom:9px;
+	margin-top:40px;
+	z-index:102;
+	background:#fff;
+	padding-top:10px;
+	position:fixed;
+}
+
+.userimg{
+	height: 60%;
+	//width: 22%;
+	//background-color:#f2f2f2;
+	margin-left:20px;
+	float:left;
+	border-radius: 10px 10px 0px 0px;
+	//margin-bottom:5px;
+	display:none;
+}
+
+.userimg>img {
+	height: 60%;
+	width: 55%;
+	border-radius: 32%;
+	border:1px solid #727272;
+	box-shadow:1px 1px 1px #0d0d0d;
+	//margin-left:10px;
+	cursor: default;
+}
+
+.topictitle {
+	width:auto;
+	margin-bottom: 8px;
+	padding-top:2px;
+	padding-left:5px;
+	padding-right:23px;
+	margin-right:120px;
+	
+	border-left: 3px solid #e8e8e8;
+	//border-right: 2px solid #b0b0b0;
+	position: relative;
+	//float: left;
+	//display:inline;
+	//float: left;
+	background-color:#ffffff;
+	//border-radius:2px;
+	font-size: 14px;
+	z-index:-1;
+}
+
+.createtopiccontent{
+	color:#686868;
+	font-size:8px;
+	font-family:'鐎瑰缍�', Arial;
+	margin-left:13px;
+	margin-top:31px;
+	opacity:0.5;
+}
+
+.createtopicimg{
+	opacity:0.3;
+	float:left;
+	margin-left:-20px;
+	margin-top:3px;
+}
+.createtopicimg img{
+	width:18px;
+	height:18px;
+}
+/*
+.recentmsg {
+	//float:clear;
+	color: #686868;
+	font-size: 10px;
+	font-family: '鐎瑰缍�', Arial;
+	margin-top: 3px;
+	margin-left: 39px;
+	//margin-right:50px;閸ョ姳璐熸稉瀣桨閻ㄥ埇nline鏉╂瑤閲滈惄顔煎閺嗗倹妞傛稉宥堟崳娴ｆ粎鏁�.閸欘垯浜掗幎濡慹cenmsg閺佺繝閲滈悽鈺爄v閸栧懓鎹ｉ弶锟�;
+	display:inline;
+	background-color:#ffffff;
+	//border-radius: 4px;
+}
+
+.triangle{
+	width: 17px;
+	height: 28px;
+	position: relative;
+	top: -28px;
+	right: -17px;
+	//transform: rotate(45deg);
+	//background-color: #fff;
+	//box-shadow:-20px 0 20px rgba(34, 25, 25, 0.2);
+	//background:url('../image/triangle.png') no-repeat;
+	float:right;
+}
+
+.triangle img{
+	width: 13px;
+	height: 29px;
+}
+
+/**
+*  弹框搜索
+*/
+._searchDiv{
+	position:fixed;
+	top: 13px;
+	left: -150px;
+	height:18px;
+	padding: 5px 5px 5px 6px;
+	line-height:18px;
+}
+
+._searchImg{
+	width:20px;
+	height:20px;
+}
+.top-container{
+	width:100%;
+	//height:33.5%;
+	height:35%;
+	z-index:102;
+	//border-bottom:1px solid #f1f1f1;
+}
+
+.tag-container{
+	position:relative;
+	width:100%;
+	height:65%;
+	z-index:102;
+	//margin-left:6px;
+	top:0%;
+	
+}
+
+/*装头像和名字的容器*/
+.header-container{
+	width:100%;
+	height:65%;
+	z-index:102;
+	position:relative;
+}
+
+#open-matcheduserlist{
+	position:absolute;
+	top:25px;
+	right:10px;
+	height: 30px;
+}
+
+#open-matcheduserlist>img{
+  height: 20px;
+  width: 20px;
+	border:1px solid #6c6c6c;
+	border-radius:30%; 
+} 
+
+/*我的标签容器*/
+.mytag-container{
+	width: 97%;/*这个百分比与下面两个padding百分比总合为1*/
+	padding-left:3%;
+	padding-right:0%;
+	height: 30%;
+	float: left;
+	border-bottom:1px solid #555555;
+	border-top:1px solid #555555;
+	//padding-bottom:8px;
+	overflow-y:auto;
+	overflow-x:hidden;
+	display:none;
+	padding-bottom:0.7%;
+	padding-top:0.7%;
+	//padding-top:1%;	
+	/*解决滚动条隐藏在IE浏览器不兼容的问题  */
+    -ms-overflow-style: none;}
+
+#mytag-container::-webkit-scrollbar {
+width:0px;
+height:0px;
+}
+
+
+.mytag{
+	float: left;
+    text-align: center;
+    border-radius: 25px;
+    padding:1px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top:1.2%;
+    //margin-bottom:5px;
+    margin-right:6px;
+    font-size:.8em;
+    letter-spacing:1px;
+    border:1px solid gray;
+    //width:37px;
+    height:20px;
+    line-height:20px;
+    cursor:pointer;
+    color:white;
+    background-color:rgba(66,66,66,0.9);
+    text-shadow:1px 1px 0.3em black; 
+    box-shadow:1px 1px 1px black;
+    position:relative;/*设为relative,下级的absolute才能生效*/
+}
+
+#addtag{
+	color:#cccccc;
+	border:1px solid #a5a5a5;
+	//background-color:rgba(34,34,34,0.9);
+	//font-size: 23px;
+	width:3%;
+	height:30px;
+	//line-height:25px;
+	background:url('../image/plus3.jpg') center center no-repeat;
+	background-size:100% 100%;
+}
+
+#samplemytag {display:none}
+/*
+#addtag>img{
+	height:20px;
+	width:20px;
+}*/
+
+.mytag-selectednumber{
+	position:absolute;
+	//position:relative;
+	top:-6px;
+	//right:2px;
+	height:10px;
+	padding-left:2px;
+	padding-right:2px;
+	line-height:10px;
+	color:#b48f4c;
+	font-size:10px;
+	background-color:#505050;
+	border-radius:40%;
+	//border:1px solid #757575;
+}
+
+
+
+
+/*我的标签最外层容器*/
+.search-head{
+	border:1px solid #ccc;
+	width:35%;
+	height:25px;
+	float:left;
+	//-webkit-transition: width 0.5s ease-in-out;
+    //-moz-transition: width 0.5s ease-in-out;
+    transition: width 0.5s ease-in-out;
+	position:relative;
+	border-radius:6px;
+	padding-left:3px;
+	top:5px;
+	background:#fff;
+	left:8px;
+}
+
+.h-close-img{
+	width:15px;
+	height:15px;
+	padding-left:10px;
+	padding-top:11px;
+	display: none;
+	opacity:0.7;
+}
+.h-input{
+	/*background:no-repeat 0 0 scroll #FFF;*/
+	border:none;
+	width:70%;
+	outline:none;
+	height:17px;
+	//line-height:30px;
+	padding-left:20px;
+	font-size:.8em;
+	padding-top:4px;
+}
+
+.h-search-img{
+	width:100%;
+	/*height:15px;
+	//position:absolute;
+	//left:6px;
+	//top:6px;*/
+	opacity:0.4;
+	margin-top:5px;
+}
+
+.h-return-img{
+	width:15px;
+	height:15px;
+	position:absolute;
+	right:8px;
+	top:6px;
+	display: none;
+	opacity:0.7;
+}
+
+#search-content{
+	position:fixed;
+	width:90%;
+	height:90%;
+	background:#dddddd;
+	//opacity:0.7;
+	border-top: 1px #666666 solid;
+	//display:none;
+	//padding-top:10%;
+}
+._search-content{
+	width:90%;
+	height:90%;
+	background:#FFF;
+	border-top: 1px #FFFFFF solid;
+}
+
+.search-list-container{
+	position:fixed;
+	//margin-top: 15%;
+	top:40px;
+	left:1px;
+	right:1px;
+	bottom:1px;
+	width:97%;
+	height:94%;
+	min-width:200px;
+	display: none;
+	z-index:102;
+	background:#FFF;
+	overflow-y:scroll;
+	overflow-x:hidden;
+}
+
+.topic-content{
+	padding:30px 5px 5px 5px;
+}
+._titleDiv{
+	width: 100%;
+	border-top: 1px #dddddd solid;
+	margin-bottom: 5px;
+}
+.topic-Title{
+	//width: 100%;
+	float: left;
+	font-size: 14px;
+	font-weight: 100;
+	padding-top: 5px;
+	padding-left: 5px;
+	border-left: 4px #dddddd solid;
+}
+._msgTime{
+	float:right;
+	padding-right: 5px;
+	font-size:10px;
+}
+._topicMsgDiv{
+	width: 100%;
+	padding-top:20px;
+}
+.topicMsg{
+	padding-top: 8px;
+	padding-left: 39px;
+	font-size: 10px;
+	/*start:叶夷
+		解决问题：在相连的人中每个人最后一个相连的话题打开始终遮盖下面的人，加上这个属性的作用是清除浮动*/
+	overflow-y:hidden;
+	/*end:叶夷*/
+}
+.topicMsgMoreDiv{
+	text-align: right;
+	padding: 5px;
+	font-size: 12px;
+}
+.topicMsgMoreText{
+	padding: 5px 2px 2px 2px;
+	color:#8C8C8C;
+	//border:1px #8C8C8C solid;
+	border-radius: 4px;
+	background:url('../image/titbg.gif') center top repeat-x;
+	width:48px;
+	background-size:5px;
+	float:right;
+}
+.topicMoreDiv{
+	margin: 30px 5px 5px 5px;
+	padding: 5px;
+	text-align: center;
+	border-top: 1px #dddddd solid;
+}
+.topicMoreText{
+	font-size: 14px;
+}
+
+/*叶夷  2017.06.19
+	标签的动画实现，是由jq的animate属性完成  */
+.outcp{ 
+	position:absolute; /*标签不用排列的时候不需要这个*/
+	top:0px;
+	left:0px;
+	/* 
+	border: 1px solid black;
+	border-radius: 50%; */
+}
+
+#cp-container{
+//padding-left:20px;
+//margin-left:20px;	
+    //margin-top: 4%;
+    //padding-top: 15%;
+}
+	
+.cp{ 
+	position:absolute; /*标签不用排列的时候不需要这个*/
+	top:0px;
+	left:0px;
+	border-radius:50%; 
+	//border:1px solid #e5efff;
+	cursor:pointer;
+	//opacity:0.3;
+	//background-color:#fffff0;
+		//filter:Alpha(opacity=50);
+	
+	text-shadow:#000000 0 0 10px;
+	color:#ffffff;
+	
+	/* border: 1px solid white;
+	border-radius: 50%; */
+	}
+
+.incp{ 
+	//position:absolute;
+	position:relative;
+	//background:url(../image/cp.png) no-repeat center center;  
+	//background-size:100% auto;
+	font-family:'微软雅黑';
+	border-radius:50%; 
+	background-color:rgba(255,255,255,0.3);
+	box-shadow:1px 1px 1px #777777;
+	//border:1px solid #e5efff;
+	//FILTER:DropShadow(Color=#808080, OffX=5, OffY=5, Positive=1);
+	}
+	
+.large-incp{
+	background-color:rgba(247,247,247,0.4);
+}	
+	
+.incp div{
+	position:absolute;
+	text-align:center;
+		//text-shadow:blue;
+	//text-shadow:{0 0 0.3em #87F,0 0 0.3em #87F,0 0 0.3em #87F};
+}
+
+.cp-selectednumber{
+	position:absolute;
+	top:0px;
+	left:43px;
+	color:#daa165;
+	font-size:12px;
+	height: 16px;
+	border-radius: 20%;
+	background-color:rgba(55,55,55,0.5);
+
+}
+
+
+/*叶夷   2017.07.04
+	匹配人列表*/
+/*进入匹配人列表的按钮*/
+.enterMatchUserList{
+	position:absolute;
+	//background-color: #f9f8f9;
+	border-radius: 25px;
+	//width: 181px;
+	//height: 50px;
+	text-align: center;
+	//line-height: 50px;
+	color: #f9f8f9;
+	//top: 40px;
+	//left: 266px;
+	font-size: 1em;
+	
+}
+
+/*各个匹配人头像的大小*/
+.mu{
+	position:absolute;
+	border-radius:50%;
+	cursor:pointer;
+	border-color:white;
+	
+}
+
+.mu img{
+	border-radius:50%;
+	border:1px solid #838383;
+	box-shadow: 1px 1px 1px #444444; 
+	//rgba(255, 255, 255, 0.7);
+}
+
+/*网站名*/
+.webname{
+	height:42px;
+	width:30%;
+	float:left;
+	line-height:42px;
+	text-align:center;
+	margin-top:10px;
+	font-size:20px;
+}
+
+.othertag{
+	position:absolute; 
+	height:100%; 
+	width:96.4%;
+	overflow-x:hidden;
+	margin-left:1.8%;
+	margin-right:1.8%;
+	//background-color:white;
+	/**解决滚动条隐藏在IE浏览器不兼容的问题*/
+    -ms-overflow-style: none;
+}
+
+.othertag::-webkit-scrollbar {
+width:0px;
+height:0px;
+}
+
+.othertagtext{
+	color:#2e2d35;
+	margin-left:5px;
+	margin-top:5px;
+}
+
+.match_userstext{
+	text-align:center;
+	margin-top:97%;
+}
+
+.enterdialogList{
+	//width:50px;
+	//height:50px;
+	//background-color:#f1f1f1;
+	//text-align:center;
+	//margin-top:-25px;
+	//margin-left:25px;
+	// border-radius:25px 25px 25px 25px;
+	//background-color:rgba(100,100,100,0.9);
+	//padding-top:8px;
+	//padding-left:10px;
+	position:fixed;
+	bottom:3%;
+	left:5%;
+	z-index:102;
+	//box-shadow:0 0 50px black;
+	display:none;
+	height:4%;/*这里设一个值,下面的img高度才能起作用.*/
+	width:6%;/*下层图标宽为100%,取定于该百分比.该图片的长宽比将决定于屏幕的长宽比.*/
+}
+
+.enterdialogList>img{
+	height:100%;
+	width:100%;
+	box-shadow:0 0 50px black;
+}
+
+.unSelectCPNode{
+	position:absolute;
+	top:-6px;
+	left:2px;
+	height:14px;
+	padding-left:3px;
+	padding-right:2px;
+	line-height:10px;
+	font-size:10px;
+	background-color:red;
+	border-radius:50%;
+	//border:1px solid #757575;
+}
+
+
+.yesItem,.noItem{
+    position: absolute;
+    display: none;
+    padding: 2px;
+    color: #e4e4e4;
+    font-size: 14px;
+    border: 1px solid #959595;
+    border-radius: 50%;
+    height: 30%;
+    width: 30%;
+    line-height: 257%;
+    text-align: center;
+}
+
+.yesItem{
+	left:0px;
+}
+
+.noItem{
+	right:0px;
+}
+
+.cover{
+	width: 100%; 
+	height: 100%; 
+	background: rgb(0, 0, 0); 
+	position: fixed; 
+	z-index: 103; 
+	opacity: 0.7;
+	top:0px;
+	left:0px;
+	z-index:103;
+}
+
+.buttons{
+	position: fixed;
+	z-index:104;
+	width: 40%;
+	height: 50px;
+	border:1px solid red;
+	top: 36%;
+	color: white;
+	text-align: center;
+	background-color: rgba(255,255,255,0.3);
+	line-height: 50px;
+	cursor: pointer;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+.cancel{
+	border:1px solid black;
+	right: 0px;
+}
+.mytagclick{
+	border:1px solid red;
+}

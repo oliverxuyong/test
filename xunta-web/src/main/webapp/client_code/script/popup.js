@@ -62,7 +62,8 @@ jQuery(document).ready(function($){
                 var o = {};
                 o.buttonIndex = $(this).index()+1;
                 if(m=="prompt"){
-                    o.text = $("textarea.text").val();
+                	o.text = $("textarea.text").val();
+
                     //o.text = $("textarea.text").text();
                 }
                 f(o,null);

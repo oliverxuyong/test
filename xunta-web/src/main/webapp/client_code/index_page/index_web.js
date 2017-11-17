@@ -24,6 +24,10 @@ function setBodyHeightWidth() {//刚启动被调用一次,以后窗口resize也�
 		//bodyWidth = windowWidth*paddingFactor;
 		//bodyHeith = windowHeight*paddingFactor;
 		setBodyCSS4Mobile();//设满屏,也许不需要宽高参数了.
+		
+		//2017.11.09 叶夷   如果是手机端则body和html去掉边框线
+		$("html").css("border",0);
+		$("body").css("border",0);
 	}
 	//console.log('window innerHeight :' + windowHeight);
 	//console.log('window innerWidth :' + windowWidth);
@@ -59,6 +63,15 @@ function setBodyCSS4Mobile(){
 	//if (userAgent[0] == "PC"){//使用了全局变量.
  		$(".iframe_windows").css("height",(bodyHeight-2)+"px");//它在iframe未打开前不起作用.
  		$(".iframe_windows").css("width",(bodyWidth-2)+"px");
+ 		
+ 		//2017.11.09 叶夷   如果是手机端则iframe去掉padding
+ 		if (userAgent[0] != "PC"){
+ 			var iframe=$(".iframe_windows");
+ 			iframe.css("padding-top",0);
+ 			iframe.css("padding-bottom",0);
+ 			iframe.css("padding-left",0);
+ 			iframe.css("padding-right",0);
+		}
  	//}else{
  		//$(".iframe_windows").css("height","100%");//它在iframe未打开前不起作用.
  		//$(".iframe_windows").css("width","100%");
@@ -174,9 +187,14 @@ function removeIframe(P_winName){
 }
 
 function removeAllIframes(){
-        $("iframe").remove();
+   $("iframe").remove();
 }
-        
+
+function hideAllIframes(){
+	$("iframe").hide();
+}
+
+
 var dialogPageArray = new Array();//这个变量定义在index.html页面时使用本地测试发现获取不到。写在这里是可以的
 var zIndex = 1;//页面层叠次数。要设为全局变量，页面层叠次数最高的才会显示到顶层
 
@@ -191,14 +209,18 @@ function closeWin(winName){//这个方法马上调用本地的openWin_Root(),是
 
 function openWin_Root(winName, winUrl, data) {
     if(winName == "root"){
-    removeAllIframes();
-    $("#logging").show();
-    /*
+    	//removeAllIframes();
+    	hideAllIframes();
+    	
+    	/*
         currentPageObj =  $("body");
-        currentPageObj.css("zIndex",zIndex);//不知为什么, 这样显不出来.
+        console.log(":::::::::::"+currentPageObj.html());
+        currentPageObj.css("z-Index",1000000);//不知为什么, 这样显不出来.
         setCurrentPageId(winName);
         zIndex = zIndex+1;
         */
+      $("#logging").show();
+        
         return
     }
 
@@ -207,12 +229,14 @@ function openWin_Root(winName, winUrl, data) {
 	
     if(pageOpenStatus == true){
         console.log(winName+"  页面已经开启过，直接显示该页面");
+        log2root(winName+"  页面已经开启过，直接显示该页面");
        //通过z_index来设置页面堆叠顺序，来控制页面显示到顶层。z_index不懂可以去w3c查资料
        	currentPageObj = $("#"+winName);
-        currentPageObj.css("zIndex",zIndex);
+        currentPageObj.css("z-index",zIndex);
         setCurrentPageId(winName);//原来漏掉了这句,不加的话,再次打开同一页面会收不到toast消息.
     }else if(pageOpenStatus == false){
         console.log(winName+"  页面没有开启过，创建新页面并前台显示.");
+        log2root(winName+"  页面没有开启过，创建新页面并前台显示.");
         //openNewWin(winName, winUrl, JSON.parse(data));
         openNewWin(winName, winUrl, data);
     }
@@ -224,6 +248,7 @@ function openNewWin(winName, winUrl, data){
     iframeObj.css("zIndex",zIndex);
     iframeObj.load(function() {
         console.log('创建页面:' + winName);
+        log2root('创建页面:' + winName);
         if (data != "") {
             //var script = "start(" + JSON.stringify(data) + ")";
             var script = "start(" + data + ")";
@@ -238,7 +263,7 @@ function openNewWin(winName, winUrl, data){
 //检查页面打开状态。
 function checkPageOpenStatus(winName){
     var pageOpenStatus;
-    if(winName == "topics_page"){//如果打开的是topics页面时，这个页面是不存储在队列里的，否则这个页面因一直存在会破坏队列的先进先出的机制
+    if(winName == "main_page"){//如果打开的是topics页面时，这个页面是不存储在队列里的，否则这个页面因一直存在会破坏队列的先进先出的机制
 		pageOpenStatus = checkTopicsPageOpenStatus();
 /*
         if(dialogPageArray.length == 0){// dialogPageArray.length == 0  表示是初次启动，这个时候要创建话题列表页面
@@ -274,10 +299,12 @@ function checkDialogPageOpenStatus(pageId){//每次打开新的聊天窗口页�
     }
     dialogPageArray.push(pageId);
     console.log("dialogPageArray中push进一个pageid="+pageId);
+    log2root("dialogPageArray中push进一个pageid="+pageId);
     if (dialogPageArray.length > 10) {//当队列数组中超过10个页面后，要删除第一个页面,shift()方法的作用是移除第一个角标并返回角标上对应的值
         var deleteTopicPageName = dialogPageArray.shift();//获取数据中第一个角标位的值,先进先出的队列机制
         closeWin(deleteTopicPageName);
         console.log("打开的页面已超过10个,关闭最早打开的页面,pageid="+deleteTopicPageName);
+        log2root("打开的页面已超过10个,关闭最早打开的页面,pageid="+deleteTopicPageName);
     }
     return false;
 }
@@ -291,8 +318,10 @@ function removeFromdialogPageArray(winName){
         }
         dialogPageArray.pop();//删除多余的最新push进的pageid,因为已经前移了.
         console.log("从dialogPageArray里删除了一个pageid="+winName+"|它在队列中排第"+index);
+        log2root("从dialogPageArray里删除了一个pageid="+winName+"|它在队列中排第"+index);
     }else{
 	    console.log("要删除dialogPageArray里的一个pageid,却发现没有.-"+winName);
+	    log2root("要删除dialogPageArray里的一个pageid,却发现没有.-"+winName);
     }
 }
 

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -17,14 +18,12 @@ import so.xunta.server.UserService;
 import so.xunta.websocket.config.Constants;
 
 public class HandShakeInterceptor extends HttpSessionHandshakeInterceptor {
+	Logger logger = Logger.getRootLogger();
 	
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Map<String, Object> attributes) throws Exception {
-		System.out.println("Before Handshake");
-		//String url = "ws://localhost:80/xunta-web/websocket?userid=1001";
-		
-		//Map<String, String> params = RequestUrlUtils.URLRequest(uri);
+		logger.info("Before Handshake");
 		
 		ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
 
@@ -36,18 +35,22 @@ public class HandShakeInterceptor extends HttpSessionHandshakeInterceptor {
 		{
 			boolean ifuserExist = checkIfUserExistInDb(userid);
 			if(!ifuserExist){
-				System.out.println("非法用户登录连接websocket");
+				logger.info("非法用户登录连接websocket");
 				return false;
 			}
 			
 			if(EchoWebSocketHandler.checkExist(userid)){
-				//System.out.println(userid+"连接已经存在");
+				logger.info(userid+"之前的连接还存在，清除");
 				EchoWebSocketHandler.removeUser(userid);
 			}
 			attributes.put(Constants.WEBSOCKET_USERNAME,userid);
 			attributes.put("boot", boot);
+			return true;
+		}else{
+			logger.info("userid参数非法！");
+			return false;
 		}
-		return true;
+
 		
 		/*if (request instanceof ServletServerHttpRequest) {
 	            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;

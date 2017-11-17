@@ -44,8 +44,20 @@ function specialLettersDecoding(str){
 
 function cutStringIfTooLong(str,maxLength){
 	if (str.length > maxLength) {//长度太长,就截短.
-		return str.substring(0, maxLength-1) + '…';
+		return str.substring(0, maxLength-1) + " …";
 	}else{
 		return str;			
 	}
+}
+/**start:叶夷   2017.10.24
+ *		去除特殊字符的方法
+ */
+function excludeSpecial(str){
+	//去掉空格
+	str=str.replace(/[ ]/g,"");    
+	 // 去掉转义字符  
+    str = str.replace(/[\'\"\\\/\b\f\n\r\t]/g, '');  
+    // 去掉特殊字符  
+    str = str.replace(/[\@\#\$\%\^\&\*\{\}\:\"\L\<\>\?]/);  
+    return str;  
 }

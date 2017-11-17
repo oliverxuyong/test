@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * 数据库连接工具
@@ -17,6 +19,7 @@ public class HelpDB {
 	private final String USERNAME = "root";
 	private final String PASSWORD = "660419";
 	private final String DRIVER = "com.mysql.jdbc.Driver";
+	private Logger logger = Logger.getRootLogger();
 
 	private ThreadLocal<Connection> conn = new ThreadLocal<Connection>() {
 
@@ -59,7 +62,7 @@ public class HelpDB {
 			conn.remove();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	

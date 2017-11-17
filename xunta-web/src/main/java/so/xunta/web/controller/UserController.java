@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import so.xunta.beans.User;
+import so.xunta.server.RecommendService;
 import so.xunta.server.UserService;
 import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
@@ -24,7 +27,10 @@ import so.xunta.utils.IdWorker;
 public class UserController {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private RecommendService recommendService;
 	
+	Logger logger =Logger.getLogger(UserController.class);
 	IdWorker idWorder = new IdWorker(1L, 1L);	
 	
 	@RequestMapping("/checkuser")
@@ -106,6 +112,7 @@ public class UserController {
 		user.setCreate_datetime_long(date.getTime());
 		user.setCreate_datetime_str(DateTimeUtils.getTimeStrFromDate(date));
 		user.setOpenid(openid);
+		user.setLast_update_time(new Timestamp(System.currentTimeMillis()));
 		
 		JSONObject params = new JSONObject();
 		params.put("third_parth_id",third_party_id);
@@ -122,14 +129,13 @@ public class UserController {
 			 * 		如果不存在初始化话题,就初始化话题
 			 */
 			if(user.getIfInitedTopics()==0){//代表没有初始化话题列表
-				System.out.println("开始初始化话题");
+				recommendService.initRecommendParm(user);
 				user.setIfInitedTopics(1);
-				userService.updateUser(user);
-				System.out.println("初始化话题成功");
+				userService.updateUser(user);		
 			}
 		} catch (Exception e) {
 			System.out.println("添加用户失败");
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		
 		response.setCharacterEncoding("utf-8");
@@ -141,7 +147,7 @@ public class UserController {
 		try {
 			responseBack(request, response, obj);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
@@ -223,7 +229,7 @@ public class UserController {
 			
 		} catch (Exception e) {
 			System.out.println("添加用户失败");
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		
 		response.setCharacterEncoding("utf-8");

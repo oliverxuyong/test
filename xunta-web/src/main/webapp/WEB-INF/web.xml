@@ -44,19 +44,8 @@
     <load-on-startup>1</load-on-startup>
     <async-supported>true</async-supported>
   </servlet>
-  <servlet>
-    <description>Apache CXF Endpoint</description>
-    <display-name>cxf</display-name>
-    <servlet-name>cxf</servlet-name>
-    <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
   <servlet-mapping>
     <servlet-name>spring</servlet-name>
     <url-pattern>/</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>cxf</servlet-name>
-    <url-pattern>/services/*</url-pattern>
   </servlet-mapping>
 </web-app>

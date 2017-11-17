@@ -2,14 +2,12 @@ package so.xunta.persist.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -128,43 +126,5 @@ public class UserDaoImpl implements UserDao {
 		String sql = "select u.* from tbl_user as u where u.userGroup='寻TA超级帐号' or u.userGroup = (select u1.userGroup from tbl_user as u1 where u1.userId = :userId)";
 		Query query = session.createSQLQuery(sql).addEntity(User.class).setParameter("userId",userId);
 		return query.list();
-	}
-
-	@Override
-	public int getLinkedUserCounts(Long userid) {
-		// zheng
-		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT COUNT(DISTINCT t1.userid) "+
-					  "FROM tbl_topic t1,"+ 
-					  		"(SELECT DISTINCT tr.register_topicid rtid "+
-					  		 "FROM tbl_topic_register tr, "+
-					  			 "(SELECT topicId FROM tbl_topic WHERE userid=:userid) t "+ 
-					  		 "WHERE tr.center_topicid = t.topicId AND register_topicid!=-1) tri "+
-					  "WHERE t1.topicId=tri.rtid and t1.ifclosed=0";
-		
-		return Integer.parseInt(session.createSQLQuery(sql).setParameter("userid",userid).list().get(0).toString());
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Long> getLinkedUserIds(Long userid, int start, int amount) {
-		// zheng
-		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT DISTINCT tt.userid as userId FROM tbl_topic tt, "+
-						"(SELECT tr.register_topicid rtid "+
-						 "FROM tbl_topic_register tr,"+ 
-						    "(SELECT topicId FROM tbl_topic WHERE userid=:userid AND ifclosed=0) t "+ 
-					     "WHERE tr.center_topicid = t.topicId AND register_topicid!=-1) tri "+
-					  "WHERE tt.topicId=tri.rtid AND  tt.ifclosed=0 "+
-					  "GROUP BY tt.userId "+
-					  "ORDER BY COUNT(tt.topicId) DESC, tt.newest_response_time_long DESC, userid DESC";
-		List<User> result= session.createSQLQuery(sql).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).setParameter("userid",userid).setFirstResult(start).setMaxResults(amount).list();
-		List<Long> utopicIds = new ArrayList<Long>();
-		for(int i = 0;i<result.size();i++)
-		{
-			Map<String,Object> map = (Map<String, Object>) result.get(i);
-			utopicIds.add(Long.valueOf(map.get("userId").toString()));
-		}
-		return utopicIds;
 	}
 }

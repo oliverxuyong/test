@@ -1,6 +1,9 @@
 package so.xunta.websocket.controller;
 
-import java.io.IOException;import org.json.JSONException;
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +32,7 @@ public class UserOperationWSController {
 	@Autowired
 	private UserService userService;
 
-
+	Logger logger =Logger.getLogger(UserOperationWSController.class);
 	
 	
 	/**
@@ -80,7 +83,7 @@ public class UserOperationWSController {
 				e1.printStackTrace();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	} 
 	

@@ -8,18 +8,11 @@
   		<property name="format_sql">true</property><!-- 让输出的sql语句格式化 -->
   		
 		<mapping class="so.xunta.beans.User"/>
-		<mapping class="so.xunta.beans.ChatMessage"/>
-		<mapping class="so.xunta.beans.Topic"/>
-		<mapping class="so.xunta.beans.TopicRegister"/>
-		<mapping class="so.xunta.beans.PubTopic"/>
-		<mapping class="so.xunta.beans.TopicRegisterRecord"/>
-		<mapping class="so.xunta.beans.UnreadMsg"/>
-		<mapping class="so.xunta.beans.UserHasUnreadMsgTopic"/>
-		<mapping class="so.xunta.beans.TopicSetting"/>
-		<mapping class="so.xunta.beans.NewTopicRequest"/>
 		<mapping class="so.xunta.beans.UserVisitLogger"/>
 		<mapping class="so.xunta.beans.Dic"/>
-		<mapping class="so.xunta.beans.CommunicateTime"/>
+		<mapping class="so.xunta.beans.ConcernPointDO"/>
+		<mapping class="so.xunta.beans.CpChoiceDO"/>
+		<mapping class="so.xunta.beans.CpChoiceDetailDO"/>
 		<mapping class="so.xunta.beans.validate.MobilePhoneValidateCode"/>
 	</session-factory>
 </hibernate-configuration>

@@ -47,3 +47,48 @@ function toast(info) {
 	toast_popup(info,2500);//定义在popup.js里
 }
 
+/**
+ * 叶夷 2017.06.30 判断字符串长度，这是为了适应标签圆
+ */
+function length(cpText) {
+	var len = 0;
+	var cpLength=cpText.length;
+	for (var i = 0; i <cpLength; i++) {
+		if (cpText.charCodeAt(i) >=97 && cpText.charCodeAt(i) <=122) {//小写字母
+			len+=0.6;
+		} else if(cpText.charCodeAt(i) >= 65 && cpText.charCodeAt(i) <= 90){//大写字母
+			len+=0.8;
+		}else if(cpText.charCodeAt(i) >= 48 && cpText.charCodeAt(i) <= 57){//数字
+			len+=0.7;
+		}else {
+			len++;
+		}
+	}
+	return len;
+}
+/**
+ * 叶夷 2017.10.25 判断字符串长度，中文==英文两倍
+ */
+function strLength(cpText) {
+	var len = 0;
+	var cpLength=cpText.length;
+	for (var i = 0; i <cpLength; i++) {
+		if (cpText.charCodeAt(i) >=97 && cpText.charCodeAt(i) <=122
+				|| cpText.charCodeAt(i) >= 65 && cpText.charCodeAt(i) <= 90
+				|| cpText.charCodeAt(i) >= 48 && cpText.charCodeAt(i) <= 57) {//小写字母
+			len+=0.5;
+		} else {
+			len++;
+		}
+	}
+	return len;
+}
+
+//超过长度就截取
+function cutStringIfTooLong(str,maxLength){
+	if (str.length > maxLength) {//长度太长,就截短.
+		return str.substring(0, maxLength-1) + '…';
+	}else{
+		return str;			
+	}
+}

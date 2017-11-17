@@ -11,10 +11,13 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class FilePathUtil2 {
+import org.apache.log4j.Logger;
 
+public class FilePathUtil2 {
+	private static Logger logger = Logger.getRootLogger();
+	
 	public static void main(String[] args) throws Exception {
-		String packageName = "so.xunta.websocket.controller";
+		String packageName = "so.xunta.utils";
 		// List<String> classNames = getClassName(packageName);
 		List<String> classNames = getClassName(packageName, false);
 		if (classNames != null) {
@@ -132,7 +135,7 @@ public class FilePathUtil2 {
 			}
 			jarFile.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return myClassName;
 	}

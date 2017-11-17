@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,6 +47,7 @@ public class MobilePhoneRegisterController {
 	@Autowired
 	LoggerService loggerService;
 	
+	Logger logger = Logger.getLogger(MobilePhoneRegisterController.class);
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
@@ -115,7 +118,7 @@ public class MobilePhoneRegisterController {
 			sos.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -141,7 +144,7 @@ public class MobilePhoneRegisterController {
 						return;
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error(e.getMessage(), e);
 					}
 				}
 				if (isMobileNO(phonenumber)) {
@@ -202,14 +205,14 @@ public class MobilePhoneRegisterController {
 							res_client(req, resp,state_json.toString(),1);
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error(e.getMessage(), e);
 					}
 				} else {
 					try {
 						res_client(req, resp, "手机号格式不正确",1);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error(e.getMessage(), e);
 					}
 				}
 			} else {
@@ -218,7 +221,7 @@ public class MobilePhoneRegisterController {
 					res_client(req, resp, "图形验证码输入错误",1);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 			}
 			//req.getSession().removeAttribute("graph_code");
@@ -245,7 +248,7 @@ public class MobilePhoneRegisterController {
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/json");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		String nickname = request.getParameter("nickname");
 		String password = request.getParameter("password");
@@ -315,7 +318,8 @@ public class MobilePhoneRegisterController {
 			Long userId = idWorker.nextId();
 			String third_party_id =  "null";
 			String type ="Phone";
-			User new_user = new User(userId, third_party_id, nickname,"http://42.121.136.225:8888/user-pic2.jpg", type, groupname);
+			
+			User new_user = new User(userId, third_party_id, nickname,"http://42.121.136.225:8888/user-pic2.jpg", type, groupname, new Timestamp(System.currentTimeMillis()));
 			new_user.setThird_party_id(idWorker.nextId()+"");
 			new_user.setPassword(password);
 			new_user.setPhonenumber(phonenumber);
@@ -402,7 +406,7 @@ public class MobilePhoneRegisterController {
 			System.out.println("验证手机号是否存在:"+r);
 			responseBack(req, res, ret);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
@@ -449,7 +453,7 @@ public class MobilePhoneRegisterController {
 		if (mobiles == null) {
 			return false;
 		}
-		Pattern p = Pattern.compile("^[1][3,4,5,8][0-9]{9}$");
+		Pattern p = Pattern.compile("^[1][3,4,5,6,7,8][0-9]{9}$");
 		Matcher m = p.matcher(mobiles);
 		System.out.println(m.matches() + "---");
 		return m.matches();
