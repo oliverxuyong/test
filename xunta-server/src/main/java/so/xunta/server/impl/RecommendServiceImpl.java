@@ -263,10 +263,10 @@ public class RecommendServiceImpl implements RecommendService {
 				/*目前为每个赋值一个0-0.1之间的随机推荐值
 				 * */
 				double randomDouble = randomData.nextDouble();
-				if(cp.getWeight().equals(1.0)){
+				if(Math.abs(cp.getWeight().doubleValue() - 1.0) < 1e-6){
 					initCpsMap.put(cpId, (randomDouble == 0?randomData.nextDouble():randomDouble) * INIT_CP_SCORE);
 				}else{
-					initCpsMap.put(cpId, ((randomDouble == 0?randomData.nextDouble():randomDouble) + 1) * INIT_CP_SCORE);
+					initCpsMap.put(cpId, ((randomDouble == 0?randomData.nextDouble():randomDouble) + 1.0) * INIT_CP_SCORE);
 				}
 			}
 			initialCpDao.setCps(initCpsMap);
