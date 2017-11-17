@@ -238,11 +238,26 @@
 		}
 	}
 	
+	function getLacalUrl(){
+		//获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+        var curWwwPath = window.document.location.href;
+        //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        //获取主机地址，如： http://localhost:8083
+        var localhostPaht = curWwwPath.substring(0, pos);
+        //获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+       //console.log(":"+localhostPaht + projectName);
+        return (localhostPaht + projectName);
+	}
+	
 	/**2017.11.15 发送微信分享链接自定义消息给后台*/
 	function sendWeChatShareLinkMsg(){
 		var url= location.href.split('#').toString();
 		console.log("发送微信分享链接自定义消息给后台");
 		log2root("发送微信分享链接自定义消息给后台");
+		
 		$.ajax({
 	        url : "http://www.xunta.so/xunta-web/sendShareLinksMsg",
 	        action : "post",
@@ -271,12 +286,12 @@
                 	console.log("微信JS-SDK连接成功");
 	        		
 	                var link = "http://www.xunta.so/wxShareLinksLogin";
-	                var imgUrl = "../image/xun.jpg";
+	                var imgUrl = getLacalUrl()+"/../image/xun.jpg";
 	                var protocol = window.location.protocol;
 	                var host = window.location.host;
 	                //分享朋友圈
 	                wx.onMenuShareTimeline({
-	                    title: 'xunta',
+	                    title: '寻Ta',
 	                    link: link,
 	                    imgUrl: imgUrl,// 自定义图标
 	                    trigger: function (res) {
@@ -304,7 +319,7 @@
             			type: 'link', // 分享类型,music、video或link，不填默认为link
             			dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
             			success: function () {
-            				//alert('shared success'+link);
+            				alert('shared success'+imgUrl);
             			},
             			cancel: function () {
             				//alert('shared cancle'+link);
