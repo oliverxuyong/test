@@ -806,19 +806,26 @@ function chooseOneCP(cp_node,cp) {
 	/*var selectItemNode=$("<div></div>").attr("class","selectItem");//这是放选项的div
 	cp_node.append(selectItemNode);*/
 	
+	//2017.11.16 叶夷 将变大的标签克隆且获得之前标签相对于页面的位置
+	var cpNodeByDistance=$("#outcpid"+cpid).clone();
+	cp_node=cpNodeByDistance.find(".cp");
+	cpNodeByDistance.attr("id","copycp");
+	$("body").append(cpNodeByDistance);
+	var cpNodeByDistanceOffsetLeft=$("#outcpid"+cpid).offset().left;
+	var cpNodeByDistanceOffsetTop=$("#outcpid"+cpid).offset().top;
+	cpNodeByDistance.css("top",cpNodeByDistanceOffsetTop);
+	cpNodeByDistance.css("left",cpNodeByDistanceOffsetLeft);
+	
 	var yesItem=cp_node.find(".yesItem");
 	var noItem=cp_node.find(".noItem");
 	if(yesItem.css("display")=='none' && noItem.css("display")=='none'){
 		/*yesItem=$("<div></div>").attr("class","yesItem").text("收了");//收下按钮
 		noItem=$("<div></div>").attr("class","noItem").text("消失");//消失按钮
 		cp_node.append(yesItem).append(noItem);*/
-		//2.设置字体，目前设置为和标签文字的字体一样大
-		var cpNodeByDistance=$("#outcpid"+cpid);
-		
 		//防止变大之后标签超出边界，先保存变化之前的圆left值和top值
 		var cpNodeByDistanceOldWidth=cpNodeByDistance.width();
-		var cpNodeByDistanceOldLeft=parseInt(cpNodeByDistance.css("left").replace(/[^0-9]/ig,""));
-		var cpNodeByDistanceOldTop=parseInt(cpNodeByDistance.css("top").replace(/[^0-9]/ig,""));
+		var cpNodeByDistanceOldLeft=parseInt(cpNodeByDistance.css("left"));
+		var cpNodeByDistanceOldTop=parseInt(cpNodeByDistance.css("top"));
 		
 		var cp_innode=cp_node.find(".incp");
 		var cpInNodeWidth=parseInt(maxCPSize+10);//内圆大小扩大，目前给一个固定值，比最大圆大一点
@@ -842,14 +849,13 @@ function chooseOneCP(cp_node,cp) {
 		//变大之后的标签如果超过边宽则left改变
 		var cp_container = $("#cp-container");// 装推荐标签的容器
 		var cpNodeByDistanceWidth=parseInt(cpNodeByDistance.width());
-		if((cpNodeByDistanceWidth+cpNodeByDistanceOldLeft)>cp_container.width()){
+		if((cpNodeByDistanceWidth+cpNodeByDistanceOffsetLeft)>cp_container.width()){
 			var changeWidth=cpNodeByDistanceWidth-cpNodeByDistanceOldWidth;
 			var cpNodeByDistanceLeft=cpNodeByDistanceOldLeft-changeWidth;
 			cpNodeByDistance.css("left",cpNodeByDistanceLeft);
 		}
 		
 		//变大之后的标签如果超过屏幕的高则top改变
-		var cpNodeByDistanceOffsetTop=cpNodeByDistance.offset().top;
 		var cpNodeByDistanceOffsetBottom=cpNodeByDistanceOffsetTop+cpNodeByDistanceWidth;
 		var showAtLoadedHeight=$("#showatloaded").height();
 		if(cpNodeByDistanceOffsetBottom>showAtLoadedHeight){
@@ -864,39 +870,37 @@ function chooseOneCP(cp_node,cp) {
 		//noItem.css("left",noItemLeft);
 		noItem.css("z-index","104");
 		//遮盖层
-		var coverDiv=$(".cover");
-		if(coverDiv.length<=0){
-			coverDiv=$("<div></div>").attr("class","cover");
-			cp_node.append(coverDiv);
-			coverDiv.css("width",$(window).width());
-			coverDiv.css("height",$(window).height());
-		}
+		var coverDiv=addCover($("body"));
+		
 		//console.log("测试："+coverDiv.data("events")["click"]); 
 		//2017.11.15 叶夷  点击标签时进入聊天列表的按钮必须被黑布隐藏
 		var enterdialogList=$("#enterdialogList");
 		enterdialogList.css("z-index","101");
 		
 		coverDiv.click(function(){
+			autoOverflow();
+			
 			//2017.11.15 叶夷  点击标签时进入聊天列表的按钮必须被黑布隐藏
 			enterdialogList.css("z-index","102");
 			
-			cp_innode.css("z-index","");
+			//cp_innode.css("z-index","");
 			yesItem.hide();
 			noItem.hide();
 			yesItem.unbind();
 			noItem.unbind();
 			//cp_node.unbind();
-			cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
-			cpNodeByDistance.css("top",cpNodeByDistanceOldTop+"px");
+			//cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
+			//cpNodeByDistance.css("top",cpNodeByDistanceOldTop+"px");
 			//恢复成原来大小再选择
-			cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
-			cp_innode.css("height", cpInNodeWidth);
-			cp_innode.css("width", cpInNodeWidth);
-			cp_innode.css("background-color","rgba(255,255,255,0.3)");
+			//cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
+			//cp_innode.css("height", cpInNodeWidth);
+			//cp_innode.css("width", cpInNodeWidth);
+			//cp_innode.css("background-color","rgba(255,255,255,0.3)");
 			//cp_innode.css("opacity","0.3");
-			calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
+			//calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
 			$(".cover").unbind();
 			$(".cover").remove();
+			cpNodeByDistance.remove();
 			
 			//event.stopPropagation();阻止事件冒泡。
 			//这是为了防止选中标签之后取消再次点击时，点击cover，cover删除之后cp_node的点击事件又再次触发
@@ -907,6 +911,9 @@ function chooseOneCP(cp_node,cp) {
 		
 		//绑定点击事件
 		yesItem.click(function() {
+			autoOverflow();
+			cpNodeByDistance.remove();
+			
 			//2017.11.15 叶夷  选择标签之后进入聊天列表的按钮必须浮现
 			enterdialogList.css("z-index","102");
 			
@@ -923,37 +930,40 @@ function chooseOneCP(cp_node,cp) {
 			noItem.unbind();
 			cp_node.unbind();
 			
-			cp_innode.css("z-index","");
+			//cp_innode.css("z-index","");
 			$(".cover").remove();
 			yesItem.hide();
 			noItem.hide();
 			
-			cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
+			//cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			//恢复成原来大小再选择
-			cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
-			cp_innode.css("height", cpInNodeWidth);
-			cp_innode.css("width", cpInNodeWidth);
-			cp_innode.css("background-color","rgba(255,255,255,0.3)");
+			//cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
+			//cp_innode.css("height", cpInNodeWidth);
+			//cp_innode.css("width", cpInNodeWidth);
+			//cp_innode.css("background-color","rgba(255,255,255,0.3)");
 			//cp_innode.css("opacity","0.3");
-			calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
+			//calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
 			chooseOneCpStart=true;
-			chooseCP(cp_innode,cpid,text,"P");
+			chooseCP($("#outcpid"+cpid).find(".incp"),cpid,text,"P");
 		});
 		
 		noItem.click(function() {
+			autoOverflow();
+			cpNodeByDistance.remove();
+			
 			//2017.11.15 叶夷  标签消失之后进入聊天列表的按钮必须浮现
 			enterdialogList.css("z-index","102");
 			
-			cp_innode.css("z-index","");
+			//cp_innode.css("z-index","");
 			$(".cover").unbind();
 			$(".cover").remove();
-			cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
+			//cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			//现变小
-			cp_innode.animate({
+			$("#outcpid"+cpid).find(".incp").animate({
 				width : 0,
 				height : 0
 			}, 1000,function() {
-				cpNodeByDistance.remove();
+				$("#outcpid"+cpid).remove();
 		    });
 			
 			//位置重新计算,left值不改变，然后通过中心点进行排序，通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
@@ -1053,7 +1063,7 @@ function chooseOneCP(cp_node,cp) {
 				});
 			}
 			
-			chooseCP(cp_innode,cpid,text,"N");
+			chooseCP($("#outcpid"+cpid).find(".incp"),cpid,text,"N");
 		});
 	}
 }
@@ -1212,6 +1222,7 @@ function unSelectCP(cpid){
 	//取消选择我的标签先放大出现"x"和选择人数再消失
 	var myTagHeight=myTag.height();
 	myTag.css("z-index",104);
+	myTag.attr("class","mytag mytagclick");
 	var myTagSelectNumberNode=myTag.find(".mytag-selectednumber");
 	var myTagSelectNumberText=parseInt(myTagSelectNumberNode.text());
 	if(myTagSelectNumberText>0){
@@ -1228,29 +1239,28 @@ function unSelectCP(cpid){
 	}*/
 	
 	//加上一块黑布
-	var coverDiv=$(".cover");
-	if(coverDiv.length<=0){
-		coverDiv=$("<div></div>").attr("class","cover");
-		$("body").append(coverDiv);
-		coverDiv.css("width",$(window).width());
-		coverDiv.css("height",$(window).height());
-		coverDiv.css("z-index",103);
+	var coverDiv=addCover($("body"));
 		
 		//2017.11.15 叶夷  点击我的标签后出现删除和取消按钮
-		var deleteButton=showButton("deleteButton",buttonText);//删除按钮
+		var deleteButton=showButton("buttons delete","删除");//删除按钮
 		deleteButton.click(function() {
+			autoOverflow();
+			deleteButton.remove();
+			cancelButton.remove();
 			myTag.unbind();
 			sendUnSelectCP(cpid);
 			$(".cover").unbind();
 			$(".cover").remove();
 		});
-		var cancelButton=showButton("cancelButton",buttonText);//取消按钮
+		var cancelButton=showButton("buttons cancel","取消");//取消按钮
 		cancelButton.click(function(){
-			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode);
+			autoOverflow();
+			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight);
 		});
 		
 		coverDiv.click(function(){
-			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode);
+			autoOverflow();
+			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight);
 		});
 		/*//点击"x"才取消选择
 		unSelectCPNode.click(function() {
@@ -1260,7 +1270,6 @@ function unSelectCP(cpid){
 			$(".cover").remove();
 		});*/
 		
-	}
 }
 //这个按钮在body下
 function showButton(className,buttonText){
@@ -1270,7 +1279,7 @@ function showButton(className,buttonText){
 }
 
 /**当点击我的标签，取消选择或者点击黑布的时候*/
-function cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode){
+function cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight){
 	deleteButton.remove();
 	cancelButton.remove();
 	myTag.css("height",myTagHeight+"px");
@@ -1278,6 +1287,7 @@ function cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberN
 	myTagSelectNumberNode.hide();
 	$(".cover").unbind();
 	$(".cover").remove();
+	myTag.attr("class","mytag");
 }
 
 // 叶夷 2017.08.08 取消选中的标签
@@ -2594,3 +2604,148 @@ function sendWS(testWS,userId) {
 	console.log("执行WS发送.接口:" + json_obj._interface);
 }
 /**end*/
+
+/**2017.11.15 叶夷  修改头像功能*/
+function updUserImg(){
+    $("#ImageBox").show();
+    var coverDiv=addCover($("body"),0.2);
+    $("#imghead").attr("src", userImg);
+    
+    coverDiv.click(function() {
+    	autoOverflow();
+    	closeImageBox();
+	});
+}
+/**2017.11.15 添加遮盖层的方法,parentDiv是cover的父级，opacity是cover的透明度，目前只有更改头像的时候用到*/
+function addCover(parentDiv,opacity){
+	var coverDiv=$(".cover");
+	if(coverDiv.length<=0){
+		coverDiv=$("<div></div>").attr("class","cover");
+		parentDiv.append(coverDiv);
+	}
+	if(opacity!=undefined){
+		coverDiv.css("opacity",opacity);
+	}
+	
+	//当打开cover的时候将我的标签框和推荐标签框禁止滚动
+	hiddenOverflow();
+	
+	return coverDiv;
+}
+
+/**2017.11.16 叶夷 在打开遮盖层的时候我的标签框和推荐标签框禁止滚动*/
+function hiddenOverflow(){
+	$("#mytag-container").css("overflow","hidden");
+	$("#cp-show").css("overflow","hidden");
+}
+/**2017.11.16 叶夷 在取消遮盖层的时候我的标签框和推荐标签框可以滚动*/
+function autoOverflow(){
+	$("#mytag-container").css("overflow","");
+	$("#cp-show").css("overflow","");
+}
+
+/*
+关闭头像更改窗口
+*/
+function closeImageBox() {
+	autoOverflow();
+	$("#ImageBox").hide();
+	$(".cover").remove();
+}
+
+/*
+本地预览选中图片
+*/
+function previewImage(file) {
+	if (!validate_edit_logo(file)) {//验证文件格式
+		return;
+	}
+	var MAXWIDTH = 170;
+	var MAXHEIGHT = 170;
+	var div = document.getElementById('preview');
+	if (file.files && file.files[0]) {
+		div.innerHTML = '<img id=imghead>';
+		var img = document.getElementById('imghead');
+		img.onload = function() {
+			var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+			img.width = rect.width;
+			img.height = rect.height;
+			img.style.marginLeft = rect.left + 'px';
+			img.style.marginTop = rect.top + 'px';
+		}
+		var reader = new FileReader();
+		reader.onload = function(evt) {
+			img.src = evt.target.result;
+		}
+		reader.readAsDataURL(file.files[0]);
+	} else {
+		var sFilter = 'filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src="';
+		file.select();
+		var src = document.selection.createRange().text;
+		div.innerHTML = '<img id=imghead>';
+		var img = document.getElementById('imghead');
+		img.filters.item('DXImageTransform.Microsoft.AlphaImageLoader').src = src;
+		var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+		status = ('rect:' + rect.top + ',' + rect.left + ',' + rect.width + ',' + rect.height);
+		div.innerHTML = "<div id=divhead style='width:" + rect.width + "px;height:" + rect.height + "px;margin-top:" + rect.top + "px;margin-left:" + rect.left + "px;" + sFilter + src + "\"'></div>";
+	}
+	$("#upload").show();
+}
+
+function afterSuccessAlterUserImage(ret){
+	toast(ret.msg);
+	userImg = ret.image_url+"?"+ new Date().getTime();
+	$("#userimg>img").attr("src", userImg);
+	/*start: 叶夷    2017年3月20日
+	 *  跨页面修改头像
+	 */
+	//exec("topics_page","alterTopicImg('"+userImg+"')");
+	/*end: 叶夷*/
+	//$("#topic_img").attr("src", userImg);
+	//document.getElementById("userImg").src=userImg;
+	console.log($("#userimg>img").src);
+	console.log("头像上传成功后,打印一下返回的数据,应该有一个image_url的项和值,如果没有需要调整:"+JSON.stringify(ret));
+	这一步需要测试: window.localStorage.setItem('image', userImg);
+	//这个方法需要创建,并且测试: setCookie("image",userImage);
+}
+
+/*
+验证文件格式
+*/
+function validate_edit_logo(file) {
+	$("#upload").attr("disabled", false);
+	if (!/.(gif|jpg|jpeg|png)$/.test($("#file").val())) {
+		toast("图片类型必须是.gif,jpeg,jpg,png中的一种");
+		$("#upload").attr("disabled", true);
+		return false;
+	}
+	return true;
+}
+/*
+设置图片显示大小
+*/
+function clacImgZoomParam(maxWidth, maxHeight, width, height) {
+	var param = {
+		top : 0,
+		left : 0,
+		width : width,
+		height : height
+	};
+	if (width > maxWidth || height > maxHeight) {
+		rateWidth = width / maxWidth;
+		rateHeight = height / maxHeight;
+		if (rateWidth > rateHeight) {
+			param.width = maxWidth;
+			param.height = Math.round(height / rateWidth);
+		} else {
+			param.width = Math.round(width / rateHeight);
+			param.height = maxHeight;
+		}
+	}
+	param.left = Math.round((maxWidth - param.width) / 2);
+	param.top = Math.round((maxHeight - param.height) / 2);
+	return param;
+}
+function beforeSendHandler() {
+	console.log("beforesend");
+}

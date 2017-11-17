@@ -42,7 +42,7 @@
 						<div id="showonlineoffline">
 							<img src="../image/dot-gray.png" onclick="wsConnect()" />
 						</div>
-						<img onclick="ask2LogOff()" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
+						<img onclick="updUserImg()" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
 						<div id="username"></div>
 					
 					</div>
@@ -137,6 +137,25 @@
 		
 	</div> <!--End of <div id="showatloaded" class="showatloaded"> -->
 	
+	<!-- 2017.11.15 叶夷 将修改头像方法模块加入 -->
+	<div class="ImageBox" style="left: 48px;top: 48px;" id="ImageBox">
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td class="box"><h3 class="tit"><a class="cls" href="javascript:;" onclick="closeImageBox()" title="关闭">关闭</a></h3>
+                    <div>
+                        <div id="preview">
+                            <img id="imghead" width="170" height="170" border="0"><!--无预览时的默认图像-->
+                        </div>
+                        <a href="javascript:;" class="file-upload">
+                            <input id="file" type="file" onchange="previewImage(this)">
+                            选择头像 </a>
+                        <button id="upload" type="button" onclick="upload()" class="upload">
+                            上 传
+                        </button>
+                    </div></td>
+            </tr>
+        </table>
+    </div>
 </body>
 	<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="../script/jquery.nicescroll.min.js"></script>

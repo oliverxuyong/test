@@ -165,7 +165,7 @@ i {
 .ImageBox {
 	position: absolute;
 	top: 30px;
-	right:-17px;
+	//right:-17px;
 	display: none;
 	z-index: 200;
 }
