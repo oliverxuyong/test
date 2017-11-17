@@ -156,7 +156,7 @@ function  getHistoryMsg(userId,toUserId,firstMsgId){
  *	若标题字数过长则用省略号代替  9.14 FANG
  *  */
 function showTitle() {
-	var titleTextContent=cutStringIfTooLong(toUserName,4);
+	var titleTextContent=cutStringIfTooLong(toUserName,10);
 	//在聊天页title上加上头像
 	var userimg=$("<img src="+toUserImage+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
 	$('#header').append(userimg);

@@ -408,7 +408,7 @@ function checkMessageInterface(evnt) {
 	
 	//2017.10.11 叶夷   当前展示的cp中有用户新选中某个cp
 	if(jsonObj._interface == '2107-1'){
-		console.log("新选中的cp:"+JSON.stringify(jsonObj.cp_wrap));
+		console.log("新选中的cp:"+JSON.stringify(jsonObj,cpid));
 		exec("main_page","pushSelectCpPresent("+evnt.data+")");
 	}
 	
