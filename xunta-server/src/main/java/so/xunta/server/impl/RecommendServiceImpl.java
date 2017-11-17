@@ -39,7 +39,7 @@ public class RecommendServiceImpl implements RecommendService {
 	private final double SELF_ADD_CP_SCORE = 0.5;//用户自己添加cp的初始化推荐分数
 	private final int REPLENISH_NUM = 100;//每次补充多少个CP
 	private final double UPDATE_MARK = 0; //需要更新但用户关系值没变化
-	private final long MIN_INTERVAL = 1000L; //两次更新任务之间的最短间隔时间
+	private final long MIN_INTERVAL = 1500L; //两次更新任务之间的最短间隔时间
 	
 	@Autowired
 	private C2uDao c2uDao;
@@ -263,7 +263,11 @@ public class RecommendServiceImpl implements RecommendService {
 				/*目前为每个赋值一个0-0.1之间的随机推荐值
 				 * */
 				double randomDouble = randomData.nextDouble();
-				initCpsMap.put(cpId, (randomDouble == 0?randomData.nextDouble():randomDouble)*INIT_CP_SCORE);
+				if(cp.getWeight().equals(1.0)){
+					initCpsMap.put(cpId, (randomDouble == 0?randomData.nextDouble():randomDouble) * INIT_CP_SCORE);
+				}else{
+					initCpsMap.put(cpId, ((randomDouble == 0?randomData.nextDouble():randomDouble) + 1) * INIT_CP_SCORE);
+				}
 			}
 			initialCpDao.setCps(initCpsMap);
 			logger.info("初始化 Redis InitialCP 完成！");

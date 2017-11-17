@@ -17,7 +17,7 @@ import so.xunta.utils.RedisUtil;
 
 @Repository
 public class InitialCpDapImpl implements InitialCpDao {
-	private final int INIT_COUNTS = 50;//用户初始化时从Initial中取多少个CP
+	private final int INIT_COUNTS = 150;//用户初始化时从Initial中取多少个CP
 	
 	@Autowired
 	private RedisUtil redisUtil;
