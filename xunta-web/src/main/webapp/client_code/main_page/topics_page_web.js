@@ -341,11 +341,21 @@ var selectNumChangeOver=true;
  * 叶夷  2017.10.12 在选择人数变化时查看前端是否执行完，如果没有则先保存
  */
 function pushSelectCpPresent(data){
+	//console.log("测试1:"+selectNumChangeOver);
+	//console.log("测试2:"+selectDataArray.length);
 	if(selectNumChangeOver){
 		selectNumChangeOver=false;
-		startPushSelectCpPresent(data)
+		//console.log("测试3:"+selectNumChangeOver);
+		//console.log("测试4:"+selectDataArray.length);
+		startPushSelectCpPresent(data);
+		//console.log("测试5:"+selectNumChangeOver);
+		//console.log("测试6:"+selectDataArray.length);
 	}else{
+		//console.log("测试7:"+selectNumChangeOver);
+		//console.log("测试8:"+selectDataArray.length);
 		selectDataArray.push(data);
+		//console.log("测试9:"+selectNumChangeOver);
+		//console.log("测试10:"+selectDataArray.length);
 	}
 }
 
@@ -549,11 +559,18 @@ function startPushSelectCpPresent(data){
 }
 
 function ifSelectNumChangeOver(data){
+	//console.log("测试11:"+selectNumChangeOver);
+	//console.log("测试12:"+selectDataArray.length);
 	if(selectDataArray.length>0){
-		removeByValue(selectDataArray, data);
+		//console.log("测试13:"+selectNumChangeOver);
+		//console.log("测试14:"+selectDataArray.length);
 		startPushSelectCpPresent(selectDataArray[0]);
+		///console.log("测试17:"+data);
+		removeByValue(selectDataArray, data);
 	}else{
 		selectNumChangeOver=true;
+		/*console.log("测试15:"+selectNumChangeOver);
+		console.log("测试16:"+selectDataArray.length);*/
 	}
 }
 
@@ -2271,6 +2288,7 @@ function removeByValue(arr, val) {
 			break;
 		}
 	}
+	//console.log("测试17："+arr.length);
 }
 
 // 弹出添加标签框
