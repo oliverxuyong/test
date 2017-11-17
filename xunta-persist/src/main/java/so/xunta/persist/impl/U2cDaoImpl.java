@@ -71,15 +71,11 @@ public class U2cDaoImpl implements U2cDao {
 	public void updateUserBatchCpValue(String uid, Map<String,Double> cps) {
 		Jedis jedis=null;
 		uid = keyPrefix + uid;
-		if(cps == null){
-			logger.error("传入Cp Map为空");
-			return;
-		}
 		try {
 			jedis = redisUtil.getJedis();
 			/*已经存入的不会重复插入
 			 * */
-			jedis.zadd(uid, cps,ZAddParams.zAddParams().nx());
+			jedis.zadd(uid, cps, ZAddParams.zAddParams().nx());
 		} catch (Exception e) {
 			logger.error("updateUserBatchCpValue error:", e);
 		}finally{

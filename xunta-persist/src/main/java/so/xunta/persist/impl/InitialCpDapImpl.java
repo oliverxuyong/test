@@ -17,7 +17,7 @@ import so.xunta.utils.RedisUtil;
 
 @Repository
 public class InitialCpDapImpl implements InitialCpDao {
-	private final int INIT_COUNTS = 150;//用户初始化时从Initial中取多少个CP
+	private final int INIT_COUNTS = 100;//用户初始化时从Initial中取多少个CP
 	
 	@Autowired
 	private RedisUtil redisUtil;
@@ -72,7 +72,6 @@ public class InitialCpDapImpl implements InitialCpDao {
 			Set<Tuple> cps = jedis.zrevrangeWithScores(key, 0, INIT_COUNTS);
 			for(Tuple cp:cps){
 				returncps.put(cp.getElement(),cp.getScore());
-				logger.info(cp.getElement()+":"+cp.getScore());
 			}
 		}catch(Exception e){
 			logger.error("getInitialCps error:", e);
