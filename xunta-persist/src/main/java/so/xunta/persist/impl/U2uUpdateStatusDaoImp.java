@@ -39,7 +39,9 @@ public class U2uUpdateStatusDaoImp implements U2uUpdateStatusDao {
 		} catch (Exception e) {
 			logger.error("updateDeltaRelationValue error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return updateValue;
 	}
@@ -55,7 +57,9 @@ public class U2uUpdateStatusDaoImp implements U2uUpdateStatusDao {
 		} catch (Exception e) {
 			logger.error("getUserUpdateStatus error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return updateStatus;
 	}
@@ -70,7 +74,9 @@ public class U2uUpdateStatusDaoImp implements U2uUpdateStatusDao {
 		} catch (Exception e) {
 			logger.error("deleteU2uUpdateStatus error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 	}
 	

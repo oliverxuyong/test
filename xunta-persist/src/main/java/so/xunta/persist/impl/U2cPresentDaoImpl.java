@@ -38,7 +38,9 @@ public class U2cPresentDaoImpl implements U2cPresentDao {
 		} catch (Exception e) {
 			logger.error("setUserPresentCps error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 	}
 
@@ -55,7 +57,9 @@ public class U2cPresentDaoImpl implements U2cPresentDao {
 		} catch (Exception e) {
 			logger.error("getUserPresentCps error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return returnCps;
 	}
@@ -72,7 +76,9 @@ public class U2cPresentDaoImpl implements U2cPresentDao {
 		} catch (Exception e) {
 			logger.error("dropUserPresentCps error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 
 	}
@@ -88,7 +94,9 @@ public class U2cPresentDaoImpl implements U2cPresentDao {
 		} catch (Exception e) {
 			logger.error("delteUserPresentCp error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 	}
 }

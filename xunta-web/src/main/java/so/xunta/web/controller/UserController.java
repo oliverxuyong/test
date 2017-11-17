@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -111,6 +112,7 @@ public class UserController {
 		user.setCreate_datetime_long(date.getTime());
 		user.setCreate_datetime_str(DateTimeUtils.getTimeStrFromDate(date));
 		user.setOpenid(openid);
+		user.setLast_update_time(new Timestamp(System.currentTimeMillis()));
 		
 		JSONObject params = new JSONObject();
 		params.put("third_parth_id",third_party_id);

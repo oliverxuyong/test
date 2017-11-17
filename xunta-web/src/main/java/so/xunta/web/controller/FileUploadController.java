@@ -68,7 +68,7 @@ public class FileUploadController {
 						}
 					}
 				} else {
-					if (item.getName() != null && !item.getName().equals("")) {
+					if (item.getName() != null && !item.getName().equals("") && findUser!=null) {
 						System.out.println("上传图片的大小:" + item.getSize());
 
 						System.out.println("上传图片的类型:" + item.getContentType());
@@ -106,8 +106,8 @@ public class FileUploadController {
 						userService.updateUser(findUser);
 						show(response, 0, "上传图片成功", ImagePathUtil.getPath(request,imageUrl));
 					} else {
-						request.setAttribute("upload.message", "没有选择上传图片！");
-						show(response,1,"上传图片失败,没有选择上传图片",imageUrl);
+						request.setAttribute("upload.message", "没有选择上传图片或user为null！");
+						show(response,1,"上传图片失败,没有选择上传图片，或user为null",imageUrl);
 					}
 				}
 			}

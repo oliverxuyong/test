@@ -1,5 +1,6 @@
 package so.xunta.persist.test;
 
+import java.util.Map;
 import java.util.Set;
 
 import redis.clients.jedis.Jedis;
@@ -22,6 +23,8 @@ public class RedisTest {
 	      jedis.zadd("key1", 7.0, "5");
 	      
 	      Set<Tuple> rset = jedis.zrevrangeWithScores("key1",0,4);
+	      Map<String, String> updateStatus = jedis.hgetAll("hahaah");
+	      System.out.println("测试："+updateStatus.toString());
 	      for(Tuple a:rset){
 	    	  System.out.println(a.getElement()+"; "+a.getScore());
 	      }

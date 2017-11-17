@@ -2,6 +2,7 @@ package so.xunta.persist.impl;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -56,6 +57,9 @@ public class CpChoiceDaoImpl implements CpChoiceDao {
 		String sql="SELECT cpc.* FROM cp_choice as cpc WHERE cpc.user_id=:userid AND cpc.create_time<:lastUpdateTime ";
 		@SuppressWarnings("unchecked")
 		List<CpChoiceDO> result = (List<CpChoiceDO>)session.createSQLQuery(sql).addEntity(CpChoiceDO.class).setLong("userid", userid).setTimestamp("lastUpdateTime", lastUpdateTime).list();
+		if(result==null){
+			result = new ArrayList<CpChoiceDO>();
+		}
 		return result;
 	}
 

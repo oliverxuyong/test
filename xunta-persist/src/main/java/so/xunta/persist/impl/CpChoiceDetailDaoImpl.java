@@ -43,6 +43,9 @@ public class CpChoiceDetailDaoImpl implements CpChoiceDetailDao {
 		String sql="SELECT * FROM cp_choice_detail WHERE user_id= :userid AND create_time>= :lastUpdateTime GROUP BY cp_id HAVING MAX(create_time) ";
 		@SuppressWarnings("unchecked")
 		List<CpChoiceDetailDO> result = (List<CpChoiceDetailDO>)session.createSQLQuery(sql).addEntity(CpChoiceDetailDO.class).setLong("userid", userid).setTimestamp("lastUpdateTime", lastUpdateTime).list();
+		if(result==null){
+			result = new ArrayList<CpChoiceDetailDO>();
+		}
 		return result;
 	}
 	

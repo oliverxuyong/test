@@ -1,61 +1,32 @@
 package so.xunta.web.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.lang.reflect.Field;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.GetMethod;
+
 import org.apache.log4j.Logger;
-import org.json.JSONException;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import so.xunta.beans.User;
-import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
 import so.xunta.utils.IdWorker;
-import so.xunta.websocket.config.Constants;
-import so.xunta.websocket.utils.TemplateMessageUtils;
-import so.xunta.websocket.utils.WeChatShareLinksUtils;
-import weibo4j.Account;
-import weibo4j.Users;
-import weibo4j.model.WeiboException;
 
-import com.qq.connect.QQConnectException;
-import com.qq.connect.api.OpenID;
-import com.qq.connect.api.qzone.UserInfo;
-import com.qq.connect.javabeans.AccessToken;
-import com.qq.connect.javabeans.qzone.UserInfoBean;
-import com.qq.connect.oauth.Oauth;
+import so.xunta.websocket.utils.TemplateMessageUtils;
+
 
 @Controller
 public class SendWeChatTemplateMsgController {
 	@Autowired
 	LoggerService loggerService;
 
-	@Autowired
-	TemplateMessageUtils templateMessageUtils;
+	TemplateMessageUtils templateMessageUtils = new TemplateMessageUtils();
 	
 	static Logger logger = Logger.getRootLogger();
 

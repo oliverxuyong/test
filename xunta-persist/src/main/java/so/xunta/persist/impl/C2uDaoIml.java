@@ -37,7 +37,9 @@ public class C2uDaoIml implements C2uDao {
 		} catch (Exception e) {
 			logger.error("getUsersSelectedSameCp error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return uids;
 	}
@@ -53,7 +55,9 @@ public class C2uDaoIml implements C2uDao {
 		} catch (Exception e) {
 			logger.error("getHowManyPeopleSelected error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return userCounts;
 	}
@@ -68,7 +72,9 @@ public class C2uDaoIml implements C2uDao {
 		} catch (Exception e) {
 			logger.error("saveCpOneUser error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 	}
 
@@ -82,7 +88,9 @@ public class C2uDaoIml implements C2uDao {
 		} catch (Exception e) {
 			logger.error("deleteUserInCp error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 	}
 

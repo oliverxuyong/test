@@ -31,7 +31,9 @@ public class UserLastUpdateTimeDaoImpl implements UserLastUpdateTimeDao {
 		} catch (Exception e) {
 			logger.error("getUserLastUpdateTime error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}	
 		return updateTime;
 	}
@@ -46,7 +48,9 @@ public class UserLastUpdateTimeDaoImpl implements UserLastUpdateTimeDao {
 		} catch (Exception e) {
 			logger.error("setUserLastUpdateTime error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 	}
 	
@@ -60,7 +64,9 @@ public class UserLastUpdateTimeDaoImpl implements UserLastUpdateTimeDao {
 		} catch (Exception e) {
 			logger.error("clearUserLastUpdateTime error:", e);
 		}finally{
-			jedis.close();
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 	}
 
