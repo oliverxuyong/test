@@ -612,4 +612,14 @@ public class LoginController {
 		    System.out.println("返回成功。。。");
 		}
 	}
+	
+	/**2017.11.17  叶夷  从微信分享链接进入这里，然后访问微信自动登录的链接*/
+	@RequestMapping("/wxShareLinksLogin")
+	public void sendWeChatShareLinkLogin(HttpServletRequest request, HttpServletResponse response){
+		try {
+			response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.mxunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");//跳转到微信自动登录页面
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
 }

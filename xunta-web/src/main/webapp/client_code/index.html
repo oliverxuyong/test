@@ -270,24 +270,24 @@
 	        		log2root("微信JS-SDK成功");
                 	console.log("微信JS-SDK连接成功");
 	        		
-	                var link = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.mxunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+	                var link = url+"/wxShareLinksLogin";
 	                var protocol = window.location.protocol;
 	                var host = window.location.host;
 	                //分享朋友圈
 	                wx.onMenuShareTimeline({
 	                    title: 'xunta',
-	                    link: url,
+	                    link: link,
 	                    imgUrl: '',// 自定义图标
 	                    trigger: function (res) {
 	                        // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回.
 	                        //alert('click shared');
 	                    },
 	                    success: function (res) {
-	                        alert('shared success'+link);
+	                        //alert('shared success'+link);
 	                        //some thing you should do
 	                    },
 	                    cancel: function (res) {
-	                        alert('shared cancle'+link);
+	                        //alert('shared cancle'+link);
 	                    },
 	                    fail: function (res) {
 	                        //alert(JSON.stringify(res));
@@ -298,7 +298,7 @@
 	              	wx.onMenuShareAppMessage({
             			title: 'xunta', // 分享标题
             			desc: '这是一个自定义的描述！', // 分享描述
-           				link: url,
+           				link: link,
             			imgUrl:"http://www.mxunta.so:80/xunta-web/useravatar/thumb_img_804622010041896960/jpg/image", // 自定义图标
             			type: 'link', // 分享类型,music、video或link，不填默认为link
             			dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
