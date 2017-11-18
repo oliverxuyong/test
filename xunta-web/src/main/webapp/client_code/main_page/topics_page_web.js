@@ -1158,11 +1158,18 @@ function myTagContainerHeightChange(myTagContainer,myTagContainerHeight){
 
 
 function setTagContainerHeight(){
+/*	var headerContainerHeight4=$("#header-container").clientHeight;
+	var headerContainerHeight5=document.getElementById("header-container").clientHeight;
+	var headerContainerHeight6=document.getElementById("header-container").scrollHeight;
+	var headerContainerHeight3=$("#header-container").outerHeight();
+	var headerContainerHeight1=$("#header-container").height();
+	var headerContainerHeight2=$("#header-container").css("height");*/
+
 	var headerContainerHeight=$("#header-container").outerHeight(true);
-	//$("#header-container").css("height",headerContainerHeight+"px");
+	$("#header-container").css("height",headerContainerHeight+"px");//让它固定下来,css中的百分数就不再起作用了,高度也就不再变化了.
 	//myTagContainer.css("height",myTagContainerHeight+"px");
 	var myTagContainerHeight = $("#mytag-container").outerHeight(true);
-	$("#top-container").css("height",(headerContainerHeight+myTagContainerHeight)+8+"px");
+	$("#top-container").css("height",(headerContainerHeight+myTagContainerHeight)+4+"px");
 	//var showatloadedHeight = $("#showatloaded").outerHeight(true);
 	
 	//var tagContaiderTop=parseInt($("#tag-container").css("top"));
