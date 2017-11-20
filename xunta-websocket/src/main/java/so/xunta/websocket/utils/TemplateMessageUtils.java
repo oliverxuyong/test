@@ -21,8 +21,7 @@ public class TemplateMessageUtils {
      * @参数@param url  用户点击详情时跳转的url
      * @参数@param topcolor  模板字体的颜色
      * @参数@param first  头部
-     * @参数@param waitingTask  待处理任务
-     * @参数@param notificationType  通知类型
+     * @参数@param state  状态
      * @参数@param notificationTime  通知时间
      * @参数@param remark  补充说明
      * @参数@return
@@ -30,14 +29,14 @@ public class TemplateMessageUtils {
      */
     public String sendWechatmsgToUser
     	(String touser, String templat_id, String clickurl, String topcolor, 
-    			String first, String waitingTask, String notificationType, String notificationTime,String remark){
+    			String first, String state, String notificationTime,String remark){
     	
         String tmpurl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
         String token = wsGetAccessToken.getToken("wxdac88d71df6be268", "753b50cf29b6b08e733e357cc0ed348c");  //微信凭证，access_token
         
-        System.out.println("============================");
-        System.out.println("token: "+token);
-        System.out.println("============================");
+        logger.debug("============================");
+        logger.debug("token: "+token);
+        logger.debug("============================");
         
         String url = tmpurl.replace("ACCESS_TOKEN", token);
         JSONObject json = new JSONObject();
@@ -46,7 +45,7 @@ public class TemplateMessageUtils {
             json.put("template_id", templat_id);
             json.put("url", clickurl);
             json.put("topcolor", topcolor);
-            json.put("data", packJsonmsg(first, waitingTask, notificationType, notificationTime, remark));
+            json.put("data", packJsonmsg(first, state, notificationTime, remark));
             
           /*  WxTemplate temp = new WxTemplate();
             temp.setTouser(touser);
@@ -77,18 +76,20 @@ public class TemplateMessageUtils {
             temp.setData(m);
             String jsonString = JSONObject.*/
             
-            System.out.println("json: "+json);
-            System.out.println("============================");
-            System.out.println(json);
-            System.out.println("============================");
+            logger.debug("json: "+json);
+            logger.debug("============================");
+           /* logger.info(json);
+            logger.info("============================");*/
             
             String result = wsGetAccessToken.httpsRequest(url, "POST", json.toString());
             JSONObject resultJson = new JSONObject(result);
             String errmsg = (String) resultJson.get("errmsg");
             
-            System.out.println("============================");
-            System.out.println(resultJson);
-            System.out.println("============================");
+            logger.info("模版消息发送结果:"+errmsg);
+            
+            logger.debug("============================");
+            logger.debug(resultJson);
+            logger.debug("============================");
             
             if("ok".equals(errmsg)){  //如果为errmsg为ok，则代表发送成功，公众号推送信息给用户了。
                 return "success";
@@ -151,7 +152,7 @@ public class TemplateMessageUtils {
      * @参数@return 
      * @返回类型：JSONObject
      */
-    private JSONObject packJsonmsg(String first, String waitingTask, String notificationType, String notificationTime,String remark){
+/*    private JSONObject packJsonmsg(String first, String waitingTask, String notificationType, String notificationTime,String remark){
         JSONObject json = new JSONObject();
         try {
             JSONObject jsonFirst = new JSONObject();
@@ -173,6 +174,44 @@ public class TemplateMessageUtils {
             jsonNotificationTime.put("value", notificationTime);
             jsonNotificationTime.put("color", "#173177");
             json.put("keyword3", jsonNotificationTime);
+            
+            JSONObject jsonRemark = new JSONObject();
+            jsonRemark.put("value", remark);
+            jsonRemark.put("color", "#173177");
+            json.put("remark", jsonRemark);
+        } catch (JSONException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return json;
+    }*/
+    
+    /**
+     * @method packJsonmsg
+     * @描述: TODO(封装微信模板:智能访客消息通知) 
+     * @参数@param first  头部
+     * @参数@param state  状态
+     * @参数@param notificationTime  通知时间
+     * @参数@param remark  补充说明
+     * @参数@return 
+     * @返回类型：JSONObject
+     */
+    private JSONObject packJsonmsg(String first, String state,String notificationTime,String remark){
+        JSONObject json = new JSONObject();
+        try {
+            JSONObject jsonFirst = new JSONObject();
+            jsonFirst.put("value", first);
+            jsonFirst.put("color", "#173177");
+            json.put("first", jsonFirst);
+            
+            JSONObject jsonWaitingTask = new JSONObject();
+            jsonWaitingTask.put("value", state);
+            jsonWaitingTask.put("color", "#173177");
+            json.put("keyword1", jsonWaitingTask);
+            
+            JSONObject jsonNotificationTime = new JSONObject();
+            jsonNotificationTime.put("value", notificationTime);
+            jsonNotificationTime.put("color", "#173177");
+            json.put("keyword2", jsonNotificationTime);
             
             JSONObject jsonRemark = new JSONObject();
             jsonRemark.put("value", remark);

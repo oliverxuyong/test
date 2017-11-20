@@ -9,12 +9,14 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import so.xunta.beans.Token;
 
 public class WeChatUtils {
+	private Logger logger = Logger.getRootLogger();
 	private final String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	/**
      * 获取接口访问凭证
@@ -80,9 +82,9 @@ public class WeChatUtils {
             conn.disconnect();
             return buffer.toString();
         } catch (ConnectException ce) {
-            System.out.println("连接超时：{}");
+        	logger.error("连接超时：{}");
         } catch (Exception e) {
-            System.out.println("https请求异常：{}");
+        	logger.error("https请求异常：{}");
         }
         return null;
     }
