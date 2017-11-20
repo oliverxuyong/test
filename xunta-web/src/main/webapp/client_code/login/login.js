@@ -152,6 +152,8 @@ function showLoginMode(){
 	if(userAgent[0]=="Mobile"){
 		$("#login").children("div").eq(0).hide();
 		$("#login").children("div").eq(1).hide();
+		$("#login>div").css("width","60%");
+		$("#login>div").css("border-color","#b2b2b2");
 	}
 }
 

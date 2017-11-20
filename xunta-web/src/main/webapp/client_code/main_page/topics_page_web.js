@@ -2291,7 +2291,7 @@ function addTag() {
 	
 	var _obj = $("#showatloaded");
 	var _h = 80;
-	var _w = _obj.width() - 180;
+	var _w = _obj.width()*0.80;
 	var contextresult = [];
 	contextresult.push('<div id="entrytag">');
 	contextresult
