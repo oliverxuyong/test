@@ -134,12 +134,13 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			/*if(session.getAttributes().get("boot").equals("yes"))
 			{
 				
-				//logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  打开应用上线");
+				logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  打开应用上线");
 			}else{
-				//logger.info("用户"+u.getUserId()+"  "+u.getName()+"恢复连接");
+				logger.info("用户"+u.getUserId()+"  "+u.getName()+"恢复连接");
 				
 				//re_sendMsg(userid,5); //zheng 先取消，以后的更新任务还会有类似的功能
 			}*/
+			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  上线");
 			loggerService.log(userid.toString(), u.getName(),clientIP,"用户上线","登录",null,u.getUserGroup());
 			recommendService.initRecommendParm(u);
 			cpShowingService.initUserShowingCps(u.getUserId()+"");
@@ -167,7 +168,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			cpShowingService.clearUserShowingCps(userid+"");
 			
 			loggerService.log(userid.toString(), u.getName(), clientIP,"用户离线","登出",null,u.getUserGroup());
-		//	logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason()+";"+status.getCode());
+			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason()+";"+status.getCode());
 	}
 
 	/**

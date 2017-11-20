@@ -2319,7 +2319,7 @@ function addTag() {
 	execRoot("sendClickAddTagMsg()");
 	
 	var _obj = $("#showatloaded");
-
+	var _h = 90;
 	var _w = _obj.width()*0.80;
 	var contextresult = [];
 	contextresult.push('<div id="entrytag">');
