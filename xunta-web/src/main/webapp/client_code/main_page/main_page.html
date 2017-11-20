@@ -321,6 +321,9 @@
 			$("#userimg").show();
 			var userimg=$("#userimg>img");
 			userimg.attr("src", userImg);
+			
+			
+			
 			//if ( projectType == "WEB" ){
 			//	if ( userAgent[0] == "PC" ){
 			//		$("#userimage").css("right","32px");//向左让出右侧的滚动条.
@@ -338,6 +341,7 @@
 			//var headerContainerHeight=$(".header-container").css("height");
 			//var userImgHeight=$(".userimg").css("height");
 			var userImgWidth=parseInt(userimg.css("width"));
+			userimg.css("height", userImgWidth+"px");//让头像的高=宽,保证正方形.
 			//var userImgMarginTop=parseInt(headerContainerHeight)-parseInt(userImgHeight);
 			//$(".userimg").css("margin-top", userImgMarginTop+"px");
 			//头像大小位置和用户昵称大小位置
@@ -345,6 +349,9 @@
 			//var userimgHeight=headerContainerWidth*0.129;
 			//userimg.css("width",userimgHeight);//图片高宽一致
 			//userimg.css("height",userimgHeight);//图片高宽一致
+			
+			
+			
 			
 			//2017.10.25 叶夷   用户昵称如果超过3个字则加上...
 			userNameTextAdj($("#username"),userName,userImgWidth);//将昵称文字个数及大小的计算及css设置独立放到这个方法中.
@@ -372,8 +379,70 @@
 			enterdialogList.find("img").css("width",enterdialogListWidth);
 			enterdialogList.find("img").css("height",enterdialogListWidth);
 			*/
+			
+			createSampleMyTag();//先生成一个mytag元素样本. 并设置css,主要是文字大小. xu
+			setMyTagContainerCSS();//根据.mytag高度决定container有容纳三行的高度.
+			setAddMyTagCSS(); //根据samplemytag设置加钮的大小.
+			
+		}
+
+		function setAddMyTagCSS(){ //根据samplemytag设置加钮的大小.
+			var sampleMyTagObj = $("#samplemytag");
+			//var width = parseInt(sampleMyTagObj.css("width"));
+			var height = sampleMyTagObj.css("height");
+			$("#addtag").css("height",height);
+			//$("#addtag").css("width","");
 		}
 		
+		function setMyTagContainerCSS (){//根据.mytag高度决定container有容纳三行的高度.
+			var myTagContainer = $(".mytag-container");
+			var bodyHeight = $("body").height();
+			myTagContainer.css("padding-top",parseInt(bodyHeight*2.8/1000)+"px");
+			myTagContainer.css("padding-bottom",parseInt(bodyHeight*2.8/1000)+"px");
+			var sampleMyTagObj = $("#samplemytag");
+			var myTagTotalHeight = sampleMyTagObj.outerHeight();//包括border不包括margin.
+			//各种方法都无法直接获得设为百分数的margin-top值.下面迂回获得:
+			var sampleMyTagMarginTop = parseFloat(sampleMyTagObj.css("margin-top").replace(/%/,""));//去掉百分号后的数,再转为整数.
+			//console.log("=====margin-top======="+sampleMyTagMarginTop*myTagContainer.width()/100);
+			sampleMyTagMarginTop = sampleMyTagMarginTop*myTagContainer.width()/100;//获取真实的margin值.margin为百分数时,指父的宽度值.
+			myTagTotalHeight = myTagTotalHeight + sampleMyTagMarginTop;
+			//var myTagTotalHeight = document.getElementById("samplemytag").clientHeight;//)+parseInt(sampleMyTagObj.offset().top);
+			//console.log("=====document.getElementById(samplemytag).clientHeight======="+document.getElementById("samplemytag").clientHeight);
+			//console.log("=====sampleMyTagObj.offset().top)======="+sampleMyTagObj.offset().top);
+			console.log("=====myTagTotalHeight======="+myTagTotalHeight); 
+			var myTagContainerHeight = parseInt(myTagContainer.css("padding-top"))
+									+parseInt(myTagContainer.css("padding-bottom"))
+									+myTagTotalHeight*3;		
+			myTagContainer.css("height",myTagContainerHeight+"px");//然后sampleMyTag可以删掉了.
+			console.log("=====myTagContainerHeight======="+myTagContainerHeight); 
+		}
+		
+
+		function createSampleMyTag(){//用于模拟mytag的实际高度.
+			var mytagTextSize=$(".mytag-container").width()/32;
+			if(mytagTextSize>15){
+				mytagTextSize=15;
+			}else if(mytagTextSize<11){
+				mytagTextSize=11;
+			}
+			var sampleMyTag=$("<div></div>").attr("class","mytag").attr("id","samplemytag").text("sample");
+			sampleMyTag.css("font-size",mytagTextSize+"px");
+			$(".mytag-container").append(sampleMyTag);
+			console.log("=====mytagTextSize======="+mytagTextSize); 
+			console.log("=====$(sampleMyTag).css======="+sampleMyTag.css("font-size"));
+			/*
+			var myTagTextLength = length(text);//我的标签的宽度 xu
+			var myTagTextSize = parseInt(myTag.css("font-size"))+1;
+			var myTagWidth=myTagTextLength*myTagTextSize+20;
+			var myTagHeight=myTagTextSize*2-4;
+
+			// 每个我选择的标签的大小适配
+			myTag.css("width", myTagWidth+"px");
+			myTag.css("height", myTagHeight+"px");
+			myTag.css("line-height", myTagHeight+"px");
+			*/
+		}
+
 		function userNameTextAdj(userNameObj,userNameText,userImgWidth){
 			userNameObj.hide();
 			//userNameText = "NameOju用户merNameOjumerNammerNam";
@@ -422,13 +491,7 @@
 				if (userNmHeight_After > (textSize+2)*2.9) {return 3;}
 			}
 			
-			function getUserNmHeight(userNameObj,textSize,userNameText){
-				
-				
-			}
-			
-			
-			
+		
 			function reduceTextNum(userNameObj,textSize,text,lineNum){
 				var textHasEnd = text + "end";
 				var lineNumBefore = lineNum;

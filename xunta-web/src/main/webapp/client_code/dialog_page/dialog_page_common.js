@@ -101,16 +101,14 @@ function verifyInputText(obj){//对输入框提交的字符串进行合法性预
 
 function adjustWidthsHeights() {
 	if( userAgent[0] == "PC" ){//PC和手机浏览器在body宽度上不一致.暂时用这个判断来弥补:
-		console.log("============userAgent[0]======="+userAgent[0]); 
-		
-		
+		console.log("============userAgent[0]======="+userAgent[0]);
 		document.getElementById("inputbox").style.width = $("#inputframe").width() - 70 + 6 + "px";//后来发现pc上的chrome的输入框与回车钮间距过大.原因不明,先加6调到合适. xu2017.11.06
-		console.log("============$(#inputframe).width()======="+$("#inputframe").width()); 
-		console.log("============document.getElementById(inputbox).style.width======="+document.getElementById("inputbox").style.width);
-		
 		
 	}else{
-		document.getElementById("inputbox").style.width = $("#inputframe").width() - 68 + "px";
+		console.log("============userAgent[0]======="+userAgent[0]);
+		document.getElementById("inputbox").style.width = $("#inputframe").width() - 68 + 4 + "px";//手机上也调小一些.2017.11.13.xu
+		console.log("============$(#inputframe).width()======="+$("#inputframe").width()); 
+		console.log("============document.getElementById(inputbox).style.width======="+document.getElementById("inputbox").style.width);
 	}
 	/*//2017.08.30 叶夷  聊天页加上了共同选择的标签，聊天信息框的高度还需要减去共同选择标签框的高度
 	var selectCpContainerDisplay=$("#selectCp-container").css("display");

@@ -75,7 +75,7 @@ public class U2cDaoImpl implements U2cDao {
 			jedis = redisUtil.getJedis();
 			/*已经存入的不会重复插入
 			 * */
-			jedis.zadd(uid, cps,ZAddParams.zAddParams().nx());
+			jedis.zadd(uid, cps, ZAddParams.zAddParams().nx());
 		} catch (Exception e) {
 			logger.error("updateUserBatchCpValue error:", e);
 		}finally{
