@@ -579,7 +579,7 @@ public class LoginController {
 		WeChatShareLinksUtils weChatShareLinksUtils=new WeChatShareLinksUtils();
 		JSONObject ret=weChatShareLinksUtils.makeWXTicket(url);
 		try {
-			System.out.println("执行sendWeChatShareLinkMsg...");
+			logger.debug("执行sendWeChatShareLinkMsg...");
 			response.setCharacterEncoding("utf-8");
 			responseBack(request, response, ret);
 		} catch (IOException e) {
@@ -588,7 +588,7 @@ public class LoginController {
 	}
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
 			throws IOException {
-		System.out.println("执行responseBack...");
+		logger.debug("执行responseBack...");
 		boolean jsonP = false;
 		String cb = request.getParameter("callback");
 		if (cb != null) {
@@ -605,7 +605,7 @@ public class LoginController {
 		
 		if (jsonP) {
 		    out.write(");");
-		    System.out.println("返回成功。。。");
+		    logger.debug("返回成功。。。");
 		}
 	}
 	
