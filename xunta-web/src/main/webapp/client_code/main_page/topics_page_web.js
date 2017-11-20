@@ -2746,7 +2746,10 @@ function afterSuccessAlterUserImage(ret){
 */
 function validate_edit_logo(file) {
 	$("#upload").attr("disabled", false);
-	log2root("/.(gif|jpg|jpeg|png)$/.test($('#file').val())这句是验证文件格式： "+/.(gif|jpg|jpeg|png)$/.test($("#file").val()));
+	console.log("图片文件格式： "+$('#file').val());
+	console.log("验证图片文件格式： "+(/.(gif|jpg|jpeg|png)$/.test($('#file').val())));
+	log2root("图片文件格式： "+$('#file').val());
+	log2root("验证图片文件格式： "+(/.(gif|jpg|jpeg|png)$/.test($('#file').val())));
 	if (!/.(gif|jpg|jpeg|png)$/.test($("#file").val())) {
 		toast("图片类型必须是.gif,jpeg,jpg,png中的一种");
 		$("#upload").attr("disabled", true);
