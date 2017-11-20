@@ -1246,6 +1246,7 @@ function unSelectCP(cpid){
 		
 		//2017.11.15 叶夷  点击我的标签后出现删除和取消按钮
 		var deleteButton=showButton("buttons delete","删除");//删除按钮
+
 		deleteButton.click(function() {
 			autoOverflow();
 			deleteButton.remove();
@@ -1265,6 +1266,12 @@ function unSelectCP(cpid){
 			autoOverflow();
 			cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight);
 		});
+		
+		//动态设置删除与取消两个按钮的顶端对齐mytag-container的下边缘:xu
+		//console.log("===#mytag-container).offset().top===="+$("#mytag-container").offset().top);
+		var buttonTopPosition = parseInt($("#mytag-container").offset().top + $("#mytag-container").height());//顶部位置加高度.
+		$(".buttons").css("top",buttonTopPosition+15+"px");
+		
 		/*//点击"x"才取消选择
 		unSelectCPNode.click(function() {
 			myTag.unbind();
