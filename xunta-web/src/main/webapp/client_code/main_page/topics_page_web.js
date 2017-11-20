@@ -2310,7 +2310,7 @@ function addTag() {
 	execRoot("sendClickAddTagMsg()");
 	
 	var _obj = $("#showatloaded");
-	var _h = 80;
+	var _h = 90;
 	var _w = _obj.width() - 180;
 	var contextresult = [];
 	contextresult.push('<div id="entrytag">');
@@ -2371,7 +2371,7 @@ function sendKeyWordToBack(input_value,data) {
 	
 	// 输入框为空的话，结果不显示
 	if(input_value!="" && data.length!=0){
-		$("#htmlObj").css("height","200px");
+		$("#htmlObj").css("height","300px");
 		suggestWrap.show();
 	}else{
 		$("#htmlObj").css("height","100px");
