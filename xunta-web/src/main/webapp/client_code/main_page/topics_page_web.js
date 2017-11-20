@@ -2723,6 +2723,7 @@ function afterSuccessAlterUserImage(ret){
 	//document.getElementById("userImg").src=userImg;
 	console.log($("#userimg>img").src);
 	console.log("头像上传成功后,打印一下返回的数据,应该有一个image_url的项和值,如果没有需要调整:"+JSON.stringify(ret));
+	log2root("头像上传成功后,打印一下返回的数据,应该有一个image_url的项和值,如果没有需要调整:"+JSON.stringify(ret));
 	这一步需要测试: window.localStorage.setItem('image', userImg);
 	//这个方法需要创建,并且测试: setCookie("image",userImage);
 }
@@ -2732,6 +2733,7 @@ function afterSuccessAlterUserImage(ret){
 */
 function validate_edit_logo(file) {
 	$("#upload").attr("disabled", false);
+	log2root("/.(gif|jpg|jpeg|png)$/.test($('#file').val())这句是验证文件格式： "+/.(gif|jpg|jpeg|png)$/.test($("#file").val()));
 	if (!/.(gif|jpg|jpeg|png)$/.test($("#file").val())) {
 		toast("图片类型必须是.gif,jpeg,jpg,png中的一种");
 		$("#upload").attr("disabled", true);
