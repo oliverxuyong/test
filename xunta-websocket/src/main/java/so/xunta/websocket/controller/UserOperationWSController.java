@@ -43,10 +43,12 @@ public class UserOperationWSController {
 	@WebSocketMethodAnnotation(ws_interface_mapping = "update_nickname")
 	public void update_username(WebSocketSession session, TextMessage message){
 		org.json.JSONObject obj = new org.json.JSONObject(message.getPayload());
-		System.out.println("接收参数:"+obj.toString(2));
+		logger.debug("接收参数:"+obj.toString(2));
 		try {
 			String _p_new_nickname = obj.get("new_name").toString();
 			Long _p_uid = Long.valueOf(obj.get("uid").toString());
+			
+			logger.info("用户"+_p_uid+"更改用户名为："+_p_new_nickname);
 			
 			//查重
 			User u = userService.findUserByName(_p_new_nickname);

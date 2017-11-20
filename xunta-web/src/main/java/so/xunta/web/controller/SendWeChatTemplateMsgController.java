@@ -53,7 +53,7 @@ public class SendWeChatTemplateMsgController {
 	
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
 			throws IOException {
-		System.out.println("执行responseBack...");
+		logger.debug("执行responseBack...");
 		boolean jsonP = false;
 		String cb = request.getParameter("callback");
 		if (cb != null) {
@@ -70,7 +70,7 @@ public class SendWeChatTemplateMsgController {
 		
 		if (jsonP) {
 		    out.write(");");
-		    System.out.println("返回成功。。。");
+		    logger.debug("返回成功。。。");
 		}
 	}
 }

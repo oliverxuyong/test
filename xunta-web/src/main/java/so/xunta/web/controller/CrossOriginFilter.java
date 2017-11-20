@@ -13,6 +13,8 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 /**
  * Servlet Filter implementation class CrossOriginFilter
  */
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 public class CrossOriginFilter implements Filter {
 
 	private FilterConfig fconfig;
+	Logger logger =Logger.getLogger(CrossOriginFilter.class);
     /**
      * Default constructor. 
      */
@@ -45,7 +48,7 @@ public class CrossOriginFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse)response;
 		HttpServletRequest req = (HttpServletRequest)request;
 		StringBuffer url = req.getRequestURL();  
-		System.out.println("请求:"+req.getRequestURL());
+		logger.debug("请求:"+req.getRequestURL());
 		String urlstr = url.toString();
 		if(urlstr.indexOf("www")==-1)
 		{
@@ -60,7 +63,7 @@ public class CrossOriginFilter implements Filter {
 			
 			
 		}else{
-			//System.out.println("域名："+tempContextUrl);
+			//logger.debug("域名："+tempContextUrl);
 			//res.addHeader("Access-Control-Allow-Origin", tempContextUrl);
 			chain.doFilter(request, res);
 		}

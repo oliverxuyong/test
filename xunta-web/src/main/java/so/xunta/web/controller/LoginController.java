@@ -81,7 +81,7 @@ public class LoginController {
 			user.setName(username);
 			userDao.addUser(user);
 		} else {
-			System.out.println("用户不为空");
+			logger.debug("用户不为空");
 			// 查询用户话题
 			// List<Topic> topicList =
 			// topicDao.findTopicByUid(user.getUserId());
@@ -152,7 +152,7 @@ public class LoginController {
 
 	@RequestMapping("/weibo_login")
 	public void sina_weibo_login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		System.out.println("微博登录");
+		logger.info("微博登录");
 		weibo4j.Oauth oauth = new weibo4j.Oauth();
 		try {
 			response.sendRedirect(oauth.authorize("code", null));
@@ -176,11 +176,11 @@ public class LoginController {
 		weibo4j.http.AccessToken access_token = oauth.getAccessTokenByCode(code);
 		Account am = new Account(access_token.getAccessToken());
 		weibo4j.org.json.JSONObject uid = am.getUid();
-		System.out.println(uid.getLong("uid"));
+		logger.debug(uid.getLong("uid"));
 		Users um = new Users(access_token.getAccessToken());
 		weibo4j.model.User user = um.showUserById(String.valueOf(uid.getLong("uid")));
 		Field[] fields = User.class.getDeclaredFields();
-		System.out.println(user.toString());
+		logger.debug(user.toString());
 		org.json.JSONObject user_json = new org.json.JSONObject();
 		for (Field field : fields) {
 			field.setAccessible(true);
@@ -207,34 +207,34 @@ public class LoginController {
 	public void wxpnCallback(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException,
 			WeiboException, IllegalArgumentException, IllegalAccessException, JSONException,
 			weibo4j.org.json.JSONException, UnsupportedEncodingException {
-		System.out.println("微信从公众号登录");
+		logger.info("微信从公众号登录");
 		response.setContentType("text/html; charset=utf-8");
 		String code = request.getParameter("code");
-		System.out.println("code:" + code);
+		logger.debug("code:" + code);
 		String appid = "wxdac88d71df6be268";
 		String secret = "753b50cf29b6b08e733e357cc0ed348c";
 		String codeToToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + secret
 				+ "&code=" + code + "&grant_type=authorization_code";
 		String weiXinInfo = httpclientReq(codeToToken);
-		System.out.println("weiXinInfo: " + weiXinInfo);
+		logger.debug("weiXinInfo: " + weiXinInfo);
 		org.json.JSONObject weiXinInfoJson = new org.json.JSONObject(weiXinInfo);
 		String accessToken = weiXinInfoJson.get("access_token").toString();
 		String openid = weiXinInfoJson.get("openid").toString();
 
-		System.out.println("============");
-		System.out.println("openid: " + openid);
-		System.out.println("============");
+		logger.debug("============");
+		logger.debug("openid: " + openid);
+		logger.debug("============");
 
 		String userInfo = httpclientReq("https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken
 				+ "&openid=" + openid + "&lang=zh_CN");
-		System.out.println("get json: \n" + userInfo);
+		logger.debug("get json: \n" + userInfo);
 		JSONObject userInfoJson = new JSONObject(new String(userInfo.getBytes("ISO-8859-1"), "UTF-8"));
 		String nickname = userInfoJson.get("nickname").toString();
 		String sex = userInfoJson.get("sex").toString();
 		String unionid = userInfoJson.get("unionid").toString();
 		// 获取wechat头像并保存本地
 		String headImgUrl = userInfoJson.get("headimgurl").toString();
-		System.out.println("imageUrl ====>  " + headImgUrl);
+		logger.debug("imageUrl ====>  " + headImgUrl);
 
 		if (sex.equals("1")) {
 			sex = "男";
@@ -258,7 +258,7 @@ public class LoginController {
 		// 如果有些用户的openid没有保存，则登录时保存更新
 		User user = userDao.findUserByThirdPartyId(unionid);
 		if (user != null && user.getOpenid() == null) {
-			System.out.println("user openid: " + openid);
+			logger.debug("user openid: " + openid);
 			user.setOpenid(openid);
 			userDao.updateUser(user);
 		}
@@ -269,18 +269,18 @@ public class LoginController {
 	public void wx_callback(String code, HttpServletRequest request, HttpServletResponse response)
 			throws ClassNotFoundException, WeiboException, IllegalArgumentException, IllegalAccessException,
 			JSONException, weibo4j.org.json.JSONException, UnsupportedEncodingException {
-		System.out.println("微信登录");
+		//logger.info("微信登录");
 		response.setContentType("text/html; charset=utf-8");
 		// 获取code
 		String weixin_code = request.getParameter("code");
 		// 通过code获取token
-		System.out.println("获取到code:" + code);
+		logger.debug("获取到code:" + code);
 		// https://open.weixin.qq.com/connect/qrconnect?appid=wxed5db4b066e33c7b&redirect_uri="+redirect_uri+"&response_type=code&scope=snsapi_login&state=705e582b0990b1e9b2fb860b823f2a9e#wechat_redirec
 		String appid = "wx0ad98a24caca02ca";
 		String secret = "d967dc101ad34ff81062309e2be96b46";
 		StringBuffer url = request.getRequestURL();
 		String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
-		System.out.println("tempContextUrl:" + tempContextUrl);
+		logger.debug("tempContextUrl:" + tempContextUrl);
 		// 根据不同的域名设置不同的appid 和 AppSecret
 		if (tempContextUrl.indexOf("mxunta.so") != -1) {
 			appid = "wxed5db4b066e33c7b";
@@ -297,10 +297,10 @@ public class LoginController {
 		}
 		String codeToToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + secret
 				+ "&code=" + weixin_code + "&grant_type=authorization_code";
-		System.out.println(codeToToken);
+		logger.debug(codeToToken);
 		String weiXinInfo = httpclientReq(codeToToken);
 		org.json.JSONObject weiXinInfoJson = new org.json.JSONObject(weiXinInfo);
-		System.out.println("微信登录获取返回的weiXinInfoJson:" + weiXinInfoJson.toString(2));
+		logger.debug("微信登录获取返回的weiXinInfoJson:" + weiXinInfoJson.toString(2));
 		String accessToken = weiXinInfoJson.get("access_token").toString();
 		String openid = weiXinInfoJson.get("openid").toString();
 		// 通过token 换取 userInfo
@@ -315,7 +315,7 @@ public class LoginController {
 		String unionid = userInfoJson.get("unionid").toString();
 		// 获取wechat头像并保存本地
 		String headImgUrl = userInfoJson.get("headimgurl").toString();
-		System.out.println("imageUrl ====>  " + headImgUrl);
+		logger.debug("imageUrl ====>  " + headImgUrl);
 
 		if (sex.equals("1")) {
 			sex = "男";
@@ -330,6 +330,7 @@ public class LoginController {
 		if (finduser != null) {
 			image = finduser.getImgUrl();
 			name = finduser.getName();
+			logger.info(name+"微信登录");
 		}
 
 		responseCookieAndHtml(request, response, uid, unionid, image, name, type, null);
@@ -346,12 +347,12 @@ public class LoginController {
 			Cookie cookie_imageUrl = new Cookie("image", image);
 			Cookie cookie_openid = new Cookie("openid", openid);
 
-			System.out.println("============");
-			System.out.println("openid: " + openid);
-			System.out.println("============");
+			logger.debug("============");
+			logger.debug("openid: " + openid);
+			logger.debug("============");
 
-			System.out.println("image:" + image);
-			System.out.println("name:haha" + name);
+			logger.debug("image:" + image);
+			logger.debug("name:" + name);
 			Cookie cookie_type = new Cookie("type", type);
 			List<Cookie> cookies = new ArrayList<Cookie>();
 
@@ -360,7 +361,7 @@ public class LoginController {
 			} else {
 				domain = "http://www." + domain.substring(domain.indexOf("http://") + 7);
 			}
-			System.out.println("set cookie on domain:" + domain);
+			logger.debug("set cookie on domain:" + domain);
 
 			cookies.add(cookie_userid);
 			cookies.add(cookie_name);
@@ -375,7 +376,7 @@ public class LoginController {
 			}
 			request.getSession().setAttribute("setcookies", cookies);
 			// loggerService.log(uid, name, type + "授权登录成功获取用户信息");
-			logger.info("授权登录成功获取用户信息");
+			logger.debug("授权登录成功获取用户信息");
 			// request.getRequestDispatcher("/client_code/index.html").forward(request,
 			// response);
 			String domainWithContext = getDomainWithContext(request);
@@ -387,7 +388,7 @@ public class LoginController {
 				domainWithContext = "http://www."
 						+ domainWithContext.substring(domainWithContext.indexOf("http://") + 7);
 				request.getSession().setAttribute("indexpageurl", domainWithContext + "client_code/index.html");
-				System.out.println("==> redirect to url :" + domainWithContext + "showindexpage?indexpageurl="
+				logger.debug("==> redirect to url :" + domainWithContext + "showindexpage?indexpageurl="
 						+ domainWithContext + "client_code/index.html&name=" + name + "&uid=" + uid + "&unionid="
 						+ unionid + "&image=" + image + "&type=" + type);
 				String recirectUrl = domainWithContext + "showindexpage?indexpageurl=" + domainWithContext
@@ -396,7 +397,7 @@ public class LoginController {
 				response.sendRedirect(recirectUrl);
 				return;
 			}
-			System.out.println("==>redirect to url :" + domainWithContext);
+			logger.debug("==>redirect to url :" + domainWithContext);
 			response.sendRedirect(domainWithContext + "client_code/index.html");
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
@@ -409,13 +410,13 @@ public class LoginController {
 		String indexpageurl = request.getParameter("indexpageurl");
 		String name = URLDecoder.decode(request.getParameter("name"), "UTF-8");
 
-		System.out.println("showindexpage name:" + name);
+		logger.debug("showindexpage name:" + name);
 		String uid = request.getParameter("uid");
 		String unionid = request.getParameter("unionid");
 		String image = request.getParameter("image");
 		String type = request.getParameter("type");
 
-		System.out.println("showindexpage indexPageUrl:" + indexpageurl);
+		logger.debug("showindexpage indexPageUrl:" + indexpageurl);
 
 		Cookie cookie_name = new Cookie("name", URLEncoder.encode(name, "utf-8"));
 		Cookie cookie_userid = new Cookie("uid", uid);
@@ -430,7 +431,7 @@ public class LoginController {
 		cookies.add(cookie_type);
 		cookies.add(cookie_unionid);
 
-		System.out.println("cookies:" + cookies);
+		logger.debug("cookies:" + cookies);
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				// cookie.setMaxAge(24*60*60*30);
@@ -476,7 +477,7 @@ public class LoginController {
 	@RequestMapping("/qq_callback")
 	public void qqLoginSuccess(HttpServletRequest request, HttpServletResponse response) {
 		response.setContentType("text/html; charset=utf-8");
-		System.out.println("执行qq_callback");
+		logger.debug("执行qq_callback");
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
@@ -490,8 +491,8 @@ public class LoginController {
 					request.getParameter("state"));
 			String code = request.getParameter("code");
 			String state = request.getParameter("state");
-			System.out.println("获取到的code:" + code);
-			System.out.println("state:" + state);
+			logger.debug("获取到的code:" + code);
+			logger.debug("state:" + state);
 			request.getSession().setAttribute("code", code);
 			request.getSession().setAttribute("state", state);
 			String accessToken = null, openID = null;
@@ -499,7 +500,7 @@ public class LoginController {
 			if (accessTokenObj.getAccessToken().equals("")) {
 				// 我们的网站被CSRF攻击了或者用户取消了授权
 				// 做一些数据统计工作
-				System.out.print("没有获取到响应参数");
+				logger.debug("没有获取到响应参数");
 			} else {
 				accessToken = accessTokenObj.getAccessToken();
 				tokenExpireIn = accessTokenObj.getExpireIn();
@@ -526,6 +527,7 @@ public class LoginController {
 					if (finduser != null) {
 						name = finduser.getName();
 						image = finduser.getImgUrl();
+						logger.info(name+"QQ登录");
 					}
 					responseCookieAndHtml(request, response, uid, uid, image, name, type, null);
 				} else if(out!=null){
@@ -543,11 +545,10 @@ public class LoginController {
 		String response = null;
 		try {
 			int statusCode = httpClient.executeMethod(getMethod); // 执行getMethod
-			System.out.println("statusCode  :  " + statusCode);
+			logger.debug("statusCode  :  " + statusCode);
 			response = getMethod.getResponseBodyAsString(); // 读取服务器返回的页面代码，这里用的是字符读法
 		} catch (HttpException e) {
-			System.out.println("Please check your provided http address!  发生致命的异常，可能是协议不对或者返回的内容有问题"); // 发生致命的异常，可能是协议不对或者返回的内容有问题
-			logger.error(e.getMessage(), e);
+			logger.error("Please check your provided http address!  发生致命的异常，可能是协议不对或者返回的内容有问题"+e.getMessage(), e);
 		} catch (IOException e) { // 发生网络异常
 			logger.error(e.getMessage(), e);
 		} finally { // 释放连接
@@ -579,7 +580,7 @@ public class LoginController {
 		WeChatShareLinksUtils weChatShareLinksUtils=new WeChatShareLinksUtils();
 		JSONObject ret=weChatShareLinksUtils.makeWXTicket(url);
 		try {
-			System.out.println("执行sendWeChatShareLinkMsg...");
+			logger.debug("执行sendWeChatShareLinkMsg...");
 			response.setCharacterEncoding("utf-8");
 			responseBack(request, response, ret);
 		} catch (IOException e) {
@@ -588,7 +589,7 @@ public class LoginController {
 	}
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
 			throws IOException {
-		System.out.println("执行responseBack...");
+		logger.debug("执行responseBack...");
 		boolean jsonP = false;
 		String cb = request.getParameter("callback");
 		if (cb != null) {
@@ -605,7 +606,7 @@ public class LoginController {
 		
 		if (jsonP) {
 		    out.write(");");
-		    System.out.println("返回成功。。。");
+		    logger.debug("返回成功。。。");
 		}
 	}
 	

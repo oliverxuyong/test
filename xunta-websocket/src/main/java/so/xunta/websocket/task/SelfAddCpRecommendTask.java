@@ -16,9 +16,9 @@ public class SelfAddCpRecommendTask implements Runnable{
 	}
 	@Override
 	public void run() {
-		logger.info("======================SelfAddCpRecommendTask==============================");
+		logger.debug("======================SelfAddCpRecommendTask==============================");
 		recommendService.setSelfAddCp(cpId);
-		logger.info("======================SelfAddCpRecommendTask完成！==============================");
+		logger.debug("======================SelfAddCpRecommendTask完成！==============================");
 	}
 	
 	public String getCpId() {

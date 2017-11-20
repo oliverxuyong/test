@@ -90,7 +90,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String userid = session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString();
 		String clientIP = session.getRemoteAddress().toString().substring(1);
-		logger.info("客户端"+userid+"请求：" + message.getPayload());
+		logger.debug("客户端"+userid+"请求：" + message.getPayload());
 	
 	
 		org.json.JSONObject obj = null;
@@ -104,7 +104,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 				addition_type = "isPushCP";
 			}
 			loggerService.log(userid, user.getName(),clientIP,obj.toString(),_interface,addition_type,user.getUserGroup());
-
+			logger.info(user.getName()+"请求接口"+_interface);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			session.sendMessage(new TextMessage("json数据格式错误"));
@@ -148,26 +148,6 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			recommendTaskPool.execute(recommendUpdateTask);
 			
 		}
-	}
-	
-	@SuppressWarnings("unused")
-	private void re_sendMsg(Long userid, int i) {
-		
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				logger.info("补发");
-				WebSocketSession socketSession =getUserById(userid);
-				if(socketSession!=null){
-					websocketContext.executeMethod("submit_client_new_msg_id", socketSession, null);
-				}else{
-					logger.error("opps ! session is null");
-				}
-			
-			}
-		}).start();
-		
 	}
 
 	/**
@@ -232,7 +212,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 						&& !filterUserids.contains(user.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString())) {
 					user.sendMessage(message);
 				} else {
-					logger.info("发消息过滤:" + user.getAttributes().get(Constants.WEBSOCKET_USERNAME));
+					logger.debug("发消息过滤:" + user.getAttributes().get(Constants.WEBSOCKET_USERNAME));
 				}
 			} catch (IOException e) {
 				logger.error(e.getMessage(), e);
@@ -297,7 +277,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 					try {
 						u.close();
 					} catch (Exception e) {
-						logger.info(e.getMessage()+"用户连接已关闭，无法重复close");
+						logger.error(e.getMessage()+"用户连接已关闭，无法重复close");
 					}
 				}
 			}

@@ -17,6 +17,7 @@ import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
+import so.xunta.server.UserService;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
 
 
@@ -26,6 +27,7 @@ public class CpOperationPushTask implements Runnable{
 	private RecommendPushService recommendPushService;
 	private CpShowingService cpShowingService;
 	private LoggerService loggerService;
+	private UserService userService;
 	
 	private String cpId;
 	private String userId;
@@ -36,7 +38,7 @@ public class CpOperationPushTask implements Runnable{
 	Logger logger =Logger.getLogger(CpOperationPushTask.class);
 	
 	public CpOperationPushTask(RecommendService recommendService,RecommendPushService recommendPushService,
-			CpShowingService cpShowingService, String userId,String cpId, int selectType, String property, SocketService socketService,LoggerService loggerService) {
+			CpShowingService cpShowingService, String userId,String cpId, int selectType, String property, SocketService socketService,LoggerService loggerService,UserService userService) {
 		this.recommendService = recommendService;
 		this.recommendPushService = recommendPushService;
 		this.userId = userId;
@@ -46,6 +48,7 @@ public class CpOperationPushTask implements Runnable{
 		this.selectType = selectType;
 		this.property = property;
 		this.loggerService = loggerService;
+		this.userService = userService;
 	}
 	
 	public String getCpId() {
@@ -64,9 +67,9 @@ public class CpOperationPushTask implements Runnable{
 
 	@Override
 	public void run() {
-		logger.info("==============================CpOperationPushTask===================================");
+		logger.debug("==============================CpOperationPushTask===================================");
 		if(userId==null || cpId==null){
-			logger.info("参数为空！放弃任务");
+			logger.warn("参数为空！放弃任务");
 			return;
 		}
 		/*Step1：执行记录任务，返回和我相关的用户*/
@@ -85,7 +88,7 @@ public class CpOperationPushTask implements Runnable{
 		/*Step4： 为其他当前正在看这个CP的用户推送数字的变化*/
 		pushCpHeatChange();
 		
-		logger.info("==============================CpOperationPushTask 完成！===================================");
+		logger.debug("==============================CpOperationPushTask 完成！===================================");
 	}
 	
 	private void updateAndPush(String uid){
@@ -103,21 +106,22 @@ public class CpOperationPushTask implements Runnable{
 				/*更新后执行一次和原先状态比较，有一定变化则产生推送*/
 				RecommendPushDTO recommendPushDTO = recommendPushService.generatePushDataAfterUpdateTask(uid,selectType);
 				List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
+				String userName = userService.findUser(Long.valueOf(uid)).getName();
 				if(pushMatchedUserDTOs!=null){
-					logger.info("给id为”"+uid+"“ 的用户产生了MatchedUsers推送");
+					logger.info("用户"+userName+"的匹配用户发生改变");
 					pushChangedMatchedUsers(pushMatchedUserDTOs,userSession);
 				}
 				
 				List<PushRecommendCpDTO> pushRecommendCpDTOs = recommendPushDTO.getPushMatchedCPs();
 				if(pushRecommendCpDTOs!=null){
-					logger.info("给id为”"+uid+"“ 的用户产生了CP推送,推送了 "+pushRecommendCpDTOs.size()+" 个");
+					logger.info("给用户"+userName+"推送了 "+pushRecommendCpDTOs.size()+" 个CP");
 					pushRecommendCps(pushRecommendCpDTOs,userSession);
 				}
 			}else{
 				recommendPushService.clearUserStatus(uid);
 			}
 		}else{
-			logger.info("用户:"+uid+" 之前的推送任务还未结束，本次任务放弃！");
+			logger.debug("用户:"+uid+" 之前的推送任务还未结束，本次任务放弃！");
 		}
 	}
 	
@@ -138,7 +142,7 @@ public class CpOperationPushTask implements Runnable{
 		for(PushMatchedUserDTO matchedUserDTO:pushMatchedUserDTOs){
 			String userId = matchedUserDTO.getUserid();
 			if(userId==null){
-				logger.info("匹配用户减少为0");
+				logger.debug("匹配用户减少为0");
 				continue;
 			}
 			JSONObject pushMatchedUserJson = new JSONObject();
@@ -153,7 +157,7 @@ public class CpOperationPushTask implements Runnable{
 		returnJson.put("interface_name", "push_matched_user");
 		returnJson.put("new_user_arr", newUserArr);
 		socketService.chat2one(session, returnJson);
-		
+		loggerService.log(userId, userId, clientIP, returnJson.toString(), "2106-1", null, null);
 	}
 	
 	private void pushRecommendCps(List<PushRecommendCpDTO> pushRecommendCpDTOs,WebSocketSession session){
@@ -195,7 +199,7 @@ public class CpOperationPushTask implements Runnable{
 				returnJson.put("cpid",cpId);
 				returnJson.put("howmanypeople_selected", cpSelectUserCounts);
 				socketService.chat2one(userSession,returnJson);
-				loggerService.log(userId, userId, clientIP, returnJson.toString(), "2105-1", null, null);
+				loggerService.log(userId, userId, clientIP, returnJson.toString(), "2107-1", null, null);
 			}
 		}
 	}

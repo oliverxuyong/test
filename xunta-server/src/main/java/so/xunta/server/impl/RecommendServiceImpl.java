@@ -72,7 +72,7 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public Set<String> recordU2UChange(String uid, String cpid, String property, int selectType) {
-		logger.info("用户:"+uid+" 选择了CP："+cpid+"  的记录线程启动");
+		logger.debug("用户:"+uid+" 选择了CP："+cpid+"  的记录线程启动");
 		long startTime = System.currentTimeMillis();
 		
 		Set<String> pendingPushUids = new HashSet<String>();
@@ -132,7 +132,7 @@ public class RecommendServiceImpl implements RecommendService {
 		pendingPushUids.addAll(usersSelectedSameCp);
 		
 		long endTime = System.currentTimeMillis();
-		logger.info("用户:"+uid+" 选择了CP："+cpid+"  的记录任务完成"+"\t 选中相同CP的用户数: "+ 
+		logger.debug("用户:"+uid+" 选择了CP："+cpid+"  的记录任务完成"+"\t 选中相同CP的用户数: "+ 
 						usersSelectedSameCp.size() +"\t 产生更新用户数："+ pendingPushUids.size()+"\n 执行时间: "+
 						(endTime-startTime)+"毫秒");
 		return pendingPushUids;
@@ -148,7 +148,7 @@ public class RecommendServiceImpl implements RecommendService {
 			if(!ifUpdateExecutable(uid)){
 				return false;
 			}
-			logger.info("用户:"+uid+" 的更新任务启动");
+			logger.debug("用户:"+uid+" 的更新任务启动");
 			long startTime = System.currentTimeMillis();
 			/*将任务加入任务队列
 			 * */
@@ -158,7 +158,7 @@ public class RecommendServiceImpl implements RecommendService {
 			 * step 1：在U2U_Update_Status中获取U所需要更新的状态发生过变化的用户集合{Uj}。
 			 * */
 			Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
-			logger.info("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
+			logger.debug("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
 			
 			
 			/*step 2: 遍历{Uj}
@@ -194,7 +194,7 @@ public class RecommendServiceImpl implements RecommendService {
 			userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Timestamp(System.currentTimeMillis()).toString());
 
 			long endTime = System.currentTimeMillis();
-			logger.info("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
+			logger.debug("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
 			return true;
 		} catch (Exception e) {
 			logger.error("用户:"+uid+"更新任务出错："+e.getMessage(),e);
@@ -210,7 +210,7 @@ public class RecommendServiceImpl implements RecommendService {
 		 * 如果用户的上次更新的任务还在排队，则丢弃此次任务
 		 * */
 		if(updateTaskQueue.contains(uid)){
-			logger.info("用户:"+uid+" 的上一次更新任务还没结束，本次任务丢弃");
+			logger.debug("用户:"+uid+" 的上一次更新任务还没结束，本次任务丢弃");
 			return false;
 		}
 
@@ -220,7 +220,7 @@ public class RecommendServiceImpl implements RecommendService {
 		long startTime = System.currentTimeMillis();
 		long lastUpadteTimeLong = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid)).getTime();
 		if((startTime-lastUpadteTimeLong) < MIN_INTERVAL){
-			logger.info("离用户："+uid+" 的上一次更新间隔过短，任务放弃");
+			logger.debug("离用户："+uid+" 的上一次更新间隔过短，任务放弃");
 			return false;
 		}
 		return true;
@@ -232,7 +232,7 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public void initRecommendParm(User u) {
-		logger.info("用户: "+ u.getName()+" 初始化推荐参数任务开始");
+		logger.debug("用户: "+ u.getName()+" 初始化推荐参数任务开始");
 		Timestamp lastUpdateTime = u.getLast_update_time();
 		if(lastUpdateTime==null){
 			lastUpdateTime = new Timestamp(System.currentTimeMillis());
@@ -241,13 +241,13 @@ public class RecommendServiceImpl implements RecommendService {
 		String uid = u.getUserId().toString();
 		Boolean ifInited = u2cDao.ifUserCpInited(uid);
 		if(!ifInited){
-			logger.info("用户: "+ u.getName()+" U2C列表不存在,初始化列表:");
+			logger.debug("用户: "+ u.getName()+" U2C列表不存在,初始化列表:");
 			
 			Map<String,Double> userCps= initialCpDao.getInitialCps();
 			u2cDao.updateUserBatchCpValue(uid, userCps);
 		}
 		
-		logger.info("用户: "+ u.getName()+" 推荐参数初始化成功！");
+		logger.debug("用户: "+ u.getName()+" 推荐参数初始化成功！");
 	}
 	
 	@Override
@@ -279,14 +279,14 @@ public class RecommendServiceImpl implements RecommendService {
 	@Override
 	public void replenish(String uid){
 		if(u2cDao.ifNeedReplenish(uid)){
-			logger.info("用户: "+ uid+"推荐CP数量过少，新添。。。");
+			logger.debug("用户: "+ uid+"推荐CP数量过少，新添。。。");
 			
 			Map<String,Double> replenishCps= initialCpDao.getRandomCps(REPLENISH_NUM);
 			u2cDao.updateUserBatchCpValue(uid,replenishCps);
 			
-			logger.info("用户: "+ uid+" U2C补充成功");
+			logger.debug("用户: "+ uid+" U2C补充成功");
 		}else{
-			logger.info("用户: "+ uid+" U2C数据充足");
+			logger.debug("用户: "+ uid+" U2C数据充足");
 		}
 	}
 	
@@ -299,7 +299,7 @@ public class RecommendServiceImpl implements RecommendService {
 			logger.error("用户为空，同步更新时间失败");
 			return;
 		}
-		logger.info("用户: "+ u.getName()+" 下线，将更新时间同步到数据库");
+		logger.debug("用户: "+ u.getName()+" 下线，将更新时间同步到数据库");
 		String userLastUpdateTimeStr = userLastUpdateTimeDao.getUserLastUpdateTime(u.getUserId().toString());
 		Timestamp lastUpdateTime = null;
 		if(userLastUpdateTimeStr == null){

@@ -20,7 +20,7 @@ public class GreetingController {
 	@RequestMapping(value = "/greetings")
 	public void greet(String greeting) {
 		String text = "[" + getTimestamp() + "]:" + greeting;
-		System.out.println(text);
+		logger.debug(text);
 		EchoWebSocketHandler.sendMessageToUsers(new TextMessage("你好！我是管理员"));
 	}
 

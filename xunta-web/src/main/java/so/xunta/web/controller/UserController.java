@@ -35,11 +35,11 @@ public class UserController {
 	
 	@RequestMapping("/checkuser")
 	public void checkUserExist(String userid,String userimage,HttpServletRequest request,HttpServletResponse response) throws IOException{
-		System.out.println("checkuser userid:"+userid);
+		logger.debug("checkuser userid:"+userid);
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("text/json");
-		System.out.println("checkuser 请求:"+request.getRequestURI().toString());
-		System.out.println("checkuser:"+userid+"  userimage:"+userimage);
+		logger.debug("checkuser 请求:"+request.getRequestURI().toString());
+		logger.debug("checkuser:"+userid+"  userimage:"+userimage);
 		String flag = "0";
 		String userName = null;
 		//判断userid 是否为空
@@ -66,13 +66,13 @@ public class UserController {
 		JSONObject obj = new JSONObject();
 		obj.put("if_exist",flag);
 		obj.put("userName", userName);
-		System.out.println("返回查询用户结果:"+obj.toString(2));
+		logger.debug("返回查询用户结果:"+obj.toString(2));
         responseBack(request, response, obj);
 	}
 	
 	@RequestMapping("/save_user")
 	public void addUser(String third_party_id,String unionid,String type,String name,String image_url,String groupname,String openid,HttpServletRequest request,HttpServletResponse response) {
-		System.out.println("name:"+name+"   groupname:"+groupname+"   openid:"+openid+"  \n"+"  \n发送save_user登录连接...");
+		logger.debug("name:"+name+"   groupname:"+groupname+"   openid:"+openid+"  \n"+"  \n发送save_user登录连接...");
 		
 		if(isNull(third_party_id)){
 			throw new RuntimeException("uid为空");
@@ -95,7 +95,7 @@ public class UserController {
 			name=URLDecoder.decode(name,"UTF-8");
 		} catch (UnsupportedEncodingException e2) {
 			// TODO Auto-generated catch block
-			System.out.println("UserName URLdecode 出错"+name);
+			logger.error("UserName URLdecode 出错"+name);
 		}
 		
 		User user = new User();
@@ -120,7 +120,7 @@ public class UserController {
 		params.put("name",name);
 		params.put("image_url",image_url);
 		params.put("user_id",user_id);
-		System.out.println(params.toString(2));
+		logger.debug(params.toString(2));
 		
 		try {
 			user = userService.addUser(user);//添加用户
@@ -134,15 +134,14 @@ public class UserController {
 				userService.updateUser(user);		
 			}
 		} catch (Exception e) {
-			System.out.println("添加用户失败");
-			logger.error(e.getMessage(), e);
+			logger.error("添加用户失败"+e.getMessage(), e);
 		}
 		
 		response.setCharacterEncoding("utf-8");
 		JSONObject obj = new JSONObject();
 		obj.put("userid", user.getUserId().toString());
 		obj.put("username",user.getName());
-		System.out.println(obj.toString(2));
+		logger.debug(obj.toString(2));
 		
 		try {
 			responseBack(request, response, obj);
@@ -152,7 +151,7 @@ public class UserController {
 	}
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
 			throws IOException {
-		System.out.println("执行responseBack...");
+		logger.debug("执行responseBack...");
 		boolean jsonP = false;
 		String cb = request.getParameter("callback");
 		if (cb != null) {
@@ -169,7 +168,7 @@ public class UserController {
 		
 		if (jsonP) {
 		    out.write(");");
-		    System.out.println("返回成功。。。");
+		    logger.debug("返回成功。。。");
 		}
 	}
 	
@@ -177,7 +176,7 @@ public class UserController {
 	@RequestMapping("/userlogin")
 	public void userlogin(String third_party_id,String type,String name,String image_url,String groupname,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		
-		System.out.println("name:"+name+"   groupname:"+groupname+"  用户登录");
+		logger.info("name:"+name+"   groupname:"+groupname+"  用户登录");
 		
 		if(isNull(third_party_id)){
 			throw new RuntimeException("uid为空");
@@ -211,7 +210,7 @@ public class UserController {
 		params.put("image_url",image_url);
 		params.put("third_parth_id",third_party_id);
 		params.put("user_id",user_id);
-		System.out.println(params.toString(2));
+		logger.debug(params.toString(2));
 		
 		try {
 			user = userService.addUser(user);//添加用户
@@ -228,8 +227,7 @@ public class UserController {
 			//topicService.initUsersTopics(user.getUserId(), groupname);
 			
 		} catch (Exception e) {
-			System.out.println("添加用户失败");
-			logger.error(e.getMessage(), e);
+			logger.error("添加用户失败"+e.getMessage(), e);
 		}
 		
 		response.setCharacterEncoding("utf-8");
@@ -237,7 +235,7 @@ public class UserController {
 		JSONObject obj = new JSONObject();
 		obj.put("userid", user.getUserId().toString());
 		obj.put("username",user.getName());
-		System.out.println(obj.toString(2));
+		logger.debug(obj.toString(2));
 		responseBack(request, response, obj);
 	}
 	
@@ -248,7 +246,7 @@ public class UserController {
 	 */
 	@RequestMapping("/deluser")
 	public void delUser(Long userid,HttpServletRequest request,HttpServletResponse response) throws IOException{
-		System.out.println("收到删除用户："+userid+"  请求");
+		logger.info("收到删除用户："+userid+"  请求");
 		int a = userService.delUser(userid);
 		if(a==0){
 			JSONObject json = new JSONObject( "删除用户成功!");

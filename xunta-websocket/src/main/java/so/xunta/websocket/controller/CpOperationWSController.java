@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -27,6 +28,8 @@ import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
+import so.xunta.server.UserService;
+import so.xunta.websocket.config.Constants;
 import so.xunta.websocket.task.CpOperationPushTask;
 import so.xunta.websocket.task.SelfAddCpRecommendTask;
 import so.xunta.websocket.utils.RecommendTaskPool;
@@ -58,7 +61,10 @@ public class CpOperationWSController {
 	private CpChoiceService cpChoiceService;
 	@Autowired
 	private LoggerService loggerService;
+	@Autowired
+	private UserService userService;
 	
+	Logger logger =Logger.getLogger(CpOperationWSController.class);
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1102-1")
 	public void selectOneCP(WebSocketSession session, TextMessage message){
@@ -69,6 +75,8 @@ public class CpOperationWSController {
 		//2017.08.08 叶夷  前端请求的接口加上标签文字,为了返回数据里面需要text
 		String text=params.getString("cptext");
 		String property = params.getString("property");
+		
+		logger.info("用户："+userService.findUser(uid).getName()+"添加了CP："+text);
 		
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "1102-2");
@@ -95,11 +103,15 @@ public class CpOperationWSController {
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1103-1")
 	public void cancelOneSelectedCP(WebSocketSession session, TextMessage message){
+
+		
 		JSONObject params=new JSONObject(message.getPayload());
 		Long uid = Long.valueOf(params.getString("uid"));
 		BigInteger cpid = BigInteger.valueOf(Long.valueOf(params.getString("cpid")));
 		String timestamp = params.getString("timestamp");
 		String property = params.getString("property");
+		
+		logger.info("用户"+userService.findUser(uid).getName()+"取消了CP："+concernPointService.getConcernPointById(cpid).getText());
 		
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "1103-2");
@@ -123,7 +135,7 @@ public class CpOperationWSController {
 	}
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1108-1")
-	public void addSelfCp(WebSocketSession session, TextMessage message){
+	public void addSelfCp(WebSocketSession session, TextMessage message){	
 		JSONObject params=new JSONObject(message.getPayload());
 		Long uid = Long.valueOf(params.getString("uid"));
 		String cpText = params.getString("cptext");
@@ -132,6 +144,7 @@ public class CpOperationWSController {
 		/*if(!params.isNull("cpid")){
 			cpId = new BigInteger(params.getString("cpid"));
 		}*/
+		logger.info("用户"+userService.findUser(uid).getName()+"添加了自己的CP:"+cpText);
 		
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "1108-2");
@@ -177,7 +190,8 @@ public class CpOperationWSController {
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "9108-1")
 	public void wantAddSelfCp(WebSocketSession session, TextMessage message){
-		//消息预处理时已经记录了日志，什么也不需要做
+		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
+		logger.info("用户"+userService.findUser(userId).getName()+"点击了添加自己CP按钮");
 	}
 	
 	private CpChoiceDetailDO cpOperateAction(Long uid, BigInteger cpid, String selectType, String property){
@@ -217,7 +231,7 @@ public class CpOperationWSController {
 		}else{
 			selectTypeRec = RecommendService.UNSELECT_CP;
 		}
-		CpOperationPushTask cpOperationPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,socketService,loggerService);
+		CpOperationPushTask cpOperationPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,socketService,loggerService,userService);
 		recommendTaskPool.execute(cpOperationPushTask);
 		return cpChoiceDetailDO;
 	}

@@ -112,7 +112,7 @@ public class WebSocketContext {
 		}
 
 		if (!methodFind) {
-			logger.info(method + "该方法找不到");
+			logger.warn(method + "该方法找不到");
 		}
 	}
 

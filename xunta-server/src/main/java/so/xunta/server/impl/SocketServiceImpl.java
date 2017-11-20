@@ -25,10 +25,10 @@ public class SocketServiceImpl implements SocketService {
 	@Override
 	public void chat2one(WebSocketSession receiver, JSONObject msg) {
 		if(receiver==null){
-			logger.info("用户中途下线 session为null，中止传输!");
+			logger.debug("用户中途下线 session为null，中止传输!");
 			return;
 		}
-		logger.info("chat2one: "+msg);
+		logger.debug("chat2one: "+msg);
 		synchronized (receiver) {
 			if(receiver.isOpen()){
 				try {

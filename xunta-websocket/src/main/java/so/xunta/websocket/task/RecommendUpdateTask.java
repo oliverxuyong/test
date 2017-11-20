@@ -18,13 +18,13 @@ public class RecommendUpdateTask implements Runnable {
 	
 	@Override
 	public void run() {
-		logger.info("=========================RecommendUpdateTask==============================");
+		logger.debug("=========================RecommendUpdateTask==============================");
 		if(uid!=null){
 			recommendService.updateU2C(uid);
 		}else{
-			logger.info("参数为空！放弃任务");
+			logger.warn("参数为空！放弃任务");
 		}
-		logger.info("=========================RecommendUpdateTask完成！==============================");
+		logger.debug("=========================RecommendUpdateTask完成！==============================");
 	}
 
 	public String getUid() {

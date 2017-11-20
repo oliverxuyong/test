@@ -95,7 +95,7 @@ public class HttpSender {
 		}else if(domain.indexOf("ainiweddingcloud.com")!= -1){
 			groupName = "艾妮婚庆云";
 		}
-		System.out.println("访问域名"+groupName);
+		logger.debug("访问域名"+groupName);
 		
 		try {
 			// 发送短信

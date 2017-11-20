@@ -20,9 +20,9 @@ public class WolfRejectedExecutionHandler implements RejectedExecutionHandler {
 	
 	@Override
 	public void rejectedExecution(Runnable task, ThreadPoolExecutor executor) {
-		logger.info("线程池已满");
+		logger.warn("线程池已满");
 		if(task instanceof CpOperationPushTask){
-			logger.info("将1个CpOperationPushTask 任务序列化到任务队列，等空闲时再执行");
+			logger.debug("将1个CpOperationPushTask 任务序列化到任务队列，等空闲时再执行");
 			CpOperationPushTask recommendPushTask = (CpOperationPushTask)task;
 			String uid = recommendPushTask.getUserId();
 			String cpId = recommendPushTask.getCpId();
@@ -34,12 +34,12 @@ public class WolfRejectedExecutionHandler implements RejectedExecutionHandler {
 				pendingTaskQueue.addCancelCpTask(uid, cpId, property);
 			}		
 		}else if(task instanceof RecommendUpdateTask){
-			logger.info("将1个RecommendUpdateTask 任务序列化到任务队列，等空闲时再执行");
+			logger.debug("将1个RecommendUpdateTask 任务序列化到任务队列，等空闲时再执行");
 			RecommendUpdateTask recommendUpdateTask = (RecommendUpdateTask)task;
 			String uid = recommendUpdateTask.getUid();
 			pendingTaskQueue.addUpdateTask(uid);
 		}else if(task instanceof SelfAddCpRecommendTask){
-			logger.info("将1个SelfAddCpRecommendTask 任务序列化到任务队列，等空闲时再执行");
+			logger.debug("将1个SelfAddCpRecommendTask 任务序列化到任务队列，等空闲时再执行");
 			SelfAddCpRecommendTask selfAddCpRecommendTask = (SelfAddCpRecommendTask)task;
 			String cpId = selfAddCpRecommendTask.getCpId();
 			pendingTaskQueue.addSelfAddCPTask(cpId);

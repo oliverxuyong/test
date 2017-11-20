@@ -20,13 +20,13 @@ public class ImageController {
 	@RequestMapping(value="/useravatar/{imagename}/{suffix}/image")
 	public void getimage(@PathVariable String imagename,@PathVariable String suffix,HttpServletRequest request,HttpServletResponse response)
 	{
-		System.out.println("获取图片");
+		logger.debug("获取图片");
 		String catalina_home= System.getProperty("catalina.home");
 		String upload_image_save_location = catalina_home+"/uploadimages/";
 		
 		if(imagename != null &&!"".equals(imagename.trim())){
 			String imageUrl = upload_image_save_location+imagename+"."+suffix;//图片路径
-			System.out.println(imageUrl);
+			logger.debug(imageUrl);
 			FileInputStream is;
 			try {
 				is = new FileInputStream(imageUrl);

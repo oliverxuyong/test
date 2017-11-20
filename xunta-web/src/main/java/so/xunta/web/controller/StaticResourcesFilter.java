@@ -13,6 +13,8 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 /**
  * Servlet Filter implementation class CrossOriginFilter
  */
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 public class StaticResourcesFilter implements Filter {
 
 	private FilterConfig fconfig;
+	Logger logger =Logger.getLogger(StaticResourcesFilter.class);
     /**
      * Default constructor. 
      */
@@ -45,12 +48,12 @@ public class StaticResourcesFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse)response;
 		HttpServletRequest req = (HttpServletRequest)request;
 		String url = req.getRequestURL().toString();  
-		System.out.println("请求:"+req.getRequestURL());
+		logger.debug("请求:"+req.getRequestURL());
 		if(url.indexOf("client_code")!=-1){
-			System.out.println(url+"中包含client_code");
+			logger.debug(url+"中包含client_code");
 			chain.doFilter(req, res);
 		}else{
-			System.out.println(url+"中不包含client_code");
+			logger.debug(url+"中不包含client_code");
 			String[] suffixes = {"html","htm","gif","jpg","jpeg","bmp","png","ico","txt","js","css","xml"};
 			boolean flag = false;
 			for(int i=0,size=suffixes.length;i<size;i++)
