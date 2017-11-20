@@ -6,13 +6,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import so.xunta.websocket.utils.WeChatUtils;
 
 public class WeChatShareLinksUtils {
+	private Logger logger = Logger.getRootLogger();
 	private final String apiTicketUrl= "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
-	//private Logger logger = Logger.getRootLogger();
 	private WeChatUtils wsGetAccessToken=new WeChatUtils();
 	
 	public JSONObject makeWXTicket(String url) {
@@ -25,7 +26,7 @@ public class WeChatShareLinksUtils {
 
 		// 注意这里参数名必须全部小写，且必须有序
 		string1 = "jsapi_ticket=" + jsApiTicket + "&noncestr=" + nonceStr + "&timestamp=" + timestamp + "&url=" + url;
-		System.out.println("String1=====>" + string1);
+		logger.debug("String1=====>" + string1);
 		try {
 			MessageDigest crypt = MessageDigest.getInstance("SHA-1");
 			crypt.reset();
@@ -33,13 +34,13 @@ public class WeChatShareLinksUtils {
 			signature = byteToHex(crypt.digest());
 			System.out.println("signature=====>" + signature);
 		} catch (NoSuchAlgorithmException e) {
-			System.out.println("WeChatController.makeWXTicket=====Start");
-			System.out.println(e.getMessage());
-			System.out.println("WeChatController.makeWXTicket=====End");
+			logger.error("WeChatController.makeWXTicket=====Start");
+			logger.error(e.getMessage());
+			logger.error("WeChatController.makeWXTicket=====End");
 		} catch (UnsupportedEncodingException e) {
-			System.out.println("WeChatController.makeWXTicket=====Start");
-			System.out.println(e.getMessage());
-			System.out.println("WeChatController.makeWXTicket=====End");
+			logger.error("WeChatController.makeWXTicket=====Start");
+			logger.error(e.getMessage());
+			logger.error("WeChatController.makeWXTicket=====End");
 		}
 
 		//ret.put("url", url);

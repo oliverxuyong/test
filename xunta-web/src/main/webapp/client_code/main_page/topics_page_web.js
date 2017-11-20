@@ -1060,9 +1060,10 @@ function chooseOneCP(cp_node,cp) {
 				bottom = cpTop +cpRadius*2;
 				right=cpLeft+cpRadius*2;
 				cpValueForSelectNum.push(new CP(cpNodeID, cpLeft, right, cpTop, bottom));
-				// cp容器的高度调整
-				cp_container.height(bottom+maxCPSize);
+				
 			}
+			// cp容器的高度调整
+			cp_container.height(cpValueForSelectNum[cpValueForSelectNum.length-1].cpBottom+maxCPSize);
 			cpValue= [].concat(cpValueForSelectNum);
 			
 			//开始动画
