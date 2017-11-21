@@ -2,6 +2,7 @@ package so.xunta.websocket.controller;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.server.ResponseMatchedUsersService;
 import so.xunta.server.SocketService;
+import so.xunta.server.UserService;
+import so.xunta.websocket.config.Constants;
 
 
 /**
@@ -27,6 +30,10 @@ public class MatchedUsersWSController {
 	private ResponseMatchedUsersService responseMatchedUsersService;
 	@Autowired
 	private SocketService socketService;
+	@Autowired
+	private UserService userService;
+	
+	Logger logger =Logger.getLogger(MatchedUsersWSController.class);
 
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1104-1")
 	public void responseMatchedUsers(WebSocketSession session, TextMessage message){
@@ -56,6 +63,7 @@ public class MatchedUsersWSController {
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1110-1")
 	public void wantTalk(WebSocketSession session, TextMessage message){
-		//啥也不做
+		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
+		logger.info("用户"+userService.findUser(userId).getName()+"点击了某匹配人头像");
 	}
 }

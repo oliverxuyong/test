@@ -91,12 +91,12 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 		List<String> matched_uids_previous = RecommendPushUtil.getInstance().getUserMatchedUids(uid);
 		List<String> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
 		if(matched_uids_previous.size() != matched_uids_after.size()){
-			logger.info("匹配用户数量发生了变化，直接产生推送");
+			logger.debug("匹配用户数量发生了变化，直接产生推送");
 			appendPushUsers(matched_uids_after,recommendPushDTO);
 		}else{
 			for(int i=0;i < (matched_uids_previous.size()>U_TOP_NUM ? U_TOP_NUM : matched_uids_previous.size());i++){
 				if(!matched_uids_previous.get(i).equals(matched_uids_after.get(i))){
-					logger.info("前"+matched_uids_previous.size()+"位排名发生了变化,产生推送");
+					logger.debug("前"+matched_uids_previous.size()+"位排名发生了变化,产生推送");
 					appendPushUsers(matched_uids_after,recommendPushDTO);
 					break;
 				}
@@ -118,14 +118,14 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 			pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT));
 			
 			recommendPushDTO.addPushMatchedCPs(pushRecommendCp);
-			logger.info("产生推送cp："+cp.getText());
+			logger.debug("产生推送cp："+cp.getText());
 		}
 	}
 	
 	private void appendPushUsers(List<String> matched_uids_after, RecommendPushDTO recommendPushDTO){
 		int rank=1;
 		if(matched_uids_after.size()==0){
-			logger.info("没有匹配用户");
+			logger.debug("没有匹配用户");
 			PushMatchedUserDTO pushMatchedUser = new PushMatchedUserDTO();
 			recommendPushDTO.addPushMatchedUser(pushMatchedUser);
 		}else{
@@ -140,7 +140,7 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 				recommendPushDTO.addPushMatchedUser(pushMatchedUser);
 				rank++;
 			}
-			logger.info("产生匹配用户："+matched_uids_after.toString());
+			logger.debug("产生匹配用户："+matched_uids_after.toString());
 		}
 	}	
 	

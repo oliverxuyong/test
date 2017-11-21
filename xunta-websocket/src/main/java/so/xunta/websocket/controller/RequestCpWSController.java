@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import so.xunta.server.CpChoiceService;
 import so.xunta.server.CpShowingService;
 import so.xunta.server.ResponseGroupCPsService;
 import so.xunta.server.SocketService;
+import so.xunta.server.UserService;
 
 @WebSocketTypeAnnotation
 @Component
@@ -34,6 +36,11 @@ public class RequestCpWSController {
 	private CpChoiceService cpChoiceService;
 	@Autowired
 	private C2uDao c2uDao;
+	@Autowired
+	private UserService userService;
+	
+	Logger logger =Logger.getLogger(RequestCpWSController.class);
+
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1101-1")
 	public void responseGroupCPs(WebSocketSession session, TextMessage message){
@@ -42,6 +49,8 @@ public class RequestCpWSController {
 		int startPoint = Integer.valueOf(params.getInt("startpoint"));
 		int howMany = Integer.valueOf(params.getInt("howmany"));
 		String timestamp = params.getString("timestamp"); //以后再处理
+		
+		logger.info("用户："+userService.findUser(uid).getName()+"请求一组CP");
 		
 		List<RecommendCpBO> cps = responseGroupCPsService.getRecommendCPs(uid, startPoint, howMany);
 		

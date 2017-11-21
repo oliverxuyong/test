@@ -23,7 +23,7 @@ public class HandShakeInterceptor extends HttpSessionHandshakeInterceptor {
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Map<String, Object> attributes) throws Exception {
-		logger.info("Before Handshake");
+		logger.debug("Before Handshake");
 		
 		ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
 
@@ -80,7 +80,6 @@ public class HandShakeInterceptor extends HttpSessionHandshakeInterceptor {
 	private boolean checkIfUserExistInDb(String userid) {
 		WebApplicationContext webContext = ContextLoader.getCurrentWebApplicationContext();
 		UserService userService = webContext.getBean(UserService.class);
-		//System.out.println("userService:"+userService);
 		User user = userService.findUser(Long.valueOf(userid));
 		if(user ==null){
 			return false;
@@ -94,7 +93,6 @@ public class HandShakeInterceptor extends HttpSessionHandshakeInterceptor {
 	@Override
 	public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Exception ex) {
-		//System.out.println("After Handshake");
 		super.afterHandshake(request, response, wsHandler, ex);
 	}
 }

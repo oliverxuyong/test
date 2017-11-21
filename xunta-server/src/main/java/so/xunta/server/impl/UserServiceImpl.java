@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService{
 				_user = userDao.addUser(user);
 			}
 		}else{
-			logger.info(user.getName()+"   用户存在");
+			logger.debug(user.getName()+"   用户存在");
 			//更新用户
 			//_user.setName(user.getName());
 			//_user.setImgUrl(user.getImgUrl());

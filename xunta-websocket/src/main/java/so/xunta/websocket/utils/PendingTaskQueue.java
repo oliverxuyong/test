@@ -13,6 +13,7 @@ import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
+import so.xunta.server.UserService;
 import so.xunta.websocket.task.CpOperationPushTask;
 import so.xunta.websocket.task.RecommendUpdateTask;
 import so.xunta.websocket.task.SelfAddCpRecommendTask;
@@ -33,6 +34,8 @@ public class PendingTaskQueue {
 	private SocketService socketService;
 	@Autowired
 	private LoggerService loggerService;
+	@Autowired
+	private UserService UserService;
 	
 	private List<String> taskSerializeList = Collections.synchronizedList(new LinkedList<String>());
 
@@ -70,14 +73,14 @@ public class PendingTaskQueue {
 				String userId1 = parms[1];
 				String cpId1 = parms[2];
 				String propert1 = parms[3];
-				CpOperationPushTask t1= new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,RecommendService.SELECT_CP,propert1,socketService,loggerService);
+				CpOperationPushTask t1= new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,RecommendService.SELECT_CP,propert1,socketService,loggerService,UserService);
 				returnTasks.add(t1);
 				break;
 			case RECOMMEND_CANCELCP:
 				String userId2 = parms[1];
 				String cpId2 = parms[2];
 				String propert2 = parms[3];
-				CpOperationPushTask t2 = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId2,cpId2,RecommendService.UNSELECT_CP,propert2,socketService,loggerService);
+				CpOperationPushTask t2 = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,userId2,cpId2,RecommendService.UNSELECT_CP,propert2,socketService,loggerService,UserService);
 				returnTasks.add(t2);
 				break;
 			case RECOMMEND_UPDARW:

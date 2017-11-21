@@ -49,7 +49,7 @@ public class CpShowingServiceImpl implements CpShowingService {
 	@Override
 	public void addUserShowingCps(String uid, Set<String> cpids) {	
 		if(cpids!=null){
-			logger.info("设置新的一批用户正在显示的cp列表");
+			logger.debug("设置新的一批用户正在显示的cp列表");
 			u2cPresentDao.setUserPresentCps(uid, cpids);
 			for(String cpid:cpids){
 				c2uPresentDao.setCpPresentUser(cpid, uid);
@@ -64,7 +64,7 @@ public class CpShowingServiceImpl implements CpShowingService {
 
 	@Override
 	public void clearUserShowingCps(String uid) {
-		logger.info("删除用户正在显示的cp列表");
+		logger.debug("删除用户正在显示的cp列表");
 		Set<String> oldCpids = u2cPresentDao.getUserPresentCps(uid);
 		if(oldCpids!=null && oldCpids.size()>0){
 			for(String oldCpid:oldCpids){

@@ -2319,10 +2319,9 @@ function addTag() {
 	execRoot("sendClickAddTagMsg()");
 	
 	var _obj = $("#showatloaded");
-	
 	var _h = 90;
-	
 	var _w = _obj.width()*0.80;
+
 	var contextresult = [];
 	contextresult.push('<div id="entrytag">');
 	contextresult
@@ -2758,7 +2757,6 @@ function afterSuccessAlterUserImage(ret){
 */
 function validate_edit_logo(file) {
 	$("#upload").attr("disabled", false);
-	
 	console.log("图片文件格式： "+$('#file').val());
 	console.log("验证图片文件格式： "+(/.(gif|jpg|jpeg|png|GIF|JPG|JPEG|PNG)$/.test($('#file').val())));
 	log2root("图片文件格式： "+$('#file').val());

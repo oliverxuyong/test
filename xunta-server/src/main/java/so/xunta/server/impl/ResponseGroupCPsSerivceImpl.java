@@ -45,7 +45,7 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 		
 		Set<Tuple> cps= u2cDao.getUserCpsByRank(uid.toString(), 0, howMany-1);
 		List<String> cpIds=new ArrayList<String>();
-		logger.info("得到 "+ cps.size() +" 条cp");
+		logger.debug("得到 "+ cps.size() +" 条cp");
 		
 		List<RecommendCpBO> returnList = new ArrayList<RecommendCpBO>();
 		for(Tuple cp:cps){
@@ -88,7 +88,7 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 		*/
 		
 		long endTime = System.currentTimeMillis();
-		logger.info("getRecommendCPs success，执行时间："+(endTime-startTime)+"毫秒");
+		logger.debug("getRecommendCPs success，执行时间："+(endTime-startTime)+"毫秒");
 		return returnList;
 	}
 }

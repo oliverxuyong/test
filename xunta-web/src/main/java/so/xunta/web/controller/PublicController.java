@@ -27,7 +27,7 @@ public class PublicController {
 	public void nextId(HttpServletRequest request, HttpServletResponse response) {
 		Long nextId = idWorker.nextId();
 		String str = String.format("获取id请求:%s",nextId.toString());
-		logger.info(str);
+		logger.debug(str);
 		JSONObject ret = new JSONObject();
 		ret.put("id",nextId.toString());
 		
@@ -50,7 +50,7 @@ public class PublicController {
 		
 		
 		String str = String.format("获取时间请求:%s",ret.toString(2));
-		logger.info(str);
+		logger.debug(str);
 		
 		response.setContentType("text/json");
 		response.setCharacterEncoding("utf-8");
@@ -77,7 +77,7 @@ public class PublicController {
 		
 		
 		String str = String.format("获取id请求:%s",ret.toString(2));
-		logger.info(str);
+		logger.debug(str);
 		
 		response.setContentType("text/json");
 		response.setCharacterEncoding("utf-8");
