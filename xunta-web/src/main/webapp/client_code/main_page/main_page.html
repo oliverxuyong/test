@@ -404,7 +404,7 @@
 			myTagContainer.css("padding-bottom",parseInt(bodyHeight*2.8/1000)+"px");
 			var sampleMyTagObj = $("#samplemytag");
 			var myTagTotalHeight = sampleMyTagObj.outerHeight();//包括border不包括margin.
-			//各种方法都无法直接获得设为百分数的margin-top值.下面迂回获得:
+			//各种方法都无法直接获得设为百分数的margin-top值.下面迂回获得: //后来明白,这个百分号问题是因为:它依赖的元素后来被改变了,所以它本身也随着改变,因为总是调不准.
 			var sampleMyTagMarginTop = parseFloat(sampleMyTagObj.css("margin-top").replace(/%/,""));//去掉百分号后的数,再转为整数.
 			//console.log("=====margin-top======="+sampleMyTagMarginTop*myTagContainer.width()/100);
 			sampleMyTagMarginTop = sampleMyTagMarginTop*myTagContainer.width()/100;//获取真实的margin值.margin为百分数时,指父的宽度值.
