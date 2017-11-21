@@ -35,7 +35,7 @@ public class SendWeChatTemplateMsgController {
 
 	TemplateMessageUtils templateMessageUtils = new TemplateMessageUtils();
 	
-	static Logger logger = Logger.getRootLogger();
+	Logger logger = Logger.getLogger(SendWeChatTemplateMsgController.class);
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 	@RequestMapping("/sendMTemplateMsg")
