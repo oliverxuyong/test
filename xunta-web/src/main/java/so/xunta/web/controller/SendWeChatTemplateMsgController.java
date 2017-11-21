@@ -41,7 +41,11 @@ public class SendWeChatTemplateMsgController {
 	IdWorker idWorker = new IdWorker(1L, 1L);
 	
 	@RequestMapping("/sendMTemplateMsg")
-	public void checkUserExist(String userid,String touserid,String content,HttpServletRequest request,HttpServletResponse response) throws IOException{
+	public void checkUserExist(/*String userid,String touserid,String content,*/HttpServletRequest request,HttpServletResponse response) throws IOException{
+		String userid=request.getParameter("userid");
+		String touserid=request.getParameter("touserid");
+		String content=request.getParameter("content");
+		
 		logger.debug("模版消息接口被调用时返回的数据：userid="+userid+" touserid="+touserid+" content"+content);
 		
 		SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
