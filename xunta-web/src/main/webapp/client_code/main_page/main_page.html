@@ -386,7 +386,13 @@
 			setMyTagContainerCSS();//根据.mytag高度决定container有容纳三行的高度.
 			setAddMyTagCSS(); //根据samplemytag设置加钮的大小.
 			setTagContainerHeight();
-			
+			setGreenDotPosition(); 
+		}
+		
+		//让小绿点刚好骑在头像的肩头上.头像的上边缘刚好在绿点的上下中线位置.
+		function setGreenDotPosition(){
+			var heightGreenDot = $("#showonlineoffline");
+			heightGreenDot.css("top",-heightGreenDot.height()/1.8+"px");
 		}
 
 		function setAddMyTagCSS(){ //根据samplemytag设置加钮的大小.
