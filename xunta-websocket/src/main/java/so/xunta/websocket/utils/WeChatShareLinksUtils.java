@@ -32,7 +32,7 @@ public class WeChatShareLinksUtils {
 			crypt.reset();
 			crypt.update(string1.getBytes("UTF-8"));
 			signature = byteToHex(crypt.digest());
-			System.out.println("signature=====>" + signature);
+			logger.debug("signature=====>" + signature);
 		} catch (NoSuchAlgorithmException e) {
 			logger.error("WeChatController.makeWXTicket=====Start");
 			logger.error(e.getMessage());
