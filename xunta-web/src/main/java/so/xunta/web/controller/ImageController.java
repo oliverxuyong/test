@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ImageController {
 	Logger logger = Logger.getLogger(ImageController.class);
-	///useravatar/"+newname
+
 	@RequestMapping(value="/useravatar/{imagename}/{suffix}/image")
 	public void getimage(@PathVariable String imagename,@PathVariable String suffix,HttpServletRequest request,HttpServletResponse response)
 	{

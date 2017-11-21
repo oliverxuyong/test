@@ -28,6 +28,7 @@ import so.xunta.websocket.utils.TemplateMessageUtils;
 
 @Controller
 public class SendWeChatTemplateMsgController {
+	
 	@Autowired
 	LoggerService loggerService;
 	@Autowired
@@ -35,9 +36,10 @@ public class SendWeChatTemplateMsgController {
 
 	TemplateMessageUtils templateMessageUtils = new TemplateMessageUtils();
 	
-	Logger logger = Logger.getLogger(SendWeChatTemplateMsgController.class);
+	static Logger logger = Logger.getLogger(SendWeChatTemplateMsgController.class);
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
+	
 	@RequestMapping("/sendMTemplateMsg")
 	public void checkUserExist(String userid,String touserid,String content,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		logger.debug("模版消息接口被调用时返回的数据：userid="+userid+" touserid="+touserid+" content"+content);
