@@ -42,9 +42,19 @@ public class SendWeChatTemplateMsgController {
 	
 	@RequestMapping("/sendMTemplateMsg")
 	public void checkUserExist(/*String userid,String touserid,String content,*/HttpServletRequest request,HttpServletResponse response) throws IOException{
-		String userid=request.getParameter("userid");
-		String touserid=request.getParameter("touserid");
-		String content=request.getParameter("content");
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+		StringBuilder stringBuilder = new StringBuilder();
+		String line = null;
+		while((line=bufferedReader.readLine())!=null){
+		    stringBuilder.append(line);
+		}
+		String body = stringBuilder.toString();
+		logger.debug("模版消息接口被调用时返回的数据包：body="+body);
+		
+		JSONObject bodyObject=new JSONObject(body);
+		String userid=bodyObject.getString("userid");
+		String touserid=bodyObject.getString("touserid");
+		String content=bodyObject.getString("content");
 		
 		logger.debug("模版消息接口被调用时返回的数据：userid="+userid+" touserid="+touserid+" content"+content);
 		
