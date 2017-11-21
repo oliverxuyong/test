@@ -59,12 +59,13 @@ public class SendWeChatTemplateMsgController {
 		logger.debug("模版消息接口被调用时返回的数据：userid="+userid+" touserid="+touserid+" content"+content);
 		
 		SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
+		User touser=userService.findUser(Long.valueOf(touserid));
+		String toopenid=touser.getOpenid();
 		User user=userService.findUser(Long.valueOf(userid));
-		String openid=user.getOpenid();
 		String username=user.getName();
-		logger.debug("模版消息接口被调用时获取的openid和username：openid="+openid+" username="+username);
+		logger.debug("模版消息接口被调用时获取的openid和username：toopenid="+toopenid+" username="+username);
 		//获得两人共同选择的标签，最多显示三个
-		String sameSelectTags=sendPost("http://xunta.so:3000/v1/find/users/same/tags/", "my_user_id="+userid+"matched_user_id"+touserid);
+		/*String sameSelectTags=sendPost("http://xunta.so:3000/v1/find/users/same/tags/", "my_user_id="+userid+"matched_user_id"+touserid);
 		logger.debug("发送模版消息时共同选择的标签："+sameSelectTags);
 		String sameSelectTagList="";//模版消息中不能超过显示三个标签
 		JSONObject sameSelectTagJsonObject=new JSONObject(sameSelectTags);
@@ -77,13 +78,13 @@ public class SendWeChatTemplateMsgController {
 				sameSelectTagList=sameSelectTagList+"...";
 			}
 		}
-		logger.debug("模版消息显示的共同选择的标签："+sameSelectTagList);
+		logger.debug("模版消息显示的共同选择的标签："+sameSelectTagList);*/
 		String result=templateMessageUtils.sendWechatmsgToUser(
-				openid, 
+				toopenid, 
 				"jNHGVWH1ByKjMLFmSIQO5zLFtrdBeJhH-jayd3MyVU8", 
 				"http://www.xunta.so",
 				"#FF0000",
-				username+"["+sameSelectTagList+"]",
+				username/*+"["+sameSelectTagList+"]"*/,
 				"给你发了一条消息", 
 				df.format(new Date()),
 				content);
@@ -137,7 +138,7 @@ public class SendWeChatTemplateMsgController {
             // 打开和URL之间的连接
             URLConnection conn = realUrl.openConnection();
             // 设置通用的请求属性
-            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("accept", "*");
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("user-agent",
                     "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
