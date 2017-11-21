@@ -1728,7 +1728,7 @@ function getMuChangeData(matchedUserArr){
 					}*/
 					var muDiv=$("#mu"+muChangeData[muNowPositionNewNotExist].userid);//这是需要去除的匹配人
 					//muDiv.remove();
-					animateForSize(muDiv, 0, aniSecond * 0.4);
+					//animateForSize(muDiv, 0, aniSecond * 0.4);
 					muAddImg(i,matchedUserArr,false);
 
 					// 5.所有位置移动之后mpNowData数组的位置也要更新
@@ -2289,6 +2289,7 @@ function animateForMu(muDiv, muLeft,muTop, second) {// 移动的物体，移动�
 
 // 匹配人头像缩小或者放大
 function animateForSize(muDiv, muSize, second) {// 移动的物体，变化的大小，移动的时间
+	//console.log("测试："+muSize);
 	muDiv.css("width",muSize);
 	muDiv.css("height",muSize);
 	var imgWidth=(parseInt(muSize)-10)+"px";

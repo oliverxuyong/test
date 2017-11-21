@@ -58,6 +58,6 @@ function excludeSpecial(str){
 	 // 去掉转义字符  
     str = str.replace(/[\'\"\\\/\b\f\n\r\t]/g, '');  
     // 去掉特殊字符  
-    str = str.replace(/[\@\#\$\%\^\&\*\{\}\:\"\L\<\>\?]/);  
+    str = str.replace(/[\@\#\$\%\^\&\*\{\}\:\"\<\>\?]/,'');  
     return str;  
 }
