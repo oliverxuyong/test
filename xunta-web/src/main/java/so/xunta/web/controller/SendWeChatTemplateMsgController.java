@@ -8,10 +8,7 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -85,7 +82,7 @@ public class SendWeChatTemplateMsgController {
 	
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
 			throws IOException {
-		System.out.println("执行responseBack...");
+		logger.debug("执行responseBack...");
 		boolean jsonP = false;
 		String cb = request.getParameter("callback");
 		if (cb != null) {
@@ -102,7 +99,7 @@ public class SendWeChatTemplateMsgController {
 		
 		if (jsonP) {
 		    out.write(");");
-		    System.out.println("返回成功。。。");
+		    logger.debug("返回成功。。。");
 		}
 	}
 	
@@ -145,8 +142,8 @@ public class SendWeChatTemplateMsgController {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println("发送 POST 请求出现异常！"+e);
-            e.printStackTrace();
+        	logger.error("发送 POST 请求出现异常！"+e);
+            //e.printStackTrace();
         }
         //使用finally块来关闭输出流、输入流
         finally{
