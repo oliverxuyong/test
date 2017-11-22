@@ -255,7 +255,7 @@ function makeDialogListTop(toUserName,toUserImg,respondeUserId){
 	if(oneDialogDiv.length<=0){//判断聊天列表中是否有这个人的存在，如果不存在则将它加上且置顶
 		copyOneDialogDiv=$(".dialog").eq(0).clone();
 		copyOneDialogDiv.attr("id",respondeUserId);
-		copyOneDialogDiv.find(".img").attr("src",toUserImg);
+		copyOneDialogDiv.find("img").attr("src",toUserImg);
 		copyOneDialogDiv.find(".dialog_content_name").text(toUserName);
 		copyOneDialogDiv.find('.unread').remove();
 	}else{

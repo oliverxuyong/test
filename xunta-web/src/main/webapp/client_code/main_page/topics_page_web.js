@@ -1664,7 +1664,25 @@ function getMuChangeData(matchedUserArr){
 		var muserid = matchedUserArr[i].userid;// 这是匹配人id
 
 		var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
-		// var muUserName=matchedUserArr[i].username;
+		var muUserName=matchedUserArr[i].username;
+		
+		//2017.11.22 叶夷  存储所有匹配人的信息,因为自己发送的消息后台没有返回接收着的name,imgurl，所以为了实现聊天列表置顶，用一个数组将匹配人的信息存储，然后在这里可以查找到
+		if(allMatchUserList.length>0){
+			for(var user in allMatchUserList){
+				var isInallMatchUserList=false;
+				if(allMatchUserList[user].userid==muserid){
+					isInallMatchUserList=true;
+					break;
+				}
+			}
+			if(!isInallMatchUserList){
+				allMatchUserList.push(muPosition(muserid,null, null, null,muserimg,muUserName));
+			}
+		}else{
+			allMatchUserList.push(muPosition(muserid,null, null, null,muserimg,muUserName));
+		}
+		
+		
 		//这里是判断一开始的时候匹配用户没有满的情况
 		if(i>muChangeData.length-1){
 			setMUPosition(i,matchedUserArr);
