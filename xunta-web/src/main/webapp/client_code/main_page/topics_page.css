@@ -48,8 +48,9 @@
 #showonlineoffline>img{
 	height: 100%; 
 	//width:7%;
-	position:relative;
-	top:-80%
+	position:absolute;
+	top:0px;
+	left:0px;
 }
 
 #showouseroprate{
