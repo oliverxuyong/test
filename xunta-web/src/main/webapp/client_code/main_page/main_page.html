@@ -317,6 +317,8 @@
         };
         
         function sendmsg(toUserId,inputValue,handler){
+        	console.log("发送消息 - toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
+        	log2root("发送消息- toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
         	chat.sendPrivateMsg(toUserId,inputValue,handler);
         }
 		
