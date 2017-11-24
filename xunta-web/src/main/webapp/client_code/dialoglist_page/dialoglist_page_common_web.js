@@ -271,3 +271,13 @@ function makeDialogListTop(toUserName,toUserImg,respondeUserId){
 	
 	return copyOneDialogDiv;
 }
+
+/**start:叶夷  2017年3月20日
+ * dialoglist_page中的username也必须修改
+ */
+function updateNickname(newNickname){
+	userName = newNickname;
+}
+/**
+ * end:叶夷
+ */

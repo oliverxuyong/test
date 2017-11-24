@@ -43,7 +43,7 @@
 							<img src="../image/dot-gray.png" onclick="wsConnect()" />
 						</div>
 						<img onclick="updUserImg()" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
-						<div id="username"></div>
+						<div id="username" onclick="alterNickname()"></div>
 					
 					</div>
 					
@@ -398,12 +398,15 @@
 			setMyTagContainerCSS();//根据.mytag高度决定container有容纳三行的高度.
 			setAddMyTagCSS(); //根据samplemytag设置加钮的大小.
 			setTagContainerHeight();
+			//log2root("小绿点位置调整方法开始执行");
 			setGreenDotPosition(); 
+			//log2root("小绿点位置调整方法执行结束");
 		}
 		
 		//让小绿点刚好骑在头像的肩头上.头像的上边缘刚好在绿点的上下中线位置.
 		function setGreenDotPosition(){
 			var heightGreenDot = $("#showonlineoffline");
+			//log2root("小绿点位置调整方法执行中，top="+(-heightGreenDot.height()/1.8));
 			heightGreenDot.css("top",-heightGreenDot.height()/1.8+"px");
 		}
 

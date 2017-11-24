@@ -11,16 +11,16 @@
 }*/
 
 /*start:叶夷      2017年3月20日
- *  修改昵称已经在home_page页面，所以exec页面参数修改，home_page的winName为userid
+ *  判断是否修改名称
  * */
 function modifyNickname(jsonObj) {
 	if (jsonObj.status == '0') {//昵称修改成功
-		changeAllNickNames(jsonObj.new_name);//在index_page.js里.
-		exec(""+userId,"toast('昵称在服务器上修改成功.')");
+		changeAllNickNames(jsonObj.new_name);//在main_page.js里.
+		exec("main_page","toast('昵称在服务器上修改成功.')");
 	} else if (jsonObj.status == '1') {//昵称出现重复
-		exec(""+userId,"toast('该昵称已存在,请修改后再提交.')");
+		exec("main_page","toast('该昵称已存在,请修改后再提交.')");
 	} else if (jsonObj.status == '2') {//服务器保存时出错
-		exec(""+userId,"toast('昵称在服务器上的修改过程出现异常，请重试或向开发者求助.')");
+		exec("main_page","toast('昵称在服务器上的修改过程出现异常，请重试或向开发者求助.')");
 	}
 }
 /*end：叶夷*/

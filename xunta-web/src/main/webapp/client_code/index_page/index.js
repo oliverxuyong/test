@@ -119,10 +119,8 @@ function changeAllNickNames(newNickname) {
 	}//这个循环是修改聊天页的昵称.
 	//exec("topics_page", scriptStr);//单独修改列表页昵称.
 	/**start:叶夷  2017年3月20日
-	 * 修改我的主页昵称,home_page的winName为userid
-	 * 修改topics_page中的username
+	 * 修改main_page中的username
 	 */
-	exec(""+userId, scriptStr);
 	exec("main_page", scriptStr);
 	/**
 	 * end: 叶夷

@@ -2815,3 +2815,41 @@ function clacImgZoomParam(maxWidth, maxHeight, width, height) {
 function beforeSendHandler() {
 	console.log("beforesend");
 }
+
+/*start：叶夷     2017年11月22日
+ * 修改昵称的代码
+ */
+function alterNickname() {
+	api.prompt({
+		buttons : ['确定', '取消'],
+		title : '请输入新昵称:',
+		text : userName
+	}, function(ret, err) {
+		if (ret.buttonIndex == 1) {
+			/**start:叶夷  2017年3月22日
+			 * 		在修改昵称的时候增加去除特殊字符的方法
+			 */
+			var newNickname = excludeSpecial(ret.text);
+			/*
+			 * end:叶夷
+			 */
+			userName = newNickname;
+            var pageParam = {
+                "uid" : userId,
+                "newNickname" : userName
+            };
+            execRoot("requestAlterNickname("+JSON.stringify(pageParam)+")");
+		}
+	});
+}
+/*end:叶夷*/
+/**start:叶夷  2017年3月20日
+ * main_page中的username也必须修改
+ */
+function updateNickname(newNickname){
+	$("#username").text(newNickname);
+	userName = newNickname;
+}
+/**
+ * end:叶夷
+ */
