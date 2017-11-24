@@ -17,6 +17,7 @@
     left: 0;
     right: 0;
     //zoom:85%;
+    cursor:pointer;
 }
 
 #userimg {
