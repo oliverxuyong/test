@@ -267,6 +267,16 @@ function sendClickAddTagMsg(){
 		WS_Send(json_obj);
 	}
 }
+//2017.11.23 叶夷 请求服务器更改昵称
+function requestAlterNickname(userinfo) {
+    var userinfoJSON = userinfo;
+	var json_obj = {
+		_interface : "update_nickname",
+		uid : userinfoJSON.uid,
+		new_name : userinfoJSON.newNickname
+	};
+	WS_Send(json_obj);
+}
 
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
@@ -422,6 +432,11 @@ function checkMessageInterface(evnt) {
 	if(jsonObj._interface == '1109-2'){
 		console.log("返回自己选择的标签:"+JSON.stringify(jsonObj.cp_arr));
 		exec("main_page","response_user_selected_cp("+evnt.data+")");
+	}
+	
+	//2017.11.23 叶夷 更改昵称
+	if (jsonObj._interface == 'update_nickname') {
+		modifyNickname(jsonObj);
 	}
 }
 

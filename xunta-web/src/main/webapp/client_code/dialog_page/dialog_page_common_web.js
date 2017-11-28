@@ -201,3 +201,13 @@ function appendSameSelectCp(cpid,text){
 	$("#dialog_box").css("height",dialogBoxHeight);
 	//log2root("测试4:"+document.body.clientHeight+" "+selectCpContainerHeight+" "+dialogBoxHeight);
 }*/
+
+/**start:叶夷  2017年3月20日
+ * dialog_page中的username也必须修改
+ */
+function updateNickname(newNickname){
+	userName = newNickname;
+}
+/**
+ * end:叶夷
+ */

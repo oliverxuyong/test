@@ -43,7 +43,7 @@
 							<img src="../image/dot-gray.png" onclick="wsConnect()" />
 						</div>
 						<img onclick="updUserImg()" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
-						<div id="username"></div>
+						<div id="username" onclick="alterNickname()"></div>
 					
 					</div>
 					
@@ -225,6 +225,8 @@
 			
 		}
 		
+		//2017.11.22 叶夷  存储所有匹配人的信息
+		var allMatchUserList=new Array();
 		
 		//发送消息之后服务器返回的消息
         function recevier(obj) {
@@ -254,9 +256,19 @@
         			var str = "judgeSelfPosterReturnOrOthers('" + window_id + "','" + msgId + "','" + postTimeLong +"','" +postTimeStr +"')";
         		    execRoot(str);
         		    
+        		    //2017.11.22 叶夷 因为自己发送的消息后台没有返回接收着的name,imgurl，所以为了实现聊天列表置顶，用一个数组将匹配人的信息存储，然后在这里可以查找到
+        		    var toUserName,toImgUrl;
+        		    for(var user in allMatchUserList){
+        				if(allMatchUserList[user].userid==window_id){
+        					toUserName=allMatchUserList[user].username;
+        					toImgUrl=allMatchUserList[user].img_src;
+        					break;
+        				}
+        			}
+        		    
         		    if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过,实现置顶
-        		    	exec("dialoglist_page", "updateDialogContentAndTime('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
-            			exec("dialoglist_page", "makeDialogListTop('" + user+"','"+imgUrl+"','"+window_id +"')");
+        		    	exec("dialoglist_page", "updateDialogContentAndTime('"+toUserName+"','"+toImgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
+            			exec("dialoglist_page", "makeDialogListTop('" + toUserName+"','"+toImgUrl+"','"+window_id +"')");
             		}
             	} else { 
             		myOrOther="other";
@@ -305,6 +317,8 @@
         };
         
         function sendmsg(toUserId,inputValue,handler){
+        	console.log("发送消息 - toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
+        	log2root("发送消息- toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
         	chat.sendPrivateMsg(toUserId,inputValue,handler);
         }
 		
@@ -386,12 +400,15 @@
 			setMyTagContainerCSS();//根据.mytag高度决定container有容纳三行的高度.
 			setAddMyTagCSS(); //根据samplemytag设置加钮的大小.
 			setTagContainerHeight();
+			//log2root("小绿点位置调整方法开始执行");
 			setGreenDotPosition(); 
+			//log2root("小绿点位置调整方法执行结束");
 		}
 		
 		//让小绿点刚好骑在头像的肩头上.头像的上边缘刚好在绿点的上下中线位置.
 		function setGreenDotPosition(){
 			var heightGreenDot = $("#showonlineoffline");
+			//log2root("小绿点位置调整方法执行中，top="+(-heightGreenDot.height()/1.8));
 			heightGreenDot.css("top",-heightGreenDot.height()/1.8+"px");
 		}
 

@@ -1664,7 +1664,25 @@ function getMuChangeData(matchedUserArr){
 		var muserid = matchedUserArr[i].userid;// 这是匹配人id
 
 		var muserimg = matchedUserArr[i].img_src;// 这是匹配人头像
-		// var muUserName=matchedUserArr[i].username;
+		var muUserName=matchedUserArr[i].username;
+		
+		//2017.11.22 叶夷  存储所有匹配人的信息,因为自己发送的消息后台没有返回接收着的name,imgurl，所以为了实现聊天列表置顶，用一个数组将匹配人的信息存储，然后在这里可以查找到
+		if(allMatchUserList.length>0){
+			for(var user in allMatchUserList){
+				var isInallMatchUserList=false;
+				if(allMatchUserList[user].userid==muserid){
+					isInallMatchUserList=true;
+					break;
+				}
+			}
+			if(!isInallMatchUserList){
+				allMatchUserList.push(muPosition(muserid,null, null, null,muserimg,muUserName));
+			}
+		}else{
+			allMatchUserList.push(muPosition(muserid,null, null, null,muserimg,muUserName));
+		}
+		
+		
 		//这里是判断一开始的时候匹配用户没有满的情况
 		if(i>muChangeData.length-1){
 			setMUPosition(i,matchedUserArr);
@@ -1728,7 +1746,7 @@ function getMuChangeData(matchedUserArr){
 					}*/
 					var muDiv=$("#mu"+muChangeData[muNowPositionNewNotExist].userid);//这是需要去除的匹配人
 					//muDiv.remove();
-					animateForSize(muDiv, 0, aniSecond * 0.4);
+					//animateForSize(muDiv, 0, aniSecond * 0.4);
 					muAddImg(i,matchedUserArr,false);
 
 					// 5.所有位置移动之后mpNowData数组的位置也要更新
@@ -2289,6 +2307,7 @@ function animateForMu(muDiv, muLeft,muTop, second) {// 移动的物体，移动�
 
 // 匹配人头像缩小或者放大
 function animateForSize(muDiv, muSize, second) {// 移动的物体，变化的大小，移动的时间
+	//console.log("测试："+muSize);
 	muDiv.css("width",muSize);
 	muDiv.css("height",muSize);
 	var imgWidth=(parseInt(muSize)-10)+"px";
@@ -2796,3 +2815,41 @@ function clacImgZoomParam(maxWidth, maxHeight, width, height) {
 function beforeSendHandler() {
 	console.log("beforesend");
 }
+
+/*start：叶夷     2017年11月22日
+ * 修改昵称的代码
+ */
+function alterNickname() {
+	api.prompt({
+		buttons : ['确定', '取消'],
+		title : '请输入新昵称:',
+		text : userName
+	}, function(ret, err) {
+		if (ret.buttonIndex == 1) {
+			/**start:叶夷  2017年3月22日
+			 * 		在修改昵称的时候增加去除特殊字符的方法
+			 */
+			var newNickname = excludeSpecial(ret.text);
+			/*
+			 * end:叶夷
+			 */
+			userName = newNickname;
+            var pageParam = {
+                "uid" : userId,
+                "newNickname" : userName
+            };
+            execRoot("requestAlterNickname("+JSON.stringify(pageParam)+")");
+		}
+	});
+}
+/*end:叶夷*/
+/**start:叶夷  2017年3月20日
+ * main_page中的username也必须修改
+ */
+function updateNickname(newNickname){
+	$("#username").text(newNickname);
+	userName = newNickname;
+}
+/**
+ * end:叶夷
+ */

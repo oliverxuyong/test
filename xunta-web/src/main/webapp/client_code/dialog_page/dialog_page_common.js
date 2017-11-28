@@ -16,7 +16,7 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
 	
 	inputValue = specialLettersCoding(inputValue); 
 	console.log("afterinput - inputValue:"+inputValue);
-	
+	log2root("afterinput - inputValue:"+inputValue);
     //chat.sendMsg(inputValue);//发送消息
 	//chat.sendMsgToAll(inputValue);//发送消息给全部的人
 	//chat.sendPrivateMsg(toUserId,inputValue);
@@ -30,6 +30,7 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
     document.getElementById("inputbox").value="";
 	
 	console.log(' ExistedTopic 刚刚的发言已发往服务器:' + inputValue);
+	log2root(' ExistedTopic 刚刚的发言已发往服务器:' + inputValue);
 }
 
 function afterCheckedSendPosterSuccess(tmpPid, SendPosterSuccess) {//一般发言,新创话题,移动新建的延时检查处理都用这个方法.
