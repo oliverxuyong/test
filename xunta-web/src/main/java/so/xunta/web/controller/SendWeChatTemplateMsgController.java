@@ -78,10 +78,10 @@ public class SendWeChatTemplateMsgController {
 			}
 		}
 		logger.debug("模版消息显示的共同选择的标签："+sameSelectTagList);*/
-		String templateid=getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_templateid");
-		String templateurl=getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_templateurl");
-		String appid=getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appid");
-		String appsecret=getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appsecret");
+		String templateid=getPropertiseDataUtils.getPropertiseData("xunta-web/src/main/resources/wechat.properties", "xunta_templateid");
+		String templateurl=getPropertiseDataUtils.getPropertiseData("xunta-web/src/main/resources/wechat.properties", "xunta_templateurl");
+		String appid=getPropertiseDataUtils.getPropertiseData("xunta-web/src/main/resources/wechat.properties", "xunta_appid");
+		String appsecret=getPropertiseDataUtils.getPropertiseData("xunta-web/src/main/resources/wechat.properties", "xunta_appsecret");
 		
 		String result=templateMessageUtils.sendWechatmsgToUser(
 				toopenid, 

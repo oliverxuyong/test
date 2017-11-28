@@ -214,8 +214,8 @@ public class LoginController {
 		response.setContentType("text/html; charset=utf-8");
 		String code = request.getParameter("code");
 		logger.debug("code:" + code);
-		String appid = getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appid");
-		String secret = getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appsecret");
+		String appid = getPropertiseDataUtils.getPropertiseData("xunta-web/src/main/resources/wechat.properties", "xunta_appid");
+		String secret = getPropertiseDataUtils.getPropertiseData("xunta-web/src/main/resources/wechat.properties", "xunta_appsecret");
 		String codeToToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + secret
 				+ "&code=" + code + "&grant_type=authorization_code";
 		String weiXinInfo = httpclientReq(codeToToken);
@@ -583,8 +583,8 @@ public class LoginController {
 		WeChatShareLinksUtils weChatShareLinksUtils=new WeChatShareLinksUtils();
 		JSONObject ret=weChatShareLinksUtils.makeWXTicket(
 				url,
-				getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appid"),
-				getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appsecret"));
+				getPropertiseDataUtils.getPropertiseData("xunta-web/src/main/resources/wechat.properties", "xunta_appid"),
+				getPropertiseDataUtils.getPropertiseData("xunta-web/src/main/resources/wechat.properties", "xunta_appsecret"));
 		try {
 			logger.debug("执行sendWeChatShareLinkMsg...");
 			response.setCharacterEncoding("utf-8");

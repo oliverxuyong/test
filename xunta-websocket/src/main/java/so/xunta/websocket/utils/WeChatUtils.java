@@ -29,7 +29,7 @@ public class WeChatUtils {
     @SuppressWarnings("null")
 	public String getToken(String appid, String appsecret) {
         Token token = null;
-        String requestUrl = getPropertiseDataUtils.getPropertiseData("wechat.properties", "token_url").replace("APPID", appid).replace("APPSECRET", appsecret);
+        String requestUrl = getPropertiseDataUtils.getPropertiseData("xunta-web/src/main/resources/wechat.properties", "token_url").replace("APPID", appid).replace("APPSECRET", appsecret);
         // 发起GET请求获取凭证
         String jsonStr=httpsRequest(requestUrl, "GET", null);
         
