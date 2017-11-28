@@ -3,17 +3,14 @@ package so.xunta.web.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.Writer;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +20,7 @@ import so.xunta.beans.User;
 import so.xunta.server.LoggerService;
 import so.xunta.server.UserService;
 import so.xunta.utils.IdWorker;
+import so.xunta.websocket.utils.GetPropertiseDataUtils;
 import so.xunta.websocket.utils.TemplateMessageUtils;
 
 
@@ -35,6 +33,7 @@ public class SendWeChatTemplateMsgController {
 	private UserService userService;
 
 	TemplateMessageUtils templateMessageUtils = new TemplateMessageUtils();
+	GetPropertiseDataUtils getPropertiseDataUtils=new GetPropertiseDataUtils();
 	
 	static Logger logger = Logger.getLogger(SendWeChatTemplateMsgController.class);
 
@@ -79,15 +78,22 @@ public class SendWeChatTemplateMsgController {
 			}
 		}
 		logger.debug("模版消息显示的共同选择的标签："+sameSelectTagList);*/
+		String templateid=getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_templateid");
+		String templateurl=getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_templateurl");
+		String appid=getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appid");
+		String appsecret=getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appsecret");
+		
 		String result=templateMessageUtils.sendWechatmsgToUser(
 				toopenid, 
-				"jNHGVWH1ByKjMLFmSIQO5zLFtrdBeJhH-jayd3MyVU8", 
-				"http://www.xunta.so",
+				templateid, 
+				templateurl,
 				"#FF0000",
 				username/*+"["+sameSelectTagList+"]"*/,
 				"给你发了一条消息", 
 				df.format(new Date()),
-				content);
+				content,
+				appid,
+				appsecret);
 		JSONObject obj = new JSONObject();
 		if(result.equals("success")){
 			obj.put("isSuccess",true);
@@ -129,7 +135,7 @@ public class SendWeChatTemplateMsgController {
      *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
      * @return 所代表远程资源的响应结果
      */
-    private String sendPost(String url, String param) {
+    /*private String sendPost(String url, String param) {
         PrintWriter out = null;
         BufferedReader in = null;
         String result = "";
@@ -177,5 +183,5 @@ public class SendWeChatTemplateMsgController {
             }
         }
         return result;
-    }    
+    }    */
 }
