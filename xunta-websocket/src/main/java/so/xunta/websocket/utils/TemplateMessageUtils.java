@@ -10,7 +10,7 @@ import org.json.JSONObject;
  */
 public class TemplateMessageUtils {
 	
-	private Logger logger = Logger.getRootLogger();
+	private Logger logger = Logger.getLogger(TemplateMessageUtils.class);
 	private WeChatUtils wsGetAccessToken=new WeChatUtils();
     /**
 

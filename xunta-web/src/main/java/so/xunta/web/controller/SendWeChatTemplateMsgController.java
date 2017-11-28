@@ -87,7 +87,7 @@ public class SendWeChatTemplateMsgController {
 			}
 		}
 		logger.debug("模版消息显示的共同选择的标签："+sameSelectTagList);*/
-		
+		logger.debug("xunta_templateid="+xunta_templateid+" xunta_templateurl="+xunta_templateurl+" xunta_appid="+xunta_appid+" xunta_appsecret="+xunta_appsecret);
 		String result=templateMessageUtils.sendWechatmsgToUser(
 				toopenid, 
 				xunta_templateid, 

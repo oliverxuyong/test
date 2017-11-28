@@ -31,6 +31,7 @@ public class WeChatUtils {
     @SuppressWarnings("null")
 	public String getToken(String appid, String appsecret) {
         Token token = null;
+        logger.debug("token_url: "+token_url);
         String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
         // 发起GET请求获取凭证
         String jsonStr=httpsRequest(requestUrl, "GET", null);
