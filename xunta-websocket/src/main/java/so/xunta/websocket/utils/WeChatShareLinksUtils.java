@@ -16,13 +16,13 @@ public class WeChatShareLinksUtils {
 	private final String apiTicketUrl= "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
 	private WeChatUtils wsGetAccessToken=new WeChatUtils();
 	
-	public JSONObject makeWXTicket(String url) {
+	public JSONObject makeWXTicket(String url,String appid, String appsecret) {
 		JSONObject ret = new JSONObject();
 		String nonceStr = createNonceStr();
 		String timestamp = createTimestamp();
 		String string1;
 		String signature = "";
-		String jsApiTicket=getJsApiTicket();
+		String jsApiTicket=getJsApiTicket(appid, appsecret);
 
 		// 注意这里参数名必须全部小写，且必须有序
 		string1 = "jsapi_ticket=" + jsApiTicket + "&noncestr=" + nonceStr + "&timestamp=" + timestamp + "&url=" + url;
@@ -53,8 +53,8 @@ public class WeChatShareLinksUtils {
 	}
 	
 	//获取ticket
-	private String getJsApiTicket() {
-	   String accessToken = wsGetAccessToken.getToken("wxdac88d71df6be268", "753b50cf29b6b08e733e357cc0ed348c");  //微信凭证，access_token
+	private String getJsApiTicket(String appid, String appsecret) {
+	   String accessToken = wsGetAccessToken.getToken(appid, appsecret);  //微信凭证，access_token
 	   String requestUrl = apiTicketUrl.replace("ACCESS_TOKEN", accessToken);
 	   // 发起GET请求获取凭证
 	   String jsonStr=wsGetAccessToken.httpsRequest(requestUrl, "GET", null);

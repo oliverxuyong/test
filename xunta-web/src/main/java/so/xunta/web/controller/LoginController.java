@@ -30,6 +30,7 @@ import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
 import so.xunta.utils.IdWorker;
 import so.xunta.websocket.config.Constants;
+import so.xunta.websocket.utils.GetPropertiseDataUtils;
 import so.xunta.websocket.utils.WeChatShareLinksUtils;
 import weibo4j.Account;
 import weibo4j.Users;
@@ -54,6 +55,8 @@ public class LoginController {
 	static Logger logger = Logger.getRootLogger();
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
+	
+	GetPropertiseDataUtils getPropertiseDataUtils=new GetPropertiseDataUtils();
 
 	// 登录验证
 	public boolean checkLogin() {
@@ -211,8 +214,8 @@ public class LoginController {
 		response.setContentType("text/html; charset=utf-8");
 		String code = request.getParameter("code");
 		logger.debug("code:" + code);
-		String appid = "wxdac88d71df6be268";
-		String secret = "753b50cf29b6b08e733e357cc0ed348c";
+		String appid = getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appid");
+		String secret = getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appsecret");
 		String codeToToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + secret
 				+ "&code=" + code + "&grant_type=authorization_code";
 		String weiXinInfo = httpclientReq(codeToToken);
@@ -578,7 +581,10 @@ public class LoginController {
 		String url = request.getParameter("url");
 		
 		WeChatShareLinksUtils weChatShareLinksUtils=new WeChatShareLinksUtils();
-		JSONObject ret=weChatShareLinksUtils.makeWXTicket(url);
+		JSONObject ret=weChatShareLinksUtils.makeWXTicket(
+				url,
+				getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appid"),
+				getPropertiseDataUtils.getPropertiseData("wechat.properties", "xunta_appsecret"));
 		try {
 			logger.debug("执行sendWeChatShareLinkMsg...");
 			response.setCharacterEncoding("utf-8");
