@@ -1,7 +1,9 @@
 
-body{position:relative}
+body{position:relative;
+	background:url('../image/dialoglist-background1.jpg') 100% 100% no-repeat;
+	background-size:100% 100%;}
 
-#header {float:left;
+#header {/* float:left; */
 	width:100%; height: 32px; background:url('../image/titbg.gif') center top repeat-x;background-size:8px;
 	border-bottom:1px solid #d0d0d0; z-index:12;}
 
@@ -30,3 +32,56 @@ body{position:relative}
 	height:25px;
 	line-height:25px;
 }
+
+/**start:叶夷  2017.11.28 tab来回切换需要的css样式*/
+ul,li{
+	list-style: none
+}
+    
+.tabClick{ 
+	background: #f3f3f3; 
+	overflow: hidden;
+	width:100%;
+}
+   
+.tabClick li{ 
+	height:40px; 
+	line-height: 40px; 
+	width: 50%; 
+	float: left; 
+	text-align: center;
+	cursor:pointer;
+}
+    
+.tabClick li.active{ 
+	color: #099; 
+	transition: 0.1s; 
+	font-weight: bold
+}
+   
+.tabCon{ 
+	overflow: hidden
+}
+    
+.tabBox{ 
+	position: relative
+}
+   
+.tabList{
+	word-break: break-all; 
+	width:100%;
+	height:100%;
+	float:left; 
+	line-height:100%; 
+	text-align:center; 
+	color:#D3D3D3; 
+	font-size:36px; 
+	font-family: "Arial Black"
+}
+ul{
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0em;
+    -webkit-padding-start: 0px;
+}
+/**end:叶夷  2017.11.28*/
+
