@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -30,7 +31,6 @@ import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
 import so.xunta.utils.IdWorker;
 import so.xunta.websocket.config.Constants;
-import so.xunta.websocket.utils.GetPropertiseDataUtils;
 import so.xunta.websocket.utils.WeChatShareLinksUtils;
 import weibo4j.Account;
 import weibo4j.Users;
@@ -56,8 +56,12 @@ public class LoginController {
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 	
-	GetPropertiseDataUtils getPropertiseDataUtils=new GetPropertiseDataUtils();
 
+	@Value("${xunta_appid}")
+	private String xunta_appid;
+	@Value("${xunta_appsecret}")
+	private String xunta_appsecret;
+	
 	// 登录验证
 	public boolean checkLogin() {
 		return false;
@@ -214,8 +218,8 @@ public class LoginController {
 		response.setContentType("text/html; charset=utf-8");
 		String code = request.getParameter("code");
 		logger.debug("code:" + code);
-		String appid = getPropertiseDataUtils.getPropertiseData("../resources/wechat.properties", "xunta_appid");
-		String secret = getPropertiseDataUtils.getPropertiseData("../resources/wechat.properties", "xunta_appsecret");
+		String appid = xunta_appid;
+		String secret = xunta_appsecret;
 		String codeToToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + secret
 				+ "&code=" + code + "&grant_type=authorization_code";
 		String weiXinInfo = httpclientReq(codeToToken);
@@ -583,8 +587,8 @@ public class LoginController {
 		WeChatShareLinksUtils weChatShareLinksUtils=new WeChatShareLinksUtils();
 		JSONObject ret=weChatShareLinksUtils.makeWXTicket(
 				url,
-				getPropertiseDataUtils.getPropertiseData("../resources/wechat.properties", "xunta_appid"),
-				getPropertiseDataUtils.getPropertiseData("../resources/wechat.properties", "xunta_appsecret"));
+				xunta_appid,
+				xunta_appsecret);
 		try {
 			logger.debug("执行sendWeChatShareLinkMsg...");
 			response.setCharacterEncoding("utf-8");

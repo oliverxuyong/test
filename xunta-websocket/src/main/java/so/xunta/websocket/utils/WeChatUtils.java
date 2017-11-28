@@ -12,12 +12,14 @@ import javax.net.ssl.HttpsURLConnection;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 
 import so.xunta.beans.Token;
 
 public class WeChatUtils {
 	private Logger logger = Logger.getRootLogger();
-	GetPropertiseDataUtils getPropertiseDataUtils=new GetPropertiseDataUtils();
+	@Value("${token_url}")
+	private String token_url;
 	//private final String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	/**
      * 获取接口访问凭证
@@ -29,7 +31,7 @@ public class WeChatUtils {
     @SuppressWarnings("null")
 	public String getToken(String appid, String appsecret) {
         Token token = null;
-        String requestUrl = getPropertiseDataUtils.getPropertiseData("../resources/wechat.properties", "token_url").replace("APPID", appid).replace("APPSECRET", appsecret);
+        String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
         // 发起GET请求获取凭证
         String jsonStr=httpsRequest(requestUrl, "GET", null);
         
