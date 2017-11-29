@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import so.xunta.beans.User;
 import so.xunta.server.LoggerService;
 import so.xunta.server.UserService;
+import so.xunta.server.WeChatService;
 import so.xunta.utils.IdWorker;
-import so.xunta.websocket.utils.TemplateMessageUtils;
 
 
 @Controller
@@ -31,8 +31,8 @@ public class SendWeChatTemplateMsgController {
 	LoggerService loggerService;
 	@Autowired
 	private UserService userService;
-
-	TemplateMessageUtils templateMessageUtils = new TemplateMessageUtils();
+	@Autowired
+	private WeChatService weChatService;
 	
 	static Logger logger = Logger.getLogger(SendWeChatTemplateMsgController.class);
 
@@ -113,7 +113,7 @@ public class SendWeChatTemplateMsgController {
 		}
 		
 		logger.debug("templateid="+templateid+" templateurl="+templateurl+" appid="+appid+" appsecret="+appsecret);
-		String result=templateMessageUtils.sendWechatmsgToUser(
+		String result=weChatService.sendWechatmsgToUser(
 				toopenid, 
 				templateid, 
 				templateurl,

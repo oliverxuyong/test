@@ -29,9 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import so.xunta.beans.User;
 import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
+import so.xunta.server.WeChatService;
 import so.xunta.utils.IdWorker;
 import so.xunta.websocket.config.Constants;
-import so.xunta.websocket.utils.WeChatShareLinksUtils;
 import weibo4j.Account;
 import weibo4j.Users;
 import weibo4j.model.WeiboException;
@@ -51,6 +51,9 @@ public class LoginController {
 
 	@Autowired
 	LoggerService loggerService;
+	
+	@Autowired
+	private WeChatService weChatService;
 
 	static Logger logger = Logger.getRootLogger();
 
@@ -614,8 +617,7 @@ public class LoginController {
 			secret= xunta_appsecret;
 		}
 		
-		WeChatShareLinksUtils weChatShareLinksUtils=new WeChatShareLinksUtils();
-		JSONObject ret=weChatShareLinksUtils.makeWXTicket(
+		JSONObject ret=weChatService.makeWXTicket(
 				url,
 				appid,
 				secret);

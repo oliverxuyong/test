@@ -2,10 +2,21 @@ package so.xunta.beans;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * 凭证实体类
  */
+@Entity
+@Table(name="tbl_token")
 public class Token {
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Long id;
 	//微信公众号的id
 	private String appid;
 	// 接口访问凭证
