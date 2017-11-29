@@ -62,6 +62,13 @@ public class LoginController {
 	@Value("${xunta_appsecret}")
 	private String xunta_appsecret;
 	
+	@Value("${aini_appid}")
+	private String aini_appid;
+	@Value("${aini_appsecret}")
+	private String aini_appsecret;
+	@Value("${aini_templateurl}")
+	private String aini_templateurl;
+	
 	// 登录验证
 	public boolean checkLogin() {
 		return false;
@@ -218,8 +225,22 @@ public class LoginController {
 		response.setContentType("text/html; charset=utf-8");
 		String code = request.getParameter("code");
 		logger.debug("code:" + code);
-		String appid = xunta_appid;
-		String secret = xunta_appsecret;
+		
+		String appid,secret;
+		
+		//获得登录的url
+		String loginUrl=request.getRequestURL().toString();
+		logger.info("从微信公众号进来的url:" + loginUrl);
+		
+		//判断从哪个网址进来的公众号之后匹配其相应的公众号参数
+		if(loginUrl.contains(aini_templateurl)){
+			appid =aini_appid;
+			secret= aini_appsecret;
+		}else{
+			appid = xunta_appid;
+			secret= xunta_appsecret;
+		}
+		
 		String codeToToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + secret
 				+ "&code=" + code + "&grant_type=authorization_code";
 		String weiXinInfo = httpclientReq(codeToToken);
