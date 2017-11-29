@@ -30,22 +30,21 @@
         		<li class="active">匹配</li>
         		<li>对话</li>
     		</ul>
-    		<div class="tabCon">
-        		<div class="tabBox">
-            		<div class="tabList">
+        	<div class="tabBox">
+            	<div class="tabList">
             		匹配
-            		</div>
-            		<div class="tabList">
-            			<div id="dialog_list">
-            				<div class="dialog cursor">
-								<img src="http://www.mxunta.so:80/xunta-web/useravatar/thumb_img_745600342770716672/jpg/image">
-								<div class="dialog_content">
-									<div class="dialog_content_top">
-									<div class="dialog_content_name">婚礼司仪涛哥</div>
-									<div class="dialog_content_time">16:38:11</div>
-								</div>
-								<div class="dialog_content_msg">.</div>
-							</div>
+            	</div>
+            	<div class="tabList">
+            		<div id="dialog_list">
+            			<div class="dialog cursor" id="932910158315655168">
+            				<img src="http://wx.qlogo.cn/mmopen/vi_32/V0eZwlzGtOo9L9Mde6uN8CJLgQkmk2wE089XLfcbqh6icP75yI8YVWO8UMCTF8Q9Az0e8pGIfJMxg17HBiaHRyBg/0" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" style="height: 46.719px; width: 46.719px; margin-left: 30.281px;">
+            				<div class="dialog_content" style="height: 55.0962px; width: 414.578px; margin-left: 15.1405px;">
+            					<div class="dialog_content_top">
+            						<div class="dialog_content_name" style="line-height: 28px; font-size: 19.6px;">叶汉良4</div>
+            						<div class="dialog_content_time" style="line-height: 28px; font-size: 14px;">星期二</div>
+            					</div>
+            					<div class="dialog_content_msg" style="font-size: 16.25px;">你好</div>
+            				</div>
             			</div>
             		</div>
         		</div>
@@ -128,11 +127,23 @@
         window.onload = function (){
             var windowWidth = document.body.clientWidth; //window 宽度;
     		var wrap = document.getElementById('wrap');
+    		
+    		//wrap的height设置
+    		var headerHeight=$("#header").height();
+    		var wrapHeight=document.body.clientHeight-headerHeight;
+    		wrap.style.height=wrapHeight+"px";
+    		
             var tabClick = wrap.querySelectorAll('.tabClick')[0];
             var tabLi = tabClick.getElementsByTagName('li');
             
             var tabBox =  wrap.querySelectorAll('.tabBox')[0];
             var tabList = tabBox.querySelectorAll('.tabList');
+            
+          	//tabBox的height设置
+          	var tabClickHeight=$(".tabClick").height();
+          	var tabClickMarginBottom=parseInt($(".tabClick").css("margin-bottom"));
+          	var tabBoxHeight=wrapHeight-tabClickHeight-tabClickMarginBottom;
+          	tabBox.style.height=tabBoxHeight+"px";
             
             var tar = 0;
             var endX = 0;
