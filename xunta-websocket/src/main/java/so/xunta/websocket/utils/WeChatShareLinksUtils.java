@@ -43,7 +43,8 @@ public class WeChatShareLinksUtils {
 			logger.error("WeChatController.makeWXTicket=====End");
 		}
 
-		//ret.put("url", url);
+		ret.put("url", url);
+		ret.put("appid", appid);
 		//ret.put("jsapi_ticket", jsApiTicket);
 		ret.put("nonceStr", nonceStr);
 		ret.put("timestamp", timestamp);

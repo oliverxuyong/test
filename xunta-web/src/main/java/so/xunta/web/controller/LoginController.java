@@ -604,12 +604,21 @@ public class LoginController {
 	public void sendWeChatShareLinkMsg(HttpServletRequest request, HttpServletResponse response)
 			throws UnsupportedEncodingException {
 		String url = request.getParameter("url");
+		String appid,secret;
+		//判断从哪个网址进来的公众号之后匹配其相应的公众号参数
+		if(url.contains(aini_templateurl)){
+			appid =aini_appid;
+			secret= aini_appsecret;
+		}else{
+			appid = xunta_appid;
+			secret= xunta_appsecret;
+		}
 		
 		WeChatShareLinksUtils weChatShareLinksUtils=new WeChatShareLinksUtils();
 		JSONObject ret=weChatShareLinksUtils.makeWXTicket(
 				url,
-				xunta_appid,
-				xunta_appsecret);
+				appid,
+				secret);
 		try {
 			logger.debug("执行sendWeChatShareLinkMsg...");
 			response.setCharacterEncoding("utf-8");
