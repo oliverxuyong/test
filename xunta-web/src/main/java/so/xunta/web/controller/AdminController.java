@@ -76,15 +76,20 @@ public class AdminController {
 		}
 		
 		Set<Tuple> groupMatchedUsers = groupMatchedUserDao.getPairMatchedUsers(userGroup);
-
+		int rank = 1;
+		
 		for(Tuple groupMatchUserTuple:groupMatchedUsers){
 			String pairUserName = groupMatchUserTuple.getElement();
 			Double relateScore = groupMatchUserTuple.getScore();
+			if(relateScore<=0){
+				break;
+			}
 			try {
-				response.getWriter().write(pairUserName+"\t"+relateScore);
+				response.getWriter().println("排名"+rank+": "+pairUserName+"\t\t\t\t"+relateScore);
 			} catch (IOException e) {
 				logger.error(e.getMessage(),e);
 			}
+			rank++;
 		}
 	}
 }
