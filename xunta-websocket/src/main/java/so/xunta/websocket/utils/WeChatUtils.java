@@ -16,8 +16,11 @@ import org.json.JSONObject;
 import so.xunta.beans.Token;
 
 public class WeChatUtils {
-	private Logger logger = Logger.getRootLogger();
+	private Logger logger = Logger.getLogger(WeChatUtils.class);
+	/*@Value("${token_url}")
+	private String token_url;*/
 	private final String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+	
 	/**
      * 获取接口访问凭证
      * 
@@ -28,6 +31,7 @@ public class WeChatUtils {
     @SuppressWarnings("null")
 	public String getToken(String appid, String appsecret) {
         Token token = null;
+        logger.debug("token_url: "+token_url);
         String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
         // 发起GET请求获取凭证
         String jsonStr=httpsRequest(requestUrl, "GET", null);

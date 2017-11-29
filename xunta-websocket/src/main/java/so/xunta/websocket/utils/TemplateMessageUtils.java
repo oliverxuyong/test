@@ -10,7 +10,7 @@ import org.json.JSONObject;
  */
 public class TemplateMessageUtils {
 	
-	private Logger logger = Logger.getRootLogger();
+	private Logger logger = Logger.getLogger(TemplateMessageUtils.class);
 	private WeChatUtils wsGetAccessToken=new WeChatUtils();
     /**
 
@@ -29,10 +29,10 @@ public class TemplateMessageUtils {
      */
     public String sendWechatmsgToUser
     	(String touser, String templat_id, String clickurl, String topcolor, 
-    			String first, String state, String notificationTime,String remark){
+    			String first, String state, String notificationTime,String remark,String appid,String appsecret){
     	
         String tmpurl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
-        String token = wsGetAccessToken.getToken("wxdac88d71df6be268", "753b50cf29b6b08e733e357cc0ed348c");  //微信凭证，access_token
+        String token = wsGetAccessToken.getToken(appid, appsecret);  //微信凭证，access_token
         
         logger.debug("============================");
         logger.debug("token: "+token);
