@@ -36,8 +36,10 @@ public interface UserDao {
 	//删除用户
 	public void deleteUser(Long userid);
 	
-	/*zheng 通过组找用户
+	/*zheng 
 	 **/ 
-	public List<User> findUserByGroup(Long userid);
+	public List<User> findUserSameGroup(Long userid);
+	
+	public List<User> findUserByGroup(String userGroup);
 	
 }
