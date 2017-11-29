@@ -134,7 +134,11 @@ function showSameSelectCp(data){
 	for(var i in data.msg){
 		var cpid=data.msg[i].cp_id;
 		var text=data.msg[i].text;
-		appendSameSelectCp(cpid,text);
+		//2017.11.29 叶夷  将共同喜欢的和不喜欢的标签也放进去且区开来
+		var if_common=data.msg[i].if_common;
+		var if_dislike=data.msg[i].if_dislike;
+		
+		appendSameSelectCp(cpid,text,if_common,if_dislike);
 	}
 	sameSelectCpsWidth=0;
 	
@@ -147,11 +151,18 @@ var sameSelectCpsWidth=0;
 //判断选择过的标签有多少行，从而判断选择过标签的框的height
 var lineNumber=1;
 
-function appendSameSelectCp(cpid,text){
+function appendSameSelectCp(cpid,text,if_common,if_dislike){
 	var selectCpContainer=$("#selectCp-container");
 	selectCpContainer.show();
 	var selectCp = $("<div></div>").attr("class", "selectCp").text(text);
 	selectCpContainer.append(selectCp);
+	
+	//2017.11.29 叶夷  将共同喜欢的和不喜欢的标签也放进去且区开来
+	if(if_common){
+		selectCp.attr("class","commonLikeTags");
+	}else if(if_dislike){
+		selectCp.attr("class","commonDislikeTags");
+	}
 	
 	//将用户昵称文字大小放入我的标签的大小
 	var userNameTextSize=selectCpContainer.width()/32;
