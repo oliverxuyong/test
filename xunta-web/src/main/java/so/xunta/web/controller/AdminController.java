@@ -85,7 +85,7 @@ public class AdminController {
 				break;
 			}
 			try {
-				response.getWriter().write("排名"+rank+": "+pairUserName+"&nbsp;&nbsp;&nbsp;&nbsp;"+relateScore+"<br />");
+				response.getWriter().write("排名"+rank+":&nbsp;&nbsp;&nbsp;&nbsp;"+pairUserName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+relateScore+"<br />");
 			} catch (IOException e) {
 				logger.error(e.getMessage(),e);
 			}
