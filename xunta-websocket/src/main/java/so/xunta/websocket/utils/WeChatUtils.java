@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.URL;
+import java.sql.Timestamp;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -14,13 +15,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import so.xunta.beans.Token;
+import so.xunta.persist.TokenDao;
+import so.xunta.persist.impl.TokenDaoIml;
 
 public class WeChatUtils {
 	private Logger logger = Logger.getLogger(WeChatUtils.class);
 	/*@Value("${token_url}")
 	private String token_url;*/
 	private final String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-	
+	private TokenDao tokenDao=new TokenDaoIml();
 	/**
      * 获取接口访问凭证
      * 
@@ -28,28 +31,30 @@ public class WeChatUtils {
      * @param appsecret 密钥
      * @return
      */
-    @SuppressWarnings("null")
 	public String getToken(String appid, String appsecret) {
-        Token token = null;
-        logger.debug("token_url: "+token_url);
-        String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
-        // 发起GET请求获取凭证
-        String jsonStr=httpsRequest(requestUrl, "GET", null);
-        
-        JSONObject jsonObject =new JSONObject(jsonStr);
+        String accessToken = getTokenForMysql(appid);
+        if(accessToken.equals("") || accessToken==null){
+        	logger.debug("token_url: "+token_url);
+            String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+            // 发起GET请求获取凭证
+            String jsonStr=httpsRequest(requestUrl, "GET", null);
+            
+            JSONObject jsonObject =new JSONObject(jsonStr);
 
-        if (null != jsonObject) {
-            try {
-                token = new Token();
-                token.setAccessToken(jsonObject.getString("access_token"));
-                token.setExpiresIn(jsonObject.getInt("expires_in"));
-            } catch (JSONException e) {
-                token = null;
-                // 获取token失败
-                //log.error("获取token失败 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));
+            if (null != jsonObject) {
+                try {
+                	accessToken = jsonObject.getString("access_token");
+                	int expires_in=jsonObject.getInt("expires_in");//失效时间，以秒为单位
+                	Long failureTimeLong=System.currentTimeMillis()+expires_in*1000;//失效时间毫秒数
+                	Timestamp failureTime = new Timestamp(failureTimeLong);
+                	Timestamp createTime=new Timestamp(System.currentTimeMillis());
+                	tokenDao.saveToken(new Token(appid,accessToken,createTime,failureTime));//存储token
+                } catch (JSONException e) {
+                    logger.error("获取token失败  errcode="+jsonObject.getInt("errcode")+" errmsg="+jsonObject.getString("errmsg"));
+                }
             }
         }
-        return token.getAccessToken();
+        return accessToken;
     }
     
     public String httpsRequest(String requestUrl, String requestMethod, String outputStr){
@@ -91,5 +96,19 @@ public class WeChatUtils {
         	logger.error("https请求异常：{}");
         }
         return null;
+    }
+    
+    private String getTokenForMysql(String appid){
+    	String accessToken="";
+    	Token token=tokenDao.getTokenForAppid(appid);
+    	if(token!=null){//数据库中存在
+    		Timestamp failureTime=token.getFailureTime();
+    		Long failureTimeLong=failureTime.getTime();//失效时间毫秒数
+    		long nowTimeLong = System.currentTimeMillis();// 获得当前系统毫秒数,这个是1970-01-01到现在的毫秒数
+    		if(failureTimeLong<nowTimeLong){//时间还没失效
+    			accessToken=token.getAccessToken();
+    		}
+    	}
+    	return accessToken;
     }
 }
