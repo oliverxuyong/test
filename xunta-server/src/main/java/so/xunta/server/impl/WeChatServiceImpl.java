@@ -94,7 +94,7 @@ public class WeChatServiceImpl implements WeChatService{
 	private String getToken(String appid, String appsecret) {
 		String accessToken = getTokenForMysql(appid);
 		logger.debug("经过数据库查找之后的Token: " + accessToken);
-		if (accessToken.equals("") || accessToken == null) {
+		if (accessToken.equals("") || accessToken == null || accessToken.equals("update")) {
 			logger.debug("token_url: " + token_url);
 			String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
 			// 发起GET请求获取凭证
@@ -176,7 +176,7 @@ public class WeChatServiceImpl implements WeChatService{
 			Long failureTimeLong = failureTime.getTime();// 失效时间毫秒数
 			long nowTimeLong = System.currentTimeMillis();// 获得当前系统毫秒数,这个是1970-01-01到现在的毫秒数
 			logger.debug("token时间判断:"+failureTimeLong+" "+nowTimeLong);
-			if (failureTimeLong < nowTimeLong) {// 时间还没失效
+			if (failureTimeLong > nowTimeLong) {// 时间还没失效
 				accessToken = token.getAccessToken();
 			}else{//失效了
 				return "update";
