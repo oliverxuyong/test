@@ -166,7 +166,7 @@ public class WeChatServiceImpl implements WeChatService{
 	private String getTokenForMysql(String appid) {
 		logger.debug("开始进行token查询");
 		String accessToken = "";
-		Token token = tokenDao.getTokenForAppid(appid);
+		Token token = tokenDao.getTokenForAppid(appid).get(0);
 		logger.debug("数据库是否存在token:"+token);
 		if (token != null) {// 数据库中存在
 			Timestamp failureTime = token.getFailureTime();
