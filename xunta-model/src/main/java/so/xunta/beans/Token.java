@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="tbl_token")
-public class Token {
+public class Token extends IdEntity{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
