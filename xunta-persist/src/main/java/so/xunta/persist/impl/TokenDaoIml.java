@@ -25,12 +25,12 @@ public class TokenDaoIml implements TokenDao {
 
 	@Override
 	public Token getTokenForAppid(String appid) {
-		//System.out.println("开始测试Dao查找token1"+appid);
+		System.out.println("开始测试Dao查找token1"+appid);
 		Session session = sessionFactory.getCurrentSession();
-		//System.out.println("开始测试Dao查找token2");
+		System.out.println("开始测试Dao查找token2");
 		String hql = "from tbl_token as t where t.appid = :appid";
 		Query query = session.createQuery(hql).setParameter("appid",appid);
-		//System.out.println("测试Dao查找token:"+query.uniqueResult());
+		System.out.println("测试Dao查找token:"+query.uniqueResult());
 		return (Token) query.uniqueResult();
 	}
 
