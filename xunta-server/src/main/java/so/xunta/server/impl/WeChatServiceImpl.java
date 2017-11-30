@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Formatter;
+import java.util.List;
 import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -166,9 +167,10 @@ public class WeChatServiceImpl implements WeChatService{
 	private String getTokenForMysql(String appid) {
 		logger.debug("开始进行token查询");
 		String accessToken = "";
-		Token token = tokenDao.getTokenForAppid(appid).get(0);
-		logger.debug("数据库是否存在token:"+token);
-		if (token != null) {// 数据库中存在
+		List<Token> tokenList = tokenDao.getTokenForAppid(appid);
+		logger.debug("数据库是否存在token:"+tokenList.size());
+		if (tokenList.size() != 0) {// 数据库中存在
+			Token token=tokenList.get(0);
 			Timestamp failureTime = token.getFailureTime();
 			Long failureTimeLong = failureTime.getTime();// 失效时间毫秒数
 			long nowTimeLong = System.currentTimeMillis();// 获得当前系统毫秒数,这个是1970-01-01到现在的毫秒数
