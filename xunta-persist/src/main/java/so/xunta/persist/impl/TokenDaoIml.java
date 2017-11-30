@@ -28,6 +28,7 @@ public class TokenDaoIml implements TokenDao {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = "from tbl_token as t where t.appid = :appid";
 		Query query = session.createQuery(hql).setParameter("appid",appid);
+		logger.debug("测试Dao查找token:"+query.uniqueResult());
 		return (Token) query.uniqueResult();
 	}
 
