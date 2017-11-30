@@ -35,6 +35,7 @@ public class TokenDaoIml implements TokenDao {
 	public Token saveToken(Token token) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(token);
+		logger.debug("测试Dao保存token:"+token.getAppid());
 		return token;
 	}
 
