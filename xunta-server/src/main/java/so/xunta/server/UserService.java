@@ -31,8 +31,10 @@ public interface UserService {
 	//0删除成功 1删除失败
 	public int delUser(Long userid);
 	
-	/*zheng 通过组找用户
+	/*zheng 找到同组用户
 	 **/ 
-	public List<User> findUserByGroup(Long userid);
+	public List<User> findUserSameGroup(Long userid);
+	
+	public List<User> findUserByGroup(String userGroup);
 
 }

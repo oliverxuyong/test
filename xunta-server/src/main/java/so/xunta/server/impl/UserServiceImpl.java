@@ -187,8 +187,14 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<User> findUserByGroup(Long userid) {
+	public List<User> findUserSameGroup(Long userid) {
 		// zheng
-		return userDao.findUserByGroup(userid);
+		return userDao.findUserSameGroup(userid);
 	}
+
+	@Override
+	public List<User> findUserByGroup(String userGroup) {
+		return userDao.findUserByGroup(userGroup);
+	}
+	
 }

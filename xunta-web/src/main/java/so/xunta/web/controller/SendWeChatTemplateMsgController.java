@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import so.xunta.beans.User;
 import so.xunta.server.LoggerService;
 import so.xunta.server.UserService;
+import so.xunta.server.WeChatService;
 import so.xunta.utils.IdWorker;
-import so.xunta.websocket.utils.TemplateMessageUtils;
 
 
 @Controller
@@ -31,8 +31,8 @@ public class SendWeChatTemplateMsgController {
 	LoggerService loggerService;
 	@Autowired
 	private UserService userService;
-
-	TemplateMessageUtils templateMessageUtils = new TemplateMessageUtils();
+	@Autowired
+	private WeChatService weChatService;
 	
 	static Logger logger = Logger.getLogger(SendWeChatTemplateMsgController.class);
 
@@ -47,6 +47,14 @@ public class SendWeChatTemplateMsgController {
 	@Value("${xunta_appsecret}")
 	private String xunta_appsecret;
 	
+	@Value("${aini_templateid}")
+	private String aini_templateid;
+	@Value("${aini_templateurl}")
+	private String aini_templateurl;
+	@Value("${aini_appid}")
+	private String aini_appid;
+	@Value("${aini_appsecret}")
+	private String aini_appsecret;
 	
 	@RequestMapping("/sendMTemplateMsg")
 	public void checkUserExist(/*String userid,String touserid,String content,*/HttpServletRequest request,HttpServletResponse response) throws IOException{
@@ -87,18 +95,35 @@ public class SendWeChatTemplateMsgController {
 			}
 		}
 		logger.debug("模版消息显示的共同选择的标签："+sameSelectTagList);*/
-		logger.debug("xunta_templateid="+xunta_templateid+" xunta_templateurl="+xunta_templateurl+" xunta_appid="+xunta_appid+" xunta_appsecret="+xunta_appsecret);
-		String result=templateMessageUtils.sendWechatmsgToUser(
+		
+		String templateid,templateurl,appid,appsecret;
+		
+		//通过usergroup来判断是从模版消息发往哪里
+		String tousergroup=touser.getUserGroup();
+		if(tousergroup.equals("艾妮婚庆云")){
+			templateid=aini_templateid;
+			templateurl=aini_templateurl;
+			appid=aini_appid;
+			appsecret=aini_appsecret;
+		}else{
+			templateid=xunta_templateid;
+			templateurl=xunta_templateurl;
+			appid=xunta_appid;
+			appsecret=xunta_appsecret;
+		}
+		
+		logger.debug("templateid="+templateid+" templateurl="+templateurl+" appid="+appid+" appsecret="+appsecret);
+		String result=weChatService.sendWechatmsgToUser(
 				toopenid, 
-				xunta_templateid, 
-				xunta_templateurl,
+				templateid, 
+				templateurl,
 				"#FF0000",
 				username/*+"["+sameSelectTagList+"]"*/,
 				"给你发了一条消息", 
 				df.format(new Date()),
 				content,
-				xunta_appid,
-				xunta_appsecret);
+				appid,
+				appsecret);
 		JSONObject obj = new JSONObject();
 		if(result.equals("success")){
 			obj.put("isSuccess",true);
