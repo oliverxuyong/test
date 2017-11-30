@@ -8,7 +8,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import so.xunta.beans.Token;
 import so.xunta.persist.TokenDao;
 /**
@@ -42,4 +41,10 @@ public class TokenDaoIml implements TokenDao {
 		return token;
 	}
 
+	@Override
+	public Token updateToken(Token token) {
+		Session session = sessionFactory.getCurrentSession();
+		session.update(token);
+		return token;
+	}
 }

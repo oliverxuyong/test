@@ -102,12 +102,17 @@ public class WeChatServiceImpl implements WeChatService{
 
 			if (null != jsonObject) {
 				try {
-					accessToken = jsonObject.getString("access_token");
+					String newAccessToken = jsonObject.getString("access_token");
 					int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
 					Long failureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
 					Timestamp failureTime = new Timestamp(failureTimeLong);
 					Timestamp createTime = new Timestamp(System.currentTimeMillis());
-					tokenDao.saveToken(new Token(appid, accessToken, createTime, failureTime));// 存储token
+					
+					if(accessToken.equals("update")){
+						tokenDao.updateToken(new Token(null, newAccessToken,appid, createTime, failureTime));// 存在但是失效则更新
+					}else{
+						tokenDao.saveToken(new Token(null, newAccessToken,appid, createTime, failureTime));// 存储token
+					}
 				} catch (JSONException e) {
 					logger.error("获取token失败  errcode=" + jsonObject.getInt("errcode") + " errmsg="
 							+ jsonObject.getString("errmsg"));
@@ -169,6 +174,8 @@ public class WeChatServiceImpl implements WeChatService{
 			long nowTimeLong = System.currentTimeMillis();// 获得当前系统毫秒数,这个是1970-01-01到现在的毫秒数
 			if (failureTimeLong < nowTimeLong) {// 时间还没失效
 				accessToken = token.getAccessToken();
+			}else{//失效了
+				return "update";
 			}
 		}
 		return accessToken;

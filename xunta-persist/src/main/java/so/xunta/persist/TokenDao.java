@@ -14,5 +14,6 @@ public interface TokenDao {
 	 * 保存Token
 	 * */
 	public Token saveToken(Token token);
-
+	
+	public Token updateToken(Token token);
 }

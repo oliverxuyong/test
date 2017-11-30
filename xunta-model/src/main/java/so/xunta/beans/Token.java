@@ -17,10 +17,10 @@ public class Token extends IdEntity{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
-	//微信公众号的id
-	private String appid;
 	// 接口访问凭证
 	private String accessToken;
+	//微信公众号的id
+	private String appid;
 	// 创建时间
 	private Timestamp createTime;
 	// 无效时间  = 创建时间+有效时间
@@ -28,13 +28,15 @@ public class Token extends IdEntity{
 
 	public Token() {
 	}
-	public Token(String appid, String accessToken, Timestamp createTime, Timestamp failureTime) {
+	public Token(Long id, String accessToken, String appid, Timestamp createTime, Timestamp failureTime) {
 		super();
-		this.appid = appid;
+		this.id = id;
 		this.accessToken = accessToken;
+		this.appid = appid;
 		this.createTime = createTime;
 		this.failureTime = failureTime;
 	}
+
 	public String getAppid() {
 		return appid;
 	}
