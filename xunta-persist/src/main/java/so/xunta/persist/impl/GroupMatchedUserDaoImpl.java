@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
-import redis.clients.jedis.params.sortedset.ZAddParams;
 import so.xunta.persist.GroupMatchedUserDao;
 import so.xunta.utils.RedisUtil;
 
@@ -31,7 +30,10 @@ public class GroupMatchedUserDaoImpl implements GroupMatchedUserDao {
 		String key = userGroup+ keyPrefix;
 		try {
 			jedis = redisUtil.getJedis();
-			jedis.zadd(key, score, pairUserName, ZAddParams.zAddParams().nx());
+			Double preScore= jedis.zscore(key, pairUserName);
+			if(preScore==null || preScore<score){
+				jedis.zadd(key, score, pairUserName);
+			}
 		} catch (Exception e) {
 			logger.error("updatePairMatchedUser error:", e);
 		}finally{
