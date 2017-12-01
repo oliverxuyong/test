@@ -116,7 +116,6 @@ public class WeChatServiceImpl implements WeChatService{
 			Timestamp failureTime = token.getFailureTime();
 			Long failureTimeLong = failureTime.getTime();// 失效时间毫秒数
 			long nowTimeLong = System.currentTimeMillis();// 获得当前系统毫秒数,这个是1970-01-01到现在的毫秒数
-			long tokenId=token.getId();
 			logger.info("token时间判断:"+failureTimeLong+" "+nowTimeLong);
 			if (failureTimeLong > nowTimeLong) {// 时间还没失效
 				accessToken = token.getAccessToken();
@@ -133,7 +132,10 @@ public class WeChatServiceImpl implements WeChatService{
 					Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
 					Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
 					Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
-					tokenDao.updateToken(new Token(tokenId, newAccessToken,appid, newcreateTime, newfailureTime));// 存在但是失效则更新
+					token.setAccessToken(newAccessToken);
+					token.setCreateTime(newcreateTime);
+					token.setFailureTime(newfailureTime);
+					tokenDao.updateToken(token);// 存在但是失效则更新
 					accessToken=newAccessToken;
 				}
 			}
