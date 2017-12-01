@@ -100,19 +100,21 @@ public class SendWeChatTemplateMsgController {
 		
 		//通过usergroup来判断是从模版消息发往哪里
 		String tousergroup=touser.getUserGroup();
+		logger.debug("tousergroup="+tousergroup);
 		if(tousergroup.equals("艾妮婚庆云")){
 			templateid=aini_templateid;
 			templateurl=aini_templateurl;
 			appid=aini_appid;
 			appsecret=aini_appsecret;
+			logger.debug("艾妮公众号：templateid="+templateid+" templateurl="+templateurl+" appid="+appid+" appsecret="+appsecret);
 		}else{
 			templateid=xunta_templateid;
 			templateurl=xunta_templateurl;
 			appid=xunta_appid;
 			appsecret=xunta_appsecret;
+			logger.debug("xunta公众号：templateid="+templateid+" templateurl="+templateurl+" appid="+appid+" appsecret="+appsecret);
 		}
 		
-		logger.debug("templateid="+templateid+" templateurl="+templateurl+" appid="+appid+" appsecret="+appsecret);
 		String result=weChatService.sendWechatmsgToUser(
 				toopenid, 
 				templateid, 
