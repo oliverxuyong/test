@@ -92,10 +92,11 @@ public class WeChatServiceImpl implements WeChatService{
 	 * @return
 	 */
 	private String getToken(String appid, String appsecret) {
-		String accessToken = getTokenForMysql(appid);
-		logger.debug("经过数据库查找之后的Token: " + accessToken);
-		if (accessToken.equals("") || accessToken == null || accessToken.equals("update")) {
-			logger.debug("token_url: " + token_url);
+		logger.debug("token_url: " + token_url);
+		Token token=getTokenForMysql(appid);
+		String accessToken = "";
+		logger.debug("经过数据库查找之后的Token是否为空: " + (token == null));
+		if (token == null) {//新的token
 			String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
 			// 发起GET请求获取凭证
 			String jsonStr = httpsRequest(requestUrl, "GET", null);
@@ -103,21 +104,39 @@ public class WeChatServiceImpl implements WeChatService{
 			JSONObject jsonObject = new JSONObject(jsonStr);
 
 			if (null != jsonObject) {
-				try {
+				String newAccessToken = jsonObject.getString("access_token");
+				int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
+				Long failureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
+				Timestamp failureTime = new Timestamp(failureTimeLong);
+				Timestamp createTime = new Timestamp(System.currentTimeMillis());
+				tokenDao.saveToken(new Token(null, newAccessToken,appid, createTime, failureTime));// 存储token
+				accessToken=newAccessToken;
+			}
+		}else{
+			Timestamp failureTime = token.getFailureTime();
+			Long failureTimeLong = failureTime.getTime();// 失效时间毫秒数
+			long nowTimeLong = System.currentTimeMillis();// 获得当前系统毫秒数,这个是1970-01-01到现在的毫秒数
+			logger.debug("token时间判断:"+failureTimeLong+" "+nowTimeLong);
+			if (failureTimeLong > nowTimeLong) {// 时间还没失效
+				accessToken = token.getAccessToken();
+			}else{//失效了
+				String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+				// 发起GET请求获取凭证
+				String jsonStr = httpsRequest(requestUrl, "GET", null);
+
+				JSONObject jsonObject = new JSONObject(jsonStr);
+
+				if (null != jsonObject) {
 					String newAccessToken = jsonObject.getString("access_token");
 					int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
-					Long failureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
-					Timestamp failureTime = new Timestamp(failureTimeLong);
-					Timestamp createTime = new Timestamp(System.currentTimeMillis());
-					
-					if(accessToken.equals("update")){
-						tokenDao.updateToken(new Token(null, newAccessToken,appid, createTime, failureTime));// 存在但是失效则更新
-					}else{
-						tokenDao.saveToken(new Token(null, newAccessToken,appid, createTime, failureTime));// 存储token
-					}
-				} catch (JSONException e) {
-					logger.error("获取token失败  errcode=" + jsonObject.getInt("errcode") + " errmsg="
-							+ jsonObject.getString("errmsg"));
+					Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
+					Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
+					Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
+					token.setAccessToken(newAccessToken);
+					token.setCreateTime(newcreateTime);
+					token.setFailureTime(newfailureTime);
+					tokenDao.updateToken(token);// 存在但是失效则更新
+					accessToken=newAccessToken;
 				}
 			}
 		}
@@ -165,24 +184,15 @@ public class WeChatServiceImpl implements WeChatService{
 		return null;
 	}
 
-	private String getTokenForMysql(String appid) {
+	private Token getTokenForMysql(String appid) {
 		logger.debug("开始进行token查询");
-		String accessToken = "";
+		Token token=null;
 		List<Token> tokenList = tokenDao.getTokenForAppid(appid);
 		logger.debug("数据库是否存在token:"+tokenList.size());
 		if (tokenList.size() != 0) {// 数据库中存在
-			Token token=tokenList.get(0);
-			Timestamp failureTime = token.getFailureTime();
-			Long failureTimeLong = failureTime.getTime();// 失效时间毫秒数
-			long nowTimeLong = System.currentTimeMillis();// 获得当前系统毫秒数,这个是1970-01-01到现在的毫秒数
-			logger.debug("token时间判断:"+failureTimeLong+" "+nowTimeLong);
-			if (failureTimeLong > nowTimeLong) {// 时间还没失效
-				accessToken = token.getAccessToken();
-			}else{//失效了
-				return "update";
-			}
+			token=tokenList.get(0);
 		}
-		return accessToken;
+		return token;
 	}
 
 	// 获取ticket
