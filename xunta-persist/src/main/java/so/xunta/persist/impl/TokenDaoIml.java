@@ -50,12 +50,12 @@ public class TokenDaoIml implements TokenDao {
 
 	@Override
 	public Token updateToken(Token token) {
-		System.out.println("测试Dao更新token1:"+token.getId()+" "+token.getAppid()
-				+" "+token.getAccessToken()+token.getCreateTime()+" "+token.getFailureTime());
+//		System.out.println("测试Dao更新token1:"+token.getId()+" "+token.getAppid()
+//				+" "+token.getAccessToken()+token.getCreateTime()+" "+token.getFailureTime());
 		Session session = sessionFactory.getCurrentSession();
 		session.update(token);
-		System.out.println("测试Dao更新token2:"+token.getId()+" "+token.getAppid()
-				+" "+token.getAccessToken()+token.getCreateTime()+" "+token.getFailureTime());
+//		System.out.println("测试Dao更新token2:"+token.getId()+" "+token.getAppid()
+//				+" "+token.getAccessToken()+token.getCreateTime()+" "+token.getFailureTime());
 		return token;
 	}
 }
