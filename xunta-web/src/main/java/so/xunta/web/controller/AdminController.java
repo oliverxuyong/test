@@ -101,6 +101,7 @@ public class AdminController {
 			}
 			response.getWriter().write("</tbody>");
 			response.getWriter().write("</table>");
+			response.flushBuffer();
 		} catch (IOException e) {
 			logger.error(e.getMessage(),e);
 		}
