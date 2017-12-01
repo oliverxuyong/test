@@ -100,7 +100,7 @@ public class AdminController {
 				rank++;
 			}
 			response.getWriter().write("</tbody>");
-			response.getWriter().write("/table");
+			response.getWriter().write("</table>");
 		} catch (IOException e) {
 			logger.error(e.getMessage(),e);
 		}
