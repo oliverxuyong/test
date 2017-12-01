@@ -52,6 +52,7 @@ public class TokenDaoIml implements TokenDao {
 	public Token updateToken(Token token) {
 		Session session = sessionFactory.getCurrentSession();
 		session.update(token);
+		System.out.println("测试Dao更新token:"+token.getAppid()+" "+token.getAccessToken());
 		return token;
 	}
 }
