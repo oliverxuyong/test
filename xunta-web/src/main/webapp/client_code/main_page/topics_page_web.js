@@ -26,9 +26,9 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 		intersetCPArray.push(parseInt(Math.random()*cpList.length));
 	}*/
 	
-	if(currentRequestedCPPage>=2){//请求一批之后测试大标签
+	/*if(currentRequestedCPPage>=2){//请求一批之后测试大标签
 		cpList = new Array();//测试推荐标签特殊大气泡
-	}
+	}*/
 	
 	if(cpList.length<=0){
 		notRepeatCpCount=1;
