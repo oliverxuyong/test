@@ -36,37 +36,34 @@ public class Token extends IdEntity{
 		this.createTime = createTime;
 		this.failureTime = failureTime;
 	}
-
-	public String getAppid() {
-		return appid;
+	public Long getId() {
+		return id;
 	}
-
-	public void setAppid(String appid) {
-		this.appid = appid;
+	public void setId(Long id) {
+		this.id = id;
 	}
-
 	public String getAccessToken() {
 		return accessToken;
 	}
-
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
-
+	public String getAppid() {
+		return appid;
+	}
+	public void setAppid(String appid) {
+		this.appid = appid;
+	}
 	public Timestamp getCreateTime() {
 		return createTime;
 	}
-
 	public void setCreateTime(Timestamp createTime) {
 		this.createTime = createTime;
 	}
-
 	public Timestamp getFailureTime() {
 		return failureTime;
 	}
-
 	public void setFailureTime(Timestamp failureTime) {
 		this.failureTime = failureTime;
 	}
-	
 }
