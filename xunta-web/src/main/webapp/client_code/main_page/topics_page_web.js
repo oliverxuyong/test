@@ -21,39 +21,53 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	var notRepeatCpCount=0;// 不重复的可以上升的cp个数
 	
 	// 2017.09.13 叶夷 判断每一批请求相交的次数和哪几个圆相交
-	var intersetCount=parseInt(Math.random()*2+1);// 相交次数随机为1，2,3
+	/*var intersetCount=parseInt(Math.random()*2+1);// 相交次数随机为1，2,3
 	for(var count=1;count<=intersetCount;count++){
 		intersetCPArray.push(parseInt(Math.random()*cpList.length));
+	}*/
+	
+	if(currentRequestedCPPage>=2){//请求一批之后测试大标签
+		cpList = new Array();//测试推荐标签特殊大气泡
 	}
 	
-	for (var i = 0; i < cpList.length; i++) {
-		var cp = cpList[i];// 每个推荐标签
-		var cpid=cp.cpid;// 每个推荐标签id
-		
-		// 加上一个过滤，前端出现过的cp不应该再出现
-		var isRepeat=false;
-		for(var j in cpValue){
-			if(cpValue[j].getCpNode()==("outcpid"+cpid)){// 出现过
-				console.log("cpid->"+cpid+" 标签重复出现")
-				isRepeat=true;
-				break;
+	if(cpList.length<=0){
+		notRepeatCpCount=1;
+		appendElement("bigCP","",0);// 叶夷 2017.06.16
+		timeOutSuccess = setTimeout(function() {
+			requestCPSuccese=true;
+		},4000);
+	}else{
+		for (var i = 0; i < cpList.length; i++) {
+			var cp = cpList[i];// 每个推荐标签
+			var cpid=cp.cpid;// 每个推荐标签id
+			var text=cp.cptext;
+			var selectTagNum =cp.howmanypeople_selected;
+			
+			// 加上一个过滤，前端出现过的cp不应该再出现
+			var isRepeat=false;
+			for(var j in cpValue){
+				if(cpValue[j].getCpNode()==("outcpid"+cpid)){// 出现过
+					console.log("cpid->"+cpid+" 标签重复出现")
+					isRepeat=true;
+					break;
+				}
+			}
+			if(isRepeat==true){// cp重复出现则下一个
+				continue;
+			}else{// 不是重复的cp则下一步
+				notRepeatCpCount++;
+				appendElement(/*i,*/cpid,text,selectTagNum);// 叶夷 2017.06.16
+				// 如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
 			}
 		}
-		if(isRepeat==true){// cp重复出现则下一个
-			continue;
-		}else{// 不是重复的cp则下一步
-			notRepeatCpCount++;
-			appendElement(i,cpid,cp);// 叶夷 2017.06.16
-			// 如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
-		}
+		requestCPSuccese=true;//表示标签请求成功，下面的滑倒底部的方法才可以执行请求下一批标签
 	}
-	
-	requestCPSuccese=true;//表示标签请求成功，下面的滑倒底部的方法才可以执行请求下一批标签
 
+	
 	// 判断是否测试
-	if(startTest){
+	/*if(startTest){
 		testSelectTag();
-	}
+	}*/
 	
 	// 一批标签个别相交之后数据清空
 	//intersetCPArray.splice(0,intersetCPArray.length);  
@@ -92,17 +106,27 @@ var fullTextArray=new Array();
 
 // 叶夷 2017.06.16 通过服务器返回的标签添加到页面的方法
 // i表示一批推荐标签的第几个标签
-function appendElement(i, cpid,cp) {
+function appendElement(/*i, */cpid,text,selectTagNum) {
 	var cp_container = $("#cp-container");// 装推荐标签的容器
 	
 	// 这是cp的选择人数
-	var selectTagNum =cp.howmanypeople_selected;
+	//var selectTagNum =cp.howmanypeople_selected;
 	//var selectTagNum =parseInt(Math.random()*10);
 	
 	// 先随机推荐标签字体的大小，在这里留一个可以控制字体大小的入口
 	/*var cpTextSize = Math.random() * 8 + 12;
 	cpTextSize = parseInt(cpTextSize);*/
-	var cpTextSize =controlSize(selectTagNum,maxCPTextSize,minCPTextSize);
+	// 先随机内圆 div的大小,在这里留一个可以控制内圆div大小的入口
+	//var cpInNodeWidth = Math.random() * 40 + 40;
+	//cpInNodeWidth = parseInt(cpInNodeWidth);
+	var cpTextSize,cpInNodeWidth;
+	if(cpid=="bigCP"){//特殊的标签
+		cpTextSize =maxCPTextSize;
+		cpInNodeWidth =$("body").width()/3;
+	}else{
+		cpTextSize =controlSize(selectTagNum,maxCPTextSize,minCPTextSize);
+		cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
+	}
 	
 	var cp_node = $("<div></div>").attr("class", "cp").attr("id",
 			"cpid" + cpid);// 外圆div
@@ -124,16 +148,11 @@ function appendElement(i, cpid,cp) {
 	var cpNodeByDistance=$("<div></div>").attr("class", "outcp").attr("id","outcpid" + cpid);
 	cpNodeByDistance.append(cp_node);
 	
-	
-	// 先随机内圆 div的大小,在这里留一个可以控制内圆div大小的入口
-	//var cpInNodeWidth = Math.random() * 40 + 40;
-	//cpInNodeWidth = parseInt(cpInNodeWidth);
-	var cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
 	cp_innode.css("height", cpInNodeWidth);
 	cp_innode.css("width", cpInNodeWidth);
 	
 	//判断是否需要相交
-	var isInterset=false;;
+	/*var isInterset=false;;
 	for(var count=0;count<=intersetCPArray.length;count++){
 		var intersetCP=intersetCPArray[count];
 		if(i==intersetCP){
@@ -141,21 +160,26 @@ function appendElement(i, cpid,cp) {
 			intersetCPArray[count]=cpid;
 			break;
 		}
-	}
+	}*/
 	//标签文字完整内容保存
-	fullTextArray[cpid]=cp.cptext;
+	fullTextArray[cpid]=text;
 	// 测试字数超过九个字的显示
 	//calCircle(cp_text, cpTextSize, "今天上海很冷要多穿衣服", cp_node, cp_innode,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
 	// 调用字体大小匹配圆大小的方法
-	calCircle(cp_text, cpTextSize, cp.cptext, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
+	calCircle(cp_text, cpTextSize, text, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode/*,isInterset*/);
 	
-	cpTestArray.push(CPTestObj(cpid, cp.cptext));// 2017.09.14 叶夷
+	cpTestArray.push(CPTestObj(cpid, text));// 2017.09.14 叶夷
 													// 用来装页面存在过的cpid,为了性能测试
-	
-	cp_innode.click(function() {
-		// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
-		chooseOneCP(cp_node,cp);
-	});
+	if(cpid!="bigCP"){
+		cp_innode.click(function() {
+			// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
+			chooseOneCP(cp_node,cpid,text);
+		});
+	}else{//特殊的标签,过5秒之后消失之后动画飞到加号位置
+		timeOutSuccess = setTimeout(function() {
+			bigCPAnimate(cpNodeByDistance);
+		},3000);
+	}
 	
 	// 标签圆大小确定之后将标签放在标签容器中
 	cp_container.append(cpNodeByDistance);
@@ -163,6 +187,26 @@ function appendElement(i, cpid,cp) {
 	// 标签大小设置之后将设置标签动画的轨迹且将前端出现过的标签位置全部保存下来
 	// cpAnimationLocation(cp_container,cp_node);
 	cpAnimationLocation(cp_container,cpNodeByDistance,cpValue);
+}
+/**
+ * 2017.12.01 叶夷 特殊标签几秒之后飞到添加标签中且消失
+ */
+function bigCPAnimate(cpNodeByDistance){
+	//获得添加标签的位置
+	var addTag=$("#addtag")
+	var animateCpEndTop=addTag.offset().top-cpNodeByDistance.width()/2;
+	var animateCpEndLeft=addTag.offset().left-cpNodeByDistance.width()/2;
+	$("#showatloaded").append(cpNodeByDistance);
+	var animateCpStartTop=parseInt($("#top-container").height())+cpNodeByDistance.offset().top-$("#cp-show").scrollTop()+10;
+	cpNodeByDistance.css("top",animateCpStartTop);
+	
+	cpNodeByDistance.animate({
+		top : animateCpEndTop+"px",
+		left : animateCpEndLeft+"px"
+	}, 1000,function() {
+		cpNodeByDistance.remove();
+		cpValue.splice(cpValue.length-1,cpValue.length-1);
+    });
 }
 
 var minCPSize = $("body").width()/8;// 最小内圆的大小
@@ -814,9 +858,9 @@ function calCPTangencyTop(cpObj, cpRadius, cpX) {
 var chooseOneCpStart=false;
 
 // 叶夷 2017.06.16 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
-function chooseOneCP(cp_node,cp) {
-	var cpid = cp.cpid;
-	var text=cp.cptext;
+function chooseOneCP(cp_node,cpid,text) {
+	//var cpid = cp.cpid;
+	//var text=cp.cptext;
 	
 	//cp选择之前先放大实现“收了”和“消失”的功能，再进行选择
 	//1.先将需要的div放入
@@ -1368,7 +1412,7 @@ function showUnSelectCP(data){
 		// 将取消选择的标签重新绑定点击事件
 		cp_node.click(function() {
 			//chooseCP(cp_node,cpid,text);
-			chooseOneCP(cp_node,{cpid:cpid,cptext:text});
+			chooseOneCP(cp_node,cpid,text);
 		});
 }
 
