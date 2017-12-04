@@ -31,6 +31,7 @@ import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
 import so.xunta.server.WeChatService;
 import so.xunta.utils.IdWorker;
+import so.xunta.utils.WeChatServerConfiCheckUtils;
 import so.xunta.websocket.config.Constants;
 import weibo4j.Account;
 import weibo4j.Users;
@@ -71,6 +72,9 @@ public class LoginController {
 	private String aini_appsecret;
 	@Value("${aini_templateurl}")
 	private String aini_templateurl;
+	
+	@Value("${xunta_serverToken}")
+	private String xunta_serverToken;
 	
 	// 登录验证
 	public boolean checkLogin() {
@@ -660,5 +664,34 @@ public class LoginController {
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 		}
+	}
+	
+	/**
+	 * 2017.12.04 叶夷  微信带参数的二维码扫描之后到这里的路径
+	 */
+	@RequestMapping("/wxTwoBarCodeLogin")
+	public void sendWeChatTwoBarCodeLogin(HttpServletRequest request, HttpServletResponse response){
+		logger.debug("执行wxTwoBarCodeLogin...");
+		//start:2017.12.04 叶夷  这里只是为了微信服务器配置验证
+		// 微信加密签名  
+		String signature = request.getParameter("signature");  
+		// 时间戳  
+		String timestamp = request.getParameter("timestamp");  
+		// 随机数  
+		String nonce = request.getParameter("nonce");  
+		// 随机字符串  
+		String echostr = request.getParameter("echostr");  
+		WeChatServerConfiCheckUtils wcscs=new WeChatServerConfiCheckUtils();
+		logger.debug("验证结果:"+wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce));
+		if(wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce)){
+			try {
+				PrintWriter out = response.getWriter();
+				out.print(echostr);
+				 out.close();
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		//end:2017.12.04 叶夷  这里只是为了微信服务器配置验证
 	}
 }
