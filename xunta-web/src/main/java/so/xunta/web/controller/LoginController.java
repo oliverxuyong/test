@@ -689,9 +689,11 @@ public class LoginController {
 		System.out.println("验证结果:" + wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce));
 		if (wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce)) {
 			try {
-				PrintWriter out = response.getWriter();
+				/*PrintWriter out = response.getWriter();
 				out.print(processRequest(request));
-				out.close();
+				out.close();*/
+				System.out.println("扫描关注之后开始跳转...");
+				response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.xunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");// 跳转到微信自动登录页面
 			} catch (IOException e) {
 				System.out.println(e);
 			}
