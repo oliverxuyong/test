@@ -1,7 +1,6 @@
 package so.xunta.web.controller;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -9,8 +8,7 @@ import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +21,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +28,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import so.xunta.beans.TextMessage;
 import so.xunta.beans.User;
 import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
 import so.xunta.server.WeChatService;
 import so.xunta.utils.IdWorker;
 import so.xunta.utils.WeChatServerConfiCheckUtils;
+import so.xunta.utils.WechatMessageUtil;
 import so.xunta.websocket.config.Constants;
 import weibo4j.Account;
 import weibo4j.Users;
@@ -706,53 +702,38 @@ public class LoginController {
      * @param request
      * @return xml
      */
-    private String processRequest(HttpServletRequest request) {
-    	Map<String, String> map = new HashMap<String, String>();
-		SAXReader reader = new SAXReader();
-		InputStream ins = null;
-		Document doc = null;
-		try {
-			ins = request.getInputStream();
-			doc = reader.read(ins);
-
-			Element root = doc.getRootElement();
-			@SuppressWarnings("unchecked")
-			List<Element> list = root.elements();
-			for (Element e : list) {
-				map.put(e.getName(), e.getText());
-				System.out.println("解析扫码之后的事件推送数据:" + e.getName() + "->" + e.getText());
-			}
-			ins.close();
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-		} catch (DocumentException e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		// 开发者微信号
-		String toUserName = map.get("ToUserName");
-		// 发送方帐号（一个OpenID）
-		String fromUserName = map.get("FromUserName");
-		// 消息创建时间(整型)
-		// String createTime = map.get("CreateTime");
-		// 消息类型 event
-		String msgType = map.get("MsgType");
-		// 事件类型（subscribe）
-		// String event=map.get("Event");
-		// 用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
-		// String eventKey=map.get("EventKey");
-		// 二维码的ticke，可以用来换取二维码图片
-		// String ticket=map.get("Ticket");
-
-		StringBuffer str = new StringBuffer();
-		str.append("<xml>");
-		str.append("<ToUserName><![CDATA[" + toUserName + "]]></ToUserName>");
-		str.append("<FromUserName><![CDATA[" + fromUserName + "]]></FromUserName>");
-		str.append("<CreateTime>" + Calendar.getInstance().getTimeInMillis() / 1000 + "</CreateTime>");
-		str.append("<MsgType><![CDATA[" + msgType + "]]></MsgType>");
-		str.append("<Content><![CDATA[谢谢你的关注]]></Content>");
-		str.append("</xml>");
-		System.out.println(str.toString());
-		return str.toString();
+	@SuppressWarnings("unchecked")
+	private String processRequest(HttpServletRequest request) {
+    	 // xml格式的消息数据
+        String respXml = null;
+        // 默认返回的文本消息内容
+        String respContent = "未知的消息类型！";
+        try {
+            // 调用parseXml方法解析请求消息
+			Map<String,String> requestMap = WechatMessageUtil.parseXml(request);
+            // 发送方帐号
+            String fromUserName = requestMap.get("FromUserName");
+            // 开发者微信号
+            String toUserName = requestMap.get("ToUserName");
+            // 消息类型
+            String msgType = requestMap.get("MsgType");
+ 
+            // 回复文本消息
+            TextMessage textMessage = new TextMessage();
+            textMessage.setToUserName(fromUserName);
+            textMessage.setFromUserName(toUserName);
+            textMessage.setCreateTime(new Date().getTime());
+            textMessage.setMsgType(WechatMessageUtil.RESP_MESSAGE_TYPE_TEXT);
+ 
+            respContent = "您发送的是文本消息！";
+            
+            // 设置文本消息的内容
+            textMessage.setContent(respContent);
+            // 将文本消息对象转换成xml
+            respXml = WechatMessageUtil.messageToXml(textMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return respXml;
     } 
 }
