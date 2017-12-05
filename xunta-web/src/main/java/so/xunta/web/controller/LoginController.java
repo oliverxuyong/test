@@ -1,6 +1,7 @@
 package so.xunta.web.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -9,6 +10,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,9 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +40,6 @@ import so.xunta.server.LoggerService;
 import so.xunta.server.WeChatService;
 import so.xunta.utils.IdWorker;
 import so.xunta.utils.WeChatServerConfiCheckUtils;
-import so.xunta.utils.WechatMessageUtil;
 import so.xunta.websocket.config.Constants;
 import weibo4j.Account;
 import weibo4j.Users;
@@ -47,6 +51,11 @@ import com.qq.connect.api.qzone.UserInfo;
 import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.oauth.Oauth;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.core.util.QuickWriter;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
+import com.thoughtworks.xstream.io.xml.XppDriver;
 
 @Controller
 public class LoginController {
@@ -710,31 +719,155 @@ public class LoginController {
         String respContent = "未知的消息类型！";
         try {
             // 调用parseXml方法解析请求消息
-			Map<String,String> requestMap = WechatMessageUtil.parseXml(request);
+			Map<String,String> requestMap = parseXml(request);
             // 发送方帐号
             String fromUserName = requestMap.get("FromUserName");
             // 开发者微信号
             String toUserName = requestMap.get("ToUserName");
             // 消息类型
-            String msgType = requestMap.get("MsgType");
+            //String msgType = requestMap.get("MsgType");
  
             // 回复文本消息
             TextMessage textMessage = new TextMessage();
             textMessage.setToUserName(fromUserName);
             textMessage.setFromUserName(toUserName);
             textMessage.setCreateTime(new Date().getTime());
-            textMessage.setMsgType(WechatMessageUtil.RESP_MESSAGE_TYPE_TEXT);
+            textMessage.setMsgType("text");
  
             respContent = "您发送的是文本消息！";
             
             // 设置文本消息的内容
             textMessage.setContent(respContent);
             // 将文本消息对象转换成xml
-            respXml = WechatMessageUtil.messageToXml(textMessage);
+            respXml = messageToXml(textMessage);
             System.out.println(respXml);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return respXml;
     } 
+	/**
+     * 解析微信发来的请求（XML）
+     * 
+     * @param request
+     * @return Map
+     * @throws Exception
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	private Map parseXml(HttpServletRequest request) throws Exception {
+        // 将解析结果存储在HashMap中
+		Map map = new HashMap();
+ 
+        // 从request中取得输入流
+        InputStream inputStream = request.getInputStream();
+        // 读取输入流
+        SAXReader reader = new SAXReader();
+        Document document = reader.read(inputStream);
+        // 得到xml根元素
+        Element root = document.getRootElement();
+        // 得到根元素的所有子节点
+        List<Element> elementList = root.elements();
+ 
+        // 遍历所有子节点
+        for (Element e : elementList)
+            map.put(e.getName(), e.getText());
+ 
+        // 释放资源
+        inputStream.close();
+        inputStream = null;
+ 
+        return map;
+    }
+ 
+    /**
+     * 扩展xstream使其支持CDATA
+     */
+    private XStream xstream = new XStream(new XppDriver() {
+        public HierarchicalStreamWriter createWriter(Writer out) {
+            return new PrettyPrintWriter(out) {
+                // 对所有xml节点的转换都增加CDATA标记
+                boolean cdata = true;
+ 
+                @SuppressWarnings("unused")
+				public void startNode(String name, Class<?> clazz) {
+                    startNode(name, clazz);
+                }
+ 
+                protected void writeText(QuickWriter writer, String text) {
+                    if (cdata) {
+                        writer.write("");
+                    } else {
+                        writer.write(text);
+                    }
+                }
+            };
+        }
+    });
+ 
+    /**
+     * 文本消息对象转换成xml
+     * 
+     * @param textMessage 文本消息对象
+     * @return xml
+     */
+    private String messageToXml(TextMessage textMessage) {
+        xstream.alias("xml", textMessage.getClass());
+        return xstream.toXML(textMessage);
+    }
+ 
+    /**
+     * 图片消息对象转换成xml
+     * 
+     * @param imageMessage 图片消息对象
+     * @return xml
+     */
+   /* public static String messageToXml(ImageMessage imageMessage) {
+        xstream.alias("xml", imageMessage.getClass());
+        return xstream.toXML(imageMessage);
+    }
+ 
+    *//**
+     * 语音消息对象转换成xml
+     * 
+     * @param voiceMessage 语音消息对象
+     * @return xml
+     *//*
+    public static String messageToXml(VoiceMessage voiceMessage) {
+        xstream.alias("xml", voiceMessage.getClass());
+        return xstream.toXML(voiceMessage);
+    }
+ 
+    *//**
+     * 视频消息对象转换成xml
+     * 
+     * @param videoMessage 视频消息对象
+     * @return xml
+     *//*
+    public static String messageToXml(VideoMessage videoMessage) {
+        xstream.alias("xml", videoMessage.getClass());
+        return xstream.toXML(videoMessage);
+    }
+ 
+    *//**
+     * 音乐消息对象转换成xml
+     * 
+     * @param musicMessage 音乐消息对象
+     * @return xml
+     *//*
+    public static String messageToXml(MusicMessage musicMessage) {
+        xstream.alias("xml", musicMessage.getClass());
+        return xstream.toXML(musicMessage);
+    }
+ 
+    *//**
+     * 图文消息对象转换成xml
+     * 
+     * @param newsMessage 图文消息对象
+     * @return xml
+     *//*
+    public static String messageToXml(NewsMessage newsMessage) {
+        xstream.alias("xml", newsMessage.getClass());
+        xstream.alias("item", new Article().getClass());
+        return xstream.toXML(newsMessage);
+    }*/
 }
