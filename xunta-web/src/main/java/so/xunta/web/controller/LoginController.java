@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +24,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.json.JSONException;
@@ -33,7 +34,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import so.xunta.beans.TextMessage;
 import so.xunta.beans.User;
 import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
@@ -51,11 +51,6 @@ import com.qq.connect.api.qzone.UserInfo;
 import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.oauth.Oauth;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.core.util.QuickWriter;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
-import com.thoughtworks.xstream.io.xml.XppDriver;
 
 @Controller
 public class LoginController {
@@ -711,165 +706,55 @@ public class LoginController {
      * @param request
      * @return xml
      */
-	@SuppressWarnings("unchecked")
-	private String processRequest(HttpServletRequest request) {
-    	 // xml格式的消息数据
-        String respXml = null;
-        // 默认返回的文本消息内容
-        String respContent = "未知的消息类型！";
-        try {
-            // 调用parseXml方法解析请求消息
-			Map<String,String> requestMap = parseXml(request);
-            // 发送方帐号
-            String fromUserName = requestMap.get("FromUserName");
-            // 开发者微信号
-            String toUserName = requestMap.get("ToUserName");
-            // 消息类型
-            //String msgType = requestMap.get("MsgType");
- 
-            // 回复文本消息
-            TextMessage textMessage = new TextMessage();
-            textMessage.setToUserName(fromUserName);
-            textMessage.setFromUserName(toUserName);
-            textMessage.setCreateTime(new Date().getTime());
-            textMessage.setMsgType("text");
- 
-            respContent = "您发送的是文本消息！";
-            
-            // 设置文本消息的内容
-            textMessage.setContent(respContent);
-            // 将文本消息对象转换成xml
-            respXml = messageToXml(textMessage);
-            System.out.println(respXml);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return respXml;
+    private String processRequest(HttpServletRequest request) {
+    	Map<String, String> map = new HashMap<String, String>();
+		SAXReader reader = new SAXReader();
+		InputStream ins = null;
+		Document doc = null;
+		try {
+			ins = request.getInputStream();
+			doc = reader.read(ins);
+
+			Element root = doc.getRootElement();
+			@SuppressWarnings("unchecked")
+			List<Element> list = root.elements();
+			for (Element e : list) {
+				map.put(e.getName(), e.getText());
+				System.out.println("解析扫码之后的事件推送数据:" + e.getName() + "->" + e.getText());
+			}
+			ins.close();
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		} catch (DocumentException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		// 开发者微信号
+		String toUserName = map.get("ToUserName");
+		// 发送方帐号（一个OpenID）
+		String fromUserName = map.get("FromUserName");
+		// 消息创建时间(整型)
+		String createTime = map.get("CreateTime");
+		// 消息类型 event
+		String msgType = map.get("MsgType");
+		// 事件类型（subscribe）
+		String event=map.get("Event");
+		// 用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
+		String eventKey=map.get("EventKey");
+		// 二维码的ticke，可以用来换取二维码图片
+		String ticket=map.get("Ticket");
+
+		StringBuffer str = new StringBuffer();
+		str.append("<xml>");
+		str.append("<ToUserName><![CDATA[" + toUserName + "]]></ToUserName>");
+		str.append("<FromUserName><![CDATA[" + fromUserName + "]]></FromUserName>");
+		str.append("<CreateTime>" + createTime+ "</CreateTime>");
+		str.append("<MsgType><![CDATA[" + msgType + "]]></MsgType>");
+		str.append("<Event><![CDATA[" + event + "]]></Event>");
+		str.append("<EventKey><![CDATA[|" + eventKey +"]]></EventKey>");
+		str.append("<Ticket><![CDATA[|" + ticket +"]]></Ticket>");
+		str.append("</xml>");
+		System.out.println(str.toString());
+		return str.toString();
     } 
-	/**
-     * 解析微信发来的请求（XML）
-     * 
-     * @param request
-     * @return Map
-     * @throws Exception
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	private Map parseXml(HttpServletRequest request) throws Exception {
-        // 将解析结果存储在HashMap中
-		Map map = new HashMap();
- 
-        // 从request中取得输入流
-        InputStream inputStream = request.getInputStream();
-        // 读取输入流
-        SAXReader reader = new SAXReader();
-        Document document = reader.read(inputStream);
-        // 得到xml根元素
-        Element root = document.getRootElement();
-        // 得到根元素的所有子节点
-        List<Element> elementList = root.elements();
- 
-        // 遍历所有子节点
-        for (Element e : elementList){
-            map.put(e.getName(), e.getText());
-            System.out.println("微信xml信息："+e.getName()+"->"+e.getText());
-        }
- 
-        // 释放资源
-        inputStream.close();
-        inputStream = null;
- 
-        return map;
-    }
- 
-    /**
-     * 扩展xstream使其支持CDATA
-     */
-    private XStream xstream = new XStream(new XppDriver() {
-        public HierarchicalStreamWriter createWriter(Writer out) {
-            return new PrettyPrintWriter(out) {
-                // 对所有xml节点的转换都增加CDATA标记
-                boolean cdata = true;
- 
-                @SuppressWarnings({ "unused", "rawtypes" })
-				public void startNode(String name, Class clazz) {
-                    startNode(name, clazz);
-                }
- 
-                protected void writeText(QuickWriter writer, String text) {
-                    if (cdata) {
-                        writer.write("");
-                    } else {
-                        writer.write(text);
-                    }
-                }
-            };
-        }
-    });
- 
-    /**
-     * 文本消息对象转换成xml
-     * 
-     * @param textMessage 文本消息对象
-     * @return xml
-     */
-    private String messageToXml(TextMessage textMessage) {
-        xstream.alias("xml", textMessage.getClass());
-        return xstream.toXML(textMessage);
-    }
- 
-    /**
-     * 图片消息对象转换成xml
-     * 
-     * @param imageMessage 图片消息对象
-     * @return xml
-     */
-   /* public static String messageToXml(ImageMessage imageMessage) {
-        xstream.alias("xml", imageMessage.getClass());
-        return xstream.toXML(imageMessage);
-    }
- 
-    *//**
-     * 语音消息对象转换成xml
-     * 
-     * @param voiceMessage 语音消息对象
-     * @return xml
-     *//*
-    public static String messageToXml(VoiceMessage voiceMessage) {
-        xstream.alias("xml", voiceMessage.getClass());
-        return xstream.toXML(voiceMessage);
-    }
- 
-    *//**
-     * 视频消息对象转换成xml
-     * 
-     * @param videoMessage 视频消息对象
-     * @return xml
-     *//*
-    public static String messageToXml(VideoMessage videoMessage) {
-        xstream.alias("xml", videoMessage.getClass());
-        return xstream.toXML(videoMessage);
-    }
- 
-    *//**
-     * 音乐消息对象转换成xml
-     * 
-     * @param musicMessage 音乐消息对象
-     * @return xml
-     *//*
-    public static String messageToXml(MusicMessage musicMessage) {
-        xstream.alias("xml", musicMessage.getClass());
-        return xstream.toXML(musicMessage);
-    }
- 
-    *//**
-     * 图文消息对象转换成xml
-     * 
-     * @param newsMessage 图文消息对象
-     * @return xml
-     *//*
-    public static String messageToXml(NewsMessage newsMessage) {
-        xstream.alias("xml", newsMessage.getClass());
-        xstream.alias("item", new Article().getClass());
-        return xstream.toXML(newsMessage);
-    }*/
 }
