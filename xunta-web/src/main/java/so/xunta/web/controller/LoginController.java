@@ -8,8 +8,10 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +74,10 @@ public class LoginController {
 	private String xunta_appid;
 	@Value("${xunta_appsecret}")
 	private String xunta_appsecret;
+	@Value("${xunta_templateid}")
+	private String xunta_templateid;
+	@Value("${xunta_templateurl}")
+	private String xunta_templateurl;
 
 	@Value("${aini_appid}")
 	private String aini_appid;
@@ -688,15 +694,11 @@ public class LoginController {
 		WeChatServerConfiCheckUtils wcscs = new WeChatServerConfiCheckUtils();
 		System.out.println("验证结果:" + wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce));
 		if (wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce)) {
-			try {
+			System.out.println("扫描关注之后发送模版消息...");
+			processRequest(request);
 				/*PrintWriter out = response.getWriter();
 				out.print(processRequest(request));
 				out.close();*/
-				System.out.println("扫描关注之后开始跳转...");
-				response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.xunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");// 跳转到微信自动登录页面
-			} catch (IOException e) {
-				System.out.println(e);
-			}
 		}
 		// end:2017.12.04 叶夷 这里只是为了微信服务器配置验证
 		
@@ -708,7 +710,7 @@ public class LoginController {
      * @param request
      * @return xml
      */
-    private String processRequest(HttpServletRequest request) {
+    private void processRequest(HttpServletRequest request) {
     	Map<String, String> map = new HashMap<String, String>();
 		SAXReader reader = new SAXReader();
 		InputStream ins = null;
@@ -732,31 +734,53 @@ public class LoginController {
 		}
 
 		// 开发者微信号
-		String toUserName = map.get("ToUserName");
+//		String toUserName = map.get("ToUserName");
 		// 发送方帐号（一个OpenID）
 		String fromUserName = map.get("FromUserName");
 		// 消息创建时间(整型)
-		String createTime = map.get("CreateTime");
-		// 消息类型 event
-		String msgType = map.get("MsgType");
-		// 事件类型（subscribe）
-		String event=map.get("Event");
-		// 用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
-		String eventKey=map.get("EventKey");
-		// 二维码的ticke，可以用来换取二维码图片
-		String ticket=map.get("Ticket");
-
-		StringBuffer str = new StringBuffer();
-		str.append("<xml>");
-		str.append("<ToUserName><![CDATA[" + toUserName + "]]></ToUserName>");
-		str.append("<FromUserName><![CDATA[" + fromUserName + "]]></FromUserName>");
-		str.append("<CreateTime>" + createTime+ "</CreateTime>");
-		str.append("<MsgType><![CDATA[" + msgType + "]]></MsgType>");
-		str.append("<Event><![CDATA[" + event + "]]></Event>");
-		str.append("<EventKey><![CDATA[" + eventKey +"]]></EventKey>");
-		str.append("<Ticket><![CDATA[" + ticket +"]]></Ticket>");
-		str.append("</xml>");
-		System.out.println(str.toString());
-		return str.toString();
+//		String createTime = map.get("CreateTime");
+//		// 消息类型 event
+//		String msgType = map.get("MsgType");
+//		// 事件类型（subscribe）
+//		String event=map.get("Event");
+//		// 用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
+//		String eventKey=map.get("EventKey");
+//		// 二维码的ticke，可以用来换取二维码图片
+//		String ticket=map.get("Ticket");
+//
+//		StringBuffer str = new StringBuffer();
+//		str.append("<xml>");
+//		str.append("<ToUserName><![CDATA[" + toUserName + "]]></ToUserName>");
+//		str.append("<FromUserName><![CDATA[" + fromUserName + "]]></FromUserName>");
+//		str.append("<CreateTime>" + createTime+ "</CreateTime>");
+//		str.append("<MsgType><![CDATA[" + msgType + "]]></MsgType>");
+//		str.append("<Event><![CDATA[" + event + "]]></Event>");
+//		str.append("<EventKey><![CDATA[" + eventKey +"]]></EventKey>");
+//		str.append("<Ticket><![CDATA[" + ticket +"]]></Ticket>");
+//		str.append("</xml>");
+//		System.out.println(str.toString());
+//		return str.toString();
+		System.out.println("fromUserName="+fromUserName
+				+" templateid="+xunta_templateid
+				+" templateurl="+xunta_templateurl
+				+" appid="+xunta_appid
+				+" appsecret="+xunta_appsecret);
+		SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
+		String result=weChatService.sendWechatmsgToUser(
+				fromUserName, 
+				xunta_templateid, 
+				xunta_templateurl,
+				"#FF0000",
+				""/*+"["+sameSelectTagList+"]"*/,
+				"欢迎您关注!", 
+				df.format(new Date()),
+				"欢迎您关注!",
+				xunta_appid,
+				xunta_appsecret);
+		if(result.equals("success")){
+			System.out.println("发送成功");
+		}else{
+			System.out.println("发送失败");
+		}
     } 
 }
