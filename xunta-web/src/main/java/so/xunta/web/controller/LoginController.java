@@ -746,7 +746,7 @@ public class LoginController {
 //		// 用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
 //		String eventKey=map.get("EventKey");
 //		// 二维码的ticke，可以用来换取二维码图片
-//		String ticket=map.get("Ticket");
+		String ticket=map.get("Ticket");
 //
 //		StringBuffer str = new StringBuffer();
 //		str.append("<xml>");
@@ -760,27 +760,30 @@ public class LoginController {
 //		str.append("</xml>");
 //		System.out.println(str.toString());
 //		return str.toString();
-		System.out.println("fromUserName="+fromUserName
-				+" templateid="+xunta_templateid
-				+" templateurl="+xunta_templateurl
-				+" appid="+xunta_appid
-				+" appsecret="+xunta_appsecret);
-		SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
-		String result=weChatService.sendWechatmsgToUser(
-				fromUserName, 
-				xunta_templateid, 
-				xunta_templateurl,
-				"#FF0000",
-				""/*+"["+sameSelectTagList+"]"*/,
-				"欢迎您关注!", 
-				df.format(new Date()),
-				"欢迎您关注!",
-				xunta_appid,
-				xunta_appsecret);
-		if(result.equals("success")){
-			System.out.println("发送成功");
-		}else{
-			System.out.println("发送失败");
+		System.out.println("ticket="+ticket);
+		if(!ticket.equals("") || ticket!=null){
+			System.out.println("fromUserName="+fromUserName
+					+" templateid="+xunta_templateid
+					+" templateurl="+xunta_templateurl
+					+" appid="+xunta_appid
+					+" appsecret="+xunta_appsecret);
+			SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
+			String result=weChatService.sendWechatmsgToUser(
+					fromUserName, 
+					xunta_templateid, 
+					xunta_templateurl,
+					"#FF0000",
+					""/*+"["+sameSelectTagList+"]"*/,
+					"欢迎您关注!", 
+					df.format(new Date()),
+					"欢迎您关注!",
+					xunta_appid,
+					xunta_appsecret);
+			if(result.equals("success")){
+				System.out.println("发送成功");
+			}else{
+				System.out.println("发送失败");
+			}
 		}
     } 
 }
