@@ -676,82 +676,83 @@ public class LoginController {
 	 */
 	@RequestMapping("/wxTwoBarCodeLogin")
 	public void sendWeChatTwoBarCodeLogin(HttpServletRequest request, HttpServletResponse response) {
-		logger.debug("执行wxTwoBarCodeLogin...");
-		boolean isGet = request.getMethod().toLowerCase().equals("get");
-		if (isGet) {
-			// start:2017.12.04 叶夷 这里只是为了微信服务器配置验证
-			// 微信加密签名
-			String signature = request.getParameter("signature");
-			// 时间戳
-			String timestamp = request.getParameter("timestamp");
-			// 随机数
-			String nonce = request.getParameter("nonce");
-			// 随机字符串
-			String echostr = request.getParameter("echostr");
-			WeChatServerConfiCheckUtils wcscs = new WeChatServerConfiCheckUtils();
-			logger.debug("验证结果:" + wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce));
-			if (wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce)) {
-				try {
-					PrintWriter out = response.getWriter();
-					out.print(echostr);
-					out.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
-			// end:2017.12.04 叶夷 这里只是为了微信服务器配置验证
-		} else {
-			Map<String, String> map = new HashMap<String, String>();
-			SAXReader reader = new SAXReader();
-			InputStream ins = null;
-			Document doc = null;
+		System.out.println("执行wxTwoBarCodeLogin...");
+		// start:2017.12.04 叶夷 这里只是为了微信服务器配置验证
+		// 微信加密签名
+		String signature = request.getParameter("signature");
+		String timestamp = request.getParameter("timestamp");
+		// 随机数
+		String nonce = request.getParameter("nonce");
+		// 随机字符串
+		//String echostr = request.getParameter("echostr");
+		WeChatServerConfiCheckUtils wcscs = new WeChatServerConfiCheckUtils();
+		System.out.println("验证结果:" + wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce));
+		if (wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce)) {
 			try {
-				ins = request.getInputStream();
-				doc = reader.read(ins);
-
-				Element root = doc.getRootElement();
-				@SuppressWarnings("unchecked")
-				List<Element> list = root.elements();
-				for (Element e : list) {
-					map.put(e.getName(), e.getText());
-					logger.debug("解析扫码之后的事件推送数据:" + e.getName() + "->" + e.getText());
-				}
-				ins.close();
+				PrintWriter out = response.getWriter();
+				out.print(processRequest(request));
+				out.close();
 			} catch (IOException e) {
-				logger.error(e.getMessage(), e);
-			} catch (DocumentException e) {
-				logger.error(e.getMessage(), e);
-			}
-
-			// 开发者微信号
-			String toUserName = map.get("ToUserName");
-			// 发送方帐号（一个OpenID）
-			String fromUserName = map.get("FromUserName");
-			// 消息创建时间(整型)
-			// String createTime = map.get("CreateTime");
-			// 消息类型 event
-			String msgType = map.get("MsgType");
-			// 事件类型（subscribe）
-			// String event=map.get("Event");
-			// 用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
-			// String eventKey=map.get("EventKey");
-			// 二维码的ticke，可以用来换取二维码图片
-			// String ticket=map.get("Ticket");
-
-			StringBuffer str = new StringBuffer();
-			str.append("<xml>");
-			str.append("<ToUserName><![CDATA[" + toUserName + "]]></ToUserName>");
-			str.append("<FromUserName><![CDATA[" + fromUserName + "]]></FromUserName>");
-			str.append("<CreateTime>" + Calendar.getInstance().getTimeInMillis() / 1000 + "</CreateTime>");
-			str.append("<MsgType><![CDATA[" + msgType + "]]></MsgType>");
-			str.append("<Content><![CDATA[你说的是：，吗？]]></Content>");
-			str.append("</xml>");
-			logger.debug(str.toString());
-			try {
-				response.getWriter().write(str.toString());
-			} catch (IOException e) {
-				logger.error(e.getMessage(), e);
+				System.out.println(e);
 			}
 		}
+		// end:2017.12.04 叶夷 这里只是为了微信服务器配置验证
+		
 	}
+	
+	/**
+     * 处理微信发来的请求
+     * 
+     * @param request
+     * @return xml
+     */
+    private String processRequest(HttpServletRequest request) {
+    	Map<String, String> map = new HashMap<String, String>();
+		SAXReader reader = new SAXReader();
+		InputStream ins = null;
+		Document doc = null;
+		try {
+			ins = request.getInputStream();
+			doc = reader.read(ins);
+
+			Element root = doc.getRootElement();
+			@SuppressWarnings("unchecked")
+			List<Element> list = root.elements();
+			for (Element e : list) {
+				map.put(e.getName(), e.getText());
+				System.out.println("解析扫码之后的事件推送数据:" + e.getName() + "->" + e.getText());
+			}
+			ins.close();
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		} catch (DocumentException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		// 开发者微信号
+		String toUserName = map.get("ToUserName");
+		// 发送方帐号（一个OpenID）
+		String fromUserName = map.get("FromUserName");
+		// 消息创建时间(整型)
+		// String createTime = map.get("CreateTime");
+		// 消息类型 event
+		String msgType = map.get("MsgType");
+		// 事件类型（subscribe）
+		// String event=map.get("Event");
+		// 用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
+		// String eventKey=map.get("EventKey");
+		// 二维码的ticke，可以用来换取二维码图片
+		// String ticket=map.get("Ticket");
+
+		StringBuffer str = new StringBuffer();
+		str.append("<xml>");
+		str.append("<ToUserName><![CDATA[" + toUserName + "]]></ToUserName>");
+		str.append("<FromUserName><![CDATA[" + fromUserName + "]]></FromUserName>");
+		str.append("<CreateTime>" + Calendar.getInstance().getTimeInMillis() / 1000 + "</CreateTime>");
+		str.append("<MsgType><![CDATA[" + msgType + "]]></MsgType>");
+		str.append("<Content><![CDATA[谢谢你的关注]]></Content>");
+		str.append("</xml>");
+		System.out.println(str.toString());
+		return str.toString();
+    } 
 }
