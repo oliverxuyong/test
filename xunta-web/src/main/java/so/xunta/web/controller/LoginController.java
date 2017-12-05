@@ -769,8 +769,10 @@ public class LoginController {
         List<Element> elementList = root.elements();
  
         // 遍历所有子节点
-        for (Element e : elementList)
+        for (Element e : elementList){
             map.put(e.getName(), e.getText());
+            System.out.println("微信xml信息："+e.getName()+"->"+e.getText());
+        }
  
         // 释放资源
         inputStream.close();
@@ -788,8 +790,8 @@ public class LoginController {
                 // 对所有xml节点的转换都增加CDATA标记
                 boolean cdata = true;
  
-                @SuppressWarnings("unused")
-				public void startNode(String name, Class<?> clazz) {
+                @SuppressWarnings({ "unused", "rawtypes" })
+				public void startNode(String name, Class clazz) {
                     startNode(name, clazz);
                 }
  
