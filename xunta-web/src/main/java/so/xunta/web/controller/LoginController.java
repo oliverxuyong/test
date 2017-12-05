@@ -751,7 +751,7 @@ public class LoginController {
 		str.append("<CreateTime>" + createTime+ "</CreateTime>");
 		str.append("<MsgType><![CDATA[" + msgType + "]]></MsgType>");
 		str.append("<Event><![CDATA[" + event + "]]></Event>");
-		str.append("<EventKey><![CDATA[|" + eventKey +"]]></EventKey>");
+		str.append("<EventKey><![CDATA[" + eventKey +"]]></EventKey>");
 		str.append("<Ticket><![CDATA[" + ticket +"]]></Ticket>");
 		str.append("</xml>");
 		System.out.println(str.toString());
