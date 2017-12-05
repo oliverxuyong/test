@@ -9,12 +9,12 @@ import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +39,6 @@ import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
 import so.xunta.server.WeChatService;
 import so.xunta.utils.IdWorker;
-import so.xunta.utils.WeChatServerConfiCheckUtils;
 import so.xunta.websocket.config.Constants;
 import weibo4j.Account;
 import weibo4j.Users;
@@ -674,7 +673,6 @@ public class LoginController {
 	/**
 	 * 2017.12.04 叶夷 微信带参数的二维码扫描之后到这里的路径
 	 */
-	@SuppressWarnings("null")
 	@RequestMapping("/wxTwoBarCodeLogin")
 	public void sendWeChatTwoBarCodeLogin(HttpServletRequest request, HttpServletResponse response) {
 		logger.debug("执行wxTwoBarCodeLogin...");
@@ -682,49 +680,54 @@ public class LoginController {
 		Map<String, String> map = new HashMap<String, String>();
 		SAXReader reader = new SAXReader();
 		InputStream ins = null;
-		try {
-			ins = request.getInputStream();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
 		Document doc = null;
 		try {
+			ins = request.getInputStream();
 			doc = reader.read(ins);
-		} catch (DocumentException e1) {
-			e1.printStackTrace();
-		}
-		Element root = doc.getRootElement();
-		@SuppressWarnings("unchecked")
-		List<Element> list = root.elements();
-		for (Element e : list) {
-			map.put(e.getName(), e.getText());
-			logger.debug("解析扫码之后的事件推送数据:"+e.getName()+"->"+e.getText());
-		}
-		try {
+			
+			Element root = doc.getRootElement();
+			@SuppressWarnings("unchecked")
+			List<Element> list = root.elements();
+			for (Element e : list) {
+				map.put(e.getName(), e.getText());
+				logger.debug("解析扫码之后的事件推送数据:"+e.getName()+"->"+e.getText());
+			}
 			ins.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		} catch (DocumentException e) {
+			logger.error(e.getMessage(), e);
 		}
+		
 		// 开发者微信号
-        /*String toUserName = map.get("ToUserName");
+        String toUserName = map.get("ToUserName");
 		// 发送方帐号（一个OpenID）
         String fromUserName = map.get("FromUserName");
         //消息创建时间(整型)
-        String createTime = map.get("CreateTime");
+//        String createTime = map.get("CreateTime");
         // 消息类型 event
         String msgType = map.get("MsgType");
         //事件类型（subscribe）
-        String event=map.get("Event");
+//        String event=map.get("Event");
         //用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
-        String eventKey=map.get("EventKey");
+//        String eventKey=map.get("EventKey");
         //二维码的ticke，可以用来换取二维码图片
-        String ticket=map.get("Ticket");*/
+//        String ticket=map.get("Ticket");
         
+        StringBuffer str = new StringBuffer();  
+        str.append("<xml>");  
+        str.append("<ToUserName><![CDATA[" + toUserName + "]]></ToUserName>");  
+        str.append("<FromUserName><![CDATA[" + fromUserName + "]]></FromUserName>");  
+        str.append("<CreateTime>" + Calendar.getInstance().getTimeInMillis() / 1000 + "</CreateTime>");  
+        str.append("<MsgType><![CDATA[" + msgType + "]]></MsgType>");  
+        str.append("<Content><![CDATA[你说的是：，吗？]]></Content>");  
+        str.append("</xml>");  
+        logger.debug(str.toString());  
         try {
-			response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.xunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");// 跳转到微信自动登录页面
+			response.getWriter().write(str.toString());
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
-		}
+		}  
 
 		/*
 		 * //start:2017.12.04 叶夷 这里只是为了微信服务器配置验证 // 微信加密签名 String signature =
@@ -740,5 +743,6 @@ public class LoginController {
 		 * out.print(echostr); out.close(); } catch (IOException e) {
 		 * logger.error(e.getMessage(), e); } } //end:2017.12.04 叶夷
 		 * 这里只是为了微信服务器配置验证
-		 */}
+		 */
+	}
 }
