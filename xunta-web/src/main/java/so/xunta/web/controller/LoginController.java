@@ -731,6 +731,7 @@ public class LoginController {
             textMessage.setContent(respContent);
             // 将文本消息对象转换成xml
             respXml = WechatMessageUtil.messageToXml(textMessage);
+            System.out.println(respXml);
         } catch (Exception e) {
             e.printStackTrace();
         }
