@@ -91,7 +91,8 @@ public class WeChatServiceImpl implements WeChatService{
 	 *            密钥
 	 * @return
 	 */
-	private String getToken(String appid, String appsecret) {
+	@Override
+	public String getToken(String appid, String appsecret) {
 		logger.debug("token_url: " + token_url);
 		Token token=getTokenForMysql(appid);
 		String accessToken = "";
@@ -142,8 +143,8 @@ public class WeChatServiceImpl implements WeChatService{
 		}
 		return accessToken;
 	}
-
-	private String httpsRequest(String requestUrl, String requestMethod, String outputStr) {
+	@Override
+	public String httpsRequest(String requestUrl, String requestMethod, String outputStr) {
 		try {
 			URL url = new URL(requestUrl);
 			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();

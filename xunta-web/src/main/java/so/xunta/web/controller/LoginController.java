@@ -10,7 +10,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -682,7 +681,7 @@ public class LoginController {
 	 */
 	@RequestMapping("/wxTwoBarCodeLogin")
 	public void sendWeChatTwoBarCodeLogin(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("执行wxTwoBarCodeLogin...");
+		logger.info("执行wxTwoBarCodeLogin...");
 		// start:2017.12.04 叶夷 这里只是为了微信服务器配置验证
 		// 微信加密签名
 		String signature = request.getParameter("signature");
@@ -692,9 +691,9 @@ public class LoginController {
 		// 随机字符串
 		//String echostr = request.getParameter("echostr");
 		WeChatServerConfiCheckUtils wcscs = new WeChatServerConfiCheckUtils();
-		System.out.println("验证结果:" + wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce));
+		logger.info("验证结果:" + wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce));
 		if (wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce)) {
-			System.out.println("扫描关注之后发送模版消息...");
+			logger.info("扫描关注之后发送模版消息...");
 			processRequest(request);
 				/*PrintWriter out = response.getWriter();
 				out.print(processRequest(request));
@@ -702,6 +701,30 @@ public class LoginController {
 		}
 		// end:2017.12.04 叶夷 这里只是为了微信服务器配置验证
 		
+		/**
+		 * start:2017.12.07 叶夷  创建自定义菜单
+		 */
+		logger.info("开始创建自定义菜单");
+		String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+		String accessToken=weChatService.getToken(xunta_appid, xunta_appsecret);
+		String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
+		String menuString="{'button': "
+				+ "["
+				+ "{"
+				+ "'type': 'click',"
+				+ "'name': 'XunTa',"
+				+ "'key': '1',"
+				+ "'url': '"+xunta_templateurl+"',"
+				+ "}"
+				+ "]"
+				+ "}";
+		logger.info("menuString="+menuString);
+		String menu_create_result=weChatService.httpsRequest(url, "POST", menuString);
+		JSONObject jsonObject=new JSONObject(menu_create_result);
+		logger.info("创建菜单结果:"+jsonObject);
+		/**
+		 * end:2017.12.07 叶夷  创建自定义菜单
+		 */
 	}
 	
 	/**
@@ -724,7 +747,7 @@ public class LoginController {
 			List<Element> list = root.elements();
 			for (Element e : list) {
 				map.put(e.getName(), e.getText());
-				System.out.println("解析扫码之后的事件推送数据:" + e.getName() + "->" + e.getText());
+				logger.info("解析扫码之后的事件推送数据:" + e.getName() + "->" + e.getText());
 			}
 			ins.close();
 		} catch (IOException e) {
@@ -760,9 +783,9 @@ public class LoginController {
 //		str.append("</xml>");
 //		System.out.println(str.toString());
 //		return str.toString();
-		System.out.println("ticket="+ticket);
+		logger.info("ticket="+ticket);
 		if(!ticket.equals("") || ticket!=null){
-			System.out.println("fromUserName="+fromUserName
+			logger.info("fromUserName="+fromUserName
 					+" templateid="+xunta_templateid
 					+" templateurl="+xunta_templateurl
 					+" appid="+xunta_appid
@@ -771,7 +794,7 @@ public class LoginController {
 			String result=weChatService.sendWechatmsgToUser(
 					fromUserName, 
 					xunta_templateid, 
-					"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.xunta.so%2fwxpnCallback&eventKey="+eventKey+"&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect",
+					xunta_templateurl,
 					"#FF0000",
 					""/*+"["+sameSelectTagList+"]"*/,
 					"欢迎您关注!", 
@@ -780,9 +803,9 @@ public class LoginController {
 					xunta_appid,
 					xunta_appsecret);
 			if(result.equals("success")){
-				System.out.println("发送成功");
+				logger.info("关注成功模版消息发送成功");
 			}else{
-				System.out.println("发送失败");
+				logger.error("关注成功模版消息发送失败");
 			}
 		}
     } 
