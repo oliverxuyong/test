@@ -689,6 +689,7 @@ public class LoginController {
 		logger.info("开始创建自定义菜单");
 		String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
 		String accessToken=weChatService.getToken(xunta_appid, xunta_appsecret);
+		logger.info("accessToken="+accessToken);
 		String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
 		String menuString="{'button': "
 				+ "["
@@ -696,7 +697,7 @@ public class LoginController {
 				+ "'type': 'click',"
 				+ "'name': 'XunTa',"
 				+ "'key': '1',"
-				+ "'url': '"+xunta_templateurl+"',"
+				+ "'url': '"+xunta_templateurl+"'"
 				+ "}"
 				+ "]"
 				+ "}";
