@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import so.xunta.beans.User;
 import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
+import so.xunta.server.OpenId2EventScopeService;
 import so.xunta.server.WeChatService;
 import so.xunta.utils.IdWorker;
 import so.xunta.utils.WeChatServerConfiCheckUtils;
@@ -64,29 +65,24 @@ public class LoginController {
 
 	@Autowired
 	private WeChatService weChatService;
+	
+	@Autowired
+	private OpenId2EventScopeService openId2EventScopeService;
 
 	static Logger logger = Logger.getRootLogger();
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
-	@Value("${xunta_appid}")
-	private String xunta_appid;
-	@Value("${xunta_appsecret}")
-	private String xunta_appsecret;
-	@Value("${xunta_templateid}")
-	private String xunta_templateid;
-	@Value("${xunta_templateurl}")
-	private String xunta_templateurl;
-
-	@Value("${aini_appid}")
-	private String aini_appid;
-	@Value("${aini_appsecret}")
-	private String aini_appsecret;
-	@Value("${aini_templateurl}")
-	private String aini_templateurl;
-
-	@Value("${xunta_serverToken}")
-	private String xunta_serverToken;
+	@Value("${appid}")
+	private String appid;
+	@Value("${appsecret}")
+	private String appsecret;
+	@Value("${templateid}")
+	private String templateid;
+	@Value("${templateurl}")
+	private String templateurl;
+	@Value("${serverToken}")
+	private String serverToken;
 
 	// 登录验证
 	public boolean checkLogin() {
@@ -245,22 +241,20 @@ public class LoginController {
 		String code = request.getParameter("code");
 		logger.debug("code:" + code);
 
-		String appid, secret;
-
 		// 获得登录的url
 		String loginUrl = request.getRequestURL().toString();
 		logger.info("从微信公众号进来的url:" + loginUrl);
 
-		// 判断从哪个网址进来的公众号之后匹配其相应的公众号参数
+		/*// 判断从哪个网址进来的公众号之后匹配其相应的公众号参数
 		if (loginUrl.contains("www.ainiweddingcloud.com")) {
 			appid = aini_appid;
 			secret = aini_appsecret;
 		} else {
 			appid = xunta_appid;
 			secret = xunta_appsecret;
-		}
+		}*/
 
-		String codeToToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + secret
+		String codeToToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + appsecret
 				+ "&code=" + code + "&grant_type=authorization_code";
 		String weiXinInfo = httpclientReq(codeToToken);
 		logger.debug("weiXinInfo: " + weiXinInfo);
@@ -623,17 +617,16 @@ public class LoginController {
 	public void sendWeChatShareLinkMsg(HttpServletRequest request, HttpServletResponse response)
 			throws UnsupportedEncodingException {
 		String url = request.getParameter("url");
-		String appid, secret;
 		// 判断从哪个网址进来的公众号之后匹配其相应的公众号参数
-		if (url.contains(aini_templateurl)) {
+		/*if (url.contains(aini_templateurl)) {
 			appid = aini_appid;
 			secret = aini_appsecret;
 		} else {
 			appid = xunta_appid;
 			secret = xunta_appsecret;
-		}
+		}*/
 
-		JSONObject ret = weChatService.makeWXTicket(url, appid, secret);
+		JSONObject ret = weChatService.makeWXTicket(url, appid, appsecret);
 		try {
 			logger.debug("执行sendWeChatShareLinkMsg...");
 			response.setCharacterEncoding("utf-8");
@@ -691,8 +684,8 @@ public class LoginController {
 		// 随机字符串
 		//String echostr = request.getParameter("echostr");
 		WeChatServerConfiCheckUtils wcscs = new WeChatServerConfiCheckUtils();
-		logger.info("验证结果:" + wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce));
-		if (wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce)) {
+		logger.info("验证结果:" + wcscs.checkSignature(serverToken, signature, timestamp, nonce));
+		if (wcscs.checkSignature(serverToken, signature, timestamp, nonce)) {
 			logger.info("扫描关注之后发送模版消息...");
 			processRequest(request);
 				/*PrintWriter out = response.getWriter();
@@ -767,7 +760,7 @@ public class LoginController {
 			 */
 			logger.info("开始创建自定义菜单");
 			String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
-			String accessToken=weChatService.getToken(xunta_appid, xunta_appsecret);
+			String accessToken=weChatService.getToken(appid, appsecret);
 			logger.info("accessToken="+accessToken);
 			String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
 			String menuString="{'button':["
@@ -777,7 +770,7 @@ public class LoginController {
 					+ "{"
 					+ "'type':'view',"
 					+ "'name':'XunTa',"
-					+ "'url':'"+xunta_templateurl+"'"
+					+ "'url':'"+templateurl+"'"
 					+ "}]"
 					+ "}]"
 					+ "}";
@@ -789,27 +782,30 @@ public class LoginController {
 			 */
 			
 			logger.info("fromUserName="+fromUserName
-					+" templateid="+xunta_templateid
-					+" templateurl="+xunta_templateurl
-					+" appid="+xunta_appid
-					+" appsecret="+xunta_appsecret);
+					+" templateid="+templateid
+					+" templateurl="+templateurl
+					+" appid="+appid
+					+" appsecret="+appsecret);
 			SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
 			String result=weChatService.sendWechatmsgToUser(
 					fromUserName, 
-					xunta_templateid, 
-					xunta_templateurl,
+					templateid, 
+					templateurl,
 					"#FF0000",
 					""/*+"["+sameSelectTagList+"]"*/,
 					"欢迎您关注!", 
 					df.format(new Date()),
 					"欢迎您关注!",
-					xunta_appid,
-					xunta_appsecret);
+					appid,
+					appsecret);
 			if(result.equals("success")){
 				logger.info("关注成功模版消息发送成功");
 			}else{
 				logger.error("关注成功模版消息发送失败");
 			}
+			
+			//2017.12.07 叶夷  将openid和二维码参数存储
+			openId2EventScopeService.setOpenId(fromUserName, eventKey);
 		}
     } 
 }

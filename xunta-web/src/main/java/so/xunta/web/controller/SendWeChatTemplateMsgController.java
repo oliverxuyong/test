@@ -38,23 +38,23 @@ public class SendWeChatTemplateMsgController {
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 	
-	@Value("${xunta_templateid}")
-	private String xunta_templateid;
-	@Value("${xunta_templateurl}")
-	private String xunta_templateurl;
-	@Value("${xunta_appid}")
-	private String xunta_appid;
-	@Value("${xunta_appsecret}")
-	private String xunta_appsecret;
+	@Value("${templateid}")
+	private String templateid;
+	@Value("${templateurl}")
+	private String templateurl;
+	@Value("${appid}")
+	private String appid;
+	@Value("${appsecret}")
+	private String appsecret;
 	
-	@Value("${aini_templateid}")
+	/*@Value("${aini_templateid}")
 	private String aini_templateid;
 	@Value("${aini_templateurl}")
 	private String aini_templateurl;
 	@Value("${aini_appid}")
 	private String aini_appid;
 	@Value("${aini_appsecret}")
-	private String aini_appsecret;
+	private String aini_appsecret;*/
 	
 	@RequestMapping("/sendMTemplateMsg")
 	public void checkUserExist(/*String userid,String touserid,String content,*/HttpServletRequest request,HttpServletResponse response) throws IOException{
@@ -96,10 +96,10 @@ public class SendWeChatTemplateMsgController {
 		}
 		logger.debug("模版消息显示的共同选择的标签："+sameSelectTagList);*/
 		
-		String templateid,templateurl,appid,appsecret;
+//		String templateid,templateurl,appid,appsecret;
 		
 		//通过usergroup来判断是从模版消息发往哪里
-		String tousergroup=touser.getUserGroup();
+		/*String tousergroup=touser.getUserGroup();
 		logger.debug("tousergroup="+tousergroup);
 		if(tousergroup.equals("艾妮婚庆云")){
 			templateid=aini_templateid;
@@ -113,7 +113,7 @@ public class SendWeChatTemplateMsgController {
 			appid=xunta_appid;
 			appsecret=xunta_appsecret;
 			logger.debug("xunta公众号：templateid="+templateid+" templateurl="+templateurl+" appid="+appid+" appsecret="+appsecret);
-		}
+		}*/
 		
 		String result=weChatService.sendWechatmsgToUser(
 				toopenid, 
