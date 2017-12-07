@@ -694,7 +694,7 @@ public class LoginController {
 		String menuString="{'button': "
 				+ "["
 				+ "{"
-				+ "'type': 'click',"
+				+ "'type': 'view',"
 				+ "'name': 'XunTa',"
 				+ "'key': '1',"
 				+ "'url': '"+xunta_templateurl+"'"
