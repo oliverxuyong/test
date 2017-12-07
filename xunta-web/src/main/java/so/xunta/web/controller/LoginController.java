@@ -697,7 +697,7 @@ public class LoginController {
 				+ "'type': 'view',"
 				+ "'name': 'XunTa',"
 				+ "'key': '1',"
-				+ "'url': '"+xunta_templateurl+"'"
+				+ "'url': 'http://www.xunta.so/'"
 				+ "}"
 				+ "]"
 				+ "}";
