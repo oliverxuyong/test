@@ -13,6 +13,7 @@ Servers/
 target/
 zoie-config.properties
 qqconnectconfig.properties
-redis.properties
+#redis.properties
 jdbc.properties
 log4j.xml
+wechat.properties
