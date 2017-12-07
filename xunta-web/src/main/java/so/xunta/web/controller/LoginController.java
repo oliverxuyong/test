@@ -682,24 +682,6 @@ public class LoginController {
 	@RequestMapping("/wxTwoBarCodeLogin")
 	public void sendWeChatTwoBarCodeLogin(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("执行wxTwoBarCodeLogin...");
-		// start:2017.12.04 叶夷 这里只是为了微信服务器配置验证
-		// 微信加密签名
-		String signature = request.getParameter("signature");
-		String timestamp = request.getParameter("timestamp");
-		// 随机数
-		String nonce = request.getParameter("nonce");
-		// 随机字符串
-		//String echostr = request.getParameter("echostr");
-		WeChatServerConfiCheckUtils wcscs = new WeChatServerConfiCheckUtils();
-		logger.info("验证结果:" + wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce));
-		if (wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce)) {
-			logger.info("扫描关注之后发送模版消息...");
-			processRequest(request);
-				/*PrintWriter out = response.getWriter();
-				out.print(processRequest(request));
-				out.close();*/
-		}
-		// end:2017.12.04 叶夷 这里只是为了微信服务器配置验证
 		
 		/**
 		 * start:2017.12.07 叶夷  创建自定义菜单
@@ -725,6 +707,26 @@ public class LoginController {
 		/**
 		 * end:2017.12.07 叶夷  创建自定义菜单
 		 */
+		
+		// start:2017.12.04 叶夷 这里只是为了微信服务器配置验证
+		// 微信加密签名
+		String signature = request.getParameter("signature");
+		String timestamp = request.getParameter("timestamp");
+		// 随机数
+		String nonce = request.getParameter("nonce");
+		// 随机字符串
+		//String echostr = request.getParameter("echostr");
+		WeChatServerConfiCheckUtils wcscs = new WeChatServerConfiCheckUtils();
+		logger.info("验证结果:" + wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce));
+		if (wcscs.checkSignature(xunta_serverToken, signature, timestamp, nonce)) {
+			logger.info("扫描关注之后发送模版消息...");
+			processRequest(request);
+				/*PrintWriter out = response.getWriter();
+				out.print(processRequest(request));
+				out.close();*/
+		}
+		// end:2017.12.04 叶夷 这里只是为了微信服务器配置验证
+		
 	}
 	
 	/**
