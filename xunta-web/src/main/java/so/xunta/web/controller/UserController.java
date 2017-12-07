@@ -17,7 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
+
 import so.xunta.beans.User;
+import so.xunta.server.OpenId2EventScopeService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.UserService;
 import so.xunta.utils.DateTimeUtils;
@@ -29,6 +31,8 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private RecommendService recommendService;
+	@Autowired
+	private OpenId2EventScopeService openId2EventScopeService;
 	
 	Logger logger =Logger.getLogger(UserController.class);
 	IdWorker idWorder = new IdWorker(1L, 1L);	
@@ -98,6 +102,11 @@ public class UserController {
 			logger.error("UserName URLdecode 出错"+name);
 		}
 		
+		String event_scope=null;
+		if(openid!=null){
+			event_scope=openId2EventScopeService.getEventScope(openid);
+		}
+		
 		User user = new User();
 		Long user_id = idWorder.nextId();
 		user.setUserId(user_id);
@@ -112,6 +121,7 @@ public class UserController {
 		user.setCreate_datetime_long(date.getTime());
 		user.setCreate_datetime_str(DateTimeUtils.getTimeStrFromDate(date));
 		user.setOpenid(openid);
+		user.setEvent_scope(event_scope);
 		user.setLast_update_time(new Timestamp(System.currentTimeMillis()));
 		
 		JSONObject params = new JSONObject();

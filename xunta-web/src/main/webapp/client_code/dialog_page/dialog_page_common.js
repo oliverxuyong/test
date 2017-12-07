@@ -178,7 +178,7 @@ function showTitle() {
 /**
  * 2017.08.30 叶夷  请求共同选择的标签
  */
-function requestSelectCP(){
+/*function requestSelectCP(){
 	$.ajax({
         url:"http://xunta.so:3000/v1/find/users/same/tags/",
         type:"POST",
@@ -197,6 +197,25 @@ function requestSelectCP(){
         	return;
         }
     });
+}*/
+function requestSelectCP(){
+	$.ajax({
+        url:"http://xunta.so:3000/v1/find/other/tags",
+        type:"POST",
+        dataType:"jsonp",
+        jsonp:"callback",
+        contentType: "application/json; charset=utf-8",
+        data:{my_user_id:userId,
+        	matched_user_id:toUserId},
+        async:false,
+        success:function(data, textStatus) {
+        	console.log("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
+        	log2root("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
+        	showSameSelectCp(data);
+        },
+        error:function(data, textStatus) {
+        	return;
+        }
+    });
 }
-
 

@@ -135,8 +135,8 @@ function showSameSelectCp(data){
 		var cpid=data.msg[i].cp_id;
 		var text=data.msg[i].text;
 		//2017.11.29 叶夷  将共同喜欢的和不喜欢的标签也放进去且区开来
-		var if_common=data.msg[i].if_common;
-		var if_dislike=data.msg[i].if_dislike;
+		var if_common=data.msg[i].is_common;
+		var if_dislike=data.msg[i].is_dislike;
 		
 		appendSameSelectCp(cpid,text,if_common,if_dislike);
 	}
@@ -158,10 +158,10 @@ function appendSameSelectCp(cpid,text,if_common,if_dislike){
 	selectCpContainer.append(selectCp);
 	
 	//2017.11.29 叶夷  将共同喜欢的和不喜欢的标签也放进去且区开来
-	if(if_common){
-		selectCp.attr("class","commonLikeTags");
-	}else if(if_dislike){
-		selectCp.attr("class","commonDislikeTags");
+	if(if_common=="true"){
+		selectCp.attr("class","selectCp commonLikeTags");
+	}else if(if_dislike=="true"){
+		selectCp.attr("class","selectCp commonDislikeTags");
 	}
 	
 	//将用户昵称文字大小放入我的标签的大小
