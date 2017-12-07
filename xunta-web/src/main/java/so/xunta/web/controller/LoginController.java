@@ -241,7 +241,7 @@ public class LoginController {
 	public void wxpnCallback(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException,
 			WeiboException, IllegalArgumentException, IllegalAccessException, JSONException,
 			weibo4j.org.json.JSONException, UnsupportedEncodingException {
-		logger.info("微信从公众号登录");
+		logger.info("微信从公众号登录:"+request.getQueryString());
 		response.setContentType("text/html; charset=utf-8");
 		String code = request.getParameter("code");
 		logger.debug("code:" + code);
@@ -253,7 +253,7 @@ public class LoginController {
 		logger.info("从微信公众号进来的url:" + loginUrl);
 
 		// 判断从哪个网址进来的公众号之后匹配其相应的公众号参数
-		if (loginUrl.contains(aini_templateurl)) {
+		if (loginUrl.contains("www.ainiweddingcloud.com")) {
 			appid = aini_appid;
 			secret = aini_appsecret;
 		} else {
@@ -744,7 +744,7 @@ public class LoginController {
 //		// 事件类型（subscribe）
 //		String event=map.get("Event");
 //		// 用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
-//		String eventKey=map.get("EventKey");
+		String eventKey=map.get("EventKey");
 //		// 二维码的ticke，可以用来换取二维码图片
 		String ticket=map.get("Ticket");
 //
@@ -771,7 +771,7 @@ public class LoginController {
 			String result=weChatService.sendWechatmsgToUser(
 					fromUserName, 
 					xunta_templateid, 
-					xunta_templateurl,
+					"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.xunta.so%2fwxpnCallback&eventKey="+eventKey+"&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect",
 					"#FF0000",
 					""/*+"["+sameSelectTagList+"]"*/,
 					"欢迎您关注!", 
