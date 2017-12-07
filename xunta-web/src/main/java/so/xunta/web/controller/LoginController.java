@@ -686,16 +686,19 @@ public class LoginController {
 		WeChatServerConfiCheckUtils wcscs = new WeChatServerConfiCheckUtils();
 		logger.info("验证结果:" + wcscs.checkSignature(serverToken, signature, timestamp, nonce));
 		if (wcscs.checkSignature(serverToken, signature, timestamp, nonce)) {
-//			logger.info("扫描关注之后发送模版消息...");
-//			processRequest(request);
-			PrintWriter out;
+			logger.info("扫描关注之后发送模版消息...");
+			processRequest(request);
+			
+			//这里只是为了服务器配置验证
+			
+			/*PrintWriter out;
 			try {
 				out = response.getWriter();
 				out.print(echostr);
 				out.close();
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			}*/
 		}
 		// end:2017.12.04 叶夷 这里只是为了微信服务器配置验证
 		
