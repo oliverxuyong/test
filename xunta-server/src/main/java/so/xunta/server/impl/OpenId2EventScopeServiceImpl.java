@@ -1,9 +1,12 @@
 package so.xunta.server.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import so.xunta.persist.OpenId2EventScopeDao;
 import so.xunta.server.OpenId2EventScopeService;
 
+@Service
 public class OpenId2EventScopeServiceImpl implements OpenId2EventScopeService {
 	@Autowired
 	private OpenId2EventScopeDao openId2EventScopeDao;

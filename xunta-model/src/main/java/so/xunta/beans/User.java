@@ -42,6 +42,8 @@ public class User extends IdEntity{
 	@ColumnDefault(value="0")
 	private Integer ifInitedTopics = 0;
 	private Timestamp last_update_time;
+	@ColumnDefault(value="xunta_common")
+	private String event_scope;
 
 	/**
 	 * 用户名不能重复
@@ -174,10 +176,17 @@ public class User extends IdEntity{
 	public void setOpenid(String openid) {
 		this.openid = openid;
 	}
+	public String getEvent_scope() {
+		return event_scope;
+	}
+	public void setEvent_scope(String event_scope) {
+		this.event_scope = event_scope;
+	}
 	public Timestamp getLast_update_time() {
 		return last_update_time;
 	}
 	public void setLast_update_time(Timestamp last_update_time) {
 		this.last_update_time = last_update_time;
 	}
+	
 }
