@@ -773,13 +773,13 @@ public class LoginController {
 			String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
 			String menuString="{'button':["
 					+ "{"
-					+ "'name':'菜单',"
-					+ "'sub_button':["
-					+ "{"
+					+ "'name':'点我',"
+					//+ "'sub_button':["
+					//+ "{"
 					+ "'type':'view',"
 					+ "'name':'点我',"
 					+ "'url':'"+templateurl+"'"
-					+ "}]"
+					//+ "}]"
 					+ "}]"
 					+ "}";
 			logger.info("menuString="+menuString);
