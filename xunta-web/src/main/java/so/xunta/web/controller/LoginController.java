@@ -777,7 +777,7 @@ public class LoginController {
 					//+ "'sub_button':["
 					//+ "{"
 					+ "'type':'view',"
-					+ "'name':'点我',"
+					//+ "'name':'点我',"
 					+ "'url':'"+templateurl+"'"
 					//+ "}]"
 					+ "}]"
