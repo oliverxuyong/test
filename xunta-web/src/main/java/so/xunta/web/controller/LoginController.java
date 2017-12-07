@@ -702,8 +702,7 @@ public class LoginController {
 				+ "]"
 				+ "}";
 		logger.info("menuString="+menuString);
-		String menu_create_result=weChatService.httpsRequest(url, "POST", menuString);
-		JSONObject jsonObject=new JSONObject(menu_create_result);
+		JSONObject jsonObject=weChatService.httpRequest(url, "POST", menuString);
 		logger.info("创建菜单结果:"+jsonObject);
 		/**
 		 * end:2017.12.07 叶夷  创建自定义菜单
