@@ -682,32 +682,6 @@ public class LoginController {
 	@RequestMapping("/wxTwoBarCodeLogin")
 	public void sendWeChatTwoBarCodeLogin(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("执行wxTwoBarCodeLogin...");
-		
-		/**
-		 * start:2017.12.07 叶夷  创建自定义菜单
-		 */
-		logger.info("开始创建自定义菜单");
-		String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
-		String accessToken=weChatService.getToken(xunta_appid, xunta_appsecret);
-		logger.info("accessToken="+accessToken);
-		String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
-		String menuString="{'button': "
-				+ "["
-				+ "{"
-				+ "'type': 'view',"
-				+ "'name': 'XunTa',"
-				+ "'key': '1',"
-				+ "'url': 'http://www.xunta.so/'"
-				+ "}"
-				+ "]"
-				+ "}";
-		logger.info("menuString="+menuString);
-		JSONObject jsonObject=weChatService.httpRequest(url, "POST", menuString);
-		logger.info("创建菜单结果:"+jsonObject);
-		/**
-		 * end:2017.12.07 叶夷  创建自定义菜单
-		 */
-		
 		// start:2017.12.04 叶夷 这里只是为了微信服务器配置验证
 		// 微信加密签名
 		String signature = request.getParameter("signature");
@@ -787,6 +761,32 @@ public class LoginController {
 //		return str.toString();
 		logger.info("ticket="+ticket);
 		if(!ticket.equals("") || ticket!=null){
+			
+			/**
+			 * start:2017.12.07 叶夷  创建自定义菜单
+			 */
+			logger.info("开始创建自定义菜单");
+			String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+			String accessToken=weChatService.getToken(xunta_appid, xunta_appsecret);
+			logger.info("accessToken="+accessToken);
+			String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
+			String menuString="{'button': "
+					+ "["
+					+ "{"
+					+ "'type': 'view',"
+					+ "'name': 'XunTa',"
+					+ "'key': '1',"
+					+ "'url': 'http://www.xunta.so/'"
+					+ "}"
+					+ "]"
+					+ "}";
+			logger.info("menuString="+menuString);
+			JSONObject jsonObject=weChatService.httpRequest(url, "POST", menuString);
+			logger.info("创建菜单结果:"+jsonObject);
+			/**
+			 * end:2017.12.07 叶夷  创建自定义菜单
+			 */
+			
 			logger.info("fromUserName="+fromUserName
 					+" templateid="+xunta_templateid
 					+" templateurl="+xunta_templateurl
