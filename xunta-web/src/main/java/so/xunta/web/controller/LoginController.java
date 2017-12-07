@@ -770,15 +770,16 @@ public class LoginController {
 			String accessToken=weChatService.getToken(xunta_appid, xunta_appsecret);
 			logger.info("accessToken="+accessToken);
 			String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
-			String menuString="{'button':"
-					+ "["
+			String menuString="{'button':["
+					+ "{"
+					+ "'name':'菜单',"
+					+ "'sub_button':["
 					+ "{"
 					+ "'type':'view',"
 					+ "'name':'XunTa',"
-					+ "'key':'2',"
 					+ "'url':'http://www.xunta.so/'"
-					+ "}"
-					+ "]"
+					+ "}]"
+					+ "}]"
 					+ "}";
 			logger.info("menuString="+menuString);
 			JSONObject jsonObject=weChatService.httpRequest(url, "POST", menuString);
