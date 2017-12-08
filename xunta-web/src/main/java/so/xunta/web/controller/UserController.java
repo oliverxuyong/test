@@ -106,6 +106,7 @@ public class UserController {
 		if(openid!=null){
 			event_scope=openId2EventScopeService.getEventScope(openid);
 		}
+		logger.info("获得的event_scope="+event_scope);
 		
 		User user = new User();
 		Long user_id = idWorder.nextId();
