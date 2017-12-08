@@ -297,6 +297,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@PostConstruct
 	public void init() {
 		logger.info("websocketcontext init .....");
+		recommendTaskPool.setRejectedHandler();
 		try {
 			if (websocketContext.getwebsocketContext().size() == 0) {
 				websocketContext.scanPackage("so.xunta.websocket");
