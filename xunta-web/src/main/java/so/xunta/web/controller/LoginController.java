@@ -785,16 +785,15 @@ public class LoginController {
 			String accessToken=weChatService.getToken(appid, appsecret);
 			logger.info("accessToken="+accessToken);
 			String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
-			String menuString="{'button':["
+			String menuString="{'button':"
+					+ "["
 					+ "{"
-					+ "'name':'点我',"
-					//+ "'sub_button':["
-					//+ "{"
 					+ "'type':'view',"
-					//+ "'name':'点我',"
+					+ "'name':'点我',"
+					+ "'key':'2',"
 					+ "'url':'"+templateurl+"'"
-					//+ "}]"
-					+ "}]"
+					+ "}"
+					+ "]"
 					+ "}";
 			logger.info("menuString="+menuString);
 			JSONObject jsonObject=weChatService.httpRequest(url, "POST", menuString);
