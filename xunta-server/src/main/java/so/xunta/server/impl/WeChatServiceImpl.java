@@ -366,7 +366,9 @@ public class WeChatServiceImpl implements WeChatService{
 			if ("ok".equals(errmsg)) { // 如果为errmsg为ok，则代表发送成功，公众号推送信息给用户了。
 				return "success";
 			}else{
-				if(resultJson.get("errcode").equals("40001")){//如果模版消息token错误则重新获取token，重新发送
+				String errcode=resultJson.get("errcode").toString();
+				System.out.println("errcode="+errcode);
+				if(errcode.equals("40001")){//如果模版消息token错误则重新获取token，重新发送
 					String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
 					// 发起GET请求获取凭证
 					JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
