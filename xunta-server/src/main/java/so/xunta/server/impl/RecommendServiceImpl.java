@@ -3,7 +3,6 @@ package so.xunta.server.impl;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ import so.xunta.persist.C2uDao;
 import so.xunta.persist.ConcernPointDao;
 import so.xunta.persist.CpChoiceDao;
 import so.xunta.persist.CpChoiceDetailDao;
+import so.xunta.persist.EventScopeCpTypeMappingDao;
 import so.xunta.persist.InitialCpDao;
 import so.xunta.persist.U2cDao;
 import so.xunta.persist.U2uRelationDao;
@@ -61,6 +61,8 @@ public class RecommendServiceImpl implements RecommendService {
 	private UserDao userDao;
 	@Autowired
 	private InitialCpDao initialCpDao;
+	@Autowired
+	private EventScopeCpTypeMappingDao eventScopeCpTypeMappingDao;
 
 	Logger logger =Logger.getLogger(RecommendServiceImpl.class);
 	
@@ -76,16 +78,17 @@ public class RecommendServiceImpl implements RecommendService {
 		long startTime = System.currentTimeMillis();
 		
 		Set<String> pendingPushUids = new HashSet<String>();
+		User u = userDao.findUserByUserid(Long.valueOf(uid));
 		
 	
 		/* Step 1.得到与用户U相同选择一CP的用户列表：
 		 	*通过C2U表得到选过相同C的用户列表{Ui}，并将U加到C中
 		 * */
-		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid,property);		
+		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid,property,u.getEvent_scope());		
 		if(selectType == RecommendService.SELECT_CP){
-			c2uDao.saveCpOneUser(cpid, uid, property);
+			c2uDao.saveCpOneUser(cpid, uid, property,u.getEvent_scope());
 		}else{
-			c2uDao.deleteUserInCp(cpid, uid, property);
+			c2uDao.deleteUserInCp(cpid, uid, property,u.getEvent_scope());
 		}
 		
 		/*Step 2.更新U2U_Update_Status
@@ -132,7 +135,7 @@ public class RecommendServiceImpl implements RecommendService {
 		pendingPushUids.addAll(usersSelectedSameCp);
 		
 		long endTime = System.currentTimeMillis();
-		logger.debug("用户:"+uid+" 选择了CP："+cpid+"  的记录任务完成"+"\t 选中相同CP的用户数: "+ 
+		logger.debug("用户:"+u.getName()+" 选择了CP："+cpid+"  的记录任务完成"+"\t 选中相同CP的用户数: "+ 
 						usersSelectedSameCp.size() +"\t 产生更新用户数："+ pendingPushUids.size()+"\n 执行时间: "+
 						(endTime-startTime)+"毫秒");
 		return pendingPushUids;
@@ -239,12 +242,18 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		userLastUpdateTimeDao.setUserLastUpdateTime(u.getUserId().toString(), lastUpdateTime.toString());
 		String uid = u.getUserId().toString();
+		String userEventScope = u.getEvent_scope();
+		
 		Boolean ifInited = u2cDao.ifUserCpInited(uid);
 		if(!ifInited){
 			logger.debug("用户: "+ u.getName()+" U2C列表不存在,初始化列表:");
 			
-			Map<String,Double> userCps= initialCpDao.getInitialCps();
-			u2cDao.updateUserBatchCpValue(uid, userCps);
+			Map<String,Double> initialCps= initialCpDao.getInitialCps(userEventScope);
+			u2cDao.updateUserBatchCpValue(uid, initialCps);
+		}else if(u2cDao.ifNeedReplenish(uid)){
+			logger.debug("用户: "+ u.getName()+" U2C列表需要填充");
+			Map<String,Double> replenishCps= initialCpDao.getRandomGeneralCps(REPLENISH_NUM);
+			u2cDao.updateUserBatchCpValue(uid, replenishCps);
 		}
 		
 		logger.debug("用户: "+ u.getName()+" 推荐参数初始化成功！");
@@ -252,31 +261,44 @@ public class RecommendServiceImpl implements RecommendService {
 	
 	@Override
 	public void init(){
-		if(!initialCpDao.ifexist()){
+		//if(!initialCpDao.ifexist()){
 			logger.info("初始化 Redis InitialCP...");
+			List<String> allEventScopes= eventScopeCpTypeMappingDao.getEventScopes();
+			for(String eventScope:allEventScopes){
+				initialCpDao.removeInitialCps(eventScope);
+			}
+			
 			List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator();
-			Map<String,Double> initCpsMap = new HashMap<String,Double>();
+		//	Map<String,Double> initCpsMap = new HashMap<String,Double>();
 
 			Random randomData = new Random();
 			for(ConcernPointDO cp:initCps){
 				String cpId = cp.getId().toString();
+				String cpType = cp.getType();
+				List<String> mappingEventScopes = eventScopeCpTypeMappingDao.getEventScope(cpType);
+
+				
 				/*目前为每个赋值一个0-0.1之间的随机推荐值
 				 * */
 				double randomDouble = randomData.nextDouble();
+				Double score;
 				if(Math.abs(cp.getWeight().doubleValue() - 1.0) < 1e-6){
-					initCpsMap.put(cpId, (randomDouble == 0?randomData.nextDouble():randomDouble) * INIT_CP_SCORE);
+					score = (randomDouble == 0?randomData.nextDouble():randomDouble) * INIT_CP_SCORE;
 				}else{
-					initCpsMap.put(cpId, ((randomDouble == 0?randomData.nextDouble():randomDouble) + 1.0) * INIT_CP_SCORE);
+					score = ((randomDouble == 0?randomData.nextDouble():randomDouble) + 1.0) * INIT_CP_SCORE;
+				}
+				for(String eventScope:mappingEventScopes){
+					initialCpDao.setCp(cpId, score, eventScope);
 				}
 			}
-			initialCpDao.setCps(initCpsMap);
+	//		initialCpDao.setCps(initCpsMap);
 			logger.info("初始化 Redis InitialCP 完成！");
-		}else{
-			logger.info("===Redis InitialCP存在===");
-		}
+		//}else{
+			//logger.info("===Redis InitialCP存在===");
+		//}
 	}
 
-	@Override
+	/*@Override
 	public void replenish(String uid){
 		if(u2cDao.ifNeedReplenish(uid)){
 			logger.debug("用户: "+ uid+"推荐CP数量过少，新添。。。");
@@ -288,7 +310,7 @@ public class RecommendServiceImpl implements RecommendService {
 		}else{
 			logger.debug("用户: "+ uid+" U2C数据充足");
 		}
-	}
+	}*/
 	
 	/**
 	 * 将用户的lastUpdateTime从Redis同步到数据库中
@@ -320,13 +342,11 @@ public class RecommendServiceImpl implements RecommendService {
 	}
 	
 	@Override
-	public void setSelfAddCp(String cpid) {
-		Map<String,Double> selfAddCp = new HashMap<String,Double>();
-		selfAddCp.put(cpid, SELF_ADD_CP_SCORE);
-		initialCpDao.setCps(selfAddCp);
+	public void setSelfAddCp(String cpid,String userEventScope) {
+		initialCpDao.setCp(cpid, SELF_ADD_CP_SCORE, userEventScope);
 		
-		List<User> all_users = userDao.findAllUsers();
-		for(User u:all_users){
+		List<User> sameScopeUsers = userDao.findUsersByScope(userEventScope);
+		for(User u:sameScopeUsers){
 			u2cDao.updateUserCpValue(u.getUserId().toString(), cpid, SELF_ADD_CP_SCORE);
 		}		
 	}

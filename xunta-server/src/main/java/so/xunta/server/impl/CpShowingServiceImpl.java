@@ -9,29 +9,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import so.xunta.beans.CpChoiceDO;
+import so.xunta.beans.User;
 import so.xunta.persist.C2uDao;
 import so.xunta.persist.C2uPresentDao;
 import so.xunta.persist.CpChoiceDao;
 import so.xunta.persist.U2cPresentDao;
+import so.xunta.persist.UserDao;
 import so.xunta.server.CpShowingService;
 import so.xunta.server.RecommendService;
 
 @Service
 public class CpShowingServiceImpl implements CpShowingService {
 	@Autowired
-	C2uPresentDao c2uPresentDao;
+	private C2uPresentDao c2uPresentDao;
 	@Autowired
-	U2cPresentDao u2cPresentDao;
+	private U2cPresentDao u2cPresentDao;
 	@Autowired
-	C2uDao c2uDao;
+	private C2uDao c2uDao;
 	@Autowired
-	CpChoiceDao cpChoiceDao;
+	private CpChoiceDao cpChoiceDao;
+	@Autowired
+	private UserDao userDao;
 	
 	Logger logger =Logger.getLogger(CpShowingServiceImpl.class);
 
 	@Override
 	public Set<String> getUsersNeedPush(String uid, String cpid) {
-		Set<String> pushUsers = c2uPresentDao.getCpPresentUsers(cpid);
+		User u = userDao.findUserByUserid(Long.valueOf(uid));
+		Set<String> pushUsers = c2uPresentDao.getCpPresentUsers(cpid,u.getEvent_scope());
 		pushUsers.remove(uid);
 		return pushUsers;
 	}
@@ -51,24 +56,26 @@ public class CpShowingServiceImpl implements CpShowingService {
 		if(cpids!=null){
 			logger.debug("设置新的一批用户正在显示的cp列表");
 			u2cPresentDao.setUserPresentCps(uid, cpids);
+			User u = userDao.findUserByUserid(Long.valueOf(uid));
 			for(String cpid:cpids){
-				c2uPresentDao.setCpPresentUser(cpid, uid);
+				c2uPresentDao.setCpPresentUser(cpid, uid,u.getEvent_scope());
 			}
 		}
 	}
 
 	@Override
-	public int getCpSelectedUserCounts(String cpid) {
-		return c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT).intValue();
+	public int getCpSelectedUserCounts(String cpid,String userEventScope) {
+		return c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT,userEventScope).intValue();
 	}
 
 	@Override
 	public void clearUserShowingCps(String uid) {
 		logger.debug("删除用户正在显示的cp列表");
+		User u = userDao.findUserByUserid(Long.valueOf(uid));
 		Set<String> oldCpids = u2cPresentDao.getUserPresentCps(uid);
 		if(oldCpids!=null && oldCpids.size()>0){
 			for(String oldCpid:oldCpids){
-				c2uPresentDao.deleteCpPresentUser(oldCpid, uid);
+				c2uPresentDao.deleteCpPresentUser(oldCpid, uid,u.getEvent_scope());
 			}
 			u2cPresentDao.dropUserPresentCps(uid);
 		}	
@@ -76,8 +83,9 @@ public class CpShowingServiceImpl implements CpShowingService {
 
 	@Override
 	public void deleteUserShowingCp(String uid, String cpId) {
+		User u = userDao.findUserByUserid(Long.valueOf(uid));
 		u2cPresentDao.delteUserPresentCp(uid, cpId);
-		c2uPresentDao.deleteCpPresentUser(cpId, uid);
+		c2uPresentDao.deleteCpPresentUser(cpId, uid,u.getEvent_scope());
 	}
 
 }

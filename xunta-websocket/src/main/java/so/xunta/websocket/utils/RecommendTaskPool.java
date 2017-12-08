@@ -25,7 +25,7 @@ public class RecommendTaskPool {
 			logger.error(e.getMessage());
 		} 	
 	}
-	@PostConstruct
+
 	public void setRejectedHandler(){
 		threadPoolExecutor.setRejectedExecutionHandler(wolfRejectedExecutionHandler);
 	}

@@ -12,6 +12,7 @@ import org.springframework.web.socket.WebSocketSession;
 import so.xunta.beans.PushMatchedUserDTO;
 import so.xunta.beans.PushRecommendCpDTO;
 import so.xunta.beans.RecommendPushDTO;
+import so.xunta.beans.User;
 import so.xunta.server.CpShowingService;
 import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
@@ -188,8 +189,9 @@ public class CpOperationPushTask implements Runnable{
 	}
 
 	private void pushCpHeatChange(){
+		User u = userService.findUser(Long.valueOf(userId));
 		Set<String> pushUserIds= cpShowingService.getUsersNeedPush(userId, cpId);
-		int cpSelectUserCounts = cpShowingService.getCpSelectedUserCounts(cpId);
+		int cpSelectUserCounts = cpShowingService.getCpSelectedUserCounts(cpId,u.getEvent_scope());
 		for(String pushUserId:pushUserIds){
 			WebSocketSession userSession = EchoWebSocketHandler.getUserById(Long.valueOf(pushUserId));
 			if(userSession!=null){

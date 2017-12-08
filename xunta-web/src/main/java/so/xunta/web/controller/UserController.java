@@ -102,10 +102,7 @@ public class UserController {
 			logger.error("UserName URLdecode 出错"+name);
 		}
 		
-		String event_scope=null;
-		if(openid!=null){
-			event_scope=openId2EventScopeService.getEventScope(openid);
-		}
+
 		
 		User user = new User();
 		Long user_id = idWorder.nextId();
@@ -121,8 +118,16 @@ public class UserController {
 		user.setCreate_datetime_long(date.getTime());
 		user.setCreate_datetime_str(DateTimeUtils.getTimeStrFromDate(date));
 		user.setOpenid(openid);
-		user.setEvent_scope(event_scope);
+
 		user.setLast_update_time(new Timestamp(System.currentTimeMillis()));
+		
+		String event_scope = null;
+		if(openid!=null){
+			event_scope=openId2EventScopeService.getEventScope(openid);		
+		}
+		if(event_scope!=null){
+			user.setEvent_scope(event_scope);
+		}
 		
 		JSONObject params = new JSONObject();
 		params.put("third_parth_id",third_party_id);

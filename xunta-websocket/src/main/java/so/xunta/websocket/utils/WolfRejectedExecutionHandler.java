@@ -42,7 +42,8 @@ public class WolfRejectedExecutionHandler implements RejectedExecutionHandler {
 			logger.debug("将1个SelfAddCpRecommendTask 任务序列化到任务队列，等空闲时再执行");
 			SelfAddCpRecommendTask selfAddCpRecommendTask = (SelfAddCpRecommendTask)task;
 			String cpId = selfAddCpRecommendTask.getCpId();
-			pendingTaskQueue.addSelfAddCPTask(cpId);
+			String userEventScope = selfAddCpRecommendTask.getUserEventScope();
+			pendingTaskQueue.addSelfAddCPTask(cpId,userEventScope);
 		}
 	}
 

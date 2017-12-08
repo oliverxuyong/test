@@ -110,11 +110,11 @@ public class U2cDaoImpl implements U2cDao {
 	public Boolean ifUserCpInited(String uid){
 		Jedis jedis=null;
 		uid = keyPrefix + uid;
-		Boolean ifexist =null;
-
+		Boolean ifInited =true;
+		
 		try {
-			jedis = redisUtil.getJedis();
-			ifexist = jedis.exists(uid);
+			jedis = redisUtil.getJedis();			
+			ifInited = jedis.exists(uid);
 		} catch (Exception e) {
 			logger.error("ifUserCpInited error:", e);
 		}finally{
@@ -122,11 +122,31 @@ public class U2cDaoImpl implements U2cDao {
 				jedis.close();
 			}
 		}
-		return ifexist;
+		return ifInited;
 	}
 	
 	@Override
 	public Boolean ifNeedReplenish(String uid){
+		Jedis jedis = null;
+		uid = keyPrefix + uid;
+		
+		try {
+			jedis = redisUtil.getJedis();
+			int availableNum = jedis.zcount(uid,0,Double.MAX_VALUE).intValue();
+			if(availableNum == 0){
+				return true;
+			}
+		} catch (Exception e) {
+			logger.error("ifneedReplenish error:", e);
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return false;
+	}
+	
+	/*public Boolean ifNeedReplenish(String uid){
 		Jedis jedis = null;
 		uid = keyPrefix + uid;
 		final int THRESHOLD = 30;//需要补充的阈值
@@ -145,5 +165,5 @@ public class U2cDaoImpl implements U2cDao {
 			}
 		}
 		return false;
-	}
+	}*/
 }

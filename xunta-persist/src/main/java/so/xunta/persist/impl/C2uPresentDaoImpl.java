@@ -22,9 +22,9 @@ public class C2uPresentDaoImpl implements C2uPresentDao{
 	Logger logger =Logger.getLogger(C2uPresentDaoImpl.class);
 
 	@Override
-	public void setCpPresentUser(String cpid, String uid) {
+	public void setCpPresentUser(String cpid, String uid, String userEventScope) {
 		Jedis jedis=null;
-		cpid = keyPrefix + cpid;
+		cpid = keyPrefix + userEventScope + cpid;
 
 		try {
 			jedis = redisUtil.getJedis();
@@ -39,9 +39,9 @@ public class C2uPresentDaoImpl implements C2uPresentDao{
 	}
 
 	@Override
-	public Set<String> getCpPresentUsers(String cpid) {
+	public Set<String> getCpPresentUsers(String cpid, String userEventScope) {
 		Jedis jedis=null;
-		cpid = keyPrefix + cpid;
+		cpid = keyPrefix + userEventScope + cpid;
 		Set<String> returnUids = null;
 		
 		try {
@@ -58,9 +58,9 @@ public class C2uPresentDaoImpl implements C2uPresentDao{
 	}
 
 	@Override
-	public void deleteCpPresentUser(String cpid, String uid) {
+	public void deleteCpPresentUser(String cpid, String uid, String userEventScope) {
 		Jedis jedis=null;
-		cpid = keyPrefix + cpid;
+		cpid = keyPrefix + userEventScope + cpid;
 
 		try {
 			jedis = redisUtil.getJedis();
