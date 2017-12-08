@@ -17,7 +17,6 @@ public class OpenId2EventScopeServiceImpl implements OpenId2EventScopeService {
 
 	@Override
 	public void setOpenId(String openId, String eventScope) {
-		System.out.println("存储的eventScope="+eventScope);
 		openId2EventScopeDao.setOpenId(openId, eventScope);
 	}
 
