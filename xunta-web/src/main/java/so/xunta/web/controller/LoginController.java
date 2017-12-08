@@ -827,7 +827,7 @@ public class LoginController {
 			
 			//2017.12.08 叶夷 如果是刚关注，二维码参数是qrscene_general
 			if(event.equals("subscribe")){
-				eventKey=eventKey.split("_")[1];
+				eventKey=eventKey.substring(eventKey.indexOf("_")+1);
 			}
 			logger.info("存储的eventKey="+eventKey);
 			//2017.12.07 叶夷  将openid和二维码参数存储
