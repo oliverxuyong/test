@@ -336,6 +336,12 @@ public class WeChatServiceImpl implements WeChatService{
 		logger.debug("token: " + token);
 		logger.debug("============================");
 
+		return sendWechatmsgToUser1(touser, templat_id, clickurl, topcolor, first,
+				state, notificationTime, remark, appid, appsecret,tmpurl,token);
+	}
+	
+	private String sendWechatmsgToUser1(String touser, String templat_id, String clickurl, String topcolor, String first,
+			String state, String notificationTime, String remark, String appid, String appsecret,String tmpurl,String token) {
 		String url = tmpurl.replace("ACCESS_TOKEN", token);
 		JSONObject json = new JSONObject();
 		try {
@@ -345,34 +351,8 @@ public class WeChatServiceImpl implements WeChatService{
 			json.put("topcolor", topcolor);
 			json.put("data", packJsonmsg(first, state, notificationTime, remark));
 
-			/*
-			 * WxTemplate temp = new WxTemplate(); temp.setTouser(touser);
-			 * temp.setTemplate_id(templat_id); temp.setUrl(clickurl);
-			 * temp.setTopcolor(topcolor); Map<String,TemplateData> m = new
-			 * HashMap<String,TemplateData>(); TemplateData firstData = new
-			 * TemplateData(); firstData.setColor("#000000");
-			 * firstData.setValue(first); m.put("first", firstData);
-			 * TemplateData waitingTaskData = new TemplateData();
-			 * waitingTaskData.setColor("#000000");
-			 * waitingTaskData.setValue(waitingTask); m.put("name",
-			 * waitingTaskData); TemplateData notificationTypeData = new
-			 * TemplateData(); notificationTypeData.setColor("#000000");
-			 * notificationTypeData.setValue(notificationType);
-			 * m.put("wuliu",notificationTypeData); TemplateData
-			 * notificationTimeData = new TemplateData();
-			 * notificationTimeData.setColor("#000000");
-			 * notificationTimeData.setValue(notificationTime); m.put("orderNo",
-			 * notificationTimeData); TemplateData remarkData = new
-			 * TemplateData(); remarkData.setColor("#000000");
-			 * remarkData.setValue(remark); m.put("Remark", remarkData);
-			 * temp.setData(m); String jsonString = JSONObject.
-			 */
-
 			logger.debug("json: " + json);
 			logger.debug("============================");
-			/*
-			 * logger.info(json); logger.info("============================");
-			 */
 
 			JSONObject resultJson = httpRequest(url, "POST", json.toString());
 			String errmsg = (String) resultJson.get("errmsg");
@@ -385,6 +365,29 @@ public class WeChatServiceImpl implements WeChatService{
 
 			if ("ok".equals(errmsg)) { // 如果为errmsg为ok，则代表发送成功，公众号推送信息给用户了。
 				return "success";
+			}else{
+				String errcode=resultJson.get("errcode").toString();
+				System.out.println("errcode="+errcode);
+				if(errcode.equals("40001")){//如果模版消息token错误则重新获取token，重新发送
+					String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+					// 发起GET请求获取凭证
+					JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+					Token tokenObject=getTokenForMysql(appid);
+					if (null != jsonObject) {
+						String newAccessToken = jsonObject.getString("access_token");
+						int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
+						Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
+						Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
+						Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
+						tokenObject.setAccessToken(newAccessToken);
+						tokenObject.setCreateTime(newcreateTime);
+						tokenObject.setFailureTime(newfailureTime);
+						tokenDao.updateToken(tokenObject);// 存在但是失效则更新
+						sendWechatmsgToUser1(touser, templat_id, clickurl, topcolor, first,
+								state, notificationTime, remark, appid, appsecret,tmpurl,newAccessToken);
+					}
+					
+				}
 			}
 		} catch (JSONException e) {
 			logger.error(e.getMessage(), e);

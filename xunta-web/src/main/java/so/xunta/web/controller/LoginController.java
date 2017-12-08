@@ -674,7 +674,7 @@ public class LoginController {
 	 */
 	@RequestMapping("/wxTwoBarCodeLogin")
 	public void sendWeChatTwoBarCodeLogin(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("执行wxTwoBarCodeLogin...");
+		logger.info("执行wxTwoBarCodeLogin..."+request.getQueryString());
 		// start:2017.12.04 叶夷 这里只是为了微信服务器配置验证
 		// 微信加密签名
 		String signature = request.getParameter("signature");
@@ -742,7 +742,7 @@ public class LoginController {
 //		// 消息类型 event
 //		String msgType = map.get("MsgType");
 //		// 事件类型（subscribe）
-//		String event=map.get("Event");
+		String event=map.get("Event");
 //		// 用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
 		String eventKey=map.get("EventKey");
 //		// 二维码的ticke，可以用来换取二维码图片
@@ -764,6 +764,20 @@ public class LoginController {
 		if(!ticket.equals("") || ticket!=null){
 			
 			/**
+			 * start:2017.12.07 叶夷 删除自定义菜单
+			 */
+			/*logger.info("开始删除自定义菜单");
+			String menu_delete_url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
+			String deleteAccessToken=weChatService.getToken(appid, appsecret);
+			logger.info("accessToken="+deleteAccessToken);
+			String deleteUrl = menu_delete_url.replace("ACCESS_TOKEN", deleteAccessToken);
+			JSONObject deleteJsonObject=weChatService.httpRequest(deleteUrl, "GET", null);
+			logger.info("删除菜单结果:"+deleteJsonObject);*/
+			/**
+			 * end:2017.12.07 叶夷  删除自定义菜单
+			 */
+			
+			/**
 			 * start:2017.12.07 叶夷  创建自定义菜单
 			 */
 			logger.info("开始创建自定义菜单");
@@ -771,16 +785,15 @@ public class LoginController {
 			String accessToken=weChatService.getToken(appid, appsecret);
 			logger.info("accessToken="+accessToken);
 			String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
-			String menuString="{'button':["
-					+ "{"
-					+ "'name':'菜单',"
-					+ "'sub_button':["
+			String menuString="{'button':"
+					+ "["
 					+ "{"
 					+ "'type':'view',"
 					+ "'name':'点我',"
+					+ "'key':'2',"
 					+ "'url':'"+templateurl+"'"
-					+ "}]"
-					+ "}]"
+					+ "}"
+					+ "]"
 					+ "}";
 			logger.info("menuString="+menuString);
 			JSONObject jsonObject=weChatService.httpRequest(url, "POST", menuString);
@@ -812,6 +825,11 @@ public class LoginController {
 				logger.error("关注成功模版消息发送失败");
 			}
 			
+			//2017.12.08 叶夷 如果是刚关注，二维码参数是qrscene_general
+			if(event.equals("subscribe")){
+				eventKey=eventKey.split("_")[1];
+			}
+			logger.info("存储的eventKey="+eventKey);
 			//2017.12.07 叶夷  将openid和二维码参数存储
 			openId2EventScopeService.setOpenId(fromUserName, eventKey);
 		}
