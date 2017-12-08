@@ -674,7 +674,7 @@ public class LoginController {
 	 */
 	@RequestMapping("/wxTwoBarCodeLogin")
 	public void sendWeChatTwoBarCodeLogin(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("执行wxTwoBarCodeLogin...");
+		logger.info("执行wxTwoBarCodeLogin..."+request.getQueryString());
 		// start:2017.12.04 叶夷 这里只是为了微信服务器配置验证
 		// 微信加密签名
 		String signature = request.getParameter("signature");
