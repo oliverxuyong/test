@@ -198,15 +198,21 @@ function bigCPAnimate(cpNodeByDistance){
 	var animateCpEndLeft=addTag.offset().left-cpNodeByDistance.width()/2;
 	$("#showatloaded").append(cpNodeByDistance);
 	var animateCpStartTop=parseInt($("#top-container").height())+cpNodeByDistance.offset().top-$("#cp-show").scrollTop()+10;
+	console.log("特殊大圆top= "+animateCpStartTop);
+	log2root("特殊大圆top= "+animateCpStartTop);
 	cpNodeByDistance.css("top",animateCpStartTop);
 	
 	cpNodeByDistance.animate({
-		top : animateCpEndTop+"px",
-		left : animateCpEndLeft+"px"
-	}, 1000,function() {
+		left:animateCpEndLeft+"px",
+		top:animateCpEndTop+"px"
+	}, 1000/*,function() {
+		
+    }*/);
+	
+	setTimeout(function() {
 		cpNodeByDistance.remove();
 		cpValue.splice(cpValue.length-1,cpValue.length-1);
-    });
+	},1000);
 }
 
 var minCPSize = $("body").width()/8;// 最小内圆的大小

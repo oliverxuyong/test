@@ -814,9 +814,9 @@ public class LoginController {
 					templateurl,
 					"#FF0000",
 					""/*+"["+sameSelectTagList+"]"*/,
-					"欢迎您关注!", 
+					"艾妮，只为一生美好时刻", 
 					df.format(new Date()),
-					"欢迎您关注!",
+					"",
 					appid,
 					appsecret);
 			if(result.equals("success")){
