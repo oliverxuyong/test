@@ -24,6 +24,8 @@ public class ConcernPointDO{
 	private String text;
 	@ColumnDefault(value="1.0")
 	private BigDecimal weight;
+	@ColumnDefault(value="general")
+	private String type;
 	private Timestamp create_time;
 	private Timestamp modified_time;
 
@@ -63,5 +65,10 @@ public class ConcernPointDO{
 	public void setText(String text) {
 		this.text = text;
 	}
-
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 }

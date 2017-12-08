@@ -42,4 +42,6 @@ public interface UserDao {
 	
 	public List<User> findUserByGroup(String userGroup);
 	
+	public List<User> findUsersByScope(String eventScope);
+	
 }

@@ -45,7 +45,7 @@ public interface RecommendService {
 	/**
 	 * 用户U2C中的推荐CP少于一定值时，从Initial CP中调取一部分进行补充
 	 * */
-	public void replenish(String uid);
+	//public void replenish(String uid);
 	
 	/**
 	 * 将用户的lastUpdateTime从Redis同步到数据库中
@@ -59,5 +59,5 @@ public interface RecommendService {
 	 * */
 	public Boolean ifUpdateExecutable(String uid);
 	
-	public void setSelfAddCp(String cpid);
+	public void setSelfAddCp(String cpid,String userEventScope);
 }

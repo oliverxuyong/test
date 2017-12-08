@@ -17,6 +17,7 @@ import org.springframework.web.socket.WebSocketSession;
 import so.xunta.beans.ConcernPointDO;
 import so.xunta.beans.CpChoiceDO;
 import so.xunta.beans.CpChoiceDetailDO;
+import so.xunta.beans.User;
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.persist.CpChoiceDetailDao;
@@ -24,6 +25,7 @@ import so.xunta.server.ConcernPointService;
 import so.xunta.server.CpChoiceDetailService;
 import so.xunta.server.CpChoiceService;
 import so.xunta.server.CpShowingService;
+import so.xunta.server.EventScopeCpTypeMappingService;
 import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
@@ -63,6 +65,8 @@ public class CpOperationWSController {
 	private LoggerService loggerService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private EventScopeCpTypeMappingService eventScopeCpTypeMappingService;
 	
 	Logger logger =Logger.getLogger(CpOperationWSController.class);
 	
@@ -144,7 +148,12 @@ public class CpOperationWSController {
 		/*if(!params.isNull("cpid")){
 			cpId = new BigInteger(params.getString("cpid"));
 		}*/
-		logger.info("用户"+userService.findUser(uid).getName()+"添加了自己的CP:"+cpText);
+		
+		User u = userService.findUser(uid);
+		String userEventScope = u.getEvent_scope();
+		String basicType= userEventScope.split("_")[0];
+		
+		logger.info("用户"+u.getName()+"添加了自己的CP:"+cpText);
 		
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "1108-2");
@@ -154,6 +163,7 @@ public class CpOperationWSController {
 		concernPointDO.setCreator_uid(uid);
 		concernPointDO.setText(cpText);
 		concernPointDO.setWeight(USER_ADD_CP_WEIGHT);
+		concernPointDO.setType(basicType);
 		Timestamp time = new Timestamp(System.currentTimeMillis());
 		concernPointDO.setCreate_time(time);
 		concernPointDO.setModified_time(time);
@@ -161,13 +171,23 @@ public class CpOperationWSController {
 		try {
 			concernPointDO = concernPointService.saveConcernPoint(concernPointDO);
 			cpId = concernPointDO.getId();
-			SelfAddCpRecommendTask selfAddCpRecommendTask = new SelfAddCpRecommendTask(cpId.toString(),recommendService);
+			SelfAddCpRecommendTask selfAddCpRecommendTask = new SelfAddCpRecommendTask(cpId.toString(),userEventScope,recommendService);
 			recommendTaskPool.execute(selfAddCpRecommendTask);
 			returnMsg="新增标签并选中";
 		} catch (DuplicateKeyException e) {
 			returnMsg="标签已存在，直接选中";
 			concernPointDO = concernPointService.getConcernPointByText(cpText);
 			cpId = concernPointDO.getId();
+			String oldType = concernPointDO.getType();
+			
+			//可能会有不属于本Scope对应Type中的CP
+			List<String> userCpTypes=eventScopeCpTypeMappingService.getCpType(userEventScope);
+			if(!userCpTypes.contains(oldType)){
+				String newType = oldType+"_"+basicType;
+				concernPointDO.setType(newType);
+				concernPointService.updateConcernPoint(concernPointDO);
+				eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(userEventScope, newType);
+			}
 			/*if(cpId==null){
 				
 			}*/

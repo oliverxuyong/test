@@ -53,8 +53,8 @@ public class PendingTaskQueue {
 		String taskId = RECOMMEND_UPDARW+":"+userId;
 		taskSerializeList.add(taskId);
 	}
-	public void addSelfAddCPTask(String cpId){
-		String taskId = RECOMMEND_SELF_ADD_CP+":"+cpId;
+	public void addSelfAddCPTask(String cpId,String userEventScope){
+		String taskId = RECOMMEND_SELF_ADD_CP+":"+cpId+":"+userEventScope;
 		taskSerializeList.add(taskId);
 	}
 	
@@ -90,7 +90,8 @@ public class PendingTaskQueue {
 				break;
 			case RECOMMEND_SELF_ADD_CP:
 				String cpId4 = parms[1];
-				SelfAddCpRecommendTask t4 = new SelfAddCpRecommendTask(cpId4,recommendService);
+				String userEventScope = parms[2];
+				SelfAddCpRecommendTask t4 = new SelfAddCpRecommendTask(cpId4,userEventScope,recommendService);
 				returnTasks.add(t4);
 			}
 			iterator.remove();

@@ -6,18 +6,18 @@ public interface C2uDao {
 	/**
 	 *获得所有选择某CP的用户列表
 	 * */
-	public Set<String> getUsersSelectedSameCp(String cpId,String property);
+	public Set<String> getUsersSelectedSameCp(String cpId,String property,String userEventScope);
 	
 	/**
 	 * 获得有多少人选择了此CP
 	 * */
-	public Long getHowManyPeopleSelected(String cpId,String property);
+	public Long getHowManyPeopleSelected(String cpId,String property,String userEventScope);
 	/**
 	 * 在某CP的用户列表中添加某用户
 	 * */
-	public void saveCpOneUser(String cpId, String uid,String property);
+	public void saveCpOneUser(String cpId, String uid,String property,String userEventScope);
 	/**
 	 * 在某CP的用户列表中删除某用户
 	 * */
-	public void deleteUserInCp(String cpId, String uid,String property);
+	public void deleteUserInCp(String cpId, String uid,String property,String userEventScope);
 }

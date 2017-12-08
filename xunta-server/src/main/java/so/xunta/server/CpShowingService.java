@@ -18,6 +18,6 @@ public interface CpShowingService {
 	
 	public void deleteUserShowingCp(String uid, String cpId);
 	
-	public int getCpSelectedUserCounts(String cpid);
+	public int getCpSelectedUserCounts(String cpid,String userEventScope);
 	
 }
