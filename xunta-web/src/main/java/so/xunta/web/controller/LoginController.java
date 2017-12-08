@@ -780,7 +780,7 @@ public class LoginController {
 			/**
 			 * start:2017.12.07 叶夷  创建自定义菜单
 			 */
-			logger.info("开始创建自定义菜单");
+			/*logger.info("开始创建自定义菜单");
 			String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
 			String accessToken=weChatService.getToken(appid, appsecret);
 			logger.info("accessToken="+accessToken);
@@ -799,7 +799,7 @@ public class LoginController {
 			logger.info("menuString="+menuString);
 			JSONObject jsonObject=weChatService.httpRequest(url, "POST", menuString);
 			logger.info("创建菜单结果:"+jsonObject);
-			/**
+			*//**
 			 * end:2017.12.07 叶夷  创建自定义菜单
 			 */
 			
