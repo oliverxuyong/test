@@ -55,22 +55,19 @@ public class RequestCpWSController {
 		
 		List<RecommendCpBO> cps = responseGroupCPsService.getRecommendCPs(uid, startPoint, howMany);
 		
-		JSONArray cpWrap = null;
+		JSONArray cpWrap = new JSONArray();;
 		Set<String> cpids = new HashSet<String>();
-		if(cps.size()>0){
-			cpWrap = new JSONArray();
-			
-			for(RecommendCpBO cp:cps){
-				JSONObject cpjson = new JSONObject();
-				String cpid = cp.getCpId();
-				cpids.add(cpid);
-				cpjson.put("cpid", cpid);
-				cpjson.put("cptext", cp.getCpText());
-				cpjson.put("ifselectedbyme", cp.getIfSelectedByMe());
-				cpjson.put("howmanypeople_selected", cp.getHowManyPeopleSelected());
-				cpWrap.put(cpjson);
-			}
+		for(RecommendCpBO cp:cps){
+			JSONObject cpjson = new JSONObject();
+			String cpid = cp.getCpId();
+			cpids.add(cpid);
+			cpjson.put("cpid", cpid);
+			cpjson.put("cptext", cp.getCpText());
+			cpjson.put("ifselectedbyme", cp.getIfSelectedByMe());
+			cpjson.put("howmanypeople_selected", cp.getHowManyPeopleSelected());
+			cpWrap.put(cpjson);
 		}
+		
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "1101-2");
 		returnJson.put("uid", uid+"");

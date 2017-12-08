@@ -120,8 +120,12 @@ public class UserController {
 		user.setOpenid(openid);
 
 		user.setLast_update_time(new Timestamp(System.currentTimeMillis()));
+		
+		String event_scope = null;
 		if(openid!=null){
-			String event_scope=openId2EventScopeService.getEventScope(openid);
+			event_scope=openId2EventScopeService.getEventScope(openid);		
+		}
+		if(event_scope!=null){
 			user.setEvent_scope(event_scope);
 		}
 		
