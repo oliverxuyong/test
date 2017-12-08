@@ -2394,7 +2394,7 @@ function addTag() {
 	contextresult.push('</div>');
 	contextresult
 			.push('<div class="searchtag_suggest" id="gov_search_suggest"></div>');
-	alertWin(contextresult.join(''), "添加'心语'", _w, _h);
+	alertWin(contextresult.join(''), "添加'关键词'", _w, _h);
 	
 	//将添加标签的确定按钮两个字的字体大小调整
 	var btnIdvWidth=$(".btn-div").width();
