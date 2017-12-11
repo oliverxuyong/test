@@ -766,13 +766,13 @@ public class LoginController {
 			/**
 			 * start:2017.12.07 叶夷 删除自定义菜单
 			 */
-			/*logger.info("开始删除自定义菜单");
+			logger.info("开始删除自定义菜单");
 			String menu_delete_url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
 			String deleteAccessToken=weChatService.getToken(appid, appsecret);
 			logger.info("accessToken="+deleteAccessToken);
 			String deleteUrl = menu_delete_url.replace("ACCESS_TOKEN", deleteAccessToken);
 			JSONObject deleteJsonObject=weChatService.httpRequest(deleteUrl, "GET", null);
-			logger.info("删除菜单结果:"+deleteJsonObject);*/
+			logger.info("删除菜单结果:"+deleteJsonObject);
 			/**
 			 * end:2017.12.07 叶夷  删除自定义菜单
 			 */
@@ -814,7 +814,7 @@ public class LoginController {
 					templateurl,
 					"#FF0000",
 					""/*+"["+sameSelectTagList+"]"*/,
-					"艾妮，只为一生美好时刻", 
+					"xunta谢谢您的关注", 
 					df.format(new Date()),
 					"",
 					appid,
