@@ -766,13 +766,13 @@ public class LoginController {
 			/**
 			 * start:2017.12.07 叶夷 删除自定义菜单
 			 */
-			logger.info("开始删除自定义菜单");
+			/*logger.info("开始删除自定义菜单");
 			String menu_delete_url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
 			String deleteAccessToken=weChatService.getToken(appid, appsecret);
 			logger.info("accessToken="+deleteAccessToken);
 			String deleteUrl = menu_delete_url.replace("ACCESS_TOKEN", deleteAccessToken);
 			JSONObject deleteJsonObject=weChatService.httpRequest(deleteUrl, "GET", null);
-			logger.info("删除菜单结果:"+deleteJsonObject);
+			logger.info("删除菜单结果:"+deleteJsonObject);*/
 			/**
 			 * end:2017.12.07 叶夷  删除自定义菜单
 			 */
@@ -785,13 +785,13 @@ public class LoginController {
 			String accessToken=weChatService.getToken(appid, appsecret);
 			logger.info("accessToken="+accessToken);
 			String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
-			String menuString="{'button':"
+			String menuString="{\"button\":"
 					+ "["
 					+ "{"
-					+ "'type':'view',"
-					+ "'name':'点我',"
-					+ "'key':'3',"
-					+ "'url':'"+templateurl+"'"
+					+ "\"type\":\"view\","
+					+ "\"name\":\"请点我\","
+					+ "\"key\":\"xunta_v1\","
+					+ "\"url\":\""+templateurl+"\""
 					+ "}"
 					+ "]"
 					+ "}";
