@@ -6,6 +6,8 @@ function wsConnect() {
 var intersetCPArray=new Array();
 // 2017.10.17 叶夷  用一个变量表示标签是否请求成功,true为成功，false为不成功
 var requestCPSuccese=false;
+//特殊提示‘点加号’大标签的内容
+var bigCPText="点加号，为自己定义更多关键词";
 
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
@@ -32,7 +34,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	
 	if(cpList.length<=0){
 		notRepeatCpCount=1;
-		appendElement("bigCP","",0);// 叶夷 2017.06.16
+		appendElement("bigCP",bigCPText,0);// 叶夷 2017.06.16
 		timeOutSuccess = setTimeout(function() {
 			requestCPSuccese=true;
 		},5000);
@@ -262,7 +264,7 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth
 	var cpTextLength = length(cpText);
 
 	// 控制cp文字显示的个数,超过最大个数则截断且加上"..."
-	if (cpTextLength > maxCPTextNumber) {
+	if (cpTextLength > maxCPTextNumber && cpText!=bigCPText) {
 		// cpText = subString(cpText, maxCPTextNumber, true);//
 		// 为true就是字符截断之后加上"..."
 		cpText = cpText.substring(0,maxCPTextNumber)+"...";// 字符截断之后加上"..."
