@@ -790,7 +790,7 @@ public class LoginController {
 					+ "{"
 					+ "'type':'view',"
 					+ "'name':'点我',"
-					+ "'key':'2',"
+					+ "'key':'3',"
 					+ "'url':'"+templateurl+"'"
 					+ "}"
 					+ "]"
