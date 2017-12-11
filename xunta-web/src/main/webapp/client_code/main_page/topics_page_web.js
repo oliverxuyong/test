@@ -78,7 +78,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	startAnimate(notRepeatCpCount);
 	// 推荐标签动画开始之后再将"请求下一批"的按钮显现
 	$("#request_cp").show();
-	$("#request_cp").html("<div>+</div><div>更多标签</div>");
+	$("#request_cp").html("<div>更多标签</div>");
 	
 	//进入聊天列表显示
 	$("#enterdialogList").show();
@@ -203,8 +203,8 @@ function bigCPAnimate(cpNodeByDistance){
 	var animateCpStartTop=parseInt($("#top-container").height())+cpNodeByDistance.offset().top-$("#cp-show").scrollTop();
 	//获取div相对屏幕于左上角的绝对位置,返回值是一个包含width height top right bottom left的对象
 	//var animateCpStartTop=cpNodeByDistance.offset().top-$("#top-container").offset().top+$("#cp-show").scrollTop();
-	console.log("特殊大圆top= "+animateCpStartTop);
-	log2root("特殊大圆top= "+animateCpStartTop);
+	//console.log("特殊大圆top= "+animateCpStartTop);
+	//log2root("特殊大圆top= "+animateCpStartTop);
 	cpNodeByDistance.css("top",animateCpStartTop);
 	
 	cpNodeByDistance.animate({
@@ -220,7 +220,7 @@ function bigCPAnimate(cpNodeByDistance){
 	setTimeout(function() {
 		cpNodeByDistance.remove();
 		cpValue.splice(cpValue.length-1,cpValue.length-1);
-		$("#cp-container").height(cpValue[cpValue.length-1].cpBottom);
+		//$("#cp-container").height(cpValue[cpValue.length-1].cpBottom);
 	},1000);
 }
 
