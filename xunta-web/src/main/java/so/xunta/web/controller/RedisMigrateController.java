@@ -33,11 +33,11 @@ public class RedisMigrateController {
 	    		 String prefix = key.substring(0, 5);
 	    		 String newKey = prefix+"xunta_common"+cpid;
 	    		 Long returnCode = jedis.renamenx(key, newKey);
-	    		 if(returnCode.equals(0)){
+	    		 if(returnCode==0L){
 	    			 Long status = jedis.sunionstore(newKey, key,newKey);
 	    			 System.out.println("存在，合并"+status);
 	    		 }else{
-	    			 System.out.println(key+"重命名成功");
+	    			 System.out.println(key+"重命名成功"+returnCode);
 	    		 }
 	    	 }
 	     }
