@@ -809,6 +809,7 @@ public class LoginController {
 			logger.info("fromUserName="+fromUserName
 					+" templateid="+templateid
 					+" templateurl="+templateurl
+					+" templateContent="+towCode_templateContent
 					+" appid="+appid
 					+" appsecret="+appsecret);
 			SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
