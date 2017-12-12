@@ -186,7 +186,9 @@ public class CpOperationWSController {
 				String newType = oldType+"_"+basicType;
 				concernPointDO.setType(newType);
 				concernPointService.updateConcernPoint(concernPointDO);
-				eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(userEventScope, newType);
+				if(!userCpTypes.contains(newType)){
+					eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(userEventScope, newType);
+				}
 			}
 			/*if(cpId==null){
 				
