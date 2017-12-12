@@ -323,6 +323,7 @@ public class MobilePhoneRegisterController {
 			new_user.setThird_party_id(idWorker.nextId()+"");
 			new_user.setPassword(password);
 			new_user.setPhonenumber(phonenumber);
+			new_user.setEvent_scope(groupname);
 			User u = userService.addUser(new_user);
 			//初始化话题
 			if(u.getIfInitedTopics()==0){//代表没有初始化话题列表

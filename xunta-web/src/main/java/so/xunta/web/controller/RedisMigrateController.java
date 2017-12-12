@@ -1,9 +1,9 @@
 package so.xunta.web.controller;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
@@ -17,7 +17,7 @@ public class RedisMigrateController {
 	Logger logger = Logger.getLogger(RedisMigrateController.class);
 	
 	@RequestMapping(value="/redisMigration")
-	public void redisMigration(HttpServletRequest request,HttpServletResponse response) {
+	public void redisMigration(HttpServletResponse response) {
 		 Jedis jedis = new Jedis("127.0.0.1");
 		 jedis.auth("660419");
 	     System.out.println("Connection to server sucessfully");
@@ -42,6 +42,11 @@ public class RedisMigrateController {
 	    	 }
 	     }
 	     
+	     try {
+			response.getWriter().write("redisMigration success");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	     /*
 	     Set<String> C2UPreKeys = jedis.keys("C2UPre:");
 	    
@@ -56,7 +61,7 @@ public class RedisMigrateController {
 	}
 	
 	@RequestMapping(value="/completeRedisMigration")
-	public void completeRedisMigration(HttpServletRequest request,HttpServletResponse response) {
+	public void completeRedisMigration(HttpServletResponse response) {
 		 Jedis jedis = new Jedis("127.0.0.1");
 		 jedis.auth("660419");
 	     System.out.println("Connection to server sucessfully");
@@ -69,6 +74,12 @@ public class RedisMigrateController {
 	    		 jedis.del(key);
 	    	 }
 	     }
+	     
+	     try {
+			response.getWriter().write("redisMigration success");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	     jedis.close();
 	}
 	
