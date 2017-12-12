@@ -1021,7 +1021,7 @@ function chooseOneCP(cp_node,cpid,text) {
 			$(".cover").unbind();
 			yesItem.unbind();
 			noItem.unbind();
-			cp_node.unbind();
+			$("#outcpid"+cpid).find(".cp").unbind();
 			
 			//cp_innode.css("z-index","");
 			$(".cover").remove();
