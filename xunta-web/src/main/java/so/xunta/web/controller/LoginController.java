@@ -785,13 +785,13 @@ public class LoginController {
 			String accessToken=weChatService.getToken(appid, appsecret);
 			logger.info("accessToken="+accessToken);
 			String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
-			String menuString="{'button':"
+			String menuString="{\"button\":"
 					+ "["
 					+ "{"
-					+ "'type':'view',"
-					+ "'name':'点我',"
-					+ "'key':'2',"
-					+ "'url':'"+templateurl+"'"
+					+ "\"type\":\"view\","
+					+ "\"name\":\"请点我\","
+					+ "\"key\":\"xunta_v1\","
+					+ "\"url\":\""+templateurl+"\""
 					+ "}"
 					+ "]"
 					+ "}";
@@ -814,7 +814,7 @@ public class LoginController {
 					templateurl,
 					"#FF0000",
 					""/*+"["+sameSelectTagList+"]"*/,
-					"艾妮，只为一生美好时刻", 
+					"xunta谢谢您的关注", 
 					df.format(new Date()),
 					"",
 					appid,

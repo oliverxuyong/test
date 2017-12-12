@@ -6,6 +6,8 @@ function wsConnect() {
 var intersetCPArray=new Array();
 // 2017.10.17 叶夷  用一个变量表示标签是否请求成功,true为成功，false为不成功
 var requestCPSuccese=false;
+//特殊提示‘点加号’大标签的内容
+var bigCPText="点加号，为自己定义更多关键词";
 
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
@@ -32,10 +34,10 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	
 	if(cpList.length<=0){
 		notRepeatCpCount=1;
-		appendElement("bigCP","",0);// 叶夷 2017.06.16
+		appendElement("bigCP",bigCPText,0);// 叶夷 2017.06.16
 		timeOutSuccess = setTimeout(function() {
 			requestCPSuccese=true;
-		},4000);
+		},5000);
 	}else{
 		for (var i = 0; i < cpList.length; i++) {
 			var cp = cpList[i];// 每个推荐标签
@@ -76,7 +78,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	startAnimate(notRepeatCpCount);
 	// 推荐标签动画开始之后再将"请求下一批"的按钮显现
 	$("#request_cp").show();
-	$("#request_cp").html("<div>+</div><div>更多标签</div>");
+	$("#request_cp").html("<div>更多标签</div>");
 	
 	//进入聊天列表显示
 	$("#enterdialogList").show();
@@ -122,7 +124,7 @@ function appendElement(/*i, */cpid,text,selectTagNum) {
 	var cpTextSize,cpInNodeWidth;
 	if(cpid=="bigCP"){//特殊的标签
 		cpTextSize =maxCPTextSize;
-		cpInNodeWidth =$("body").width()/3;
+		cpInNodeWidth =$("body").width()*4/7;
 	}else{
 		cpTextSize =controlSize(selectTagNum,maxCPTextSize,minCPTextSize);
 		cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
@@ -178,7 +180,7 @@ function appendElement(/*i, */cpid,text,selectTagNum) {
 	}else{//特殊的标签,过5秒之后消失之后动画飞到加号位置
 		timeOutSuccess = setTimeout(function() {
 			bigCPAnimate(cpNodeByDistance);
-		},3000);
+		},5000);
 	}
 	
 	// 标签圆大小确定之后将标签放在标签容器中
@@ -194,24 +196,31 @@ function appendElement(/*i, */cpid,text,selectTagNum) {
 function bigCPAnimate(cpNodeByDistance){
 	//获得添加标签的位置
 	var addTag=$("#addtag")
-	var animateCpEndTop=addTag.offset().top-cpNodeByDistance.width()/2;
-	var animateCpEndLeft=addTag.offset().left-cpNodeByDistance.width()/2;
+	var inCPNode=cpNodeByDistance.find(".incp");
+	var animateCpEndTop=addTag.offset().top-(cpNodeByDistance.width()-inCPNode.width())/2;
+	var animateCpEndLeft=addTag.offset().left-(cpNodeByDistance.width()-inCPNode.width())/2;
 	$("#showatloaded").append(cpNodeByDistance);
-	var animateCpStartTop=parseInt($("#top-container").height())+cpNodeByDistance.offset().top-$("#cp-show").scrollTop()+10;
-	console.log("特殊大圆top= "+animateCpStartTop);
-	log2root("特殊大圆top= "+animateCpStartTop);
+	var animateCpStartTop=parseInt($("#top-container").height())+cpNodeByDistance.offset().top-$("#cp-show").scrollTop();
+	//获取div相对屏幕于左上角的绝对位置,返回值是一个包含width height top right bottom left的对象
+	//var animateCpStartTop=cpNodeByDistance.offset().top-$("#top-container").offset().top+$("#cp-show").scrollTop();
+	//console.log("特殊大圆top= "+animateCpStartTop);
+	//log2root("特殊大圆top= "+animateCpStartTop);
 	cpNodeByDistance.css("top",animateCpStartTop);
 	
 	cpNodeByDistance.animate({
 		left:animateCpEndLeft+"px",
-		top:animateCpEndTop+"px"
-	}, 1000/*,function() {
-		
-    }*/);
+		top:animateCpEndTop+"px",
+	}, 1000);
+	//慢慢变小
+	inCPNode.animate({
+		width : 10+"px",
+		height : 10+"px"
+	}, 1000);
 	
 	setTimeout(function() {
 		cpNodeByDistance.remove();
 		cpValue.splice(cpValue.length-1,cpValue.length-1);
+		//$("#cp-container").height(cpValue[cpValue.length-1].cpBottom);
 	},1000);
 }
 
@@ -255,7 +264,7 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth
 	var cpTextLength = length(cpText);
 
 	// 控制cp文字显示的个数,超过最大个数则截断且加上"..."
-	if (cpTextLength > maxCPTextNumber) {
+	if (cpTextLength > maxCPTextNumber && cpText!=bigCPText) {
 		// cpText = subString(cpText, maxCPTextNumber, true);//
 		// 为true就是字符截断之后加上"..."
 		cpText = cpText.substring(0,maxCPTextNumber)+"...";// 字符截断之后加上"..."
@@ -763,12 +772,14 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 		});
 
 		var maxTop;// 可以上升的Top值
-		var isOverLay = false;// 判断是否重叠
+//		var isOverLay = false;// 判断是否重叠
 		if (cpTwo.length > 0) {
 			// 5.拿出轨迹内cp最低的圆,即cpTwo数组中的第一个
 			var cpFirstObj = cpTwo[0];
 			// 6.计算与cpFirstObj能够相切时的位置,cpRadius是上升的cp半径，cpX是上升的cp圆心的x值
 			maxTop = calCPTangencyTop(cpFirstObj, cpRadius, cpX);// 在不和轨迹中最低点重合的情况下可以上升的Top值
+			
+			
 			// 遍历轨迹中所有的圆，一旦会跟标的圆重合，则这条轨迹放弃
 			for (var k = 0; k < cpTwo.length; k++) {
 				var cpSecondObj = cpTwo[k];
@@ -780,20 +791,34 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 				var nowCpRadius = (cpRightValue - cpLeftValue) / 2;// 第二个最低点半径
 				var nowCpX = cpLeftValue + nowCpRadius;// 第二个最低点的圆心x轴
 				var nowCpY = cpTopValue + nowCpRadius;// 第二个最低点的圆心y轴
+				
+				
 
 				if (Math.sqrt(Math.pow((cpX - nowCpX), 2)
-						+ Math.pow((cpY - nowCpY), 2)) < (cpRadius + nowCpRadius)) {// 如果与第一个最低点相切的时候与第二个最低点重合
-					isOverLay = true;
-					break;
+						+ Math.pow((cpY - nowCpY), 2)) < (cpRadius + nowCpRadius)) {// 相交且要判断内切
+					//maxTop = calCPTangencyTop(cpSecondObj, cpRadius, nowCpX);// 在不和轨迹中最低点重合的情况下可以上升的Top值
+					
+					//在这条轨迹上遇到相交的推荐标签圆之后，上浮圆的top值-1，直到和相交圆不相交为止
+					while(true){
+						++maxTop;
+						cpY = maxTop + cpRadius;
+						if (Math.sqrt(Math.pow((cpX - nowCpX), 2)
+								+ Math.pow((cpY - nowCpY), 2)) >= (cpRadius + nowCpRadius)) {
+							break;
+						}
+					}
+					//isOverLay = true;
+					//break;
 				}
 			}
 		} else {
 			maxTop = 0;
 		}
 
-		if (isOverLay) {
+		/*if (isOverLay) {
+			//console.log(start+"->判断和轨迹中别的圆相切")
 			continue;
-		}
+		}*/
 		if (top == -1) {// 如果一开始=-1，则top直接赋值
 			top = maxTop;
 		} else {
@@ -809,8 +834,9 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	right = left + cpWidth;
 	bottom = top + cpHeight;
 	cpValueArray.push(new CP(cp_node.attr("id"), left, right, top, bottom));
-	
+	//console.log(":"+left+" "+right+" "+top+" "+bottom);
 	// cp容器的高度调整
+	//console.log("cp容器的高度:"+bottom);
 	cp_container.height(bottom);
 }
 
@@ -842,7 +868,7 @@ function startAnimate(length) {
 function calCPTangencyTop(cpObj, cpRadius, cpX) {
 	// 6.计算与cpFirstObj能够相切时的位置
 	var cpObjNode = cpObj.getCpNode();
-	// console.log("测试4："+cpObjNode);
+// console.log("测试4："+cpObjNode); 
 	var cpObjRadius = $("#" + cpObjNode).width() / 2;// 已有cp的半径
 	var cpObjLeftValue = cpObj.getCpLeft();// 获得已有cp的最左边边界值
 	var cpObjTopValue = cpObj.getCpTop();
