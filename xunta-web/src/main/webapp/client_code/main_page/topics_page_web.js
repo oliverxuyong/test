@@ -219,7 +219,8 @@ function bigCPAnimate(cpNodeByDistance){
 	
 	setTimeout(function() {
 		cpNodeByDistance.remove();
-		cpValue.splice(cpValue.length-1,cpValue.length-1);
+		//cpValue.splice(cpValue.length-1,cpValue.length-1);
+		cpValue.pop();
 		//$("#cp-container").height(cpValue[cpValue.length-1].cpBottom);
 	},1000);
 }
