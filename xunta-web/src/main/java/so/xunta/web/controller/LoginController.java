@@ -83,6 +83,10 @@ public class LoginController {
 	private String templateurl;
 	@Value("${serverToken}")
 	private String serverToken;
+	@Value("${towCode_templateContent}")
+	private String towCode_templateContent;
+	@Value("${key}")
+	private String key;
 
 	// 登录验证
 	public boolean checkLogin() {
@@ -790,7 +794,7 @@ public class LoginController {
 					+ "{"
 					+ "\"type\":\"view\","
 					+ "\"name\":\"请点我\","
-					+ "\"key\":\"xunta_v1\","
+					+ "\"key\":\""+key+"\","
 					+ "\"url\":\""+templateurl+"\""
 					+ "}"
 					+ "]"
@@ -814,7 +818,7 @@ public class LoginController {
 					templateurl,
 					"#FF0000",
 					""/*+"["+sameSelectTagList+"]"*/,
-					"xunta谢谢您的关注", 
+					towCode_templateContent, 
 					df.format(new Date()),
 					"",
 					appid,
