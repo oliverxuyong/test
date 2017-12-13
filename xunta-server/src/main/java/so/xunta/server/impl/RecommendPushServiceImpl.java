@@ -107,6 +107,7 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 	private void generatePushRecommendCp(String uid, RecommendPushDTO recommendPushDTO){
 		List<String> recommend_cps_previous = RecommendPushUtil.getInstance().getUserRecommendCps(uid);
 		List<String> recommend_cps_after = getRecommendCPs(uid, CP_THRESHOLD);
+		User u = userDao.findUserByUserid(Long.valueOf(uid));
 		for(String cpid:recommend_cps_after){
 			if(recommend_cps_previous.contains(cpid)){
 				continue;
@@ -115,7 +116,7 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 			PushRecommendCpDTO pushRecommendCp = new PushRecommendCpDTO();
 			pushRecommendCp.setCpId(cpid);
 			pushRecommendCp.setCpText(cp.getText());
-			pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT));
+			pushRecommendCp.setSelectPepoleNum(c2uDao.getHowManyPeopleSelected(cpid,RecommendService.POSITIVE_SELECT,u.getEvent_scope()));
 			
 			recommendPushDTO.addPushMatchedCPs(pushRecommendCp);
 			logger.debug("产生推送cp："+cp.getText());

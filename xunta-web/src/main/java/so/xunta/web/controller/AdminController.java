@@ -76,20 +76,34 @@ public class AdminController {
 		}
 		
 		Set<Tuple> groupMatchedUsers = groupMatchedUserDao.getPairMatchedUsers(userGroup);
-		int rank = 1;
 		
-		for(Tuple groupMatchUserTuple:groupMatchedUsers){
-			String pairUserName = groupMatchUserTuple.getElement();
-			Double relateScore = groupMatchUserTuple.getScore();
-			if(relateScore<=0){
-				break;
+		try {
+			response.getWriter().write("<table width=\"60%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\" bgcolor=\"#cccccc\">");
+			response.getWriter().write("<caption>两两匹配排名</caption>");
+			response.getWriter().write("<thead><td>排名</td><td>两两匹配人</td><td>匹配分</td></thead>");
+			response.getWriter().write("<tbody>");
+			int rank = 1;
+			
+			for(Tuple groupMatchUserTuple:groupMatchedUsers){
+				String pairUserName = groupMatchUserTuple.getElement();
+				Double relateScore = groupMatchUserTuple.getScore();
+				if(relateScore<=0){
+					break;
+				}
+				
+				response.getWriter().write("<tr>");
+				response.getWriter().write("<td>"+rank+"</td>");
+				response.getWriter().write("<td>"+pairUserName+"</td>");
+				response.getWriter().write("<td>"+String.format("%.2f",relateScore)+"</td>");
+				response.getWriter().write("</tr>");
+				
+				rank++;
 			}
-			try {
-				response.getWriter().write("排名"+rank+":&nbsp;&nbsp;&nbsp;&nbsp;"+pairUserName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+relateScore+"<br />");
-			} catch (IOException e) {
-				logger.error(e.getMessage(),e);
-			}
-			rank++;
+			response.getWriter().write("</tbody>");
+			response.getWriter().write("</table>");
+			response.flushBuffer();
+		} catch (IOException e) {
+			logger.error(e.getMessage(),e);
 		}
 	}
 }

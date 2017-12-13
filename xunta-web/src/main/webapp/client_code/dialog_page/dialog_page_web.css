@@ -27,6 +27,8 @@
 	background:#ffffff;
 	z-index:12;
 	position:relative;
+	height: 10%;
+	overflow-x: hidden;
 }
 
 .selectCp{

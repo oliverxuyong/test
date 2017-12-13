@@ -9,12 +9,18 @@ import java.net.ConnectException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.sql.Timestamp;
 import java.util.Formatter;
 import java.util.List;
 import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -91,40 +97,138 @@ public class WeChatServiceImpl implements WeChatService{
 	 *            密钥
 	 * @return
 	 */
-	private String getToken(String appid, String appsecret) {
-		String accessToken = getTokenForMysql(appid);
-		logger.debug("经过数据库查找之后的Token: " + accessToken);
-		if (accessToken.equals("") || accessToken == null || accessToken.equals("update")) {
-			logger.debug("token_url: " + token_url);
+	@Override
+	public String getToken(String appid, String appsecret) {
+		logger.debug("token_url: " + token_url);
+		Token token=getTokenForMysql(appid);
+		String accessToken = "";
+		logger.debug("经过数据库查找之后的Token是否为空: " + (token == null));
+		if (token == null) {//新的token
 			String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
 			// 发起GET请求获取凭证
-			String jsonStr = httpsRequest(requestUrl, "GET", null);
-
-			JSONObject jsonObject = new JSONObject(jsonStr);
-
+			JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
 			if (null != jsonObject) {
-				try {
+				String newAccessToken = jsonObject.getString("access_token");
+				int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
+				Long failureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
+				Timestamp failureTime = new Timestamp(failureTimeLong);
+				Timestamp createTime = new Timestamp(System.currentTimeMillis());
+				tokenDao.saveToken(new Token(null, newAccessToken,appid, createTime, failureTime));// 存储token
+				accessToken=newAccessToken;
+			}
+		}else{
+			Timestamp failureTime = token.getFailureTime();
+			Long failureTimeLong = failureTime.getTime();// 失效时间毫秒数
+			long nowTimeLong = System.currentTimeMillis();// 获得当前系统毫秒数,这个是1970-01-01到现在的毫秒数
+			logger.debug("token时间判断:"+failureTimeLong+" "+nowTimeLong);
+			if (failureTimeLong > nowTimeLong) {// 时间还没失效
+				accessToken = token.getAccessToken();
+			}else{//失效了
+				String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+				// 发起GET请求获取凭证
+				JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+				if (null != jsonObject) {
 					String newAccessToken = jsonObject.getString("access_token");
 					int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
-					Long failureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
-					Timestamp failureTime = new Timestamp(failureTimeLong);
-					Timestamp createTime = new Timestamp(System.currentTimeMillis());
-					
-					if(accessToken.equals("update")){
-						tokenDao.updateToken(new Token(null, newAccessToken,appid, createTime, failureTime));// 存在但是失效则更新
-					}else{
-						tokenDao.saveToken(new Token(null, newAccessToken,appid, createTime, failureTime));// 存储token
-					}
-				} catch (JSONException e) {
-					logger.error("获取token失败  errcode=" + jsonObject.getInt("errcode") + " errmsg="
-							+ jsonObject.getString("errmsg"));
+					Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
+					Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
+					Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
+					token.setAccessToken(newAccessToken);
+					token.setCreateTime(newcreateTime);
+					token.setFailureTime(newfailureTime);
+					tokenDao.updateToken(token);// 存在但是失效则更新
+					accessToken=newAccessToken;
 				}
 			}
 		}
 		return accessToken;
 	}
+	
+	/**
+     * 描述:  发起https请求并获取结果
+     * @param requestUrl 请求地址
+     * @param requestMethod 请求方式（GET、POST）
+     * @param outputStr 提交的数据
+     * @return JSONObject(通过JSONObject.get(key)的方式获取json对象的属性值)
+     */
+	@Override
+    public JSONObject httpRequest(String requestUrl, String requestMethod, String outputStr) {
+        JSONObject jsonObject = null;
+        StringBuffer buffer = new StringBuffer();
+        try {
+            // 创建SSLContext对象，并使用我们指定的信任管理器初始化
+            TrustManager[] tm = { new MyX509TrustManager() };
+            SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");
+            sslContext.init(null, tm, new java.security.SecureRandom());
+            // 从上述SSLContext对象中得到SSLSocketFactory对象
+            SSLSocketFactory ssf = sslContext.getSocketFactory();
 
-	private String httpsRequest(String requestUrl, String requestMethod, String outputStr) {
+            URL url = new URL(requestUrl);
+            HttpsURLConnection httpUrlConn = (HttpsURLConnection) url.openConnection();
+            httpUrlConn.setSSLSocketFactory(ssf);
+
+            httpUrlConn.setDoOutput(true);
+            httpUrlConn.setDoInput(true);
+            httpUrlConn.setUseCaches(false);
+            
+            // 设置请求方式（GET/POST）
+            httpUrlConn.setRequestMethod(requestMethod);
+
+            if ("GET".equalsIgnoreCase(requestMethod))
+                httpUrlConn.connect();
+
+            // 当有数据需要提交时
+            if (null != outputStr) {
+                OutputStream outputStream = httpUrlConn.getOutputStream();
+                // 注意编码格式，防止中文乱码
+                outputStream.write(outputStr.getBytes("UTF-8"));
+                outputStream.close();
+            }
+
+            // 将返回的输入流转换成字符串
+            InputStream inputStream = httpUrlConn.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+            String str = null;
+            while ((str = bufferedReader.readLine()) != null) {
+                buffer.append(str);
+            }
+            bufferedReader.close();
+            inputStreamReader.close();
+            // 释放资源
+            inputStream.close();
+            inputStream = null;
+            httpUrlConn.disconnect();
+            jsonObject = new JSONObject(buffer.toString());
+        } catch (ConnectException ce) {
+            logger.error("Weixin server connection timed out.");
+        } catch (Exception e) {
+        	logger.error("https request error:{}", e);
+        }
+        return jsonObject;
+    }
+    
+    /**
+    * 类名: MyX509TrustManager </br>
+    * 包名： com.souvc.weixin.util
+    * 描述: 证书信任管理器（用于https请求）  </br>
+     */
+    public class MyX509TrustManager implements X509TrustManager {
+
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+    }
+	
+	/*@Override
+	public String httpsRequest(String requestUrl, String requestMethod, String outputStr) {
 		try {
 			URL url = new URL(requestUrl);
 			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
@@ -163,26 +267,17 @@ public class WeChatServiceImpl implements WeChatService{
 			logger.error("https请求异常：{}");
 		}
 		return null;
-	}
+	}*/
 
-	private String getTokenForMysql(String appid) {
+	private Token getTokenForMysql(String appid) {
 		logger.debug("开始进行token查询");
-		String accessToken = "";
+		Token token=null;
 		List<Token> tokenList = tokenDao.getTokenForAppid(appid);
 		logger.debug("数据库是否存在token:"+tokenList.size());
 		if (tokenList.size() != 0) {// 数据库中存在
-			Token token=tokenList.get(0);
-			Timestamp failureTime = token.getFailureTime();
-			Long failureTimeLong = failureTime.getTime();// 失效时间毫秒数
-			long nowTimeLong = System.currentTimeMillis();// 获得当前系统毫秒数,这个是1970-01-01到现在的毫秒数
-			logger.debug("token时间判断:"+failureTimeLong+" "+nowTimeLong);
-			if (failureTimeLong > nowTimeLong) {// 时间还没失效
-				accessToken = token.getAccessToken();
-			}else{//失效了
-				return "update";
-			}
+			token=tokenList.get(0);
 		}
-		return accessToken;
+		return token;
 	}
 
 	// 获取ticket
@@ -190,8 +285,7 @@ public class WeChatServiceImpl implements WeChatService{
 		String accessToken = getToken(appid, appsecret); // 微信凭证，access_token
 		String requestUrl = apiTicketUrl.replace("ACCESS_TOKEN", accessToken);
 		// 发起GET请求获取凭证
-		String jsonStr = httpsRequest(requestUrl, "GET", null);
-		JSONObject jsonObject = new JSONObject(jsonStr);
+		JSONObject jsonObject= httpRequest(requestUrl, "GET", null);
 		return jsonObject.getString("ticket");
 	}
 
@@ -242,6 +336,12 @@ public class WeChatServiceImpl implements WeChatService{
 		logger.debug("token: " + token);
 		logger.debug("============================");
 
+		return sendWechatmsgToUser1(touser, templat_id, clickurl, topcolor, first,
+				state, notificationTime, remark, appid, appsecret,tmpurl,token);
+	}
+	
+	private String sendWechatmsgToUser1(String touser, String templat_id, String clickurl, String topcolor, String first,
+			String state, String notificationTime, String remark, String appid, String appsecret,String tmpurl,String token) {
 		String url = tmpurl.replace("ACCESS_TOKEN", token);
 		JSONObject json = new JSONObject();
 		try {
@@ -251,37 +351,10 @@ public class WeChatServiceImpl implements WeChatService{
 			json.put("topcolor", topcolor);
 			json.put("data", packJsonmsg(first, state, notificationTime, remark));
 
-			/*
-			 * WxTemplate temp = new WxTemplate(); temp.setTouser(touser);
-			 * temp.setTemplate_id(templat_id); temp.setUrl(clickurl);
-			 * temp.setTopcolor(topcolor); Map<String,TemplateData> m = new
-			 * HashMap<String,TemplateData>(); TemplateData firstData = new
-			 * TemplateData(); firstData.setColor("#000000");
-			 * firstData.setValue(first); m.put("first", firstData);
-			 * TemplateData waitingTaskData = new TemplateData();
-			 * waitingTaskData.setColor("#000000");
-			 * waitingTaskData.setValue(waitingTask); m.put("name",
-			 * waitingTaskData); TemplateData notificationTypeData = new
-			 * TemplateData(); notificationTypeData.setColor("#000000");
-			 * notificationTypeData.setValue(notificationType);
-			 * m.put("wuliu",notificationTypeData); TemplateData
-			 * notificationTimeData = new TemplateData();
-			 * notificationTimeData.setColor("#000000");
-			 * notificationTimeData.setValue(notificationTime); m.put("orderNo",
-			 * notificationTimeData); TemplateData remarkData = new
-			 * TemplateData(); remarkData.setColor("#000000");
-			 * remarkData.setValue(remark); m.put("Remark", remarkData);
-			 * temp.setData(m); String jsonString = JSONObject.
-			 */
-
 			logger.debug("json: " + json);
 			logger.debug("============================");
-			/*
-			 * logger.info(json); logger.info("============================");
-			 */
 
-			String result = httpsRequest(url, "POST", json.toString());
-			JSONObject resultJson = new JSONObject(result);
+			JSONObject resultJson = httpRequest(url, "POST", json.toString());
 			String errmsg = (String) resultJson.get("errmsg");
 
 			logger.info("模版消息发送结果:" + errmsg);
@@ -292,6 +365,29 @@ public class WeChatServiceImpl implements WeChatService{
 
 			if ("ok".equals(errmsg)) { // 如果为errmsg为ok，则代表发送成功，公众号推送信息给用户了。
 				return "success";
+			}else{
+				String errcode=resultJson.get("errcode").toString();
+				System.out.println("errcode="+errcode);
+				if(errcode.equals("40001")){//如果模版消息token错误则重新获取token，重新发送
+					String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+					// 发起GET请求获取凭证
+					JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+					Token tokenObject=getTokenForMysql(appid);
+					if (null != jsonObject) {
+						String newAccessToken = jsonObject.getString("access_token");
+						int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
+						Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
+						Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
+						Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
+						tokenObject.setAccessToken(newAccessToken);
+						tokenObject.setCreateTime(newcreateTime);
+						tokenObject.setFailureTime(newfailureTime);
+						tokenDao.updateToken(tokenObject);// 存在但是失效则更新
+						sendWechatmsgToUser1(touser, templat_id, clickurl, topcolor, first,
+								state, notificationTime, remark, appid, appsecret,tmpurl,newAccessToken);
+					}
+					
+				}
 			}
 		} catch (JSONException e) {
 			logger.error(e.getMessage(), e);

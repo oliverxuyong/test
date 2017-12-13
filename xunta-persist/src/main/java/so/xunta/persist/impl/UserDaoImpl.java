@@ -136,4 +136,13 @@ public class UserDaoImpl implements UserDao {
 		Query query = session.createSQLQuery(sql).addEntity(User.class).setParameter("userGroup",userGroup);
 		return query.list();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> findUsersByScope(String eventScope) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "select u.* from tbl_user as u where u.event_scope = :eventScope";
+		Query query = session.createSQLQuery(sql).addEntity(User.class).setParameter("eventScope",eventScope);
+		return query.list();
+	}
 }

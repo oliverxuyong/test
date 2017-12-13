@@ -16,3 +16,4 @@ qqconnectconfig.properties
 redis.properties
 jdbc.properties
 log4j.xml
+wechat.properties
