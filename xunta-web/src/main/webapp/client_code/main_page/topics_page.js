@@ -203,7 +203,7 @@ function enterDialogPage(toUserId,toUserName,muImg) {
 }
 
 // 2017.07.26 叶夷 进入聊天列表页，需要我的id
-function EnterdialogList() {
+/*function EnterdialogList() {
 	var pageParam = {
 		"userid" : userId,
 		"userName" : userName,
@@ -216,27 +216,30 @@ function EnterdialogList() {
 		"unreadObjList":unreadObjList
 	};
 	console.log("enterDialogListPage userId=" + userId);
-	openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', JSON
+	openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', JSON
 			.stringify(pageParam));
 	//进入聊天列表页聊天未读信息清空
 	unreadObjList.splice(0,unreadObjList.length);
-}
+}*/
 
-//2017.08.07 叶夷 进入匹配人列表详细信息页，需要UserId
-function enterMatchUsersPage(){
+//2017.07.26 叶夷 进入匹配人详情页
+function enterMatchUsersPage() {
 	var pageParam = {
-			"userid" : userId,
-			"userName" : userName,
-			"userImage" : userImg,
-			"server_domain" : domain,
-			"adminName" : adminName,
-			"adminImageurl" : adminImageurl,
-			"userAgent" : userAgent,
-			"topicPageSign" : "yes"
-		};
-		console.log("enterMatchUsersPage userId=" + userId);
-		openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', JSON
-				.stringify(pageParam));
+		"userid" : userId,
+		"userName" : userName,
+		"userImage" : userImg,
+		"server_domain" : domain,
+		"adminName" : adminName,
+		"adminImageurl" : adminImageurl,
+		"userAgent" : userAgent,
+		"topicPageSign" : "yes",
+		"unreadObjList":unreadObjList
+	};
+	console.log("enterDialogListPage userId=" + userId);
+	openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', JSON
+			.stringify(pageParam));
+	//进入聊天列表页聊天未读信息清空
+	unreadObjList.splice(0,unreadObjList.length);
 }
 
 //2017.07.07 叶夷 这是用户刚开始打开网页的时候请求的后端返回的匹配人列表

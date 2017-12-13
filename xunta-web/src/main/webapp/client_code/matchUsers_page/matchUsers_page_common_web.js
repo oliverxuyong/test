@@ -1,36 +1,9 @@
-//返回上一页   2016/12/25 deng
-function backBtn(){
-	if(_topicPageSign == 'yes'){
-		execRoot("setCurrentPageId('main_page')");
-		openWin('main_page', 'main_page/main_page.html', '');
-	}else{
-		closeWin('dialoglist_page');
-	}
-}
-
-//关闭当前页，返回主界面   2016/12/25 deng
-function closeBtn(){
-	execRoot("setCurrentPageId('main_page')");
-	openWin('main_page', 'main_page/main_page.html', '');
-	closeWin('dialoglist_page');
-}
-
 //2017.08.15 叶夷   显示匹配列表详细信息
-function showMatchUsers(){
+function showMatchUsers(userid,username,img_src,positiveCommonCps,negativeCommonCps){
 	var matchUsers=$("#showMatchUsers");
 
-	var userimgUrl="http://www.mxunta.so:80/xunta-web/useravatar/thumb_img_804622010041896960/jpg/image";//头像
-	var userName="叶汉良";//用户名
-	var tagNames=new Array();
-	tagNames.push("核武器");
-	tagNames.push("核武器");
-	tagNames.push("核武器");
-	tagNames.push("核武器");
-	tagNames.push("核武器");
-	tagNames.push("核武器");
-	tagNames.push("核武器");
-	tagNames.push("核武器");
-	tagNames.push("核武器");
+	var userimgUrl=img_src;//头像
+	var userName=username;//用户名
 	
 	var matchUser=$("<div></div>").attr("class","matchUser");//一个匹配人
 	
@@ -38,9 +11,15 @@ function showMatchUsers(){
 	var username=$("<div></div>").attr("class","username").text(userName);//一个匹配人的名字
 	userimg.append(username);
 	
-	var userTags=$("<div></div>").attr("class","userTags");//一个匹配人选中的标签
-	for(var tag in tagNames){
-		var userTag=$("<div></div>").attr("class","userTag").text(tagNames[tag]);
+	var userPositiveTags=$("<div></div>").attr("class","userTags");//一个匹配人选中的标签
+	for(var tag in positiveCommonCps){
+		var userTag=$("<div></div>").attr("class","userTag positive").text(positiveCommonCps[tag].cptext);
+		userTags.append(userTag);
+	}
+	
+	var userNegativeTags=$("<div></div>").attr("class","userTags");//一个匹配人选中的标签
+	for(var tag in negativeCommonCps){
+		var userTag=$("<div></div>").attr("class","userTag negative").text(negativeCommonCps[tag].cptext);
 		userTags.append(userTag);
 	}
 	
@@ -50,6 +29,6 @@ function showMatchUsers(){
 		exec("main_page","enterDialogPage()");
 	});
 	
-	matchUser.append(userimg).append(userTags).append(sendMsgButton);
+	matchUser.append(userimg).append(userPositiveTags).append(userNegativeTags).append(sendMsgButton);
 	matchUsers.append(matchUser);
 }

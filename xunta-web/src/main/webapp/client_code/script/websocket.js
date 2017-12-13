@@ -278,6 +278,18 @@ function requestAlterNickname(userinfo) {
 	WS_Send(json_obj);
 }
 
+//2017.12.13 请求详细匹配人列表
+function requestDetailMatchedUsers(userId , requestCounts) {
+	var json_obj = {
+		_interface : "1111-1",
+		interface_name : "request_detail_matched_users",
+		uid : userId.toString(),
+		request_counts : requestCounts.toString(),
+		timestamp:""
+	};
+	WS_Send(json_obj);
+}
+
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
 	task_RequestCP();
@@ -437,6 +449,12 @@ function checkMessageInterface(evnt) {
 	//2017.11.23 叶夷 更改昵称
 	if (jsonObj._interface == 'update_nickname') {
 		modifyNickname(jsonObj);
+	}
+	
+	//2017.12.13 叶夷  返回用户请求的详细匹配列表
+	if (jsonObj._interface == '1111-2') {
+		console.log("返回用户请求的详细匹配列表:"+JSON.stringify(jsonObj.matched_user_arr));
+		exec("matchUsers_page","response_detail_matched_users("+evnt.data+")");
 	}
 }
 

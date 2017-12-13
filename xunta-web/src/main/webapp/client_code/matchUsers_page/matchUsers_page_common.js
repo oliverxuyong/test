@@ -37,3 +37,21 @@ function enterDialogPage(toUserId,toUserName,toUserImgUrl) {
 //	openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
 	openWin(toUserId,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
 }
+
+//2017.12.13 叶夷  请求详细匹配人列表
+function requestDetailMatchedUsers(){
+	var paraStr = userId + "','" + requestCounts;
+	execRoot("requestDetailMatchedUsers('"+ paraStr +"')");
+}
+//2017.12.13 叶夷  返回请求详细匹配人列表
+function response_detail_matched_users(data){
+	var matchedUserArr=data.matched_user_arr;
+	for(var i in matchedUserArr){
+		var userid=matchedUserArr[i].userid;
+		var username=matchedUserArr[i].username;
+		var img_src=matchedUserArr[i].img_src;
+		var positiveCommonCps=matchedUserArr[i].positive_common_cps;
+		var negativeCommonCps=matchedUserArr[i].negative_common_cps;
+		showMatchUsers(userid,username,img_src,positiveCommonCps,negativeCommonCps);
+	}
+}
