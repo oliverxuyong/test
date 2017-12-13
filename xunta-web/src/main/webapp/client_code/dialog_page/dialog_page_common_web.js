@@ -105,6 +105,7 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
 	});
 	var length = msgJson.length;
 	if (length < requestMsgCounts) {
+		noHistoryMsg=true;//没有历史消息
 		showAllPosters(msgJson);
 		$("#loadingtext").attr("class", "");
 		$("#loading img").attr("src", "../image/threedotmoving.jpg");
@@ -112,6 +113,7 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
 		$("#loadingwrap").unbind('click');
 		//点击后马上取消这个事件绑定.
 	} else {
+		noHistoryMsg=false;//有历史消息
 		showAllPosters(msgJson);
 		$("#loadingtext").attr("class", "cursor");
 		$("#loading img").attr("src", "../image/threedotmoving.jpg");
@@ -159,6 +161,7 @@ function appendSameSelectCp(cpid,text,if_common,if_dislike){
 	
 	//2017.11.29 叶夷  将共同喜欢的和不喜欢的标签也放进去且区开来
 	if(if_common=="true"){
+		allCommonTags=allCommonTags+text+" ";
 		selectCp.attr("class","selectCp commonLikeTags");
 	}else if(if_dislike=="true"){
 		selectCp.attr("class","selectCp commonDislikeTags");
@@ -222,3 +225,36 @@ function updateNickname(newNickname){
 /**
  * end:叶夷
  */
+
+//2017.12.13 叶夷  用来装两人共同选择的所有标签
+var allCommonTags=" ";
+//2017.12.13 叶夷  判断是否有历史消息，如果没有历史消息则第一条信息框弹出
+var noHistoryMsg;
+
+//2017.12.13  叶夷  弹出一句话的框
+function sendFirstTalk(inputValue) {
+	var _obj = $("body");
+	var _h = _obj.height()*0.40;
+	var _w = _obj.width()*0.80;
+
+	var contextresult = [];
+	contextresult.push('<div id="entrytag">');
+	contextresult
+			.push("<p class='addtag-div'><textarea type='text' class='tag-name' id='pop_tagName' onkeypress=''>我们都对"+inputValue+"有兴趣，要一起聊聊吗？</textarea></p>");
+	contextresult
+			.push('<div class="btn-div" onclick="inputSubmit()">发送</div>');
+	contextresult.push('</div>')
+	alertWin(contextresult.join(''), "打个招呼吧", _w, _h);
+	
+	//调整entrytag的高度
+	var entrytagHeight=_h-$(".pop-title").height();
+	$("#entrytag").css("height",entrytagHeight);
+	
+	//将添加标签的确定按钮两个字的字体大小调整
+	var btnIdvWidth=$(".btn-div").width();
+	var btnDivFontSize=btnIdvWidth/2;
+	if(btnDivFontSize>15){
+		btnDivFontSize=15;
+	}
+	$(".btn-div").css("font-size",btnDivFontSize+"px");
+}
