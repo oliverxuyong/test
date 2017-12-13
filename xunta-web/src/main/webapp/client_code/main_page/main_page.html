@@ -271,7 +271,7 @@
         			}
         		    
         		    if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过,实现置顶
-        		    	exec("dialoglist_page", "updateDialogContentAndTime('"+toUserName+"','"+toImgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
+        		    	exec("dialoglist_page", "updateDialogContentAndTime('','"+toImgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
             			exec("dialoglist_page", "makeDialogListTop('" + toUserName+"','"+toImgUrl+"','"+window_id +"')");
             		}
             	} else { 
