@@ -2634,7 +2634,10 @@ function sendSelectedCPFail(cpid,text){
 	mytag.unbind();
 	var cp_node=$("#cpid"+cpid);
 	mytag.click(function(){
-		chooseCP(cp_node,cpid,text,"P");
+		//现将感叹号去除，再重新选择
+		mytag.find(".myTagFail").remove();
+		sendSelectCP(userId, cpid,text, "P");
+		//chooseCP(cp_node,cpid,text,"P");
 	});
 }
 
