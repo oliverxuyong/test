@@ -2021,9 +2021,9 @@ function setMatchUsersContainerSize(){
 	var headerContainer=$("#header-container");
 	var matchUserContainer=$("#matchUsers");
 	matchUserContainerXStart=headerContainer.width()/2;
-	matchUserContainer.css("width",matchUserContainerXStart+"px");
+	matchUserContainer.css("width",(matchUserContainerXStart-5)+"px");
 	matchUserContainer.css("margin-left",matchUserContainerXStart+"px");
-	var headerContainerHeight=headerContainer.height();
+	var headerContainerHeight=headerContainer.height()-5;
 	matchUserContainer.css("height",headerContainerHeight+"px");
 }
 
