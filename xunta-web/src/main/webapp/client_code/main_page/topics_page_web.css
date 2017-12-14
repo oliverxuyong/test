@@ -719,3 +719,14 @@ height:0px;
 .mytagclick{
 	border:1px solid red;
 }
+
+.matchUsers{
+	//width: 190px;
+    //height: 144px;
+    //border: 1px solid beige;
+    //margin-left: 183px;
+    /* background-color: aliceblue; */
+    position: absolute;
+    z-index: 100;
+    cursor:pointer;
+}

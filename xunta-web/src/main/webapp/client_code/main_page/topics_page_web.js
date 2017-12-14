@@ -100,6 +100,8 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 		if(firstRequestTopMatchedUsers==true){
 			requestTopMatchedUsers(userId,requestTopMUNum); 
 			//addMPData();
+			//匹配人容器的大小设置
+			setMatchUsersContainerSize();
 		}
 	},2000);
 }
@@ -2013,6 +2015,18 @@ function setBorder(headerContainer,radius){
 	matchUserContainerYStart=radius+5;// y轴从5开始，给留出一点空隙
 	matchUserContainerYEnd=headerContainer.height()-radius-5;// y轴结束的范围给留出一点空隙
 }
+
+//设置匹配人容器一整块位置的大小
+function setMatchUsersContainerSize(){
+	var headerContainer=$("#header-container");
+	var matchUserContainer=$("#matchUsers");
+	matchUserContainerXStart=headerContainer.width()/2;
+	matchUserContainer.css("width",matchUserContainerXStart+"px");
+	matchUserContainer.css("margin-left",matchUserContainerXStart+"px");
+	var headerContainerHeight=headerContainer.height();
+	matchUserContainer.css("height",headerContainerHeight+"px");
+}
+
 /**
  * 叶夷 2017.09.14 判断是否和其他匹配人相交，true相交，false不相交
  * notContrast,不用对比的点位置，没有的话就为空
