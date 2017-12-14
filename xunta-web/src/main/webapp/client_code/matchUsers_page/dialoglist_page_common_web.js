@@ -1,22 +1,19 @@
 //返回上一页   2016/12/25 deng
 function backBtn(){
-/*	if(_topicPageSign == 'yes'){
-		execRoot("setCurrentPageId('main_page')");*/
 	//退出聊天列表时首页的未读消息数去除
 	exec('main_page',"removeUnreadNum()");
 	
 	//聊天列表未读数去除
-	exec('dialoglist_page',"changeUnreadColor()");
+	exec('matchUsers_page',"changeUnreadColor()");
 	
 	openWin('main_page', 'main_page/main_page.html', '');
-	//closeWin('dialoglist_page');
 }
 
 //关闭当前页，返回主界面   2016/12/25 deng
 function closeBtn(){
 	execRoot("setCurrentPageId('main_page')");
 	openWin('main_page', 'main_page/main_page.html', '');
-	closeWin('dialoglist_page');
+	closeWin('matchUsers_page');
 }
 
 function showDialogList(data){
@@ -40,7 +37,12 @@ function showDialogList(data){
 		
 		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
 	}
-	var dialogListOutHeight=$("body").height()-64-10;
+	var headerHeight=$("#header").height();
+	var tabClick=$(".tabClick");
+	var tabClickHeight=tabClick.height();
+	var tabClickMarginBottom=parseInt(tabClick.css("margin-bottom"));
+	var dialogListOutPaddingTop=parseInt(dialogListOut.css("padding-top"));
+	var dialogListOutHeight=$("body").height()-tabClickHeight-headerHeight-tabClickMarginBottom-dialogListOutPaddingTop;
 	dialogListOut.css("height",dialogListOutHeight+"px");
 	
 	/**2017.11.10  叶夷  将获取未读消息和之前的消息列表内容分隔*/
@@ -198,6 +200,8 @@ function unreadMsg(toUserName,toUserImg,data,postTimeStr,respondeUserId,unreadNu
 	if(unreadParent.length==0){//未读消息更改的同时判断聊天列表中是否有这个人的存在，如果不存在则将它加上且置顶
 		unreadParent=makeDialogListTop(toUserName,toUserImg,respondeUserId);
 	}
+	//2017.12.13  叶夷  对话导航栏
+	var dialogListPage=$("li").eq(1);
 	
 	if (unreadParent.find('.unread').length==0) {//如果没有未读消息,则加上一个1;
 		var unreadNumNode = $("<div></div>").attr("class", "unread").text(unreadNum);
@@ -212,11 +216,18 @@ function unreadMsg(toUserName,toUserImg,data,postTimeStr,respondeUserId,unreadNu
 		var unreadLeft=dialogImgWidth+dialogImgMargin-unreadNumNodeHeight;
 		unreadNumNode.css("left",unreadLeft+"px");
 		unreadNumNode.css("margin-top",-unreadNumNodeHeight/2+"px");
+		
+		//2017.12.13  叶夷  在聊天页的导航栏上加上未读消息
+		var unreadNumNode = $("<div></div>").attr("class", "unread").text(unreadNum);
+		dialogListPage.append(unreadNumNode);
 	} else {//如果已有未读消息,则加上1:
 		unreadNum  = unreadParent.find('.unread').text();
 		unreadNum++;
 		unreadParent.find('.unread').text(unreadNum);
 		unreadParent.find('.unread').css("opacity","1");
+		
+		//2017.12.13  叶夷  聊天页的导航栏上的未读消息
+		dialogListPage.find('.unread').text(unreadNum);
 	}
 	
 	updateDialogContentAndTime(toUserName,toUserImg,data,postTimeStr,respondeUserId);
@@ -273,7 +284,7 @@ function makeDialogListTop(toUserName,toUserImg,respondeUserId){
 }
 
 /**start:叶夷  2017年3月20日
- * dialoglist_page中的username也必须修改
+ * matchUsers_page中的username也必须修改
  */
 function updateNickname(newNickname){
 	userName = newNickname;
@@ -281,3 +292,18 @@ function updateNickname(newNickname){
 /**
  * end:叶夷
  */
+
+//2017.12.13  叶夷  进入聊天页则"对话"上的未读消息去除
+function reduceUnread(toUserId){
+	var activeUnread=$("li").eq(1).find('.unread');
+	if(activeUnread.length>0){
+		var toUserIdUnread=$('#' + toUserId).find('.unread')
+		unreadNum  = activeUnread.text();
+		unreadNum=unreadNum-toUserIdUnread;
+		if(unreadNum>0){
+			activeUnread.text(unreadNum);
+		}else{
+			activeUnread.remove();
+		}
+	}
+}

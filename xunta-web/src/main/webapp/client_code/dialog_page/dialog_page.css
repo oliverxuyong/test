@@ -141,3 +141,27 @@ border-bottom:1px solid #d8d8d8;}*/
 #bodyBgObj .p-detail{padding:3px 4px;box-shadow:1px 1px 1px rgba(0, 0, 0, 0.24); border-radius:5px;display:inline-block;margin-top:3px}
 #bodyBgObj .p-send-time{display: block;text-align: center;color: #999;font-size: 8px;margin-bottom:6px;margin-top:10px;}
 /*end:叶夷*/
+
+/*start:叶夷   2017.12.13
+		发送第一句话弹出框样式
+*/
+.tag-name{
+    width: 97%;
+    height: 94%;
+    outline: 0;
+    border: 0;
+    resize: none;
+    margin-top: 6px;
+    margin-left: 3%;
+    background-color:rgba(0,0,0,0);
+    border: 1px solid #a09e9e;
+}
+
+.addtag-div{
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	width:80%;
+	float:left;
+}
+/*end:叶夷*/
