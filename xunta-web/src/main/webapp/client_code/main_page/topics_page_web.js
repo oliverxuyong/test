@@ -178,7 +178,7 @@ function appendElement(/*i, */cpid,text,selectTagNum) {
 	if(cpid!="bigCP"){
 		cp_innode.click(function() {
 			// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
-			chooseOneCP(cp_node,cpid,text);
+			chooseOneCP(cp_node,cpid,text,selectTagNumText);
 		});
 	}else{//特殊的标签,过5秒之后消失之后动画飞到加号位置
 		cp_innode.click(function() {
@@ -902,7 +902,7 @@ function calCPTangencyTop(cpObj, cpRadius, cpX) {
 var chooseOneCpStart=false;
 
 // 叶夷 2017.06.16 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
-function chooseOneCP(cp_node,cpid,text) {
+function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 	//var cpid = cp.cpid;
 	//var text=cp.cptext;
 	
@@ -1049,7 +1049,7 @@ function chooseOneCP(cp_node,cpid,text) {
 			//cp_innode.css("opacity","0.3");
 			//calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
 			chooseOneCpStart=true;
-			chooseCP($("#outcpid"+cpid).find(".incp"),cpid,text,"P");
+			chooseCP($("#outcpid"+cpid).find(".incp"),cpid,text,"P",selectTagNumText);
 		});
 		
 		noItem.click(function() {
@@ -1174,7 +1174,7 @@ function chooseOneCP(cp_node,cpid,text) {
 	}
 }
 
-function chooseCP(cp_innode,cpid,text,property){
+function chooseCP(cp_innode,cpid,text,property,selectTagNumText){
 	console.log(cpid +":"+text+ "-> 选中状态");
 	
 	if(property=="N"){
@@ -1183,7 +1183,7 @@ function chooseCP(cp_innode,cpid,text,property){
 			if(cp_innode!=null){
 				cp_innode.unbind();// 不可点击
 			}
-			showSelectTag(cpid,text);
+			showSelectTag(cpid,text,selectTagNumText);
 			//等选择动画完成之后再将选择标签发送到后台
 			timeOutSuccess = setTimeout(function() {
 				sendSelectCP(userId, cpid,text, property);
@@ -1192,11 +1192,11 @@ function chooseCP(cp_innode,cpid,text,property){
 }
 
 // 叶夷 2017.08.08 选中的标签添加到我的标签框中
-function showSelectTag(cpid,text){
+function showSelectTag(cpid,text,selectTagNumText){
 	// var cpid=data.cpid;
 	// var text=data.cptext;
 	
-	addMyCp(cpid,text);
+	addMyCp(cpid,text,selectTagNumText);
 	// 2017.08.29 叶夷 选择标签加上动画效果，标签上升到“我的标签”容器中
 	var myTag=$("#mytag"+cpid);
 	var animateCp=$("#outcpid"+cpid).clone();
@@ -2556,7 +2556,7 @@ function addCpShow(data){
 		var cpid=data.cpid;
 		var cptext=data.cptext;
 		//chooseCP(null,cpid,text);
-		showSelectTag(cpid,cptext);
+		showSelectTag(cpid,cptext,0);
 		//console.log("添加标签成功");
     	toast_popup("添加标签成功",2500);
     	closePop();// 添加标签框关掉
