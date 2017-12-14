@@ -20,7 +20,7 @@ function requestDialogList(){
     });
 }
 
-//进入聊天页，别人的uid和我的uid都需要
+/*//进入聊天页，别人的uid和我的uid都需要
 function enterDialogPage(toUserId,toUserName,toUserImgUrl) {
 	var pageParam = {
 		"toUserId" : toUserId,
@@ -36,7 +36,7 @@ function enterDialogPage(toUserId,toUserName,toUserImgUrl) {
 	console.log("enterDialogPage toUserId=" + toUserId+"|toUserName="+toUserName);
 //	openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
 	openWin(toUserId,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
-}
+}*/
 
 //2017.12.13 叶夷  请求详细匹配人列表
 function requestDetailMatchedUsers(){
