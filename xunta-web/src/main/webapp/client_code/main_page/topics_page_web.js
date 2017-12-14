@@ -1033,7 +1033,6 @@ function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 			$(".cover").unbind();
 			yesItem.unbind();
 			noItem.unbind();
-			$("#outcpid"+cpid).find(".cp").unbind();
 			
 			//cp_innode.css("z-index","");
 			$(".cover").remove();
@@ -1195,6 +1194,9 @@ function chooseCP(cp_innode,cpid,text,property,selectTagNumText){
 function showSelectTag(cpid,text,selectTagNumText){
 	// var cpid=data.cpid;
 	// var text=data.cptext;
+	
+	//2017.12.14  叶夷  在选择标签的时候，取消选择，避免再次选择的时候出现绑定了两次点击事件的情况
+	$("#outcpid"+cpid).find(".cp").unbind();
 	
 	addMyCp(cpid,text,selectTagNumText);
 	// 2017.08.29 叶夷 选择标签加上动画效果，标签上升到“我的标签”容器中
