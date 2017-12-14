@@ -234,15 +234,15 @@ var noHistoryMsg;
 //2017.12.13  叶夷  弹出一句话的框
 function sendFirstTalk(inputValue) {
 	var _obj = $("body");
-	var _h = _obj.height()*0.40;
-	var _w = _obj.width()*0.80;
+	var _h = 160;
+	var _w = _obj.width()-80;
 
 	var contextresult = [];
 	contextresult.push('<div id="entrytag">');
 	contextresult
 			.push("<p class='addtag-div'><textarea type='text' class='tag-name' id='pop_tagName' onkeypress=''>我们都对"+inputValue+"有兴趣，要一起聊聊吗？</textarea></p>");
 	contextresult
-			.push('<div class="btn-div" onclick="inputSubmit()">发送</div>');
+			.push('<div class="btn-div-dialogPage" onclick="inputSubmit()">发送</div>');
 	contextresult.push('</div>')
 	alertWin(contextresult.join(''), "打个招呼吧", _w, _h);
 	
