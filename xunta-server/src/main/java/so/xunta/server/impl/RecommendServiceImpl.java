@@ -270,7 +270,7 @@ public class RecommendServiceImpl implements RecommendService {
 				if(!initialCpDao.ifexist(eventScope)){
 					logger.info("Redis InitialCP 数据缺损，重新填充");
 					initialCpDao.removeInitialCps(eventScope);
-					ifDataNeedReload = false;
+					ifDataNeedReload = true;
 					break;
 				}
 			}
