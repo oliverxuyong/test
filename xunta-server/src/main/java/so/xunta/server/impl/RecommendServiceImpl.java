@@ -118,7 +118,7 @@ public class RecommendServiceImpl implements RecommendService {
 			Set<Tuple> relatedUsers=u2uRelationDao.getRelatedUsersByRank(uid, 0, -1);//0表示第一个，-1为倒数第一个，即为获取所有关系用户
 			Set<String> relatedUids = new HashSet<String>();
 			for(Tuple user:relatedUsers){
-				if(user.getScore()<=0){
+				if(user.getScore()<0.0 || Math.abs(user.getScore()-0.0)<1e-6){
 					break;
 				}
 				relatedUids.add(user.getElement());

@@ -32,7 +32,7 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 		Set<Tuple> userSet= u2uRelationDao.getRelatedUsersByRank(userid.toString(), FIRST_USER_RANK, topNum-1);
 		List<User> matchedUsers = new ArrayList<User>();
 		for(Tuple userTuple:userSet){
-			if(userTuple.getScore()<=0){
+			if(userTuple.getScore()<0.0||Math.abs(userTuple.getScore()-0.0)<1e-6){
 				break;
 			}
 			String matchedUserid = userTuple.getElement();
