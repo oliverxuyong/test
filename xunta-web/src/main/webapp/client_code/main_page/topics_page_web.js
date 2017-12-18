@@ -82,7 +82,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	startAnimate(notRepeatCpCount);
 	
 	//进入聊天列表显示
-	//$("#enterdialogList").show();
+	$("#enterdialogList").show();
 	//推荐标签遮住滑动条显示
 	/*$("#background-rightbar").show();
 	//调整滚动条宽度
@@ -100,8 +100,6 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 		if(firstRequestTopMatchedUsers==true){
 			requestTopMatchedUsers(userId,requestTopMUNum); 
 			//addMPData();
-			//匹配人容器的大小设置
-			setMatchUsersContainerSize();
 		}
 	},2000);
 }
@@ -2573,8 +2571,6 @@ function addCpShow(data){
 
 function unreadMsg(){
 	var unreadParent=$("#enterdialogList");
-	//有未读消息过来则显示
-	unreadParent.show();
 	if (unreadParent.find('.unread').length==0) {// 如果没有未读消息,则加上一个1;
 		var unreadNum = $("<div></div>").attr("class", "unread").text("1");
 		unreadParent.append(unreadNum);
