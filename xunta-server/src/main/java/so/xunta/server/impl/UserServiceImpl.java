@@ -196,5 +196,10 @@ public class UserServiceImpl implements UserService{
 	public List<User> findUserByGroup(String userGroup) {
 		return userDao.findUserByGroup(userGroup);
 	}
+
+	@Override
+	public List<User> findUsersByScope(String eventScope) {
+		return userDao.findUsersByScope(eventScope);
+	}
 	
 }

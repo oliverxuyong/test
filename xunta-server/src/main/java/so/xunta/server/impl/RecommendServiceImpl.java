@@ -118,7 +118,7 @@ public class RecommendServiceImpl implements RecommendService {
 			Set<Tuple> relatedUsers=u2uRelationDao.getRelatedUsersByRank(uid, 0, -1);//0表示第一个，-1为倒数第一个，即为获取所有关系用户
 			Set<String> relatedUids = new HashSet<String>();
 			for(Tuple user:relatedUsers){
-				if(user.getScore()<=0){
+				if(user.getScore()<0.0 || Math.abs(user.getScore()-0.0)<1e-6){
 					break;
 				}
 				relatedUids.add(user.getElement());
@@ -264,35 +264,47 @@ public class RecommendServiceImpl implements RecommendService {
 		//if(!initialCpDao.ifexist()){
 			logger.info("初始化 Redis InitialCP...");
 			List<String> allEventScopes= eventScopeCpTypeMappingDao.getEventScopes();
+			
+			boolean ifDataNeedReload = false;
 			for(String eventScope:allEventScopes){
-				initialCpDao.removeInitialCps(eventScope);
+				if(!initialCpDao.ifexist(eventScope)){
+					logger.info("Redis InitialCP 数据缺损，重新填充");
+					initialCpDao.removeInitialCps(eventScope);
+					ifDataNeedReload = true;
+					break;
+				}
 			}
 			
-			List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator();
-		//	Map<String,Double> initCpsMap = new HashMap<String,Double>();
-
-			Random randomData = new Random();
-			for(ConcernPointDO cp:initCps){
-				String cpId = cp.getId().toString();
-				String cpType = cp.getType();
-				List<String> mappingEventScopes = eventScopeCpTypeMappingDao.getEventScope(cpType);
-
-				
-				/*目前为每个赋值一个0-0.1之间的随机推荐值
-				 * */
-				double randomDouble = randomData.nextDouble();
-				Double score;
-				if(Math.abs(cp.getWeight().doubleValue() - 1.0) < 1e-6){
-					score = (randomDouble == 0?randomData.nextDouble():randomDouble) * INIT_CP_SCORE;
-				}else{
-					score = ((randomDouble == 0?randomData.nextDouble():randomDouble) + 1.0) * INIT_CP_SCORE;
+			if(ifDataNeedReload){
+				List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator();
+			//	Map<String,Double> initCpsMap = new HashMap<String,Double>();
+	
+				Random randomData = new Random();
+				for(ConcernPointDO cp:initCps){
+					String cpId = cp.getId().toString();
+					String cpType = cp.getType();
+					List<String> mappingEventScopes = eventScopeCpTypeMappingDao.getEventScope(cpType);
+	
+					
+					/*目前为每个赋值一个0-0.1之间的随机推荐值
+					 * */
+					double randomDouble = randomData.nextDouble();
+					Double score;
+					if(Math.abs(cp.getWeight().doubleValue() - 1.0) < 1e-6){
+						score = (randomDouble == 0?randomData.nextDouble():randomDouble) * INIT_CP_SCORE;
+					}else{
+						score = ((randomDouble == 0?randomData.nextDouble():randomDouble) + 1.0) * INIT_CP_SCORE;
+					}
+					for(String eventScope:mappingEventScopes){
+						initialCpDao.setCp(cpId, score, eventScope);
+					}
 				}
-				for(String eventScope:mappingEventScopes){
-					initialCpDao.setCp(cpId, score, eventScope);
-				}
+				logger.info("初始化 Redis InitialCP 完成！");
+			}else{
+				logger.info("Redis InitialCP 不需要初始化");
 			}
 	//		initialCpDao.setCps(initCpsMap);
-			logger.info("初始化 Redis InitialCP 完成！");
+		
 		//}else{
 			//logger.info("===Redis InitialCP存在===");
 		//}
