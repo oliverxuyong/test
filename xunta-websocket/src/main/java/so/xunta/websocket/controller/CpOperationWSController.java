@@ -151,7 +151,7 @@ public class CpOperationWSController {
 		
 		User u = userService.findUser(uid);
 		String userEventScope = u.getEvent_scope();
-		String basicType= userEventScope.split("_")[0];
+		//String basicType= userEventScope.split("_")[0];
 		
 		logger.info("用户"+u.getName()+"添加了自己的CP:"+cpText);
 		
@@ -163,7 +163,7 @@ public class CpOperationWSController {
 		concernPointDO.setCreator_uid(uid);
 		concernPointDO.setText(cpText);
 		concernPointDO.setWeight(USER_ADD_CP_WEIGHT);
-		concernPointDO.setType(basicType);
+		concernPointDO.setType(userEventScope);
 		Timestamp time = new Timestamp(System.currentTimeMillis());
 		concernPointDO.setCreate_time(time);
 		concernPointDO.setModified_time(time);
@@ -180,13 +180,28 @@ public class CpOperationWSController {
 			cpId = concernPointDO.getId();
 			String oldType = concernPointDO.getType();
 			
-			//可能会有不属于本Scope对应Type中的CP
-			List<String> userCpTypes=eventScopeCpTypeMappingService.getCpType(userEventScope);
+			/*
+			 * 如果一个用户添加了一个非本scope对应type的CP，
+			 * 1.将该cp的type更新
+			 * 2.查看更新后的type是否存在于本scope的mapping中
+			 * 		如果存在，则不做修改
+			 *  	不存在，则为本scope添加，并为原先包含旧type的scope也添加
+			 * */
+			List<String> userCpTypes = eventScopeCpTypeMappingService.getCpType(userEventScope);
+			
+			List<String> otherImpactScopes = eventScopeCpTypeMappingService.getEventScope(oldType);
+			otherImpactScopes.remove(userEventScope);
+			
 			if(!userCpTypes.contains(oldType)){
-				String newType = oldType+"_"+basicType;
+				String newType = oldType+"_"+userEventScope ;
 				concernPointDO.setType(newType);
 				concernPointService.updateConcernPoint(concernPointDO);
-				eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(userEventScope, newType);
+				if(!userCpTypes.contains(newType)){
+					eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(userEventScope, newType);
+					for(String otherImpactScope:otherImpactScopes){
+						eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(otherImpactScope, newType);
+					}
+				}
 			}
 			/*if(cpId==null){
 				

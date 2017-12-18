@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import redis.clients.jedis.Tuple;
 import so.xunta.beans.User;
-import so.xunta.persist.GroupMatchedUserDao;
+import so.xunta.persist.ScopeMatchedUserDao;
 import so.xunta.persist.U2uRelationDao;
 import so.xunta.server.UserService;
 
@@ -25,7 +25,7 @@ public class AdminController {
 	@Autowired
 	private U2uRelationDao u2uRelationDao;
 	@Autowired
-	private GroupMatchedUserDao groupMatchedUserDao;
+	private ScopeMatchedUserDao scopeMatchedUserDao;
 	
 	Logger logger = Logger.getLogger(AdminController.class);
 	
@@ -36,9 +36,9 @@ public class AdminController {
 		//根据用户列表分别获取他们的u2u
 		//根据myuserId和otheruserId按从小到大串联，并查得username，用“--”符号串联作为value，score作为score，存入redis，key为“group+matchUserOverview”
 		//存入完毕后读出返回，并在redis中删除生成的key
-		String userGroup = request.getParameter("userGroup");
+		String eventScope = request.getParameter("eventScope");
 		response.setContentType("text/html;charset = utf-8");
-		if(userGroup==null){
+		if(eventScope==null){
 			try {
 				response.getWriter().write("参数传入错误");
 			} catch (IOException e) {
@@ -46,14 +46,9 @@ public class AdminController {
 			}
 			return;
 		}
-		logger.info(userGroup);
-		if(userGroup.equals("xuntaweb")){
-			userGroup = "寻Ta网页公测版";
-		}else{
-			return;
-		}
+		logger.info(eventScope);
 		
-		List<User> users = userService.findUserByGroup(userGroup);
+		List<User> users = userService.findUsersByScope(eventScope);
 		for(User u:users){
 			Long centerUidLong = u.getUserId();
 			String centerUid = centerUidLong.toString();
@@ -71,11 +66,11 @@ public class AdminController {
 				}else{
 					matchUserPair = relateUserName + " - " + centerUserName;
 				}
-				groupMatchedUserDao.updatePairMatchedUser(userGroup, matchUserPair, score);
+				scopeMatchedUserDao.updatePairMatchedUser(eventScope, matchUserPair, score);
 			}
 		}
 		
-		Set<Tuple> groupMatchedUsers = groupMatchedUserDao.getPairMatchedUsers(userGroup);
+		Set<Tuple> scopeMatchedUsers = scopeMatchedUserDao.getPairMatchedUsers(eventScope);
 		
 		try {
 			response.getWriter().write("<table width=\"60%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\" bgcolor=\"#cccccc\">");
@@ -84,7 +79,7 @@ public class AdminController {
 			response.getWriter().write("<tbody>");
 			int rank = 1;
 			
-			for(Tuple groupMatchUserTuple:groupMatchedUsers){
+			for(Tuple groupMatchUserTuple:scopeMatchedUsers){
 				String pairUserName = groupMatchUserTuple.getElement();
 				Double relateScore = groupMatchUserTuple.getScore();
 				if(relateScore<=0){

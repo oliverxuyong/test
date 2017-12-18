@@ -149,7 +149,7 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 		List<String> matched_uids = new ArrayList<String>();	
 		Set<Tuple> userSet = u2uRelationDao.getRelatedUsersByRank(uid, 0, num-1);
 		for(Tuple userTuple:userSet){
-			if(userTuple.getScore()<=0){
+			if(userTuple.getScore()<0.0 || Math.abs(userTuple.getScore()-0.0)<1e-6){
 				break;
 			}
 			String matchedUserid = userTuple.getElement();
@@ -162,7 +162,7 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 		Set<Tuple> cps= u2cDao.getUserCpsByRank(uid.toString(), 0, num-1);
 		List<String> cpIds=new ArrayList<String>();
 		for(Tuple cp:cps){
-			if(cp.getScore()<=0){
+			if(cp.getScore()<0.0 || Math.abs(cp.getScore()-0.0)<1e-6){
 				break;
 			}
 			String cpid = cp.getElement();

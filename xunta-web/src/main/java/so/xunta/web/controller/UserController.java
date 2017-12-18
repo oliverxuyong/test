@@ -127,6 +127,8 @@ public class UserController {
 		}
 		if(event_scope!=null){
 			user.setEvent_scope(event_scope);
+		}else{
+			user.setEvent_scope(groupname);
 		}
 		
 		JSONObject params = new JSONObject();

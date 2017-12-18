@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
-import so.xunta.persist.GroupMatchedUserDao;
+import so.xunta.persist.ScopeMatchedUserDao;
 import so.xunta.utils.RedisUtil;
 
 @Repository
-public class GroupMatchedUserDaoImpl implements GroupMatchedUserDao {
+public class ScopeMatchedUserDaoImpl implements ScopeMatchedUserDao {
 	
 	@Autowired
 	private RedisUtil redisUtil;
@@ -21,7 +21,7 @@ public class GroupMatchedUserDaoImpl implements GroupMatchedUserDao {
 	@Value("${redis.keyPrefixGroupMatchedUser}")
 	private String keyPrefix;
 	
-	Logger logger =Logger.getLogger(GroupMatchedUserDaoImpl.class);
+	Logger logger =Logger.getLogger(ScopeMatchedUserDaoImpl.class);
 	
 	
 	@Override

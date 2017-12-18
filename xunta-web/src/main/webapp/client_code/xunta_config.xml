@@ -4,7 +4,7 @@
 	<web>		
 		<ainiweddingcloud>
 			<pageTitle>艾妮婚庆云</pageTitle>
-			<groupName>艾妮婚庆云</groupName>
+			<groupName>ainiwedding</groupName>
 			<adminName>系统通知</adminName>
 			<adminImageurl>ainiweddingcloud.jpg</adminImageurl>
 			<faviconUrl>ainiweddingcloud.ico</faviconUrl>
@@ -15,7 +15,7 @@
 		</ainiweddingcloud>
 		<xunta>
 			<pageTitle>寻Ta网</pageTitle>
-			<groupName>寻Ta网页公测版</groupName>
+			<groupName>xunta_common</groupName>
 			<adminName>寻Ta管理员</adminName>
 			<adminImageurl>xun.jpg</adminImageurl>
 			<faviconUrl>xun.ico</faviconUrl>
@@ -26,7 +26,7 @@
 		</xunta>
 		<mxunta>
 			<pageTitle>寻Ta网</pageTitle>
-			<groupName>寻Ta网页内测版</groupName>
+			<groupName>xunta_common</groupName>
 			<adminName>寻Ta管理员</adminName>
 			<adminImageurl>xun.jpg</adminImageurl>
 			<faviconUrl>xun.ico</faviconUrl>
@@ -37,7 +37,7 @@
 		</mxunta>
 		<localhost>
 			<pageTitle>寻Ta网-本地测试中...</pageTitle>
-			<groupName>寻Ta本地测试版</groupName>
+			<groupName>xunta_common</groupName>
 			<adminName>寻Ta测试员</adminName>
 			<adminImageurl>xun.jpg</adminImageurl>
 			<domain4test>localhost:8080</domain4test>
@@ -45,7 +45,7 @@
 	</web>
 	<app>
 		<domain>www.xunta.so</domain>
-		<pageTitle>寻Ta网</pageTitle>
+		<pageTitle>xunta_common</pageTitle>
 		<groupName>寻TaApp公测版</groupName>
 		<adminName>寻Ta管理员</adminName>
 		<adminImageurl>xun.jpg</adminImageurl>

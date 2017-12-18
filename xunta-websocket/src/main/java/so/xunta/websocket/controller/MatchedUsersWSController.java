@@ -61,9 +61,20 @@ public class MatchedUsersWSController {
 		socketService.chat2one(session, returnJson);
 	}
 	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1111-1")
+	public void responseDetialMatchedUsers(WebSocketSession session, TextMessage message){
+		JSONObject params = new JSONObject(message.getPayload());
+		String userid = params.getString("uid");
+		int requsetCounts = params.getInt("request_counts");
+		String timestamp = params.getString("timestamp");
+		
+		
+	}
+	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1110-1")
 	public void wantTalk(WebSocketSession session, TextMessage message){
 		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 		logger.info("用户"+userService.findUser(userId).getName()+"点击了某匹配人头像");
 	}
+	
 }
