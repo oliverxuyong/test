@@ -201,8 +201,8 @@ function bigCPAnimate(cpNodeByDistance){
 	//获得添加标签的位置
 	var addTag=$("#addtag")
 	var inCPNode=cpNodeByDistance.find(".incp");
-	var animateCpEndTop=addTag.offset().top-(cpNodeByDistance.width()-inCPNode.width())/2;
-	var animateCpEndLeft=addTag.offset().left-(cpNodeByDistance.width()-inCPNode.width())/2;
+	var animateCpEndTop=addTag.offset().top-(cpNodeByDistance.width()-inCPNode.width())/2+addTag.height()/2;
+	var animateCpEndLeft=addTag.offset().left-(cpNodeByDistance.width()-inCPNode.width())/2+addTag.width()/2;
 	$("#showatloaded").append(cpNodeByDistance);
 	var animateCpStartTop=parseInt($("#top-container").height())+cpNodeByDistance.offset().top-$("#cp-show").scrollTop();
 	//获取div相对屏幕于左上角的绝对位置,返回值是一个包含width height top right bottom left的对象
