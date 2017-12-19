@@ -26,6 +26,7 @@ import so.xunta.persist.CpChoiceDetailDao;
 import so.xunta.persist.EventScopeCpTypeMappingDao;
 import so.xunta.persist.InitialCpDao;
 import so.xunta.persist.U2cDao;
+import so.xunta.persist.U2uCpDetailDao;
 import so.xunta.persist.U2uRelationDao;
 import so.xunta.persist.U2uUpdateStatusDao;
 import so.xunta.persist.UserDao;
@@ -38,7 +39,7 @@ public class RecommendServiceImpl implements RecommendService {
 	private final Double INIT_CP_SCORE = 0.1;//CP初始化推荐分数
 	private final double SELF_ADD_CP_SCORE = 0.5;//用户自己添加cp的初始化推荐分数
 	private final int REPLENISH_NUM = 100;//每次补充多少个CP
-	private final double UPDATE_MARK = 0; //需要更新但用户关系值没变化
+	private final double UPDATE_MARK = 0.0; //需要更新但用户关系值没变化
 	private final long MIN_INTERVAL = 1500L; //两次更新任务之间的最短间隔时间
 	
 	@Autowired
@@ -63,6 +64,8 @@ public class RecommendServiceImpl implements RecommendService {
 	private InitialCpDao initialCpDao;
 	@Autowired
 	private EventScopeCpTypeMappingDao eventScopeCpTypeMappingDao;
+	@Autowired
+	private U2uCpDetailDao u2uCpDetailDao; 
 
 	Logger logger =Logger.getLogger(RecommendServiceImpl.class);
 	
@@ -95,16 +98,19 @@ public class RecommendServiceImpl implements RecommendService {
 		  *遍历{Ui}，在U2U_Update_Status表中U的关系用户列表里对Ui的∆u_score值加上刚选中CP的score值，没有则新增
 		  *同时也在Ui的关系用户列表里找到U，将其∆u_score值加上刚选中CP的score值，没有则新增。
 		*/
-		Double dValue = concernPointDao.getConcernPointById(new BigInteger(cpid)).getWeight().doubleValue();
+		ConcernPointDO cpDO = concernPointDao.getConcernPointById(new BigInteger(cpid));
+		Double dValue = cpDO.getWeight().doubleValue();
 		for(String relatedUid:usersSelectedSameCp){
 			switch(selectType){
 			case RecommendService.SELECT_CP:
 				u2uUpdateStatusDao.updateDeltaRelationValue(uid, relatedUid, dValue);
 				u2uUpdateStatusDao.updateDeltaRelationValue(relatedUid, uid, dValue);
+				u2uCpDetailDao.addU2uOneCp(uid, relatedUid, property, cpid, cpDO.getText());
 				break;
 			case RecommendService.UNSELECT_CP:
 				u2uUpdateStatusDao.updateDeltaRelationValue(uid, relatedUid, -dValue);
 				u2uUpdateStatusDao.updateDeltaRelationValue(relatedUid, uid, -dValue);
+				u2uCpDetailDao.removeU2uOneCp(uid, relatedUid, property, cpid);
 				break;
 			}
 		}
@@ -245,14 +251,15 @@ public class RecommendServiceImpl implements RecommendService {
 		String userEventScope = u.getEvent_scope();
 		
 		Boolean ifInited = u2cDao.ifUserCpInited(uid);
+		int userAvailableNum= u2cDao.getAvailableNum(uid);
 		if(!ifInited){
 			logger.debug("用户: "+ u.getName()+" U2C列表不存在,初始化列表:");
 			
 			Map<String,Double> initialCps= initialCpDao.getInitialCps(userEventScope);
 			u2cDao.updateUserBatchCpValue(uid, initialCps);
-		}else if(u2cDao.ifNeedReplenish(uid)){
+		}else if(userAvailableNum < REPLENISH_NUM){
 			logger.debug("用户: "+ u.getName()+" U2C列表需要填充");
-			Map<String,Double> replenishCps= initialCpDao.getRandomGeneralCps(REPLENISH_NUM);
+			Map<String,Double> replenishCps= initialCpDao.getRandomGeneralCps(REPLENISH_NUM-userAvailableNum);
 			u2cDao.updateUserBatchCpValue(uid, replenishCps);
 		}
 		
@@ -269,13 +276,17 @@ public class RecommendServiceImpl implements RecommendService {
 			for(String eventScope:allEventScopes){
 				if(!initialCpDao.ifexist(eventScope)){
 					logger.info("Redis InitialCP 数据缺损，重新填充");
-					initialCpDao.removeInitialCps(eventScope);
 					ifDataNeedReload = true;
 					break;
 				}
 			}
 			
 			if(ifDataNeedReload){
+				for(String eventScope:allEventScopes){
+					if(initialCpDao.ifexist(eventScope)){
+						initialCpDao.removeInitialCps(eventScope);
+					}
+				}
 				List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator();
 			//	Map<String,Double> initCpsMap = new HashMap<String,Double>();
 	
@@ -356,6 +367,8 @@ public class RecommendServiceImpl implements RecommendService {
 	@Override
 	public void setSelfAddCp(String cpid,String userEventScope) {
 		initialCpDao.setCp(cpid, SELF_ADD_CP_SCORE, userEventScope);
+		ConcernPointDO cp = concernPointDao.getConcernPointById(new BigInteger(cpid));
+		c2uDao.saveCpOneUser(cpid, cp.getCreator_uid()+"", RecommendService.POSITIVE_SELECT, userEventScope);
 		
 		List<User> sameScopeUsers = userDao.findUsersByScope(userEventScope);
 		for(User u:sameScopeUsers){
