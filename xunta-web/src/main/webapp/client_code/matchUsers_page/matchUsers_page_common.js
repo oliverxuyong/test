@@ -54,4 +54,7 @@ function response_detail_matched_users(data){
 		var negativeCommonCps=matchedUserArr[i].negative_common_cps;
 		showMatchUsers(userid,username,img_src,positiveCommonCps,negativeCommonCps);
 	}
+	
+	//显示聊天列表
+    requestDialogList();
 }
