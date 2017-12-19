@@ -78,6 +78,7 @@ public class MatchedUsersWSController {
 		returnJson.put("interface_name", "response_detail_matched_users");
 		returnJson.put("timestamp", timestamp);
 		returnJson.put("matched_user_arr",matchedUserWithCp);
+		socketService.chat2one(session, returnJson);
 	}
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1110-1")
