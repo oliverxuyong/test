@@ -392,7 +392,7 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	var noItem=cp_node.find(".noItem");
 	if(yesItem.length<=0 || noItem.length<=0){
 		yesItem=$("<div></div>").attr("class","yesItem").text("收了");//收下按钮
-		noItem=$("<div></div>").attr("class","noItem").text("消失");//消失按钮
+		noItem=$("<div></div>").attr("class","noItem").text("反感");//消失按钮
 		cp_node.append(yesItem).append(noItem);
 	}
 	
