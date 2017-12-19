@@ -128,16 +128,14 @@ public class U2cDaoImpl implements U2cDao {
 	}
 	
 	@Override
-	public Boolean ifNeedReplenish(String uid){
+	public int getAvailableNum(String uid){
 		Jedis jedis = null;
 		uid = keyPrefix + uid;
+		int availableNum = 0;
 		
 		try {
 			jedis = redisUtil.getJedis();
-			int availableNum = jedis.zcount(uid,0,Double.MAX_VALUE).intValue();
-			if(availableNum == 0){
-				return true;
-			}
+			availableNum = jedis.zcount(uid,0.0,Double.MAX_VALUE).intValue();
 		} catch (Exception e) {
 			logger.error("ifneedReplenish error:", e);
 		}finally{
@@ -145,7 +143,7 @@ public class U2cDaoImpl implements U2cDao {
 				jedis.close();
 			}
 		}
-		return false;
+		return availableNum;
 	}
 	
 	/*public Boolean ifNeedReplenish(String uid){

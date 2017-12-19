@@ -49,9 +49,6 @@
 					
 				</div>
 				
-				<!-- 2017.12.14  叶夷  装匹配人列表的容器-->
-				<div id="matchUsers" class="matchUsers" onclick="enterMatchUsersPage()">
-				</div>
 				<!--2017.07.04  叶夷   匹配人列表 -->
 				<!-- <div class="mu" id="mutemp1" style="/* left: 145px; */width: 48px;height: 48px;/* top: 80px; */"></div>
     			<div class="mu" id="mutemp2" style="/* left: 193px; */width: 45px;height: 45px;/* top: 83px; */"></div>
@@ -273,9 +270,9 @@
         				}
         			}
         		    
-        		    if(window.parent.document.getElementById("matchUsers_page")!=null ){//聊天列表打开过,实现置顶
-        		    	exec("matchUsers_page", "updateDialogContentAndTime('','"+toImgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
-            			exec("matchUsers_page", "makeDialogListTop('" + toUserName+"','"+toImgUrl+"','"+window_id +"')");
+        		    if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过,实现置顶
+        		    	exec("dialoglist_page", "updateDialogContentAndTime('','"+toImgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
+            			exec("dialoglist_page", "makeDialogListTop('" + toUserName+"','"+toImgUrl+"','"+window_id +"')");
             		}
             	} else { 
             		myOrOther="other";
@@ -283,9 +280,9 @@
             		//showSelfPoster(user, data,imgUrl,msgId,"other",false);
             		
             		//聊天列表未读消息提示
-            		if(window.parent.document.getElementById("matchUsers_page")!=null ){//聊天列表打开过
-            			exec("matchUsers_page", "unreadMsg('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"')");
-            			exec("matchUsers_page", "makeDialogListTop('"+user+"','"+imgUrl+"','"+respondeUserId+"')");
+            		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
+            			exec("dialoglist_page", "unreadMsg('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"')");
+            			exec("dialoglist_page", "makeDialogListTop('"+user+"','"+imgUrl+"','"+respondeUserId+"')");
             		}else{//聊天页表没有打开才将未读信息保存好
             			//2017.08.16   装所有的未读信息，为了将数组传给聊天列表
                 		var unreadNum=1;

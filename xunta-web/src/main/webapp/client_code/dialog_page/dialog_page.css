@@ -159,8 +159,12 @@ border-bottom:1px solid #d8d8d8;}*/
 	padding: 0;
 }
 .btn-div-dialogPage{
-    float: left;width: 100%;text-align: center;
+    float: left;
+    width: 100%;
+    text-align: center;
     border-top: 1px solid #f1f1f1;
-    height: 60px;line-height: 60px;font-size:16px;
+    height: 60px;
+    line-height: 60px;
+    font-size:16px;
 }
 /*end:叶夷*/

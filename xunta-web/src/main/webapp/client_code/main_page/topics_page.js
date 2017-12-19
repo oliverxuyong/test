@@ -81,8 +81,6 @@ function requestTopMatchedUsers(userId,requestTopMUNum){
 //首页未读消息去除
 function removeUnreadNum() {
 	$('.unread').remove();
-	//进入匹配人详情页则右下角的按钮消失
-	$("#enterdialogList").hide();
 }
 
 //标签搜索
@@ -218,7 +216,7 @@ function enterDialogPage(toUserId,toUserName,muImg) {
 		"unreadObjList":unreadObjList
 	};
 	console.log("enterDialogListPage userId=" + userId);
-	openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', JSON
+	openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', JSON
 			.stringify(pageParam));
 	//进入聊天列表页聊天未读信息清空
 	unreadObjList.splice(0,unreadObjList.length);
@@ -238,7 +236,7 @@ function enterMatchUsersPage() {
 		"unreadObjList":unreadObjList
 	};
 	console.log("enterDialogListPage userId=" + userId);
-	openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', JSON
+	openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', JSON
 			.stringify(pageParam));
 	//进入聊天列表页聊天未读信息清空
 	unreadObjList.splice(0,unreadObjList.length);
