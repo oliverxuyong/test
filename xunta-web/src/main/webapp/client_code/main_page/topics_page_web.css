@@ -719,3 +719,14 @@ height:0px;
 .mytagclick{
 	border:1px solid red;
 }
+
+.matchUsers{
+	margin-left: 183px;
+	background-color: #8889A4;
+	position: absolute;
+	z-index: 100;
+	cursor:pointer;
+	box-shadow: 2px 2px 10px black;
+	border-radius: 15%;
+	opacity: 0.1;
+}

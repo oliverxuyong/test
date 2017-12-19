@@ -176,7 +176,7 @@ function appendElement(/*i, */cpid,text,selectTagNum) {
 	if(cpid!="bigCP"){
 		cp_innode.click(function() {
 			// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
-			chooseOneCP(cp_node,cpid,text);
+			chooseOneCP(cp_node,cpid,text,selectTagNumText);
 		});
 	}else{//特殊的标签,过5秒之后消失之后动画飞到加号位置
 		cp_innode.click(function() {
@@ -201,8 +201,8 @@ function bigCPAnimate(cpNodeByDistance){
 	//获得添加标签的位置
 	var addTag=$("#addtag")
 	var inCPNode=cpNodeByDistance.find(".incp");
-	var animateCpEndTop=addTag.offset().top-(cpNodeByDistance.width()-inCPNode.width())/2;
-	var animateCpEndLeft=addTag.offset().left-(cpNodeByDistance.width()-inCPNode.width())/2;
+	var animateCpEndTop=addTag.offset().top-(cpNodeByDistance.width()-inCPNode.width())/2+addTag.height()/2;
+	var animateCpEndLeft=addTag.offset().left-(cpNodeByDistance.width()-inCPNode.width())/2+addTag.width()/2;
 	$("#showatloaded").append(cpNodeByDistance);
 	var animateCpStartTop=parseInt($("#top-container").height())+cpNodeByDistance.offset().top-$("#cp-show").scrollTop();
 	//获取div相对屏幕于左上角的绝对位置,返回值是一个包含width height top right bottom left的对象
@@ -900,7 +900,7 @@ function calCPTangencyTop(cpObj, cpRadius, cpX) {
 var chooseOneCpStart=false;
 
 // 叶夷 2017.06.16 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
-function chooseOneCP(cp_node,cpid,text) {
+function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 	//var cpid = cp.cpid;
 	//var text=cp.cptext;
 	
@@ -1031,7 +1031,6 @@ function chooseOneCP(cp_node,cpid,text) {
 			$(".cover").unbind();
 			yesItem.unbind();
 			noItem.unbind();
-			$("#outcpid"+cpid).find(".cp").unbind();
 			
 			//cp_innode.css("z-index","");
 			$(".cover").remove();
@@ -1047,7 +1046,7 @@ function chooseOneCP(cp_node,cpid,text) {
 			//cp_innode.css("opacity","0.3");
 			//calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
 			chooseOneCpStart=true;
-			chooseCP($("#outcpid"+cpid).find(".incp"),cpid,text,"P");
+			chooseCP($("#outcpid"+cpid).find(".incp"),cpid,text,"P",selectTagNumText);
 		});
 		
 		noItem.click(function() {
@@ -1172,7 +1171,7 @@ function chooseOneCP(cp_node,cpid,text) {
 	}
 }
 
-function chooseCP(cp_innode,cpid,text,property){
+function chooseCP(cp_innode,cpid,text,property,selectTagNumText){
 	console.log(cpid +":"+text+ "-> 选中状态");
 	
 	if(property=="N"){
@@ -1181,7 +1180,7 @@ function chooseCP(cp_innode,cpid,text,property){
 			if(cp_innode!=null){
 				cp_innode.unbind();// 不可点击
 			}
-			showSelectTag(cpid,text);
+			showSelectTag(cpid,text,selectTagNumText);
 			//等选择动画完成之后再将选择标签发送到后台
 			timeOutSuccess = setTimeout(function() {
 				sendSelectCP(userId, cpid,text, property);
@@ -1190,11 +1189,14 @@ function chooseCP(cp_innode,cpid,text,property){
 }
 
 // 叶夷 2017.08.08 选中的标签添加到我的标签框中
-function showSelectTag(cpid,text){
+function showSelectTag(cpid,text,selectTagNumText){
 	// var cpid=data.cpid;
 	// var text=data.cptext;
 	
-	addMyCp(cpid,text);
+	//2017.12.14  叶夷  在选择标签的时候，取消选择，避免再次选择的时候出现绑定了两次点击事件的情况
+	$("#outcpid"+cpid).find(".cp").unbind();
+	
+	addMyCp(cpid,text,selectTagNumText);
 	// 2017.08.29 叶夷 选择标签加上动画效果，标签上升到“我的标签”容器中
 	var myTag=$("#mytag"+cpid);
 	var animateCp=$("#outcpid"+cpid).clone();
@@ -2013,6 +2015,18 @@ function setBorder(headerContainer,radius){
 	matchUserContainerYStart=radius+5;// y轴从5开始，给留出一点空隙
 	matchUserContainerYEnd=headerContainer.height()-radius-5;// y轴结束的范围给留出一点空隙
 }
+
+//设置匹配人容器一整块位置的大小
+function setMatchUsersContainerSize(){
+	var headerContainer=$("#header-container");
+	var matchUserContainer=$("#matchUsers");
+	matchUserContainerXStart=headerContainer.width()/2;
+	matchUserContainer.css("width",(matchUserContainerXStart-5)+"px");
+	matchUserContainer.css("margin-left",matchUserContainerXStart+"px");
+	var headerContainerHeight=headerContainer.height()-5;
+	matchUserContainer.css("height",headerContainerHeight+"px");
+}
+
 /**
  * 叶夷 2017.09.14 判断是否和其他匹配人相交，true相交，false不相交
  * notContrast,不用对比的点位置，没有的话就为空
@@ -2542,7 +2556,7 @@ function addCpShow(data){
 		var cpid=data.cpid;
 		var cptext=data.cptext;
 		//chooseCP(null,cpid,text);
-		showSelectTag(cpid,cptext);
+		showSelectTag(cpid,cptext,0);
 		//console.log("添加标签成功");
     	toast_popup("添加标签成功",2500);
     	closePop();// 添加标签框关掉
@@ -2620,7 +2634,10 @@ function sendSelectedCPFail(cpid,text){
 	mytag.unbind();
 	var cp_node=$("#cpid"+cpid);
 	mytag.click(function(){
-		chooseCP(cp_node,cpid,text,"P");
+		//现将感叹号去除，再重新选择
+		mytag.find(".myTagFail").remove();
+		sendSelectCP(userId, cpid,text, "P");
+		//chooseCP(cp_node,cpid,text,"P");
 	});
 }
 

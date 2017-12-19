@@ -146,22 +146,25 @@ border-bottom:1px solid #d8d8d8;}*/
 		发送第一句话弹出框样式
 */
 .tag-name{
-    width: 97%;
-    height: 94%;
+    width: 98%;
+    height: 55px;
     outline: 0;
     border: 0;
     resize: none;
-    margin-top: 6px;
-    margin-left: 3%;
-    background-color:rgba(0,0,0,0);
-    border: 1px solid #a09e9e;
 }
 
 .addtag-div{
-	height: 100%;
+	height: 60px;
 	margin: 0;
 	padding: 0;
-	width:80%;
-	float:left;
+}
+.btn-div-dialogPage{
+    float: left;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid #f1f1f1;
+    height: 60px;
+    line-height: 60px;
+    font-size:16px;
 }
 /*end:叶夷*/

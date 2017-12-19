@@ -233,6 +233,7 @@ function requestSelectCP(){
         	if(noHistoryMsg){
         		sendFirstTalk(allCommonTags);
         	}
+        	//sendFirstTalk(allCommonTags);//这是测试效果
         },
         error:function(data, textStatus) {
         	return;

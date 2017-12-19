@@ -30,8 +30,7 @@
 	width:18px;height:18px;
 	padding-left: 10px;
 }*/
-/* 
-#title{
+/* #title{
 	position:absolute;
 	width:100%;
 	text-align:center;
@@ -42,8 +41,8 @@
     //margin-left: 30%;
     font-size: 18px;
     //padding-left: 10px;
-    z-index: 13;} */
-
+    z-index: 13;}
+ */
 #dialog_list{
 	//font-size:14px; 
 	overflow-x:hidden;
