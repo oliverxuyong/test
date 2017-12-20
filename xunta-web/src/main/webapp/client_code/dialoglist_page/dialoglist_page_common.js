@@ -23,8 +23,8 @@ function requestDialogList(){
 }
 
 //进入聊天页，别人的uid和我的uid都需要
-function enterDialogPage(toUserId,toUserName) {
-	var toUserImage=$("#"+toUserId).find("img").attr("src");
+function enterDialogPage(toUserId,toUserName,toUserImage) {
+	//var toUserImage=$("#"+toUserId).find("img").attr("src");
 	var pageParam = {
 		"toUserId" : toUserId,
 		"toUserName" : toUserName,//这里是为了测试
