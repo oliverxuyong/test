@@ -87,6 +87,24 @@ public class U2cDaoImpl implements U2cDao {
 		}		
 	}
 	
+	@Override
+	public void refreshUserBatchCpValue(String uid, Map<String,Double> cps) {
+		Jedis jedis=null;
+		uid = keyPrefix + uid;
+		try {
+			jedis = redisUtil.getJedis();
+			if(cps.size()>0){
+				jedis.zadd(uid, cps);
+			}
+		} catch (Exception e) {
+			logger.error("refreshUserBatchCpValue error:", e);
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}		
+	}
+	
 	/**给推荐CP列表中已选的CP值为一个很大的负数，就算再加也不会产生影响	*/
 	@Override
 	public void setUserCpsPresented(String uid, List<String> cpIds) {

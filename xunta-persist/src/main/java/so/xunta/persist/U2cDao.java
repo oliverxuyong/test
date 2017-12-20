@@ -32,6 +32,8 @@ public interface U2cDao {
 	 * */
 	public void updateUserBatchCpValue(String uid, Map<String,Double> cps);
 	
+	public void refreshUserBatchCpValue(String uid, Map<String,Double> cps);
+	
 	/**
 	 * 将CP设为已选/已呈现
 	 * */

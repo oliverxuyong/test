@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -250,19 +251,33 @@ public class RecommendServiceImpl implements RecommendService {
 		String uid = u.getUserId().toString();
 		String userEventScope = u.getEvent_scope();
 		
-		Boolean ifInited = u2cDao.ifUserCpInited(uid);
-		int userAvailableNum= u2cDao.getAvailableNum(uid);
-		if(!ifInited){
-			logger.debug("用户: "+ u.getName()+" U2C列表不存在,初始化列表:");
-			
+		if(u.getEvent_scope().equals("ainiwedding_session2")){
 			Map<String,Double> initialCps= initialCpDao.getInitialCps(userEventScope);
-			u2cDao.updateUserBatchCpValue(uid, initialCps);
-		}else if(userAvailableNum < REPLENISH_NUM){
-			logger.debug("用户: "+ u.getName()+" U2C列表需要填充");
-			Map<String,Double> replenishCps= initialCpDao.getRandomGeneralCps(REPLENISH_NUM-userAvailableNum);
-			u2cDao.updateUserBatchCpValue(uid, replenishCps);
+			Iterator<Entry<String,Double>> iterator = initialCps.entrySet().iterator();
+			while(iterator.hasNext()){
+				Entry<String,Double> initialCp =iterator.next();
+				CpChoiceDO  cpChoice= cpChoiceDao.getCpChoice(Long.valueOf(uid), new BigInteger(initialCp.getKey()));
+				if(cpChoice!=null){
+					iterator.remove();
+				}
+			}
+			u2cDao.refreshUserBatchCpValue(uid, initialCps);
+			
+		}else{
+			Boolean ifInited = u2cDao.ifUserCpInited(uid);
+			int userAvailableNum= u2cDao.getAvailableNum(uid);
+			
+			if(!ifInited){
+				logger.debug("用户: "+ u.getName()+" U2C列表不存在,初始化列表:");
+				
+				Map<String,Double> initialCps= initialCpDao.getInitialCps(userEventScope);
+				u2cDao.updateUserBatchCpValue(uid, initialCps);
+			}else if(userAvailableNum < REPLENISH_NUM){
+				logger.debug("用户: "+ u.getName()+" U2C列表需要填充");
+				Map<String,Double> replenishCps= initialCpDao.getRandomGeneralCps(REPLENISH_NUM-userAvailableNum);
+				u2cDao.updateUserBatchCpValue(uid, replenishCps);
+			}
 		}
-		
 		logger.debug("用户: "+ u.getName()+" 推荐参数初始化成功！");
 	}
 	
