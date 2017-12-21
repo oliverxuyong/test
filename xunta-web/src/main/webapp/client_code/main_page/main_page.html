@@ -274,8 +274,8 @@
         			}
         		    
         		    if(window.parent.document.getElementById("matchUsers_page")!=null ){//聊天列表打开过,实现置顶
+        		    	exec("matchUsers_page", "makeDialogListTop('" + toUserName+"','"+toImgUrl+"','"+window_id +"')");
         		    	exec("matchUsers_page", "updateDialogContentAndTime('','"+toImgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
-            			exec("matchUsers_page", "makeDialogListTop('" + toUserName+"','"+toImgUrl+"','"+window_id +"')");
             		}
             	} else { 
             		myOrOther="other";
