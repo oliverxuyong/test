@@ -161,7 +161,7 @@ function appendSameSelectCp(cpid,text,if_common,if_dislike){
 	
 	//2017.11.29 叶夷  将共同喜欢的和不喜欢的标签也放进去且区开来
 	if(if_common=="true"){
-		allCommonTags=allCommonTags+text+" ";
+		allCommonTags=" ["+allCommonTags+text+"] ";
 		selectCp.attr("class","selectCp commonLikeTags");
 	}else if(if_dislike=="true"){
 		selectCp.attr("class","selectCp commonDislikeTags");
@@ -227,7 +227,7 @@ function updateNickname(newNickname){
  */
 
 //2017.12.13 叶夷  用来装两人共同选择的所有标签
-var allCommonTags=" ";
+var allCommonTags="";
 //2017.12.13 叶夷  判断是否有历史消息，如果没有历史消息则第一条信息框弹出
 var noHistoryMsg;
 
@@ -257,4 +257,8 @@ function sendFirstTalk(inputValue) {
 		btnDivFontSize=15;
 	}
 	$(".btn-div").css("font-size",btnDivFontSize+"px");
+	
+	//2017.12.21  叶夷   聊天页的弹出框top值下移
+	var htmlObjTop=$("#header").height()+$("#selectCp-container").height()+parseInt($("#selectCp-container").css("padding-bottom"))+10;
+	$("#htmlObj").css("top",htmlObjTop+"px");
 }
