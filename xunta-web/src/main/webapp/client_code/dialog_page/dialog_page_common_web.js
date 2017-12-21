@@ -161,7 +161,7 @@ function appendSameSelectCp(cpid,text,if_common,if_dislike){
 	
 	//2017.11.29 叶夷  将共同喜欢的和不喜欢的标签也放进去且区开来
 	if(if_common=="true"){
-		allCommonTags=" ["+allCommonTags+text+"] ";
+		allCommonTags=allCommonTags+" ["+text+"] ";
 		selectCp.attr("class","selectCp commonLikeTags");
 	}else if(if_dislike=="true"){
 		selectCp.attr("class","selectCp commonDislikeTags");
