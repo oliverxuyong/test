@@ -121,6 +121,12 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
 	}
 }
 
+//2017.12.22 叶夷    聊天页显示的标签四种情况显示
+var likeList=new Array();//1.对方喜欢的标签
+var commonLikeList=new Array();//2.双方共同喜欢的标签
+var dislikeList=new Array();//3.对方不喜欢的标签
+var commonDislikeList=new Array();//4.双方都不喜欢的标签
+
 /**
  * 2017.08.30 将请求的共同选择标签放好
  * @param data
@@ -133,7 +139,56 @@ function showSameSelectCp(data){
 			selectCPs.eq(index).remove();
 		}
 	}
-	for(var i in data.msg){
+	
+	for(var i in data.msg){//2017.12.22   叶夷 先将四种情况区分了之后放入储存数组中
+		var if_common=data.msg[i].is_common;
+		var if_dislike=data.msg[i].is_dislike;
+		
+		if(if_common=="false" && if_dislike=="false"){//1.对方喜欢的标签
+			likeList.push(data.msg[i]);
+		}else if(if_common=="true" && if_dislike=="false"){//2.双方共同喜欢的标签
+			commonLikeList.push(data.msg[i]);
+		}else if(if_common=="false" && if_dislike=="true"){//3.对方不喜欢的标签
+			dislikeList.push(data.msg[i]);
+		}else if(if_common=="true" && if_dislike=="true"){//4.双方都不喜欢的标签
+			commonDislikeList.push(data.msg[i]);
+		}
+	}
+	
+	var selectCpContainer=$("#selectCp-container");
+	if(likeList.length>0 || commonLikeList.length>0){
+		selectCpContainer.show();
+		var selectLikeCpTitle=$("<div></div>").attr("class", "selectCp-title").text("Ta关注的关键词");
+		selectCpContainer.append(selectLikeCpTitle);
+		for(var i in commonLikeList){
+			var cpid=commonLikeList[i].cp_id;
+			var text=commonLikeList[i].text;
+			appendSameSelectCp(selectCpContainer,cpid,text,"selectCp commonTags");
+		}
+		for(var i in likeList){
+			var cpid=likeList[i].cp_id;
+			var text=likeList[i].text;
+			appendSameSelectCp(selectCpContainer,cpid,text,"selectCp");
+		}
+	}
+	if(dislikeList.length>0 || commonDislikeList.length>0){
+		selectCpContainer.show();
+		var selectLikeCpTitle=$("<div style='margin-top:10px;'></div>").attr("class", "selectCp-title").text("Ta反感的关键词");
+		selectCpContainer.append(selectLikeCpTitle);
+		for(var i in commonDislikeList){
+			var cpid=commonDislikeList[i].cp_id;
+			var text=commonDislikeList[i].text;
+			appendSameSelectCp(selectCpContainer,cpid,text,"selectCp commonTags");
+		}
+		for(var i in dislikeList){
+			var cpid=dislikeList[i].cp_id;
+			var text=dislikeList[i].text;
+			appendSameSelectCp(selectCpContainer,cpid,text,"selectCp");
+		}
+	}
+	
+	//标签区分之后依次放入数组中
+	/*for(var i in data.msg){
 		var cpid=data.msg[i].cp_id;
 		var text=data.msg[i].text;
 		//2017.11.29 叶夷  将共同喜欢的和不喜欢的标签也放进去且区开来
@@ -141,31 +196,30 @@ function showSameSelectCp(data){
 		var if_dislike=data.msg[i].is_dislike;
 		
 		appendSameSelectCp(cpid,text,if_common,if_dislike);
-	}
-	sameSelectCpsWidth=0;
+	}*/
+	//sameSelectCpsWidth=0;
 	
 	//调整显示聊天页消息框的height
 	//setDialogBoxHeight();
 }
 
 //选择过标签的width一个个相加，超过选择过标签的框则另起一行
-var sameSelectCpsWidth=0;
+//var sameSelectCpsWidth=0;
 //判断选择过的标签有多少行，从而判断选择过标签的框的height
-var lineNumber=1;
+//var lineNumber=1;
 
-function appendSameSelectCp(cpid,text,if_common,if_dislike){
-	var selectCpContainer=$("#selectCp-container");
-	selectCpContainer.show();
-	var selectCp = $("<div></div>").attr("class", "selectCp").text(text);
+function appendSameSelectCp(selectCpContainer,cpid,text,className){
+	/*var selectCpContainer=$("#selectCp-container");
+	selectCpContainer.show();*/
+	var selectCp = $("<div></div>").attr("class", className).text(text);
 	selectCpContainer.append(selectCp);
 	
 	//2017.11.29 叶夷  将共同喜欢的和不喜欢的标签也放进去且区开来
-	if(if_common=="true"){
-		allCommonTags=allCommonTags+" ["+text+"] ";
+	/*if(if_common=="true"){
 		selectCp.attr("class","selectCp commonLikeTags");
 	}else if(if_dislike=="true"){
 		selectCp.attr("class","selectCp commonDislikeTags");
-	}
+	}*/
 	
 	//将用户昵称文字大小放入我的标签的大小
 	var userNameTextSize=selectCpContainer.width()/32;

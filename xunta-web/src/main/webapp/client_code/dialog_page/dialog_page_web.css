@@ -42,4 +42,18 @@
     border:1px solid #a1a4a7;
     color:#5e5e5e;
     background-color:#f3f3f3;
+    opacity:0.5;
+}
+
+.selectCp-title{
+	text-align:center;
+	color:#5e5e5e;
+	height:20px;
+	line-height:20px;
+	font-size:14px;
+	width: 100%;
+	float: left;
+}
+.commonTags{
+	opacity:1;
 }
