@@ -242,7 +242,7 @@ public class CpOperationWSController {
 		 * */
 		if(selectType.equals(CpChoiceDetailDao.SELECTED)){
 			if(cpChoiceDO==null){
-				System.out.println("添加前为空"+cpChoiceDO);
+				//System.out.println("添加前为空"+cpChoiceDO);
 				cpChoiceDetailDO = cpChoiceDetailService.saveCpChoiceDetail(cpChoiceDetailDO);
 				List<String> cpIds = new ArrayList<String>();
 				cpIds.add(cpid+"");

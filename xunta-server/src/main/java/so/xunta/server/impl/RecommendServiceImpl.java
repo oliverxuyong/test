@@ -184,7 +184,7 @@ public class RecommendServiceImpl implements RecommendService {
 				
 				if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
 					/*如∆u_score为0，更新U2C*/
-					updateU2CAfterLastUpdated(newCps, uid, changedUid);
+					updateU2CAfterLastUpdated(newCps, uid, changedUid,lastUpdateTime);
 				}else{
 					/*如∆u_score不为0  
 					 * 更新U2U_Relation， 为U对应的Uj的关系值加上对应在U2U_Update_Status中的∆u_score
@@ -193,7 +193,7 @@ public class RecommendServiceImpl implements RecommendService {
 					
 					/* 更新U2C
 					 * */
-					updateU2CAfterLastUpdated(newCps, uid, changedUid);
+					updateU2CAfterLastUpdated(newCps, uid, changedUid,lastUpdateTime);
 					updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), lastUpdateTime, uDeltaValue);
 				}
 			}
@@ -394,7 +394,7 @@ public class RecommendServiceImpl implements RecommendService {
 	/**更新Uj在U的update_time后更新的标签列表{CPi}
 	 *	对每个CPi，在U的U2C表中对CPi的推荐分score 加上（ CPi自身的score * U-Uj的关系值u_score），新增为正，取消为负。
 	 * */
-	private void updateU2CAfterLastUpdated(List<CpChoiceDetailDO> newCps, String uid, String changedUid){
+	private void updateU2CAfterLastUpdated(List<CpChoiceDetailDO> newCps, String uid, String changedUid,Timestamp myLastUpdateTime){
 		logger.debug("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
 		for(CpChoiceDetailDO selectedCp:newCps){
 			BigInteger selectedCpid = selectedCp.getCp_id();
@@ -404,25 +404,26 @@ public class RecommendServiceImpl implements RecommendService {
 			Double relateScore = u2uRelationDao.getRelatedUserScore(uid, changedUid);
 			logger.debug("selectedCp: "+selectedCpid+" ; " + is_selected +" ; "+ property +" ; "+ cpWeight +" ; "+ relateScore);
 			
+			CpChoiceDetailDO selectedCpBeforeUpdateTime = cpChoiceDetailDao.getCpChoiceDetailBeforeTime(Long.valueOf(changedUid), selectedCpid, myLastUpdateTime);
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
-					System.out.println("是否为空"+cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)+" uid:"+changedUid+" cpid:"+selectedCpid);
-					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)==null){
+					//System.out.println("是否为空"+cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)+" uid:"+changedUid+" cpid:"+selectedCpid);
+					if(selectedCpBeforeUpdateTime==null){
 						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
 					}
 				}else{
 					 //为取消标签时，如果在更新之前并未选中过，说明是选择又取消，应该什么都不做，只有选中过，取消才有意义
-					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)!=null){
+					if(selectedCpBeforeUpdateTime!=null){
 						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
 					}
 				}
 			}else{
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
-					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)==null){
+					if(selectedCpBeforeUpdateTime==null){
 						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
 					}
 				}else{
-					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)!=null){
+					if(selectedCpBeforeUpdateTime!=null){
 						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
 					}
 				}
@@ -435,6 +436,8 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	private void updateU2CBeforeLastUpdated(String uid,Long changedUid,Timestamp lastUpdateTime,double uDeltaValue){
 		logger.debug("已选CP更新：关联用户 "+changedUid);
+		//这样有一个隐患，当改变用户在我的lastUpdateTime前已经选择了某个cp后，取消又选择了该cp，并且还做了其他操作使之和我的关系改变，这时该cp的推荐之就不会更新，因为create_time已经变到lastUpdateTime之后了
+		//当然，也可以看作非隐患，取消选择表示犹豫，推荐分少加一些可以理解
 		List<CpChoiceDO> oldCps = cpChoiceDao.getSelectedCpsBeforeTime(changedUid, lastUpdateTime);
 		for(CpChoiceDO oldCp:oldCps){
 			BigInteger oldCpId = oldCp.getCp_id();

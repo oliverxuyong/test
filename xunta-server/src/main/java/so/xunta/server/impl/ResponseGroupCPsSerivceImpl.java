@@ -51,7 +51,7 @@ public class ResponseGroupCPsSerivceImpl implements ResponseGroupCPsService {
 		
 		List<RecommendCpBO> returnList = new ArrayList<RecommendCpBO>();
 		for(Tuple cp:cps){
-			if(cp.getScore()<0){
+			if(cp.getScore()<= -(1e-6)){
 				break;
 			}
 			String cpid = cp.getElement();
