@@ -168,14 +168,15 @@ public class CpOperationWSController {
 		concernPointDO.setCreate_time(time);
 		concernPointDO.setModified_time(time);
 		
+		Boolean ifSelfAddCp=true; 
+		
 		try {
 			concernPointDO = concernPointService.saveConcernPoint(concernPointDO);
 			cpId = concernPointDO.getId();
-			SelfAddCpRecommendTask selfAddCpRecommendTask = new SelfAddCpRecommendTask(cpId.toString(),userEventScope,recommendService);
-			recommendTaskPool.execute(selfAddCpRecommendTask);
 			returnMsg="新增标签并选中";
 		} catch (DuplicateKeyException e) {
 			returnMsg="标签已存在，直接选中";
+			ifSelfAddCp=false;
 			concernPointDO = concernPointService.getConcernPointByText(cpText);
 			cpId = concernPointDO.getId();
 			String oldType = concernPointDO.getType();
@@ -208,6 +209,12 @@ public class CpOperationWSController {
 			}*/
 		} finally{
 			CpChoiceDetailDO cpChoiceDetailDO = cpOperateAction(uid,cpId,CpChoiceDetailDao.SELECTED,RecommendService.POSITIVE_SELECT);
+		
+			if(ifSelfAddCp){
+				SelfAddCpRecommendTask selfAddCpRecommendTask = new SelfAddCpRecommendTask(cpId.toString(),userEventScope,recommendService);
+				recommendTaskPool.execute(selfAddCpRecommendTask);
+			}
+			
 			if(cpChoiceDetailDO !=null){		
 				returnJson.put("is_success", "true");
 			}else{

@@ -382,8 +382,8 @@ public class RecommendServiceImpl implements RecommendService {
 	@Override
 	public void setSelfAddCp(String cpid,String userEventScope) {
 		initialCpDao.setCp(cpid, SELF_ADD_CP_SCORE, userEventScope);
-		ConcernPointDO cp = concernPointDao.getConcernPointById(new BigInteger(cpid));
-		c2uDao.saveCpOneUser(cpid, cp.getCreator_uid()+"", RecommendService.POSITIVE_SELECT, userEventScope);
+		//ConcernPointDO cp = concernPointDao.getConcernPointById(new BigInteger(cpid));
+		//c2uDao.saveCpOneUser(cpid, cp.getCreator_uid()+"", RecommendService.POSITIVE_SELECT, userEventScope);
 		
 		List<User> sameScopeUsers = userDao.findUsersByScope(userEventScope);
 		for(User u:sameScopeUsers){
