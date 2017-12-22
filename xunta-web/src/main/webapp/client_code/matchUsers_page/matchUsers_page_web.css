@@ -13,12 +13,6 @@ html, body {
 	height:100%;
 	//overflow-y:scroll;
 	overflow-x:hidden;
-	-webkit-backface-visibility:hidden;
-	-moz-backface-visibility:hidden;
-	-ms-backface-visibility:hidden;
-	-o-backface-visibility:hidden;
-	backface-visibility:hidden;
-	/* Fix of Webkit flickering */
 }
 
 .userimg{

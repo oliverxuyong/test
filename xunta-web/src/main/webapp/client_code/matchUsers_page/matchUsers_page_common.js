@@ -54,8 +54,6 @@ function response_detail_matched_users(data){
 	showOnePageMatchUser();
 	//显示聊天列表
     requestDialogList();
-    
-    downSwiper();
 }
 
 //2017.12.20  叶夷  这是请求一页匹配人详情数据
@@ -76,44 +74,3 @@ function showOnePageMatchUser(){
 		
 	}
 }
-
-/*
- * start：2017.12.20  叶夷   下拉刷新实现
- */
-function downSwiper(){
-	var holdPosition = 0;
-	var mySwiper = new Swiper('.swiper-container',{
-	  slidesPerView:'auto',
-	  mode:'vertical',
-	  watchActiveIndex: true,
-	  onTouchStart: function() {
-	    holdPosition = 0;
-	  },
-	  onResistanceBefore: function(s, pos){
-	    holdPosition = pos;
-	  },
-	  onTouchEnd: function(){
-	    if (holdPosition>100) {
-	      mySwiper.setWrapperTranslate(0,100,0)
-	      mySwiper.params.onlyExternal=true
-	      $('.preloader').addClass('visible');
-	      loadNewSlides();
-	    }
-	  }
-	})
-	var slideNumber = 0;
-	function loadNewSlides(){
-	  setTimeout(function(){
-		alert("下拉刷新");
-		//Release interactions and set wrapper
-	    mySwiper.setWrapperTranslate(0,0,0)
-	    mySwiper.params.onlyExternal=false;
-	    //Update active slide
-	    mySwiper.updateActiveSlide(0)
-	    $('.preloader').removeClass('visible');
-	    
-		requestDetailMatchedUsers();
-	  },1000)
-	}
-}
-/*end：2017.12.20  叶夷*/
