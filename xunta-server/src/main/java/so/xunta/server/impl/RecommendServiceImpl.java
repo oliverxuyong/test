@@ -395,14 +395,14 @@ public class RecommendServiceImpl implements RecommendService {
 	 *	对每个CPi，在U的U2C表中对CPi的推荐分score 加上（ CPi自身的score * U-Uj的关系值u_score），新增为正，取消为负。
 	 * */
 	private void updateU2CAfterLastUpdated(List<CpChoiceDetailDO> newCps, String uid, String changedUid){
-		//logger.info("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
+		logger.debug("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
 		for(CpChoiceDetailDO selectedCp:newCps){
 			BigInteger selectedCpid = selectedCp.getCp_id();
 			String is_selected = selectedCp.getIs_selected();
 			String property = selectedCp.getProperty();
 			Double cpWeight = concernPointDao.getConcernPointById(selectedCpid).getWeight().doubleValue();
 			Double relateScore = u2uRelationDao.getRelatedUserScore(uid, changedUid);
-			//logger.info("selectedCp: "+selectedCpid+" ; " + is_selected +" ; "+ property +" ; "+ cpWeight +" ; "+ relateScore);
+			logger.debug("selectedCp: "+selectedCpid+" ; " + is_selected +" ; "+ property +" ; "+ cpWeight +" ; "+ relateScore);
 			
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
@@ -433,7 +433,7 @@ public class RecommendServiceImpl implements RecommendService {
 	 *	对每个CPj，在U的U2C表中对CPj的推荐分score 加上（ CPi自身的score * U-Uj的∆u_score）
 	 * */
 	private void updateU2CBeforeLastUpdated(String uid,Long changedUid,Timestamp lastUpdateTime,double uDeltaValue){
-		//logger.info("已选CP更新：关联用户 "+changedUid);
+		logger.debug("已选CP更新：关联用户 "+changedUid);
 		List<CpChoiceDO> oldCps = cpChoiceDao.getSelectedCpsBeforeTime(changedUid, lastUpdateTime);
 		for(CpChoiceDO oldCp:oldCps){
 			BigInteger oldCpId = oldCp.getCp_id();
