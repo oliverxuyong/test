@@ -1,7 +1,5 @@
 //2017.08.15 叶夷   显示匹配列表详细信息
-function showMatchUsers(userid,username,img_src,positiveCommonCps,negativeCommonCps){
-	var matchUsers=$("#showMatchUsers");
-
+function showMatchUsers(matchUsers,userid,username,img_src,positiveCommonCps,negativeCommonCps){
 	var userimgUrl=img_src;//头像
 	var userName=username;//用户名
 	

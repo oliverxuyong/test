@@ -33,7 +33,12 @@
         	<div class="tabBox">
         		<!-- 第一个页面 -->
             	<div class="tabList">
-            		<div class="showMatchUsers" id="showMatchUsers">
+            		<div class="showMatchUsers">
+            			<div id="showMatchUsers" style="float:left;width:100%;"><!-- 2017.12.22  叶夷  这里是为了获得匹配人内容的实际高度 -->
+            				<!-- 2017.12.22 叶夷  更多的按钮-->
+							<div class="noMatchUser" id="noMatchUser">更多</div>
+            			</div>
+            			
 						<!--  2017.08.15  叶夷   一个匹配人 -->
 						<!-- <div class="matchUser" id="matchUser">
 							<div class="userimg">
@@ -127,6 +132,8 @@
         var matchUserList;//2017.12.20  叶夷   使用一个数组存储匹配人详情数据
         var requestAllCounts=200;//2017.12.20  叶夷     请求匹配人详情的数量
         var requestOneCounts=10;//2017.12.20  叶夷     请求每一页匹配人详情的数量
+        
+        var isFirst=true;//这是第一次请求匹配人详情，则聊天列表重新请求，如果不是则聊天列表不请求
 		
         function start(Parameter){//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
             domain = Parameter.server_domain;
