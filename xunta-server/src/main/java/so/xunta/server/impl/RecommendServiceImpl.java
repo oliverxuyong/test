@@ -408,22 +408,22 @@ public class RecommendServiceImpl implements RecommendService {
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
 					//System.out.println("是否为空"+cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)+" uid:"+changedUid+" cpid:"+selectedCpid);
-					if(selectedCpBeforeUpdateTime==null){
+					if(selectedCpBeforeUpdateTime==null||selectedCpBeforeUpdateTime.getIs_selected().equals("N")){
 						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
 					}
 				}else{
 					 //为取消标签时，如果在更新之前并未选中过，说明是选择又取消，应该什么都不做，只有选中过，取消才有意义
-					if(selectedCpBeforeUpdateTime!=null){
+					if(!(selectedCpBeforeUpdateTime==null||selectedCpBeforeUpdateTime.getIs_selected().equals("N"))){
 						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
 					}
 				}
 			}else{
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
-					if(selectedCpBeforeUpdateTime==null){
+					if(selectedCpBeforeUpdateTime==null||selectedCpBeforeUpdateTime.getIs_selected().equals("N")){
 						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
 					}
 				}else{
-					if(selectedCpBeforeUpdateTime!=null){
+					if(!(selectedCpBeforeUpdateTime==null||selectedCpBeforeUpdateTime.getIs_selected().equals("N"))){
 						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
 					}
 				}
