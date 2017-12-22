@@ -1230,22 +1230,37 @@ function showSelectTag(cpid,text,selectTagNumText){
 function addMyCp(cpid,text,selected_user_num){
 	// 2017.09.14 叶夷 为了性能测试将选择标签的显示控制在3行以内
 		var myTagContainer=$("#mytag-container");
+		
+		//2017.12.22  叶夷  加号保持不动
+		// 随时在我的标签后面加上“+”
+		//$("#addtag").remove();
+		//var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+(myTagHeight-5)+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
+		var addTag=$("#addtag");
+		if(addTag.length<0){
+			addTag=$("<div onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag");
+			myTagContainer.prepend(addTag);
+		}
+		
 		var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
 		var sampleMyTagFontSize = $("#samplemytag").css("font-size");
 		myTag.css("font-size",sampleMyTagFontSize);
 		myTagContainer.append(myTag);
+		
+		//添加标签的height调整
+		addTag.css("height", $("#samplemytag").css("height"));
+		
+		//有一个克隆的div放在最前面，可以使第一个我的标签产生出空位
+		var cloneMyTag=$("#cloneMyTag");
+		if(cloneMyTag.length<=0){
+			cloneMyTag=$("<div></div>").attr("class","cloneMyTag").attr("id", "cloneMyTag");
+			myTagContainer.prepend(cloneMyTag);
+			cloneMyTag.css("width",addTag.width()+"px");
+		}
 	
 		myTag.click(function(){
 			unSelectCP(cpid);
 		});
 		
-		// 随时在我的标签后面加上“+”
-		$("#addtag").remove();
-		//var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+(myTagHeight-5)+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
-		var addTag=$("<div onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag");
-		addTag.css("height", $("#samplemytag").css("height"));
-		myTagContainer.append(addTag);
-	
 		// 装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
 		//var myTagMarginTop=parseInt(myTag.css("margin-top"));
 		/*var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
