@@ -406,6 +406,7 @@ public class RecommendServiceImpl implements RecommendService {
 			
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
+					System.out.println("是否为空"+cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid));
 					if(cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)==null){
 						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
 					}
