@@ -1,5 +1,6 @@
 package so.xunta.server.impl;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Tuple;
 import so.xunta.beans.CpChoiceDO;
 import so.xunta.beans.User;
+import so.xunta.persist.ConcernPointDao;
 import so.xunta.persist.CpChoiceDao;
 import so.xunta.persist.U2uCpDetailDao;
 import so.xunta.persist.U2uRelationDao;
@@ -33,6 +35,8 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 	private U2uCpDetailDao u2uCpDetailDao;
 	@Autowired
 	private CpChoiceDao cpChoiceDao;
+	@Autowired
+	private ConcernPointDao concernPointDao;
 	
 	Logger logger =Logger.getLogger(ResponseMatchedUsersServiceImpl.class);
 	
@@ -99,18 +103,18 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 	@Override
 	public JSONArray getMatchedUserWithCPJSONArr(String myUserId, String matchedUserId) {
 		List<CpChoiceDO> userPositiveSelectedCps = cpChoiceDao.getSelectedCps(Long.valueOf(matchedUserId),RecommendService.POSITIVE_SELECT);
-		Map<String,String> commonPositiveCps = u2uCpDetailDao.getCps(myUserId, matchedUserId, RecommendService.POSITIVE_SELECT);
-		Set<String> commonPositiveCpIds = commonPositiveCps.keySet();
+		//Map<String,String> commonPositiveCps = u2uCpDetailDao.getCps(myUserId, matchedUserId, RecommendService.POSITIVE_SELECT);
+		Set<String> commonPositiveCpIds = u2uCpDetailDao.getCpIds(myUserId, matchedUserId, RecommendService.POSITIVE_SELECT);
 		
 		List<CpChoiceDO> userNegativeSelectedCps = cpChoiceDao.getSelectedCps(Long.valueOf(matchedUserId),RecommendService.NEGATIVE_SELECT);
-		Map<String,String> commonNegativeCps = u2uCpDetailDao.getCps(myUserId, matchedUserId, RecommendService.NEGATIVE_SELECT);
-		Set<String> commonNegativeCpIds = commonNegativeCps.keySet();
+		//Map<String,String> commonNegativeCps = u2uCpDetailDao.getCps(myUserId, matchedUserId, RecommendService.NEGATIVE_SELECT);
+		Set<String> commonNegativeCpIds = u2uCpDetailDao.getCpIds(myUserId, matchedUserId, RecommendService.NEGATIVE_SELECT);;
 		
 		JSONArray matchedUserCpsJsonArr = new JSONArray();
 		
 		for(CpChoiceDO userPositiveSelectedCp:userPositiveSelectedCps){
 			String cpId = userPositiveSelectedCp.getCp_id().toString();
-			String cpText = commonPositiveCps.get(cpId);
+			String cpText = concernPointDao.getConcernPointById(new BigInteger(cpId)).getText();
 			JSONObject cpJson =new JSONObject();
 			cpJson.put("cp_id", cpId);
 			cpJson.put("text", cpText);
@@ -126,7 +130,7 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 		
 		for(CpChoiceDO userNegativeSelectedCp:userNegativeSelectedCps){
 			String cpId = userNegativeSelectedCp.getCp_id().toString();
-			String cpText = commonNegativeCps.get(cpId);
+			String cpText = concernPointDao.getConcernPointById(new BigInteger(cpId)).getText();
 			JSONObject cpJson =new JSONObject();
 			cpJson.put("cp_id", cpId);
 			cpJson.put("text", cpText);
