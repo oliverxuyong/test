@@ -214,7 +214,7 @@ function showTitle() {
         }
     });
 }*/
-function requestSelectCP(){
+/*function requestSelectCP(){
 	$.ajax({
         url:"http://xunta.so:3000/v1/find/other/tags",
         type:"POST",
@@ -239,5 +239,21 @@ function requestSelectCP(){
         	return;
         }
     });
+}*/
+
+function requestSelectCP(){
+	var paraStr = userId + "','" + toUserId;
+	execRoot("requestMutualCP('"+ paraStr +"')");
 }
 
+function responseMutualCP(data){
+	console.log("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
+	log2root("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
+	showSameSelectCp(data);
+	
+	//这里要做判断，如果没有聊天记录则出现第一句话弹出框
+	if(noHistoryMsg){
+		sendFirstTalk(allCommonTags);
+	}
+	//sendFirstTalk(allCommonTags);//这是测试效果
+}

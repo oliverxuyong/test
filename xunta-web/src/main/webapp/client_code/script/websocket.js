@@ -290,6 +290,18 @@ function requestDetailMatchedUsers(userId , requestCounts) {
 	WS_Send(json_obj);
 }
 
+//2017.12.23 请求聊天页双方标签的数据
+function requestMutualCP(userId , toUserid) {
+	var json_obj = {
+		_interface : "1112-1",
+		interface_name : "request_detail_matched_users",
+		my_user_id : userId.toString(),
+		matched_user_id : toUserid.toString(),
+		timestamp:""
+	};
+	WS_Send(json_obj);
+}
+
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
 	task_RequestCP();
@@ -455,6 +467,12 @@ function checkMessageInterface(evnt) {
 	if (jsonObj._interface == '1111-2') {
 		console.log("返回用户请求的详细匹配列表:"+JSON.stringify(jsonObj.matched_user_arr));
 		exec("matchUsers_page","response_detail_matched_users("+evnt.data+")");
+	}
+	
+	//2017.12.23 叶夷  返回用户请求的聊天页的标签数据
+	if (jsonObj._interface == '1112-2') {
+		console.log("返回用户请求的聊天页的标签数据:"+JSON.stringify(jsonObj.msg));
+		exec(jsonObj.matched_user_id,"responseMutualCP("+evnt.data+")");
 	}
 }
 
