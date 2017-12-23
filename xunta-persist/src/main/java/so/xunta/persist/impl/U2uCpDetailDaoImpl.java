@@ -1,6 +1,7 @@
 package so.xunta.persist.impl;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,28 @@ public class U2uCpDetailDaoImpl implements U2uCpDetailDao {
 		return u2Ucps;
 	}
 
+	@Override
+	public Set<String> getCpIds(String uid1, String uid2, String property) {
+		if(uid1.equals(uid2)){
+			return null;
+		}
+		Jedis jedis = null;
+		String key =  generateKey(uid1, uid2, property);
+		Set<String> u2UcpIds = null;
+		
+		try {
+			jedis = redisUtil.getJedis();
+			u2UcpIds = jedis.hkeys(key);
+		} catch (Exception e) {
+			logger.error("getCpIds error:", e);
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return u2UcpIds;
+	}
+	
 	@Override
 	public void removeU2uOneCp(String uid1, String uid2, String property, String cpId) {
 		if(uid1.equals(uid2)){

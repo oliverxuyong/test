@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Tuple;
+import so.xunta.beans.CpChoiceDO;
 import so.xunta.beans.User;
+import so.xunta.persist.CpChoiceDao;
 import so.xunta.persist.U2uCpDetailDao;
 import so.xunta.persist.U2uRelationDao;
 import so.xunta.persist.UserDao;
@@ -29,6 +31,8 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 	private UserDao userDao;
 	@Autowired
 	private U2uCpDetailDao u2uCpDetailDao;
+	@Autowired
+	private CpChoiceDao cpChoiceDao;
 	
 	Logger logger =Logger.getLogger(ResponseMatchedUsersServiceImpl.class);
 	
@@ -92,4 +96,51 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 		return matchUsersJsonArr;
 	}
 
+	@Override
+	public JSONArray getMatchedUserWithCPJSONArr(String myUserId, String matchedUserId) {
+		List<CpChoiceDO> userPositiveSelectedCps = cpChoiceDao.getSelectedCps(Long.valueOf(matchedUserId),RecommendService.POSITIVE_SELECT);
+		Map<String,String> commonPositiveCps = u2uCpDetailDao.getCps(myUserId, matchedUserId, RecommendService.POSITIVE_SELECT);
+		Set<String> commonPositiveCpIds = commonPositiveCps.keySet();
+		
+		List<CpChoiceDO> userNegativeSelectedCps = cpChoiceDao.getSelectedCps(Long.valueOf(matchedUserId),RecommendService.NEGATIVE_SELECT);
+		Map<String,String> commonNegativeCps = u2uCpDetailDao.getCps(myUserId, matchedUserId, RecommendService.NEGATIVE_SELECT);
+		Set<String> commonNegativeCpIds = commonNegativeCps.keySet();
+		
+		JSONArray matchedUserCpsJsonArr = new JSONArray();
+		
+		for(CpChoiceDO userPositiveSelectedCp:userPositiveSelectedCps){
+			String cpId = userPositiveSelectedCp.getCp_id().toString();
+			String cpText = commonPositiveCps.get(cpId);
+			JSONObject cpJson =new JSONObject();
+			cpJson.put("cp_id", cpId);
+			cpJson.put("text", cpText);
+			cpJson.put("is_dislike", "false");
+			if(commonPositiveCpIds.contains(cpId)){
+				cpJson.put("is_common","true");
+			}else{
+				cpJson.put("is_common","false");
+			}
+			
+			matchedUserCpsJsonArr.put(cpJson);
+		}
+		
+		for(CpChoiceDO userNegativeSelectedCp:userNegativeSelectedCps){
+			String cpId = userNegativeSelectedCp.getCp_id().toString();
+			String cpText = commonNegativeCps.get(cpId);
+			JSONObject cpJson =new JSONObject();
+			cpJson.put("cp_id", cpId);
+			cpJson.put("text", cpText);
+			cpJson.put("is_dislike", "true");
+			if(commonNegativeCpIds.contains(cpId)){
+				cpJson.put("is_common","true");
+			}else{
+				cpJson.put("is_common","false");
+			}
+			
+			matchedUserCpsJsonArr.put(cpJson);
+		}
+		return matchedUserCpsJsonArr;
+	}
+
+	
 }
