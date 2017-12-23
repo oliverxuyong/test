@@ -251,7 +251,7 @@ public class RecommendServiceImpl implements RecommendService {
 		String uid = u.getUserId().toString();
 		String userEventScope = u.getEvent_scope();
 		
-		if(u.getEvent_scope().equals("ainiwedding_session2")){
+		if(u.getEvent_scope().equals("ainiwedding_test2")){
 			Map<String,Double> initialCps= initialCpDao.getInitialCps(userEventScope);
 			Iterator<Entry<String,Double>> iterator = initialCps.entrySet().iterator();
 			while(iterator.hasNext()){
