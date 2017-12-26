@@ -40,6 +40,17 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 		appendElement("bigCP",bigCPText,0);// 叶夷 2017.06.16
 		$("#request_cp").hide();
 	}else{
+		
+		//2017.12.26  叶夷   如果这时界面的大特殊标签圆存在，则先让其消失再进行别的圆的计算
+		var bigCp=$("#outcpidbigCP");
+		if(bigCp.length>0){
+			bigCPAnimate(bigCp);
+			deleteBigCp();//点击了大圆标签则先将其把在数组中删除
+			setTimeout(function() {
+				addTag();
+			},bigCPAnimateSecond);
+		}
+		
 		for (var i = 0; i < cpList.length; i++) {
 			var cp = cpList[i];// 每个推荐标签
 			var cpid=cp.cpid;// 每个推荐标签id
@@ -181,6 +192,7 @@ function appendElement(/*i, */cpid,text,selectTagNum) {
 	}else{//特殊的标签,过5秒之后消失之后动画飞到加号位置
 		cp_innode.click(function() {
 			bigCPAnimate(cpNodeByDistance);
+			deleteBigCp();//点击了大圆标签则先将其把在数组中删除
 			setTimeout(function() {
 				addTag();
 			},bigCPAnimateSecond);
@@ -224,7 +236,6 @@ function bigCPAnimate(cpNodeByDistance){
 	setTimeout(function() {
 		cpNodeByDistance.remove();
 		//cpValue.splice(cpValue.length-1,cpValue.length-1);
-		deleteBigCp();
 		//$("#cp-container").height(cpValue[cpValue.length-1].cpBottom);
 		requestCPSuccese=true;
 		$("#request_cp").show();
@@ -547,6 +558,7 @@ function startPushSelectCpPresent(data){
 		//通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
 		for (var index= 0; index < cpValue.length; index++) {
 			var cpObj = cpValue[index];// 存在的cp
+			console.log("选择人数变化时标签掉落测试: 第"+(index+1)+"个标签圆="+cpObj.cpNode);
 			var cpNodeID =cpObj.cpNode;// 存在的cpid
 			var cpLeft = cpObj.cpLeft;// 获得已有cp的最左边边界值
 			var cpRight = cpObj.cpRight;
@@ -605,9 +617,7 @@ function startPushSelectCpPresent(data){
 			cpTop=cpY-cpRadius;
 			bottom = cpTop +cpRadius*2;
 			right=cpLeft+cpRadius*2;
-			
-			console.log("测试存储的标签圆数据:"+cpNodeID+" "+cpLeft+" "+right+" "+cpTop+" "+bottom);
-			
+			console.log("选择人数变化时标签掉落测试: 此标签圆存入的数值="+cpNodeID+" "+cpLeft+" "+right+" "+cpTop+" "+bottom);
 			cpValueForSelectNum.push(new CP(cpNodeID, cpLeft, right, cpTop, bottom));
 			// cp容器的高度调整
 			cp_container.height(bottom+maxCPSize);
