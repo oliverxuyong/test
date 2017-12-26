@@ -28,18 +28,20 @@ public class CpOperationPushTask implements Runnable{
 	private RecommendPushService recommendPushService;
 	private CpShowingService cpShowingService;
 	private LoggerService loggerService;
-	private UserService userService;
+	//private UserService userService;
 	
 	private String cpId;
 	private String userId;
 	private int selectType;
 	private String property;
 	private String clientIP;
+	private Boolean ifSelfAddCp;
+	private User u;
 	
 	Logger logger =Logger.getLogger(CpOperationPushTask.class);
 	
 	public CpOperationPushTask(RecommendService recommendService,RecommendPushService recommendPushService,
-			CpShowingService cpShowingService, String userId,String cpId, int selectType, String property, SocketService socketService,LoggerService loggerService,UserService userService) {
+			CpShowingService cpShowingService, String userId,String cpId, int selectType, String property,Boolean ifSelfAddCp, SocketService socketService,LoggerService loggerService,UserService userService) {
 		this.recommendService = recommendService;
 		this.recommendPushService = recommendPushService;
 		this.userId = userId;
@@ -49,7 +51,9 @@ public class CpOperationPushTask implements Runnable{
 		this.selectType = selectType;
 		this.property = property;
 		this.loggerService = loggerService;
-		this.userService = userService;
+		this.ifSelfAddCp = ifSelfAddCp;
+		
+		this.u = userService.findUser(Long.valueOf(userId));
 	}
 	
 	public String getCpId() {
@@ -64,6 +68,9 @@ public class CpOperationPushTask implements Runnable{
 	}
 	public String getProperty() {
 		return property;
+	}
+	public Boolean getIfSelfAddCp() {
+		return ifSelfAddCp;
 	}
 
 	@Override
@@ -89,6 +96,10 @@ public class CpOperationPushTask implements Runnable{
 		/*Step4： 为其他当前正在看这个CP的用户推送数字的变化*/
 		pushCpHeatChange();
 		
+		if(ifSelfAddCp){
+			recommendService.setSelfAddCp(cpId,u.getEvent_scope());
+		}
+		
 		logger.debug("==============================CpOperationPushTask 完成！===================================");
 	}
 	
@@ -107,7 +118,7 @@ public class CpOperationPushTask implements Runnable{
 				/*更新后执行一次和原先状态比较，有一定变化则产生推送*/
 				RecommendPushDTO recommendPushDTO = recommendPushService.generatePushDataAfterUpdateTask(uid,selectType);
 				List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
-				String userName = userService.findUser(Long.valueOf(uid)).getName();
+				String userName = u.getName();
 				if(pushMatchedUserDTOs!=null){
 					logger.info("用户"+userName+"的匹配用户发生改变");
 					pushChangedMatchedUsers(pushMatchedUserDTOs,userSession);
@@ -189,7 +200,6 @@ public class CpOperationPushTask implements Runnable{
 	}
 
 	private void pushCpHeatChange(){
-		User u = userService.findUser(Long.valueOf(userId));
 		Set<String> pushUserIds= cpShowingService.getUsersNeedPush(userId, cpId);
 		int cpSelectUserCounts = cpShowingService.getCpSelectedUserCounts(cpId,u.getEvent_scope());
 		for(String pushUserId:pushUserIds){

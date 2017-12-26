@@ -66,13 +66,13 @@ public class RedisMigrateController {
 		 jedis.auth("660419");
 	     System.out.println("Connection to server sucessfully");
 	     System.out.println("Server is running: "+jedis.ping());
-	     Set<String> C2UKeys = jedis.keys("C2U:*");
-	     String pattern = "^\\d+";
+	     Set<String> C2UKeys = jedis.keys("${redis.keyPrefixU2UCpDetail}*");
+	    // String pattern = "^\\d+";
 	     for(String key:C2UKeys){
-	    	 String subKey = key.substring(5);
-	    	 if(Pattern.matches(pattern, subKey)){
+	    	// String subKey = key.substring(5);
+	    	// if(Pattern.matches(pattern, subKey)){
 	    		 jedis.del(key);
-	    	 }
+	    	// }
 	     }
 	     
 	     try {

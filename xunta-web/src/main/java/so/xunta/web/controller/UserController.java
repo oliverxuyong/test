@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import so.xunta.beans.User;
 import so.xunta.server.OpenId2EventScopeService;
-import so.xunta.server.RecommendService;
 import so.xunta.server.UserService;
 import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
@@ -29,8 +28,7 @@ import so.xunta.utils.IdWorker;
 public class UserController {
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private RecommendService recommendService;
+	
 	@Autowired
 	private OpenId2EventScopeService openId2EventScopeService;
 	
@@ -146,7 +144,7 @@ public class UserController {
 			 * 		如果不存在初始化话题,就初始化话题
 			 */
 			if(user.getIfInitedTopics()==0){//代表没有初始化话题列表
-				recommendService.initRecommendParm(user);
+				//recommendService.initRecommendParm(user);
 				user.setIfInitedTopics(1);
 				userService.updateUser(user);		
 			}

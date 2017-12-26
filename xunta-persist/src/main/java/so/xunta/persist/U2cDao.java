@@ -20,7 +20,7 @@ public interface U2cDao {
 	/**
 	 * 检查用户的U2C是否足够
 	 * */
-	public Boolean ifNeedReplenish(String uid);
+	public int getAvailableNum(String uid);
 	
 	/**
 	 * 分数递增地添加CP
@@ -31,6 +31,8 @@ public interface U2cDao {
 	 * 批量更新CP
 	 * */
 	public void updateUserBatchCpValue(String uid, Map<String,Double> cps);
+	
+	public void refreshUserBatchCpValue(String uid, Map<String,Double> cps);
 	
 	/**
 	 * 将CP设为已选/已呈现

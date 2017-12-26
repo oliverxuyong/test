@@ -87,6 +87,24 @@ public class U2cDaoImpl implements U2cDao {
 		}		
 	}
 	
+	@Override
+	public void refreshUserBatchCpValue(String uid, Map<String,Double> cps) {
+		Jedis jedis=null;
+		uid = keyPrefix + uid;
+		try {
+			jedis = redisUtil.getJedis();
+			if(cps.size()>0){
+				jedis.zadd(uid, cps);
+			}
+		} catch (Exception e) {
+			logger.error("refreshUserBatchCpValue error:", e);
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}		
+	}
+	
 	/**给推荐CP列表中已选的CP值为一个很大的负数，就算再加也不会产生影响	*/
 	@Override
 	public void setUserCpsPresented(String uid, List<String> cpIds) {
@@ -128,16 +146,14 @@ public class U2cDaoImpl implements U2cDao {
 	}
 	
 	@Override
-	public Boolean ifNeedReplenish(String uid){
+	public int getAvailableNum(String uid){
 		Jedis jedis = null;
 		uid = keyPrefix + uid;
+		int availableNum = 0;
 		
 		try {
 			jedis = redisUtil.getJedis();
-			int availableNum = jedis.zcount(uid,0,Double.MAX_VALUE).intValue();
-			if(availableNum == 0){
-				return true;
-			}
+			availableNum = jedis.zcount(uid,0.0,Double.MAX_VALUE).intValue();
 		} catch (Exception e) {
 			logger.error("ifneedReplenish error:", e);
 		}finally{
@@ -145,7 +161,7 @@ public class U2cDaoImpl implements U2cDao {
 				jedis.close();
 			}
 		}
-		return false;
+		return availableNum;
 	}
 	
 	/*public Boolean ifNeedReplenish(String uid){

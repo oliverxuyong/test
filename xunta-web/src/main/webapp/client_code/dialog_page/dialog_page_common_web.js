@@ -164,6 +164,7 @@ function showSameSelectCp(data){
 			var cpid=commonLikeList[i].cp_id;
 			var text=commonLikeList[i].text;
 			appendSameSelectCp(selectCpContainer,cpid,text,"selectCp commonTags");
+			allCommonTags=allCommonTags+" ["+text+"] ";
 		}
 		for(var i in likeList){
 			var cpid=likeList[i].cp_id;

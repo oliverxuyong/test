@@ -33,7 +33,6 @@ import so.xunta.server.SocketService;
 import so.xunta.server.UserService;
 import so.xunta.websocket.config.Constants;
 import so.xunta.websocket.task.CpOperationPushTask;
-import so.xunta.websocket.task.SelfAddCpRecommendTask;
 import so.xunta.websocket.utils.RecommendTaskPool;
 
 /**
@@ -89,7 +88,7 @@ public class CpOperationWSController {
 			property = RecommendService.POSITIVE_SELECT;
 		}
 		
-		CpChoiceDetailDO cpChoiceDetailDO = cpOperateAction(uid, cpid, CpChoiceDetailDao.SELECTED,property);
+		CpChoiceDetailDO cpChoiceDetailDO = cpOperateAction(uid, cpid, CpChoiceDetailDao.SELECTED,property,false);
 
 		
 		if(cpChoiceDetailDO !=null){
@@ -124,7 +123,7 @@ public class CpOperationWSController {
 			property = RecommendService.POSITIVE_SELECT;
 		}
 		
-		CpChoiceDetailDO cpChoiceDetailDO = cpOperateAction(uid, cpid, CpChoiceDetailDao.UNSELECTED,property);
+		CpChoiceDetailDO cpChoiceDetailDO = cpOperateAction(uid, cpid, CpChoiceDetailDao.UNSELECTED,property,false);
 		
 		if(cpChoiceDetailDO !=null){		
 			returnJson.put("is_success", "true");
@@ -168,14 +167,15 @@ public class CpOperationWSController {
 		concernPointDO.setCreate_time(time);
 		concernPointDO.setModified_time(time);
 		
+		Boolean ifSelfAddCp=true; 
+		
 		try {
 			concernPointDO = concernPointService.saveConcernPoint(concernPointDO);
 			cpId = concernPointDO.getId();
-			SelfAddCpRecommendTask selfAddCpRecommendTask = new SelfAddCpRecommendTask(cpId.toString(),userEventScope,recommendService);
-			recommendTaskPool.execute(selfAddCpRecommendTask);
 			returnMsg="新增标签并选中";
 		} catch (DuplicateKeyException e) {
 			returnMsg="标签已存在，直接选中";
+			ifSelfAddCp=false;
 			concernPointDO = concernPointService.getConcernPointByText(cpText);
 			cpId = concernPointDO.getId();
 			String oldType = concernPointDO.getType();
@@ -207,7 +207,13 @@ public class CpOperationWSController {
 				
 			}*/
 		} finally{
-			CpChoiceDetailDO cpChoiceDetailDO = cpOperateAction(uid,cpId,CpChoiceDetailDao.SELECTED,RecommendService.POSITIVE_SELECT);
+			CpChoiceDetailDO cpChoiceDetailDO = cpOperateAction(uid,cpId,CpChoiceDetailDao.SELECTED,RecommendService.POSITIVE_SELECT,ifSelfAddCp);
+		
+			/*if(ifSelfAddCp){
+				SelfAddCpRecommendTask selfAddCpRecommendTask = new SelfAddCpRecommendTask(cpId.toString(),userEventScope,recommendService);
+				recommendTaskPool.execute(selfAddCpRecommendTask);
+			}*/
+			
 			if(cpChoiceDetailDO !=null){		
 				returnJson.put("is_success", "true");
 			}else{
@@ -229,7 +235,7 @@ public class CpOperationWSController {
 		logger.info("用户"+userService.findUser(userId).getName()+"点击了添加自己CP按钮");
 	}
 	
-	private CpChoiceDetailDO cpOperateAction(Long uid, BigInteger cpid, String selectType, String property){
+	private CpChoiceDetailDO cpOperateAction(Long uid, BigInteger cpid, String selectType, String property,Boolean ifSelfAddCp){
 		CpChoiceDetailDO cpChoiceDetailDO = new CpChoiceDetailDO();
 		cpChoiceDetailDO.setUser_id(uid);
 		cpChoiceDetailDO.setCp_id(cpid);
@@ -242,6 +248,7 @@ public class CpOperationWSController {
 		 * */
 		if(selectType.equals(CpChoiceDetailDao.SELECTED)){
 			if(cpChoiceDO==null){
+				//System.out.println("添加前为空"+cpChoiceDO);
 				cpChoiceDetailDO = cpChoiceDetailService.saveCpChoiceDetail(cpChoiceDetailDO);
 				List<String> cpIds = new ArrayList<String>();
 				cpIds.add(cpid+"");
@@ -266,7 +273,7 @@ public class CpOperationWSController {
 		}else{
 			selectTypeRec = RecommendService.UNSELECT_CP;
 		}
-		CpOperationPushTask cpOperationPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,socketService,loggerService,userService);
+		CpOperationPushTask cpOperationPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,ifSelfAddCp,socketService,loggerService,userService);
 		recommendTaskPool.execute(cpOperationPushTask);
 		return cpChoiceDetailDO;
 	}
