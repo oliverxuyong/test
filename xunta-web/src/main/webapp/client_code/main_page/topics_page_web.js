@@ -224,11 +224,19 @@ function bigCPAnimate(cpNodeByDistance){
 	setTimeout(function() {
 		cpNodeByDistance.remove();
 		//cpValue.splice(cpValue.length-1,cpValue.length-1);
-		cpValue.pop();
+		deleteBigCp();
 		//$("#cp-container").height(cpValue[cpValue.length-1].cpBottom);
 		requestCPSuccese=true;
 		$("#request_cp").show();
 	},bigCPAnimateSecond);
+}
+//2017.12.26 叶夷  将数组中存在的所有大标签全部删除
+function deleteBigCp(){
+	for(var i=0;i<=cpValue.length-1;i++){
+	    if(cpValue[i].cpNode=="outcpidbigCP"){
+	    	cpValue.splice(i,1);
+	    }
+	}
 }
 
 var minCPSize = $("body").width()/8;// 最小内圆的大小
@@ -544,12 +552,6 @@ function startPushSelectCpPresent(data){
 			var cpRight = cpObj.cpRight;
 			var cpTop,cpBottom;
 		
-			//判断放大之后是否会超过边界
-			var right=cpLeft+cpRadius*2;
-			if(right>cp_container.width()){
-				cpLeft=cpLeft-changeWidth;
-			}
-		
 			var cpRadius;
 			var cpid1=cpNodeID.replace(/[^0-9]/ig,"");
 			if(cpid==cpid1){
@@ -557,6 +559,13 @@ function startPushSelectCpPresent(data){
 			}else{
 				cpRadius=(cpRight-cpLeft)/2;
 			}
+			
+			//判断放大之后是否会超过边界
+			var right=cpLeft+cpRadius*2;
+			if(right>cp_container.width()){
+				cpLeft=cpLeft-changeWidth;
+			}
+			
 			var cpX = cpLeft + cpRadius;// 一开始圆心的x为start+cpRadius
 			var cpY = cp_container.height();//从下往上单轨迹扫描
 			// 1.遍历装cp容器的宽度,每次+1px
@@ -596,6 +605,9 @@ function startPushSelectCpPresent(data){
 			cpTop=cpY-cpRadius;
 			bottom = cpTop +cpRadius*2;
 			right=cpLeft+cpRadius*2;
+			
+			console.log("测试存储的标签圆数据:"+cpNodeID+" "+cpLeft+" "+right+" "+cpTop+" "+bottom);
+			
 			cpValueForSelectNum.push(new CP(cpNodeID, cpLeft, right, cpTop, bottom));
 			// cp容器的高度调整
 			cp_container.height(bottom+maxCPSize);
