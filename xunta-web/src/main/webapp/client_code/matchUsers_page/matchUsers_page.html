@@ -21,7 +21,7 @@
 		<!--div id="notification">通知栏</div-->
 		<div id="header">
 			<div id="goback" onclick="backBtn()"><img src="../image/goback5.png" /></div>
-			<div id="title">匹配人列表页</div>
+			<!-- <div id="title">匹配人列表页</div> -->
 			<!-- <div class="_closeBtn" onclick="closeBtn()"><img src="../image/close.png" ></div> -->
 		</div>
 		
@@ -134,6 +134,8 @@
         var requestOneCounts=10;//2017.12.20  叶夷     请求每一页匹配人详情的数量
         
         var isFirst=true;//这是第一次请求匹配人详情，则聊天列表重新请求，如果不是则聊天列表不请求
+        
+        var myTagArray;
 		
         function start(Parameter){//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
             domain = Parameter.server_domain;
@@ -146,11 +148,14 @@
             userAgent = Parameter.userAgent;
             _topicPageSign = Parameter.topicPageSign;
             unreadObjList=Parameter.unreadObjList;
+            myTagArray=Parameter.myTagArray;
             
             execRoot("setCurrentPageId('matchUsers_page')");
             
           	//2017.12.13 叶夷  请求详细匹配人列表
           	requestDetailMatchedUsers();
+          	
+          	response_user_selected_cp(myTagArray);
         }
         //2017.12.20  叶夷    这里是实现匹配人详情页tab滑动的效果
         window.onload = function (){

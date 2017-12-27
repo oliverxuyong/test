@@ -290,6 +290,19 @@ function requestDetailMatchedUsers(userId , requestCounts) {
 	WS_Send(json_obj);
 }
 
+//2017.12.27 叶夷  用户请求指定cp匹配的用户
+function requestUserCpMatchUsers(userId,myTagIds,requestCounts){
+	var json_obj = {
+			_interface : "1112-1",
+			interface_name : "request_user_cp_match_users",
+			uid : userId.toString(),
+			cp_ids:myTagIds,
+			request_counts : requestCounts.toString(),
+			timestamp:""
+		};
+		WS_Send(json_obj);
+}
+
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
 	task_RequestCP();
@@ -454,6 +467,12 @@ function checkMessageInterface(evnt) {
 	//2017.12.13 叶夷  返回用户请求的详细匹配列表
 	if (jsonObj._interface == '1111-2') {
 		console.log("返回用户请求的详细匹配列表:"+JSON.stringify(jsonObj.matched_user_arr));
+		exec("matchUsers_page","response_detail_matched_users("+evnt.data+")");
+	}
+	
+	//2017.12.27 叶夷  返回用户请求指定cp匹配的用户
+	if (jsonObj._interface == '1112-2') {
+		console.log("返回用户请求指定cp匹配的用户:"+JSON.stringify(jsonObj.matched_user_arr));
 		exec("matchUsers_page","response_detail_matched_users("+evnt.data+")");
 	}
 }

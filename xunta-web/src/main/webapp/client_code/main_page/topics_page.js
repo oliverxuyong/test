@@ -224,6 +224,7 @@ function enterDialogPage(toUserId,toUserName,muImg) {
 	unreadObjList.splice(0,unreadObjList.length);
 }*/
 
+var myTagArray=new Array();//2017.12.27 保存我的标签传给匹配人详情页
 //2017.07.26 叶夷 进入匹配人详情页
 function enterMatchUsersPage() {
 	var pageParam = {
@@ -235,8 +236,14 @@ function enterMatchUsersPage() {
 		"adminImageurl" : adminImageurl,
 		"userAgent" : userAgent,
 		"topicPageSign" : "yes",
-		"unreadObjList":unreadObjList
+		"unreadObjList":unreadObjList,
+		"myTagArray":myTagArray
 	};
+	
+	if(window.parent.document.getElementById("matchUsers_page")!=null ){//匹配人详情列表打开过
+		exec("matchUsers_page", "response_user_selected_cp('"+JSON.stringify(myTagArray)+"')");
+	}
+	
 	console.log("enterDialogListPage userId=" + userId);
 	openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', JSON
 			.stringify(pageParam));

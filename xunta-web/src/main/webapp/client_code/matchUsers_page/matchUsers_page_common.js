@@ -68,6 +68,17 @@ function response_detail_matched_users(data){
 	}
 }
 
+//2017.12.27 叶夷  用户请求指定cp匹配的用户
+function requestUserCpMatchUsers(){
+	var paraStr = userId + "','"+JSON.stringify(myTagIds)+ "','" + requestAllCounts;
+	execRoot("requestUserCpMatchUsers('"+ paraStr +"')");
+}
+
+//2017.12.27 叶夷  返回用户请求指定cp匹配的用户
+function responseUserCpMatchUsers(data){
+	response_detail_matched_users(data);
+}
+
 //2017.12.20  叶夷  这是请求一页匹配人详情数据
 function showOnePageMatchUser(matchUsers){
 	/*var matchUsers=$("#showMatchUsers");
@@ -145,3 +156,23 @@ $(".showMatchUsers").scroll(function(){
 	} 
 });
 
+//2017.12.27 叶夷   显示匹配列表详细信息页的我选择的标签
+function response_user_selected_cp(cp_arr){
+	//增加我的标签之前先将标签删除
+	var myTagDiv=$(".mytag");
+	if(myTagDiv.length>0){
+		for(var a=0;a<myTagDiv.length;a++){
+			myTagDiv[a].remove();
+		}
+	}
+	
+	if(typeof cp_arr=='string'){
+		cp_arr=JSON.parse(cp_arr);
+	}
+	for(var i in cp_arr){
+		var cpid=cp_arr[i].cpid;
+		var text=cp_arr[i].cptext;
+		//var selected_user_num =cp_arr[i].selected_user_num
+		addMyCp(cpid,text);
+	}
+}
