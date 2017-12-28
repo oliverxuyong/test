@@ -175,7 +175,7 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 		if(userIds!=null){
 			logger.debug("matchuserIds: "+userIds.toString());
 			for(Tuple userTuple:userSet){
-				if(userTuple.getScore() < 1e-6 || counts < topNum){
+				if(userTuple.getScore() < 1e-6 || counts >= topNum){
 					break;
 				}
 				counts++;
