@@ -17,7 +17,7 @@ function showMatchUsers(matchUsers,userid,username,img_src,positiveCommonCps,neg
 			
 			var ifHighlight=positiveCommonCps[tag].if_highlight;
 			if(ifHighlight=="true"){
-				userTag.css("background-color","rgb(255, 160, 122)");
+				userTag.css("background-color","#FFA07A");
 			}
 		}
 	}
@@ -48,11 +48,12 @@ function addMyCp(cpid,text){
 		header.append(myTag);
 	
 		myTag.click(function(){
-			var backGroundColor=myTag.css("background-color");
+			var backGroundColor=rgb2hex(myTag.css("background-color"));
 			var myTagId=myTag.attr("id").substring(5,myTag.attr("id").length);
-			if(backGroundColor=="rgba(66, 66, 66, 0.9)"){//未点击
+			if(backGroundColor=="#515151"){//未点击
 				myTag.css("background-color","#FFA07A");
 				//将点击的标签id存入数组中
+				//log2root("点击匹配页我的标签进入1:myTagIds长度为："+myTagIds.length);
 				if(myTagIds.length>0){
 					var ifExit=true;//数组中id不存在
 					for(var i in myTagIds){
@@ -67,13 +68,13 @@ function addMyCp(cpid,text){
 				}else{
 					myTagIds.push(myTagId);
 				}
-				
+				//log2root("点击匹配页我的标签进入2:myTagIds长度为："+myTagIds.length);
 			}else{//点击了
-				myTag.css("background-color","rgba(66, 66, 66, 0.9)");
+				myTag.css("background-color","#515151");
 				//去除取消的标签id
 				myTagIds.splice($.inArray(myTagId,myTagIds),1);
 			}
-			
+			//log2root("点击匹配页我的标签进入requestUserCpMatchUsers");
 			requestUserCpMatchUsers();
 		});
 		
@@ -91,3 +92,11 @@ function createSampleMyTag(){//用于模拟mytag的实际高度.
 	}
 	return mytagTextSize;
 }
+//2017.12.28  叶夷  将颜色值rgb转换为#xxx
+function rgb2hex(rgb) {
+	rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+	function hex(x) {
+	return ("0" + parseInt(x).toString(16)).slice(-2);
+	}
+	return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+	}
