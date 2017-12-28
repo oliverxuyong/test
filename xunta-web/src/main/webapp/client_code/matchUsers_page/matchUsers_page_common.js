@@ -68,6 +68,11 @@ function response_detail_matched_users(data){
 	}
 }
 
+//2017.12.28  叶夷  用户在重新进入匹配人详情页的时候，myTagIds清空
+function clearMyTagIds(){
+	myTagIds.splice(0, myTagIds.length);
+}
+
 //2017.12.27 叶夷  用户请求指定cp匹配的用户
 function requestUserCpMatchUsers(){
 	if(myTagIds.length>0){

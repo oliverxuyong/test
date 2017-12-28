@@ -243,6 +243,7 @@ function enterMatchUsersPage() {
 	if(window.parent.document.getElementById("matchUsers_page")!=null ){//匹配人详情列表打开过
 		exec("matchUsers_page", "response_user_selected_cp('"+JSON.stringify(myTagArray)+"')");
 		exec("matchUsers_page", "requestDetailMatchedUsers()");
+		exec("matchUsers_page", "clearMyTagIds()");
 	}
 	
 	console.log("enterDialogListPage userId=" + userId);
