@@ -70,13 +70,37 @@ function response_detail_matched_users(data){
 
 //2017.12.27 叶夷  用户请求指定cp匹配的用户
 function requestUserCpMatchUsers(){
-	var paraStr = userId + "','"+JSON.stringify(myTagIds)+ "','" + requestAllCounts;
-	execRoot("requestUserCpMatchUsers('"+ paraStr +"')");
+	if(myTagIds.length>0){
+		var b = myTagIds.join('-');//将数组转换为字符串
+		var paraStr = userId + "','"+b+ "','" + requestAllCounts;
+		execRoot("requestUserCpMatchUsers('"+ paraStr +"')");
+	}else{
+		requestDetailMatchedUsers();
+	}
 }
 
 //2017.12.27 叶夷  返回用户请求指定cp匹配的用户
 function responseUserCpMatchUsers(data){
-	response_detail_matched_users(data);
+	var matchUsers=$("#showMatchUsers");
+	//请求之前先将匹配人列表内容清楚
+	matchUsers.empty();
+	
+	var matchedUserArr=data.cp_matched_user_arr;
+	matchUserList=matchedUserArr;
+	
+	//2017.12.22 叶夷  先在匹配人列表最顶上加上一个加载提示
+	var loadingDiv=$("<div></div>").attr("class","loading").attr("id","loading").text("正在刷新...");
+	matchUsers.append(loadingDiv);
+	showOnePageMatchUser(matchUsers);//显示匹配人列表
+	//列表显示完之后将滚动条自动隐藏"刷新"
+	var loadingDivHeight=loadingDiv.height();
+	$(".showMatchUsers").scrollTop(loadingDivHeight);
+	
+	//显示聊天列表
+	if(isFirst==true){
+		requestDialogList();
+		isFirst=false;
+	}
 }
 
 //2017.12.20  叶夷  这是请求一页匹配人详情数据
@@ -144,7 +168,11 @@ $(".showMatchUsers").scroll(function(){
 	var cpShowContentHeight = $(this).get(0).scrollHeight;//内容高度  
 	var cpShowScrollTop =$(this).scrollTop();//滚动高度  
 	if(cpShowScrollTop<=0){//滚动到顶部，重新请求
-		requestDetailMatchedUsers();
+		if(myTagIds.length>0){
+			requestUserCpMatchUsers();
+		}else{
+			requestDetailMatchedUsers();
+		}
 	}else if(0<=Math.abs(cpShowContentHeight -cpShowHeight-cpShowScrollTop) 
 			&& Math.abs(cpShowContentHeight -cpShowHeight-cpShowScrollTop)<=2 
 			){ //滑动到底部

@@ -292,11 +292,12 @@ function requestDetailMatchedUsers(userId , requestCounts) {
 
 //2017.12.27 叶夷  用户请求指定cp匹配的用户
 function requestUserCpMatchUsers(userId,myTagIds,requestCounts){
+	var a=myTagIds.split('-');//将字符串转化为数组
 	var json_obj = {
 			_interface : "1113-1",
 			interface_name : "request_user_cp_match_users",
 			uid : userId.toString(),
-			cp_ids:myTagIds,
+			cp_ids:a,
 			request_counts : requestCounts.toString(),
 			timestamp:""
 		};
@@ -472,8 +473,8 @@ function checkMessageInterface(evnt) {
 	
 	//2017.12.27 叶夷  返回用户请求指定cp匹配的用户
 	if (jsonObj._interface == '1113-2') {
-		console.log("返回用户请求指定cp匹配的用户:"+JSON.stringify(jsonObj.matched_user_arr));
-		exec("matchUsers_page","response_detail_matched_users("+evnt.data+")");
+		console.log("返回用户请求指定cp匹配的用户:"+JSON.stringify(jsonObj.cp_matched_user_arr));
+		exec("matchUsers_page","responseUserCpMatchUsers("+evnt.data+")");
 	}
 }
 
