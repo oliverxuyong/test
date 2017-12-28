@@ -12,15 +12,20 @@ function showMatchUsers(matchUsers,userid,username,img_src,positiveCommonCps,neg
 	if(positiveCommonCps.length>0){
 		var userPositiveTags=$("<div></div>").attr("class","userTags");//一个匹配人选中的标签
 		for(var tag in positiveCommonCps){
-			var userTag=$("<div></div>").attr("class","userTag positive").text(positiveCommonCps[tag].cptext);
+			var userTag=$("<div></div>").attr("class","mytag positive").text(positiveCommonCps[tag].cptext);
 			userPositiveTags.append(userTag);
+			
+			var ifHighlight=positiveCommonCps[tag].if_highlight;
+			if(ifHighlight=="true"){
+				userTag.css("background-color","rgb(255, 160, 122)");
+			}
 		}
 	}
 	
 	if(negativeCommonCps.length>0){
 		var userNegativeTags=$("<div></div>").attr("class","userTags");//一个匹配人选中的标签
 		for(var tag in negativeCommonCps){
-			var userTag=$("<div></div>").attr("class","userTag negative").text(negativeCommonCps[tag].cptext);
+			var userTag=$("<div></div>").attr("class","mytag negative").text(negativeCommonCps[tag].cptext);
 			userNegativeTags.append(userTag);
 		}
 	}

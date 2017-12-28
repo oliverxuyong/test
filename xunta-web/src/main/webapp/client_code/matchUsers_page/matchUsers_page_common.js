@@ -134,6 +134,9 @@ function showOnePageMatchUser(matchUsers){
 		}
 		matchUsers.append(noMatchUserDiv);
 		matchUserList.splice(0,requestOneCounts);//将显示出来的匹配人在数组中删除
+		if(matchUserList.length<=0){
+			noMatchUserDiv.html("没有了");
+		}
 	}else{//如果匹配人详细列表没有了，则显示没有更多了
 		if(noMatchUserDiv.length<=0){
 			noMatchUserDiv=$("<div></div>").attr("class","noMatchUser").attr("id","noMatchUser").text("更多");
