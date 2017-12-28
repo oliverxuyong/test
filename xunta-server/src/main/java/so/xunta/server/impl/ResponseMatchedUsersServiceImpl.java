@@ -168,9 +168,12 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 			}
 		}
 		
+		logger.debug("select cpIds: "+cpIds.toArray());
+
 		Set<Tuple> userSet = u2uRelationDao.getRelatedUsersByRank(myUserId, FIRST_USER_RANK, -1);
 		int counts = 0;
 		if(userIds!=null){
+			logger.debug("matchuserIds: "+userIds.toArray());
 			for(Tuple userTuple:userSet){
 				if(userTuple.getScore() < 1e-6 || counts < topNum){
 					break;
