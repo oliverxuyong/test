@@ -1,11 +1,11 @@
 //返回上一页   2016/12/25 deng
 function backBtn(){
 	if(_topicPageSign == 'yes'){
-		execRoot("setCurrentPageId('dialoglist_page')");
-		//exec('dialoglist_page',"reduceUnread('"+toUserId+"')");
-		exec('dialoglist_page',"removeUnreadNum('"+toUserId+"')");
-		exec('dialoglist_page',"changeUnreadColor()");
-		openWin('dialoglist_page', 'dialoglist_page/dialoglist_page.html', '');
+		execRoot("setCurrentPageId('matchUsers_page')");
+		exec('matchUsers_page',"reduceUnread('"+toUserId+"')");
+		exec('matchUsers_page',"removeUnreadNum('"+toUserId+"')");
+		exec('matchUsers_page',"changeUnreadColor()");
+		openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', '');
 	}else{
 		closeWin(toUserId);
 	}
@@ -13,8 +13,8 @@ function backBtn(){
 
 /**2017.11.13 叶夷  为了成功记录从不同的入口进入聊天页面
  * 如果在main_page中进入，_topicPageSign=="";
- * 如果在dialoglist_page进入，_topicPageSign=="yes"
- * 但是如果先从dialoglist_page进入，_topicPageSign=="yes"已经保存
+ * 如果在matchUsers_page进入，_topicPageSign=="yes"
+ * 但是如果先从matchUsers_page进入，_topicPageSign=="yes"已经保存
  * 之后再从main_page中进入，_topicPageSign依然=="yes"，不会重新赋值，所以在这里加上一个方法
  * 在main_page中进入的时候，将_topicPageSign赋值为"";
  * */
@@ -30,8 +30,8 @@ function closeBtn(){
 	exec('main_page',"removeUnreadNum()");
 	
 	//聊天列表未读数去除
-	if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
-		exec('dialoglist_page',"removeUnreadNum('"+toUserId+"')");
+	if(window.parent.document.getElementById("matchUsers_page")!=null ){//聊天列表打开过
+		exec('matchUsers_page',"removeUnreadNum('"+toUserId+"')");
 	}
 	
 	openWin('main_page', 'main_page/main_page.html', '');

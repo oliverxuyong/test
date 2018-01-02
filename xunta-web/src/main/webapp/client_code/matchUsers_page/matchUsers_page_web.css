@@ -33,7 +33,7 @@ html, body {
     height: 30px;
     line-height: 30px;
     background-color: #FFA07A;
-    width: 50px;
+    //width: 50px;
     text-align: center;
     border-radius: 5px;
     margin-left: 5px;
@@ -50,8 +50,43 @@ html, body {
 	//border-top: 1px solid #f1f1f1;
 	//padding-top:10px;
 	float:left;
+	width:100%;
 }
 
 .userTags{
 	float:left
+}
+
+.noMatchUser{
+	margin:35px auto;
+	padding-bottom:4px;
+	width: 100%;
+	text-align:center;
+	font-size:12px;
+	height: 60px;
+	float: left;
+}
+
+.mytag{
+	float: left;
+    text-align: center;
+    border-radius: 25px;
+    padding:1px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top:1.2%;//这里必须是百分数,计划我的标签框高度时要用到.
+    //margin-bottom:5px;
+    margin-right:6px;
+    font-size:.8em;
+    letter-spacing:1px;
+    border:1px solid gray;
+    //width:37px;
+    height:20px;
+    line-height:20px;
+    cursor:pointer;
+    color:white;
+    background-color:rgba(66,66,66,0.9);
+    text-shadow:1px 1px 0.3em black; 
+    box-shadow:1px 1px 1px black;
+    position:relative;/*设为relative,下级的absolute才能生效*/
 }

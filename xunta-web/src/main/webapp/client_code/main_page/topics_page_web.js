@@ -82,7 +82,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	startAnimate(notRepeatCpCount);
 	
 	//进入聊天列表显示
-	$("#enterdialogList").show();
+	//$("#enterdialogList").show();
 	//推荐标签遮住滑动条显示
 	/*$("#background-rightbar").show();
 	//调整滚动条宽度
@@ -100,6 +100,8 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 		if(firstRequestTopMatchedUsers==true){
 			requestTopMatchedUsers(userId,requestTopMUNum); 
 			//addMPData();
+			//匹配人容器的大小设置
+			setMatchUsersContainerSize();
 		}
 	},2000);
 }
@@ -177,6 +179,12 @@ function appendElement(/*i, */cpid,text,selectTagNum) {
 		cp_innode.click(function() {
 			// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
 			chooseOneCP(cp_node,cpid,text,selectTagNumText);
+			
+			 var obj = {
+					 cpid:cpid,
+					 cptext:text
+			       }
+			myTagArray.push(obj);//2017.12.27  叶夷  将选择时的标签放入数组中
 		});
 	}else{//特殊的标签,过5秒之后消失之后动画飞到加号位置
 		cp_innode.click(function() {
@@ -1387,6 +1395,14 @@ function unSelectCP(cpid){
 			sendUnSelectCP(cpid);
 			$(".cover").unbind();
 			$(".cover").remove();
+			
+			//2017.12.27 叶夷  取消选择的标签把数据从数组中删除
+			for(var i in myTagArray){
+				if(myTagArray[i].cpid==cpid){
+					myTagArray.splice($.inArray(myTagArray[i],myTagArray),1);
+				}
+			}
+			
 		});
 		var cancelButton=showButton("buttons cancel","取消");//取消按钮
 		cancelButton.click(function(){
@@ -2555,6 +2571,7 @@ function response_user_selected_cp(datas){
 	//myTagContainer.css("width",myTagContainerWidth);
 	var cp_arr=datas.cp_arr;
 	for(var i in cp_arr){
+		myTagArray.push(cp_arr[i]);
 		var cpid=cp_arr[i].cpid;
 		var text=cp_arr[i].cptext;
 		var selected_user_num =cp_arr[i].selected_user_num
@@ -2586,6 +2603,8 @@ function addCpShow(data){
 
 function unreadMsg(){
 	var unreadParent=$("#enterdialogList");
+	//有未读消息过来则显示
+	unreadParent.show();
 	if (unreadParent.find('.unread').length==0) {// 如果没有未读消息,则加上一个1;
 		var unreadNum = $("<div></div>").attr("class", "unread").text("1");
 		unreadParent.append(unreadNum);
