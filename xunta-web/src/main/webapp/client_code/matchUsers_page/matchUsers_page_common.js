@@ -57,6 +57,7 @@ function response_detail_matched_users(data){
 	var loadingDiv=$("<div></div>").attr("class","loading").attr("id","loading").text("正在刷新...");
 	matchUsers.append(loadingDiv);
 	showOnePageMatchUser(matchUsers);//显示匹配人列表
+	addDivForScroll(matchUsers);//判断是否需要帮助出现滚动条
 	//列表显示完之后将滚动条自动隐藏"刷新"
 	var loadingDivHeight=loadingDiv.height();
 	$(".showMatchUsers").scrollTop(loadingDivHeight);
@@ -66,6 +67,11 @@ function response_detail_matched_users(data){
 		requestDialogList();
 		isFirst=false;
 	}
+}
+
+//2017.12.28  叶夷  用户在重新进入匹配人详情页的时候，myTagIds清空
+function clearMyTagIds(){
+	myTagIds.splice(0, myTagIds.length);
 }
 
 //2017.12.27 叶夷  用户请求指定cp匹配的用户
@@ -92,6 +98,7 @@ function responseUserCpMatchUsers(data){
 	var loadingDiv=$("<div></div>").attr("class","loading").attr("id","loading").text("正在刷新...");
 	matchUsers.append(loadingDiv);
 	showOnePageMatchUser(matchUsers);//显示匹配人列表
+	addDivForScroll(matchUsers);//判断是否需要帮助出现滚动条
 	//列表显示完之后将滚动条自动隐藏"刷新"
 	var loadingDivHeight=loadingDiv.height();
 	$(".showMatchUsers").scrollTop(loadingDivHeight);
@@ -129,6 +136,9 @@ function showOnePageMatchUser(matchUsers){
 		}
 		matchUsers.append(noMatchUserDiv);
 		matchUserList.splice(0,requestOneCounts);//将显示出来的匹配人在数组中删除
+		if(matchUserList.length<=0){
+			noMatchUserDiv.html("没有了");
+		}
 	}else{//如果匹配人详细列表没有了，则显示没有更多了
 		if(noMatchUserDiv.length<=0){
 			noMatchUserDiv=$("<div></div>").attr("class","noMatchUser").attr("id","noMatchUser").text("更多");
@@ -136,7 +146,10 @@ function showOnePageMatchUser(matchUsers){
 		}
 		noMatchUserDiv.html("没有了");
 	}
-	
+}
+
+//2017.12.28  叶夷  在匹配人列表也无法出现滚动条的时候放上为了滚动条出现的尾巴
+function addDivForScroll(matchUsers){
 	//如果开始的时候的匹配人不够甚至是没有，则在后面加上一个空白的尾巴，让其出现滚动条
 	//var matchUsersLastChildren=matchUsers.children("div:last-child");
 	//var noMatchUserDivPositionTop=noMatchUserDiv.position().top;//更多按钮的位置

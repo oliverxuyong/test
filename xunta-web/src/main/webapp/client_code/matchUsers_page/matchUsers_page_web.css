@@ -85,7 +85,7 @@ html, body {
     line-height:20px;
     cursor:pointer;
     color:white;
-    background-color:rgba(66,66,66,0.9);
+    background-color:#515151;
     text-shadow:1px 1px 0.3em black; 
     box-shadow:1px 1px 1px black;
     position:relative;/*设为relative,下级的absolute才能生效*/
