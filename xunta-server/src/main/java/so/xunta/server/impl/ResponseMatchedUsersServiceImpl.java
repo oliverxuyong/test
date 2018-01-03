@@ -2,6 +2,7 @@ package so.xunta.server.impl;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Tuple;
 import so.xunta.beans.CpChoiceDO;
 import so.xunta.beans.User;
+import so.xunta.persist.C2uDao;
 import so.xunta.persist.ConcernPointDao;
 import so.xunta.persist.CpChoiceDao;
 import so.xunta.persist.U2uCpDetailDao;
@@ -37,6 +39,8 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 	private CpChoiceDao cpChoiceDao;
 	@Autowired
 	private ConcernPointDao concernPointDao;
+	@Autowired
+	private C2uDao c2uDao;
 	
 	Logger logger =Logger.getLogger(ResponseMatchedUsersServiceImpl.class);
 	
@@ -48,7 +52,7 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 		Set<Tuple> userSet= u2uRelationDao.getRelatedUsersByRank(userid.toString(), FIRST_USER_RANK, topNum-1);
 		List<User> matchedUsers = new ArrayList<User>();
 		for(Tuple userTuple:userSet){
-			if(userTuple.getScore()<0.0 || Math.abs(userTuple.getScore()-0.0)<1e-6){
+			if(userTuple.getScore()<1e-6){
 				break;
 			}
 			String matchedUserid = userTuple.getElement();
@@ -64,7 +68,7 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 		
 		Set<Tuple> userSet = u2uRelationDao.getRelatedUsersByRank(userId.toString(), FIRST_USER_RANK, topNum-1);
 		for(Tuple userTuple:userSet){
-			if(userTuple.getScore()<0.0 || Math.abs(userTuple.getScore()-0.0)<1e-6){
+			if(userTuple.getScore()<1e-6){
 				break;
 			}
 			String otherUid = userTuple.getElement();
@@ -144,6 +148,79 @@ public class ResponseMatchedUsersServiceImpl implements ResponseMatchedUsersServ
 			matchedUserCpsJsonArr.put(cpJson);
 		}
 		return matchedUserCpsJsonArr;
+	}
+
+	@Override
+	public JSONArray getCpsMatchedUsersJSONArr(String myUserId, JSONArray cpIdsJsonArr, int topNum) {
+		JSONArray cpsMatchedUsersJSONArr = new JSONArray();
+		
+		User u = userDao.findUserByUserid(Long.valueOf(myUserId));
+		Set<String> userIds = null;
+		Set<String> cpIds = new HashSet<String>();
+		for(int i=0; i<cpIdsJsonArr.length(); i++){
+			String cpId = cpIdsJsonArr.getString(i);
+			cpIds.add(cpId);
+			Set<String> cpUserIds = c2uDao.getUsersSelectedSameCp(cpId, RecommendService.POSITIVE_SELECT, u.getEvent_scope());
+			if(userIds==null){
+				userIds = cpUserIds;
+			}else{
+				userIds.retainAll(cpUserIds);
+			}
+		}
+		
+		logger.debug("select cpIds: "+cpIds.toString());
+
+		Set<Tuple> userSet = u2uRelationDao.getRelatedUsersByRank(myUserId, FIRST_USER_RANK, -1);
+		int counts = 0;
+		if(userIds!=null){
+			logger.debug("matchuserIds: "+userIds.toString());
+			for(Tuple userTuple:userSet){
+				if(userTuple.getScore() < 1e-6 || counts >= topNum){
+					break;
+				}
+				counts++;
+				
+				String otherUid = userTuple.getElement();
+	
+				if(userIds.contains(otherUid)){				
+					JSONArray positiveCommCpJsonArr = new JSONArray();
+					JSONArray negativeCommCpJsonArr = new JSONArray();
+					
+					User user = userDao.findUserByUserid(Long.valueOf(otherUid));
+					
+					Map<String,String>  positiveCommCps = u2uCpDetailDao.getCps(myUserId, otherUid, RecommendService.POSITIVE_SELECT);
+					for(Entry<String,String> pCommCp :positiveCommCps.entrySet()){
+						JSONObject cpObj = new JSONObject();
+						cpObj.put("cpid", pCommCp.getKey());
+						cpObj.put("cptext", pCommCp.getValue());
+						if(cpIds.contains(pCommCp.getKey())){
+							cpObj.put("if_highlight", "true");
+						}else{
+							cpObj.put("if_highlight", "false");
+						}
+						positiveCommCpJsonArr.put(cpObj);
+					}
+					
+					Map<String,String>  negativeCommCps = u2uCpDetailDao.getCps(myUserId, otherUid, RecommendService.NEGATIVE_SELECT);
+					for(Entry<String,String> nCommCp :negativeCommCps.entrySet()){
+						JSONObject cpObj = new JSONObject();
+						cpObj.put("cpid", nCommCp.getKey());
+						cpObj.put("cptext", nCommCp.getValue());
+						cpObj.put("if_highlight", "false");	
+						negativeCommCpJsonArr.put(cpObj);
+					}
+					
+					JSONObject matchUserJson = new JSONObject();
+					matchUserJson.put("userid", otherUid);
+					matchUserJson.put("username", user.getName());
+					matchUserJson.put("img_src", user.getImgUrl());
+					matchUserJson.put("positive_common_cps", positiveCommCpJsonArr);
+					matchUserJson.put("negative_common_cps", negativeCommCpJsonArr);
+					cpsMatchedUsersJSONArr.put(matchUserJson);
+				}
+			}
+		}
+		return cpsMatchedUsersJSONArr;
 	}
 
 	

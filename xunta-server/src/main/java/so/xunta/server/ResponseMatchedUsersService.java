@@ -10,4 +10,5 @@ public interface ResponseMatchedUsersService {
 	public List<User> getMatchedUsers(Long userid, int topNum);
 	public JSONArray getMatchedUsersWithCPJSONArr(String userId, int topNum);
 	public JSONArray getMatchedUserWithCPJSONArr(String myUserId,String matchedUserId);
+	public JSONArray getCpsMatchedUsersJSONArr(String myUserId,JSONArray cpIdsJsonArr,int topNum);
 }

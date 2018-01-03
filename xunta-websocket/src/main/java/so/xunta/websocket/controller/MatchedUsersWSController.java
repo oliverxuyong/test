@@ -100,6 +100,29 @@ public class MatchedUsersWSController {
 		socketService.chat2one(session, returnJson);
 	}
 	
+	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1113-1")
+	public void responseCpsMatchedUsers(WebSocketSession session, TextMessage message){
+		JSONObject params = new JSONObject(message.getPayload());
+		String userId = params.getString("uid");
+		JSONArray cpIds = params.getJSONArray("cp_ids");
+		int requsetCounts = params.getInt("request_counts");
+		String timestamp = params.getString("timestamp");
+		
+		if(userId ==null || cpIds == null){
+			return;
+		}
+		
+		JSONArray cpsMatchedUsersJSONArr = responseMatchedUsersService.getCpsMatchedUsersJSONArr(userId, cpIds, requsetCounts);
+		
+		JSONObject returnJson = new JSONObject();
+		returnJson.put("_interface", "1113-2");
+		returnJson.put("interface_name", "response_user_cp_match_users");
+		returnJson.put("timestamp", timestamp);
+		returnJson.put("cp_matched_user_arr",cpsMatchedUsersJSONArr);
+		socketService.chat2one(session, returnJson);
+	}
+	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1110-1")
 	public void wantTalk(WebSocketSession session, TextMessage message){
 		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
