@@ -16,6 +16,7 @@ public class WeChatPropertiesServiceImpl implements WeChatPropertiesService{
 	
 	@Override
 	public WeChatProperties getDataFromUserGroup(String usergroup) {
+		System.out.println("测试2："+weChatPropertiesDao.getDataFromUserGroup(usergroup)==null);
 		return weChatPropertiesDao.getDataFromUserGroup(usergroup);
 	}
 }
