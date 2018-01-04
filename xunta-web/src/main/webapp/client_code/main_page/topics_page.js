@@ -225,6 +225,24 @@ function enterDialogPage(toUserId,toUserName,muImg) {
 }*/
 
 var myTagArray=new Array();//2017.12.27 保存我的标签传给匹配人详情页
+function insertMyTagArrayNoRepeat(cpid,text){//防止在插入的时候出现我的标签容器中的数据重复问题
+	var obj = {
+			 cpid:cpid,
+			 cptext:text
+	       }
+	 
+	//2018.01.04 叶夷 在选择标签是装进数组的时候判断是否重复
+	var myTagArrayIsRepeat=false;
+	for(var i in myTagArray){
+		if(myTagArray[i].cpid==cpid){
+			myTagArrayIsRepeat=true;
+			break;
+		}
+	}
+	if(!myTagArrayIsRepeat){
+		myTagArray.push(obj);//2017.12.27  叶夷  将选择时的标签放入数组中
+	}
+}
 //2017.07.26 叶夷 进入匹配人详情页
 function enterMatchUsersPage() {
 	var pageParam = {

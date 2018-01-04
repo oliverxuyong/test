@@ -191,11 +191,8 @@ function appendElement(/*i, */cpid,text,selectTagNum) {
 			// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
 			chooseOneCP(cp_node,cpid,text,selectTagNumText);
 			
-			 var obj = {
-					 cpid:cpid,
-					 cptext:text
-			       }
-			myTagArray.push(obj);//2017.12.27  叶夷  将选择时的标签放入数组中
+			insertMyTagArrayNoRepeat(cpid,text);
+			
 		});
 	}else{//特殊的标签,过5秒之后消失之后动画飞到加号位置
 		cp_innode.click(function() {
@@ -1510,6 +1507,7 @@ function showUnSelectCP(data){
 		cp_node.click(function() {
 			//chooseCP(cp_node,cpid,text);
 			chooseOneCP(cp_node,cpid,text);
+			insertMyTagArrayNoRepeat(cpid,text);
 		});
 }
 
@@ -2593,9 +2591,10 @@ function response_user_selected_cp(datas){
 	//myTagContainer.css("width",myTagContainerWidth);
 	var cp_arr=datas.cp_arr;
 	for(var i in cp_arr){
-		myTagArray.push(cp_arr[i]);
+		//myTagArray.push(cp_arr[i]);
 		var cpid=cp_arr[i].cpid;
 		var text=cp_arr[i].cptext;
+		insertMyTagArrayNoRepeat(cpid,text);
 		var selected_user_num =cp_arr[i].selected_user_num
 		addMyCp(cpid,text,selected_user_num);
 	}
@@ -2609,6 +2608,7 @@ function addCpShow(data){
 	if(is_success=="true"){
 		var cpid=data.cpid;
 		var cptext=data.cptext;
+		insertMyTagArrayNoRepeat(cpid,cptext);
 		//chooseCP(null,cpid,text);
 		showSelectTag(cpid,cptext,0);
 		//console.log("添加标签成功");
