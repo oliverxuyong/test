@@ -23,6 +23,7 @@ public class WeChatPropertiesDaoImpl implements WeChatPropertiesDao {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "select * from tbl_wechat where usergroup = :usergroup";
 		Query query = session.createSQLQuery(sql).addEntity(WeChatProperties.class).setParameter("usergroup",usergroup);
+		System.out.println((WeChatProperties)query.uniqueResult()==null);
 		return (WeChatProperties) query.uniqueResult();
 	}
 

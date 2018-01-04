@@ -82,6 +82,7 @@ public class SendWeChatTemplateMsgController {
 		String toopenid=touser.getOpenid();
 		//2018.01.04 叶夷  通过usergroup来获取接者所需的模版消息信息
 		String usergroup=touser.getUserGroup();
+		logger.debug("usergroup="+usergroup);
 		WeChatProperties weChatProperties=weChatPropertiesService.getDataFromUserGroup(usergroup);
 		String templateid=weChatProperties.getTemplateid();
 		String templateurl=weChatProperties.getTemplateurl();
