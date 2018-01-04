@@ -13,13 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import so.xunta.beans.User;
+import so.xunta.beans.WeChatProperties;
 import so.xunta.server.LoggerService;
 import so.xunta.server.UserService;
+import so.xunta.server.WeChatPropertiesService;
 import so.xunta.server.WeChatService;
 import so.xunta.utils.IdWorker;
 
@@ -33,19 +34,21 @@ public class SendWeChatTemplateMsgController {
 	private UserService userService;
 	@Autowired
 	private WeChatService weChatService;
+	@Autowired
+	private WeChatPropertiesService weChatPropertiesService;
 	
 	static Logger logger = Logger.getLogger(SendWeChatTemplateMsgController.class);
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 	
-	@Value("${templateid}")
+	/*@Value("${templateid}")
 	private String templateid;
 	@Value("${templateurl}")
 	private String templateurl;
 	@Value("${appid}")
 	private String appid;
 	@Value("${appsecret}")
-	private String appsecret;
+	private String appsecret;*/
 	
 	/*@Value("${aini_templateid}")
 	private String aini_templateid;
@@ -77,6 +80,19 @@ public class SendWeChatTemplateMsgController {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
 		User touser=userService.findUser(Long.valueOf(touserid));
 		String toopenid=touser.getOpenid();
+		//2018.01.04 叶夷  通过usergroup来获取接者所需的模版消息信息
+		String usergroup=touser.getUserGroup();
+		WeChatProperties weChatProperties=weChatPropertiesService.getDataFromUserGroup(usergroup);
+		String templateid=weChatProperties.getTemplateid();
+		String templateurl=weChatProperties.getTemplateurl();
+		String appid=weChatProperties.getAppid();
+		String appsecret=weChatProperties.getAppsecret();
+		logger.debug("模版消息信息通过usergroup获取：usergroup="+usergroup
+				+" templateid="+templateid
+				+" templateurl="+templateurl
+				+" appid="+appid
+				+" appsecret="+appsecret);
+		
 		User user=userService.findUser(Long.valueOf(userid));
 		String username=user.getName();
 		logger.debug("模版消息接口被调用时获取的openid和username：toopenid="+toopenid+" username="+username);
