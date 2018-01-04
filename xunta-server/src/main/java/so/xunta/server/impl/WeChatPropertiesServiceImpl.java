@@ -1,22 +1,22 @@
 package so.xunta.server.impl;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import so.xunta.beans.WeChatProperties;
 import so.xunta.persist.WeChatPropertiesDao;
 import so.xunta.server.WeChatPropertiesService;
 
 @Service
-@Transactional
 public class WeChatPropertiesServiceImpl implements WeChatPropertiesService{
+	Logger logger =Logger.getLogger(WeChatPropertiesServiceImpl.class);
+	
 	@Autowired
 	private WeChatPropertiesDao weChatPropertiesDao;
 	
 	@Override
 	public WeChatProperties getDataFromUserGroup(String usergroup) {
-		System.out.println("测试2："+weChatPropertiesDao.getDataFromUserGroup(usergroup)==null);
+		logger.debug("测试2："+weChatPropertiesDao.getDataFromUserGroup(usergroup)==null);
 		return weChatPropertiesDao.getDataFromUserGroup(usergroup);
 	}
 }

@@ -18,7 +18,7 @@ import so.xunta.persist.WeChatPropertiesDao;
 @Service
 @Transactional
 public class WeChatPropertiesDaoImpl implements WeChatPropertiesDao {
-	Logger logger =Logger.getLogger(TokenDaoIml.class);
+	Logger logger =Logger.getLogger(WeChatPropertiesDaoImpl.class);
 	@Autowired
 	SessionFactory sessionFactory;
 	@Override
@@ -26,7 +26,7 @@ public class WeChatPropertiesDaoImpl implements WeChatPropertiesDao {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "select * from tbl_wechat where usergroup = :usergroup";
 		Query query = session.createSQLQuery(sql).addEntity(WeChatProperties.class).setParameter("usergroup",usergroup);
-		System.out.println("测试1："+(WeChatProperties)query.uniqueResult()==null);
+		logger.debug("测试1："+(WeChatProperties)query.uniqueResult()==null);
 		return (WeChatProperties) query.uniqueResult();
 	}
 
