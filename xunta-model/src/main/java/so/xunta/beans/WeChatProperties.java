@@ -11,7 +11,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="tbl_wechat")
-public class WeChatProperties extends IdEntity{
+public class WeChatProperties{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;

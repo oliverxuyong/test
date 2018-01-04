@@ -16,5 +16,6 @@
 		<mapping class="so.xunta.beans.validate.MobilePhoneValidateCode"/>
 		<mapping class="so.xunta.beans.Token"/>
 		<mapping class="so.xunta.beans.EventScopeCpTypeMappingDO"/>
+		<mapping class="so.xunta.beans.WeChatProperties"/>
 	</session-factory>
 </hibernate-configuration>
