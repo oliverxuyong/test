@@ -80,76 +80,81 @@ public class SendWeChatTemplateMsgController {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
 		User touser=userService.findUser(Long.valueOf(touserid));
 		String toopenid=touser.getOpenid();
-		//2018.01.04 叶夷  通过usergroup来获取接者所需的模版消息信息
-		String usergroup=touser.getUserGroup();
-		logger.debug("usergroup="+usergroup);
-		WeChatProperties weChatProperties=weChatPropertiesService.getDataFromUserGroup(usergroup);
-		String templateid=weChatProperties.getTemplateid();
-		String templateurl=weChatProperties.getTemplateurl();
-		String appid=weChatProperties.getAppid();
-		String appsecret=weChatProperties.getAppsecret();
-		logger.debug("模版消息信息通过usergroup获取：usergroup="+usergroup
-				+" templateid="+templateid
-				+" templateurl="+templateurl
-				+" appid="+appid
-				+" appsecret="+appsecret);
 		
-		User user=userService.findUser(Long.valueOf(userid));
-		String username=user.getName();
-		logger.debug("模版消息接口被调用时获取的openid和username：toopenid="+toopenid+" username="+username);
-		//获得两人共同选择的标签，最多显示三个
-		/*String sameSelectTags=sendPost("http://xunta.so:3000/v1/find/users/same/tags/", "my_user_id="+userid+"matched_user_id"+touserid);
-		logger.debug("发送模版消息时共同选择的标签："+sameSelectTags);
-		String sameSelectTagList="";//模版消息中不能超过显示三个标签
-		JSONObject sameSelectTagJsonObject=new JSONObject(sameSelectTags);
-		JSONArray sameSelectTagJsonObjectList=sameSelectTagJsonObject.getJSONArray("msg");
-		if(sameSelectTagJsonObjectList!=null){
-			for(int i=0;i<3;i++){
-				sameSelectTagList=sameSelectTagList+","+sameSelectTagJsonObjectList.getJSONObject(i).getString("text");
+		//2018.01.05 叶夷   确保openid不为空才进行后面操作
+		if(toopenid!=null && !toopenid.equals("") && !toopenid.equals("\"\"")){
+			//2018.01.04 叶夷  通过usergroup来获取接者所需的模版消息信息
+			String usergroup=touser.getUserGroup();
+			logger.debug("usergroup="+usergroup);
+			WeChatProperties weChatProperties=weChatPropertiesService.getDataFromUserGroup(usergroup);
+			String templateid=weChatProperties.getTemplateid();
+			String templateurl=weChatProperties.getTemplateurl();
+			String appid=weChatProperties.getAppid();
+			String appsecret=weChatProperties.getAppsecret();
+			logger.debug("模版消息信息通过usergroup获取：usergroup="+usergroup
+					+" templateid="+templateid
+					+" templateurl="+templateurl
+					+" appid="+appid
+					+" appsecret="+appsecret);
+			
+			User user=userService.findUser(Long.valueOf(userid));
+			String username=user.getName();
+			logger.debug("模版消息接口被调用时获取的openid和username：toopenid="+toopenid+" username="+username);
+			//获得两人共同选择的标签，最多显示三个
+			/*String sameSelectTags=sendPost("http://xunta.so:3000/v1/find/users/same/tags/", "my_user_id="+userid+"matched_user_id"+touserid);
+			logger.debug("发送模版消息时共同选择的标签："+sameSelectTags);
+			String sameSelectTagList="";//模版消息中不能超过显示三个标签
+			JSONObject sameSelectTagJsonObject=new JSONObject(sameSelectTags);
+			JSONArray sameSelectTagJsonObjectList=sameSelectTagJsonObject.getJSONArray("msg");
+			if(sameSelectTagJsonObjectList!=null){
+				for(int i=0;i<3;i++){
+					sameSelectTagList=sameSelectTagList+","+sameSelectTagJsonObjectList.getJSONObject(i).getString("text");
+				}
+				if(sameSelectTagJsonObjectList.length()>=3){
+					sameSelectTagList=sameSelectTagList+"...";
+				}
 			}
-			if(sameSelectTagJsonObjectList.length()>=3){
-				sameSelectTagList=sameSelectTagList+"...";
+			logger.debug("模版消息显示的共同选择的标签："+sameSelectTagList);*/
+			
+//			String templateid,templateurl,appid,appsecret;
+			
+			//通过usergroup来判断是从模版消息发往哪里
+			/*String tousergroup=touser.getUserGroup();
+			logger.debug("tousergroup="+tousergroup);
+			if(tousergroup.equals("艾妮婚庆云")){
+				templateid=aini_templateid;
+				templateurl=aini_templateurl;
+				appid=aini_appid;
+				appsecret=aini_appsecret;
+				logger.debug("艾妮公众号：templateid="+templateid+" templateurl="+templateurl+" appid="+appid+" appsecret="+appsecret);
+			}else{
+				templateid=xunta_templateid;
+				templateurl=xunta_templateurl;
+				appid=xunta_appid;
+				appsecret=xunta_appsecret;
+				logger.debug("xunta公众号：templateid="+templateid+" templateurl="+templateurl+" appid="+appid+" appsecret="+appsecret);
+			}*/
+			
+			String result=weChatService.sendWechatmsgToUser(
+					toopenid, 
+					templateid, 
+					templateurl,
+					"#FF0000",
+					username/*+"["+sameSelectTagList+"]"*/,
+					"给你发了一条消息", 
+					df.format(new Date()),
+					content,
+					appid,
+					appsecret);
+			JSONObject obj = new JSONObject();
+			if(result.equals("success")){
+				obj.put("isSuccess",true);
+			}else{
+				obj.put("isSuccess",false);
 			}
+			responseBack(request, response, obj);
 		}
-		logger.debug("模版消息显示的共同选择的标签："+sameSelectTagList);*/
 		
-//		String templateid,templateurl,appid,appsecret;
-		
-		//通过usergroup来判断是从模版消息发往哪里
-		/*String tousergroup=touser.getUserGroup();
-		logger.debug("tousergroup="+tousergroup);
-		if(tousergroup.equals("艾妮婚庆云")){
-			templateid=aini_templateid;
-			templateurl=aini_templateurl;
-			appid=aini_appid;
-			appsecret=aini_appsecret;
-			logger.debug("艾妮公众号：templateid="+templateid+" templateurl="+templateurl+" appid="+appid+" appsecret="+appsecret);
-		}else{
-			templateid=xunta_templateid;
-			templateurl=xunta_templateurl;
-			appid=xunta_appid;
-			appsecret=xunta_appsecret;
-			logger.debug("xunta公众号：templateid="+templateid+" templateurl="+templateurl+" appid="+appid+" appsecret="+appsecret);
-		}*/
-		
-		String result=weChatService.sendWechatmsgToUser(
-				toopenid, 
-				templateid, 
-				templateurl,
-				"#FF0000",
-				username/*+"["+sameSelectTagList+"]"*/,
-				"给你发了一条消息", 
-				df.format(new Date()),
-				content,
-				appid,
-				appsecret);
-		JSONObject obj = new JSONObject();
-		if(result.equals("success")){
-			obj.put("isSuccess",true);
-		}else{
-			obj.put("isSuccess",false);
-		}
-		responseBack(request, response, obj);
 	}
 	
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
