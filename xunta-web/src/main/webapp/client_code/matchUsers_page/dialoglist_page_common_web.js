@@ -97,7 +97,7 @@ function setDialogListNode(dialog,dialogContent){
 	//toUserImg.css("margin-top",toUserImgMargin);
 	
 	//文字css设置
-	var dialogContentWidth=dialogWidth-toUserImgHeight-(toUserImgMargin*5);
+	var dialogContentWidth=dialogWidth-toUserImgHeight-(toUserImgMargin*5)-2;
 	dialogContent.css("height",dialogWidth*0.1026);
 	dialogContent.css("width",dialogContentWidth);
 	//dialogContent.css("margin-top",toUserImgMargin);
