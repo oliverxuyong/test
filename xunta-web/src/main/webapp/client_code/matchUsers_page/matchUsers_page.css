@@ -15,7 +15,8 @@ body{position:relative;
 }
 
 #goback{/* height:43px;width:60px;font-size:22px;float:left;cursor:pointer;z-index:14 */
-	float: left;
+	/* float: left; */
+	position:fixed;
     padding:1px;
     padding-left: 8px;
     padding-right: 8px;

@@ -18,13 +18,7 @@
 	<!--下面的为元素库,与代码直接相关,不要作任何变动,运行时会hide掉-->			
 		
     <body>
-		<!--div id="notification">通知栏</div-->
-		<div id="header">
-			<div id="goback" onclick="backBtn()"><img src="../image/goback5.png" /></div>
-			<!-- <div id="title">匹配人列表页</div> -->
-			<!-- <div class="_closeBtn" onclick="closeBtn()"><img src="../image/close.png" ></div> -->
-		</div>
-		
+    	<div id="goback" onclick="backBtn()"><img src="../image/goback5.png" /></div>
 		<div class="wrap" id="wrap">
     		<ul class="tabClick">
         		<li class="active">匹配</li>
@@ -33,6 +27,12 @@
         	<div class="tabBox">
         		<!-- 第一个页面 -->
             	<div class="tabList">
+            		<!-- 2018.01.08 叶夷   这是显示我的标签的地方 -->
+					<div id="header">
+							<!-- <div id="title">匹配人列表页</div> -->
+							<!-- <div class="_closeBtn" onclick="closeBtn()"><img src="../image/close.png" ></div> -->
+					</div>
+					
             		<div class="showMatchUsers">
             			<div id="showMatchUsers" style="float:left;width:100%;"><!-- 2017.12.22  叶夷  这里是为了获得匹配人内容的实际高度 -->
             				<!-- 2017.12.22 叶夷  更多的按钮-->
