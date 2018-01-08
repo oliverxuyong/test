@@ -37,12 +37,12 @@ function showDialogList(data){
 		
 		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
 	}
-	var headerHeight=$("#header").height();
+//	var headerHeight=$("#header").height();
 	var tabClick=$(".tabClick");
 	var tabClickHeight=tabClick.height();
 	var tabClickMarginBottom=parseInt(tabClick.css("margin-bottom"));
 	var dialogListOutPaddingTop=parseInt(dialogListOut.css("padding-top"));
-	var dialogListOutHeight=$("body").height()-tabClickHeight-headerHeight-tabClickMarginBottom-dialogListOutPaddingTop;
+	var dialogListOutHeight=$("body").height()-tabClickHeight/*-headerHeight*/-tabClickMarginBottom-dialogListOutPaddingTop;
 	dialogListOut.css("height",dialogListOutHeight+"px");
 	
 	/**2017.11.10  叶夷  将获取未读消息和之前的消息列表内容分隔*/
