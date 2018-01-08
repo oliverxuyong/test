@@ -84,12 +84,18 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 
 //聊天列表动态布局
 function setDialogListNode(dialog,dialogContent){
-	var dialogHeight=parseInt(dialog.css("height"));//获得聊天列表单个的高度
-	var dialogWidth=parseInt(dialog.css("width"));//获得聊天列表单个的高度
+	//var dialogHeight=dialog.height()/*parseInt(dialog.css("height"))*/;//获得聊天列表单个的高度
+	//var dialogWidth=dialog.width()/*parseInt(dialog.css("width"))*/;//获得聊天列表单个的高度
+	//2018.01.08 叶夷  将高和宽固定好数值，避免百分数而产生的变化
+	var dialogHeight=$("#dialog_list").height()*0.09;
+	var dialogWidth=$(window).width();
+	
+	console.log("测试1："+dialogWidth);
 	//dialog.css("top",(dialogHeight*d+10));
 	//头像css设置
 	var toUserImgHeight=dialogWidth*0.087;//图片的高度是聊天列表宽度的0.1026
 	var toUserImgMargin=(dialogHeight-toUserImgHeight)/2;
+	console.log("测试3："+toUserImgHeight+" "+dialogHeight);
 	var toUserImg=dialog.find("img");
 	toUserImg.css("height",toUserImgHeight);
 	toUserImg.css("width",toUserImgHeight);
@@ -98,6 +104,7 @@ function setDialogListNode(dialog,dialogContent){
 	
 	//文字css设置
 	var dialogContentWidth=dialogWidth-toUserImgHeight-(toUserImgMargin*5)-2;
+	console.log("测试2："+dialogWidth+" "+toUserImgHeight+" "+toUserImgMargin+" "+dialogContentWidth);
 	dialogContent.css("height",dialogWidth*0.1026);
 	dialogContent.css("width",dialogContentWidth);
 	//dialogContent.css("margin-top",toUserImgMargin);
