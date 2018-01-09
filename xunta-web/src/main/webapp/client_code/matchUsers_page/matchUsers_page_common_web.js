@@ -5,9 +5,13 @@ function showMatchUsers(matchUsers,userid,username,img_src,positiveCommonCps,neg
 	
 	var matchUser=$("<div></div>").attr("class","matchUser").attr("id","matchUser"+userid);//一个匹配人
 	
-	var userimg=$("<div></div>").attr("class","userimg").append("<img src='"+userimgUrl+"'/>");//一个匹配人的头像
+	//var userimg=$("<div></div>").attr("class","userimg").append("<img src='"+userimgUrl+"'/>");//一个匹配人的头像
+	var userimg="<img src="+userimgUrl+" class='userimg' onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>";
+	
+	var matchUserContent=$("<div></div>").attr("class", "matchUser_content");
+	
 	var usernameDiv=$("<div></div>").attr("class","username").text(userName);//一个匹配人的名字
-	userimg.append(usernameDiv);
+	matchUserContent.append(usernameDiv);
 	
 	if(positiveCommonCps.length>0){
 		var userPositiveTags=$("<div></div>").attr("class","userTags");//一个匹配人选中的标签
@@ -36,15 +40,62 @@ function showMatchUsers(matchUsers,userid,username,img_src,positiveCommonCps,neg
 		enterDialogPage(userid,username,img_src);
 	});
 	
-	matchUser.append(userimg).append(userPositiveTags).append(userNegativeTags).append(sendMsgButton);
+	var matchUserContentTop=$("<div></div>").attr("class", "matchUser_content_top");
+	matchUserContentTop.append(usernameDiv).append(sendMsgButton);
+	
+	matchUserContent.append(matchUserContentTop).append(userPositiveTags).append(userNegativeTags);
+	matchUser.append(userimg).append(matchUserContent);
 	matchUsers.append(matchUser);
+	
+	//聊天列表动态布局
+	setMatchUserListNode(matchUser,matchUserContent,matchUserContentTop,userPositiveTags,userNegativeTags,usernameDiv,sendMsgButton);
+}
+
+//聊天列表动态布局
+function setMatchUserListNode(matchUser,matchUserContent,matchUserContentTop,userPositiveTags,userNegativeTags,usernameDiv,sendMsgButton){
+	var matchUserWidth=$(window).width();
+	
+	//头像css设置
+	var userImgHeight=matchUserWidth*0.067;//图片的高度是聊天列表宽度的0.1026
+	var userImgMargin=userImgHeight;
+	var userimg=matchUser.find("img");
+	var userimgPadding=parseInt(userimg.css("padding"));
+	userimg.css("height",userImgHeight);
+	userimg.css("width",userImgHeight);
+	userimg.css("margin-left",userImgMargin);
+	//我的标签也加上和img相同的margin-left
+	var header=$("#header");
+	var headerWidth=matchUserWidth-userImgMargin;
+	header.css("margin-left",userImgMargin);
+	header.css("width",headerWidth);
+	
+	//内容css设置
+	var matchUserContentWidth=matchUserWidth-userImgHeight-userimgPadding*2-(userImgMargin*2)-2;
+	//dialogContent.css("height",dialogWidth*0.1026);
+	matchUserContent.css("width",matchUserContentWidth);
+	//matchUserContent.css("margin-left",userImgMargin*2/3);
+	
+	//内容顶部设置
+	var matchUserContentTopHeight=userImgHeight/2+userimgPadding;
+	matchUserContentTop.css("height",matchUserContentTopHeight);
+	
+	//设置文字内容的line-height
+	var usernameDivHeight=usernameDiv.height();
+	//usernameDiv.css("line-height",usernameDivHeight+"px");
+	usernameDiv.css("font-size",usernameDivHeight*0.9+"px");
+	
+	//var sendMsgButtonHeight=sendMsgButton.height();
+	sendMsgButton.css("height",matchUserContentTopHeight+"px");
+	sendMsgButton.css("line-height",matchUserContentTopHeight+"px");
+	//sendMsgButton.css("font-size",sendMsgButtonHeight*0.5+"px");
+	
 }
 
 var myTagIds=new Array();//点击过的我的标签id
 function addMyCp(cpid,text){
 		var header=$("#header");
 		var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
-		myTag.css("font-size",createSampleMyTag());
+		//myTag.css("font-size",createSampleMyTag());
 		header.append(myTag);
 	
 		myTag.click(function(){
@@ -78,8 +129,8 @@ function addMyCp(cpid,text){
 			requestUserCpMatchUsers();
 		});
 		
-		var myTagHeight=myTag.height();
-		$("#goback").css("height",myTagHeight);
+		/*var myTagHeight=myTag.height();
+		$("#goback").css("height",myTagHeight);*/
 }
 
 //2017.12.27  叶夷   标签的文字的大小

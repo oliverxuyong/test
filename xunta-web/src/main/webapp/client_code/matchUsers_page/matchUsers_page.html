@@ -24,6 +24,11 @@
         		<li class="active">匹配</li>
         		<li>对话</li>
     		</ul>
+    		
+    		<div class="lineBorder">
+        		<div class="lineDiv"><!--移动的div--></div>
+    		</div>
+    		
         	<div class="tabBox">
         		<!-- 第一个页面 -->
             	<div class="tabList">
@@ -175,6 +180,9 @@
             var tabBox =  wrap.querySelectorAll('.tabBox')[0];
             var tabList = tabBox.querySelectorAll('.tabList');
             
+            var lineBorder = wrap.querySelectorAll('.lineBorder')[0];
+            var lineDiv = lineBorder.querySelectorAll('.lineDiv')[0];
+            
           	//tabBox的height设置
           	var tabClickHeight=$(".tabClick").height();
           	var tabClickMarginBottom=parseInt($(".tabClick").css("margin-bottom"));
@@ -197,9 +205,32 @@
                   tabList[i].style.margin='0';
                   tabList[i].style.verticalAlign='top';
                   tabList[i].style.display='table-cell';
+                  
+                  //2018.01.09  叶夷  将第二个页面的背景图片更改
+                  if(i==1){
+                	  tabList[i].style.backgroundImage="url('../image/dialoglist-background1.jpg')";
+                	  tabList[i].style.backgroundRepeat="no-repeat";
+                	  tabList[i].style.backgroundSize="200%";
+                  }
             }
             
             for(var i = 0 ;i<tabLi.length; i++ ){
+            	//2018.01.09  叶夷  更改滑动tab位置样式
+            	if(i==0){
+            	  	tabLi[i].style.marginLeft="40%";
+            	  	tabLi[i].style.marginRight="5%";
+            	  	console.log("测试2");
+                }else if(i==1){
+                	tabLi[i].style.marginLeft="5%";
+                }
+            	
+            	//2018.01.09  叶夷  初始化横线位置
+                var tabLi0Width=tabLi[0].offsetWidth;
+                lineDiv.style.width=(tabLi0Width+10)+"px";
+                var lineStartPosition=document.body.clientWidth*0.4-5;
+                lineDiv.style.webkitTransform='translate3d('+lineStartPosition+'px,0,0)';
+                console.log("测试1："+tabLi0Width+" "+lineStartPosition);
+            	
                 tabLi[i].start = i;
                 tabLi[i].onclick = function(){
                     var star = this.start;
@@ -207,6 +238,12 @@
                         tabLi[i].className='';
                     };
                     tabLi[star].className='active';
+                    
+                    //2018.01.09  叶夷  重新计算横线滑动的走势
+                    var lineStartPosition=tabLi[star].offsetLeft-5;
+                    init.lineAnme(lineDiv,lineStartPosition);
+                    //init.lineAnme(lineDiv,windowWidth/tabLi.length*star);
+                    
                     init.translate(tabBox,windowWidth,star);
                     endX= -star*windowWidth;
                 }
