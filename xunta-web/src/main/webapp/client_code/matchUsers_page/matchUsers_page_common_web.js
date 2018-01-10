@@ -65,7 +65,7 @@ function setMatchUserListNode(matchUser,matchUserContent,matchUserContentTop,use
 	userimg.css("margin-left",userImgMargin);
 	//我的标签也加上和img相同的margin-left
 	var header=$("#header");
-	var headerWidth=matchUserWidth-userImgMargin*2/3;
+	var headerWidth=matchUserWidth-userImgMargin*3/2;
 	header.css("margin-left",userImgMargin);
 	header.css("width",headerWidth);
 	
@@ -101,7 +101,7 @@ function addMyCp(cpid,text){
 		myTag.click(function(){
 			var backGroundColor=rgb2hex(myTag.css("background-color"));
 			var myTagId=myTag.attr("id").substring(5,myTag.attr("id").length);
-			if(backGroundColor=="#515151"){//未点击
+			if(backGroundColor=="#f5f5f5"){//未点击
 				myTag.css("background-color","#FFA07A");
 				//将点击的标签id存入数组中
 				//log2root("点击匹配页我的标签进入1:myTagIds长度为："+myTagIds.length);
@@ -121,7 +121,7 @@ function addMyCp(cpid,text){
 				}
 				//log2root("点击匹配页我的标签进入2:myTagIds长度为："+myTagIds.length);
 			}else{//点击了
-				myTag.css("background-color","#515151");
+				myTag.css("background-color","#f5f5f5");
 				//去除取消的标签id
 				myTagIds.splice($.inArray(myTagId,myTagIds),1);
 			}
