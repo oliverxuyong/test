@@ -60,7 +60,17 @@ function response_detail_matched_users(data){
 	addDivForScroll(matchUsers);//判断是否需要帮助出现滚动条
 	//列表显示完之后将滚动条自动隐藏"刷新"
 	var loadingDivHeight=loadingDiv.height();
-	$(".showMatchUsers").scrollTop(loadingDivHeight);
+	var showMatchUsers=$(".showMatchUsers");
+	showMatchUsers.scrollTop(loadingDivHeight);
+	
+	//2018.01.10   叶夷    计算完我的标签的之后计算显示匹配列表的容器高度
+	var header=$("#header");
+	var headerHeight=header.height();
+	var headerMarginBottom=parseInt(header.css("margin-bottom"));
+	var headerPaddingTop=parseInt(header.css("padding-top"));
+	var tabList0Height=$(".tabList").eq(0).height();
+	var showMatchUsersHeight=tabList0Height-headerHeight-headerMarginBottom-headerPaddingTop-5;
+	showMatchUsers.css("height",showMatchUsersHeight);
 	
 	//显示聊天列表
 	if(isFirst==true){
@@ -206,6 +216,7 @@ function response_user_selected_cp(cp_arr){
 			myTagDiv[a].remove();
 		}
 	}
+	$("#header").css("height","auto");
 	
 	if(typeof cp_arr=='string'){
 		cp_arr=JSON.parse(cp_arr);
@@ -216,4 +227,8 @@ function response_user_selected_cp(cp_arr){
 		//var selected_user_num =cp_arr[i].selected_user_num
 		addMyCp(cpid,text);
 	}
+	myTagContainerLine=0;//标签行数清零
+	
+	//2017.12.13 叶夷  请求详细匹配人列表
+  	requestDetailMatchedUsers();
 }

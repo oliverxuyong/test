@@ -5,14 +5,15 @@ body{position:relative;
 
 #header {
     width: 100%;
-    height: 11%;
+    //height: 11%;
     background-size: 8px;
     //border-bottom: 1px solid #5d5d5d;
-    //padding-bottom: 3%;
+    margin-bottom: 1.2%;
     z-index: 12;
     //background-color: rgb(250, 250, 250);
     overflow-x:hidden;
     padding-top: 5%;
+    
 }
 
 #goback{/* height:43px;width:60px;font-size:22px;float:left;cursor:pointer;z-index:14 */
@@ -147,3 +148,7 @@ ul{
 	width: 10%;
 	}
 /**end:叶夷  2017.11.28*/
+
+.loading{
+	height:20px;
+}

@@ -92,11 +92,23 @@ function setMatchUserListNode(matchUser,matchUserContent,matchUserContentTop,use
 }
 
 var myTagIds=new Array();//点击过的我的标签id
+var myTagContainerLine=0;//我的标签框标签行数
 function addMyCp(cpid,text){
 		var header=$("#header");
+		var beforeHeaderHeight=header.height();//在我的标签放置之前的标签框的高度
+		
 		var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
 		//myTag.css("font-size",createSampleMyTag());
 		header.append(myTag);
+		
+		//2018.01.10   叶夷    在放置我的标签的同时计算我的标签框高度，如果有三行高度，固定高度
+		var afterHeaderHeight=header.height();//在我的标签放置之前的标签框的高度
+		if(beforeHeaderHeight!=afterHeaderHeight){
+			++myTagContainerLine;
+		}
+		if(myTagContainerLine==3){
+			header.css("height",afterHeaderHeight);
+		}
 	
 		myTag.click(function(){
 			var backGroundColor=rgb2hex(myTag.css("background-color"));
