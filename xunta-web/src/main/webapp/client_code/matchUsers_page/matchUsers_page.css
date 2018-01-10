@@ -8,7 +8,7 @@ body{position:relative;
     height: 11%;
     background-size: 8px;
     //border-bottom: 1px solid #5d5d5d;
-    padding-bottom: 3%;
+    //padding-bottom: 3%;
     z-index: 12;
     //background-color: rgb(250, 250, 250);
     overflow-x:hidden;
@@ -62,18 +62,18 @@ body{position:relative;
     z-index: 13;}
 
 .sendMsg{
-	margin-right:10px;
-	width: 15%;
-	text-align:center;
-	background-color: #fff;
-	border-radius: 10px;
-	float:right;
-	height:20px;
-	line-height:20px;
-	cursor:pointer;
-	color: #cfcecd;
-	border: 1px solid #afacac;
-	font-size:12px;
+    margin-right: 10px;
+    width: 12%;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+    float: right;
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+    color: ##494949;
+    border: 1px solid #afacac;
+    font-size: 12px;
 }
 
 /**start:叶夷  2017.11.28 tab来回切换需要的css样式*/
@@ -122,7 +122,7 @@ ul,li{
 	float:left; 
 	line-height:100%; 
 	text-align:center; 
-	color:#D3D3D3; 
+	color:#686868; 
 	font-size:15px; 
 	//font-family: "Arial Black"
 }

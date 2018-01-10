@@ -65,7 +65,7 @@ function setMatchUserListNode(matchUser,matchUserContent,matchUserContentTop,use
 	userimg.css("margin-left",userImgMargin);
 	//我的标签也加上和img相同的margin-left
 	var header=$("#header");
-	var headerWidth=matchUserWidth-userImgMargin;
+	var headerWidth=matchUserWidth-userImgMargin*2/3;
 	header.css("margin-left",userImgMargin);
 	header.css("width",headerWidth);
 	
