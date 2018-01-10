@@ -26,7 +26,7 @@ width:100%;
 	//overflow-y:scroll;
 	-webkit-overflow-scrolling: touch;
 	overflow:hidden;
-	background: url(../image/background2-lessblue.jpg) no-repeat;
+	background: url(../image/backgroundstar.jpg) no-repeat;
 	background-size:100% 100%;
 	
 }
@@ -545,7 +545,7 @@ height:0px;
 	//background-size:100% auto;
 	font-family:'微软雅黑';
 	border-radius:50%; 
-	background-color:rgba(255,255,255,0.3);
+	//background-color:rgba(255,255,255,0.3);
 	box-shadow:1px 1px 1px #777777;
 	//border:1px solid #e5efff;
 	//FILTER:DropShadow(Color=#808080, OffX=5, OffY=5, Positive=1);
