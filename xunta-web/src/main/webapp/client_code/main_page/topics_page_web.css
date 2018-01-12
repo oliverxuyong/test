@@ -208,7 +208,7 @@ width:100%;
 .tag-container{
 	position:relative;
 	width:100%;
-	height:65%;
+	height:55%;
 	z-index:102;
 	//margin-left:6px;
 	top:0%;	
@@ -335,16 +335,16 @@ height:0px;
 .mytag-selectednumber{
 	position:absolute;
 	//position:relative;
-	top:-6px;
+	top:-10px;
 	//right:2px;
-	height:10px;
-	padding-left:2px;
-	padding-right:2px;
-	line-height:10px;
+	//height:10px;
+	//padding-left:2px;
+	//padding-right:2px;
+	//line-height:10px;
 	color:#b48f4c;
-	font-size:10px;
-	background-color:#505050;
-	border-radius:40%;
+	font-size:12px;
+	background-color:#0c0e1a;
+	//border-radius:40%;
 	//border:1px solid #757575;
 }
 
@@ -546,7 +546,7 @@ height:0px;
 	font-family:'微软雅黑';
 	border-radius:50%; 
 	//background-color:rgba(255,255,255,0.3);
-	box-shadow:1px 1px 1px #777777;
+	//box-shadow:1px 1px 1px #777777;
 	//border:1px solid #e5efff;
 	//FILTER:DropShadow(Color=#808080, OffX=5, OffY=5, Positive=1);
 	}
@@ -558,7 +558,11 @@ height:0px;
 .incp div{
 	position:absolute;
 	text-align:center;
-		//text-shadow:blue;
+	border: 1px solid rgba(255, 255, 255, 0.4);
+	padding: 4px 4px 2px 4px;
+	border-radius: 15%;
+	
+	//text-shadow:blue;
 	//text-shadow:{0 0 0.3em #87F,0 0 0.3em #87F,0 0 0.3em #87F};
 }
 
@@ -693,15 +697,16 @@ height:0px;
 .yesItem,.noItem{
     position: absolute;
     display: none;
-    padding: 2px;
+    /* padding: 2px; */
     color: #e4e4e4;
-    font-size: 14px;
-    border: 1px solid #959595;
-    border-radius: 50%;
-    height: 30%;
-    width: 30%;
-    line-height: 257%;
+    font-size: 1em;
+    /* border: 1px solid #959595; */
+    /* border-radius: 50%; */
+    height: 5%;
+    width: 50%;
+    /* line-height: 257%; */
     text-align: center;
+    top: 95%;
 }
 
 .yesItem{
