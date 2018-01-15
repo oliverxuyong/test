@@ -117,7 +117,7 @@ public class AdminController {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "SELECT mycpc.user_id my_uid, othercpc.user_id other_uid,mycpc.cp_id cp_id,mycpc.text cp_text, mycpc.property choice_property "
 					+"FROM tmp_table mycpc, tmp_table othercpc " 
-					+"WHERE mycpc.cp_id = othercpc.cp_id AND mycpc.user_id!=othercpc.user_id AND mycpc.event_scope = othercpc.event_scope "
+					+"WHERE mycpc.cp_id = othercpc.cp_id AND mycpc.user_id!=othercpc.user_id AND mycpc.event_scope = othercpc.event_scope AND mycpc.property = othercpc.property "
 					+"ORDER BY mycpc.user_id;";
 		
 		@SuppressWarnings("unchecked")
