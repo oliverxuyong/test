@@ -699,14 +699,18 @@ height:0px;
     display: none;
     /* padding: 2px; */
     color: #e4e4e4;
-    font-size: 1em;
+    font-size: 14px;
     /* border: 1px solid #959595; */
     /* border-radius: 50%; */
-    height: 5%;
-    width: 50%;
-    /* line-height: 257%; */
+    height: 50px;
+    width: 40%;
+    line-height: 50px;
     text-align: center;
-    top: 95%;
+    top: 92%;
+    margin-left: 5%;
+    margin-right: 5%;
+    background-color: rgba(255,255,255,0.3);
+    cursor:pointer;
 }
 
 .yesItem{
