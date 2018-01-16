@@ -1051,6 +1051,8 @@ function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 		
 		//绑定点击事件
 		yesItem.click(function() {
+			insertMyTagArrayNoRepeat(cpid,text);
+			
 			autoOverflow();
 			cpNodeByDistance.remove();
 			
@@ -1520,7 +1522,6 @@ function showUnSelectCP(data){
 		cp_node.click(function() {
 			//chooseCP(cp_node,cpid,text);
 			chooseOneCP(cp_node,cpid,text);
-			insertMyTagArrayNoRepeat(cpid,text);
 		});
 }
 

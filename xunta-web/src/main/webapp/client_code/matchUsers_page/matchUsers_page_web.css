@@ -75,6 +75,7 @@ html, body {
 .userTags{
 	float:left;
 	padding-left:5px;
+	width:100%;
 }
 
 .noMatchUser{
@@ -108,7 +109,6 @@ html, body {
     position: relative;/*设为relative,下级的absolute才能生效*/
 }
     
-    
-    
-    
+.negative{
+	opacity:0.6;
 }
