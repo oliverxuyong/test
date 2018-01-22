@@ -80,7 +80,8 @@ public class SendWeChatTemplateMsgController {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
 		User touser=userService.findUser(Long.valueOf(touserid));
 		String toopenid=touser.getOpenid();
-		
+		logger.debug("模版消息接口被调用时获取的openid：toopenid="+toopenid);
+		logger.debug("确保openid不为空的结果："+(toopenid!=null)+" "+(!toopenid.equals(""))+" "+(!toopenid.equals("\"\"")));
 		//2018.01.05 叶夷   确保openid不为空才进行后面操作
 		if(toopenid!=null && !toopenid.equals("") && !toopenid.equals("\"\"")){
 			//2018.01.04 叶夷  通过usergroup来获取接者所需的模版消息信息
@@ -99,7 +100,7 @@ public class SendWeChatTemplateMsgController {
 			
 			User user=userService.findUser(Long.valueOf(userid));
 			String username=user.getName();
-			logger.debug("模版消息接口被调用时获取的openid和username：toopenid="+toopenid+" username="+username);
+			logger.debug("模版消息接口被调用时获取username:username="+username);
 			//获得两人共同选择的标签，最多显示三个
 			/*String sameSelectTags=sendPost("http://xunta.so:3000/v1/find/users/same/tags/", "my_user_id="+userid+"matched_user_id"+touserid);
 			logger.debug("发送模版消息时共同选择的标签："+sameSelectTags);
