@@ -225,7 +225,10 @@
                 var tabLi0Width=tabLi[0].offsetWidth;
                 lineDiv.style.width=(tabLi0Width+10)+"px";
                 var lineStartPosition=document.body.clientWidth*0.38-5;
-                lineDiv.style.webkitTransform='translate3d('+lineStartPosition+'px,0,0)';
+                lineDiv.style.transform='translate3d('+lineStartPosition+',0,0)px';
+                lineDiv.style.msTransform='translate3d('+lineStartPosition+'px,0,0)';/* IE 9 */
+                lineDiv.style.mozTransform='translate3d('+lineStartPosition+'px,0,0)';/* Firefox */
+                lineDiv.style.webkitTransform='translate3d('+lineStartPosition+'px,0,0)';/* Safari 和 Chrome */
                 //console.log("测试1："+tabLi0Width+" "+lineStartPosition);
             	
                 tabLi[i].start = i;
@@ -307,27 +310,33 @@
     	
         var init={
             translate:function(obj,windowWidth,star){
-                obj.style.webkitTransform='translate3d('+-star*windowWidth+'px,0,0)';
                 obj.style.transform='translate3d('+-star*windowWidth+',0,0)px';
+                obj.style.msTransform='translate3d('+-star*windowWidth+'px,0,0)';
+                obj.style.mozTransform='translate3d('+-star*windowWidth+'px,0,0)';
+                obj.style.webkitTransform='translate3d('+-star*windowWidth+'px,0,0)';
+                
                 obj.style.webkitTransition='all 0.3s ease-in-out';
                 obj.style.transition='all 0.3s ease-in-out';
             },
-            touchs:function(obj,windowWidth,tar,distance,endX){
+            /* touchs:function(obj,windowWidth,tar,distance,endX){
                 obj.style.webkitTransform='translate3d('+(distance+endX)+'px,0,0)';
                 obj.style.transform='translate3d('+(distance+endX)+',0,0)px';
-            },
+            }, */
             lineAnme:function(obj,stance){
+            	obj.style.transform='translate3d('+stance+',0,0)px';
+                obj.style.msTransform='translate3d('+stance+'px,0,0)';
+                obj.style.mozTransform='translate3d('+stance+'px,0,0)';
                 obj.style.webkitTransform='translate3d('+stance+'px,0,0)';
-                obj.style.transform='translate3d('+stance+'px,0,0)';
+                
                 obj.style.webkitTransition='all 0.1s ease-in-out';
                 obj.style.transition='all 0.1s ease-in-out';
             },
-            back:function(obj,windowWidth,tar,distance,endX,time){
+            /* back:function(obj,windowWidth,tar,distance,endX,time){
                 obj.style.webkitTransform='translate3d('+(distance+endX)+'px,0,0)';
                 obj.style.transform='translate3d('+(distance+endX)+',0,0)px';
                 obj.style.webkitTransition='all '+time+'s ease-in-out';
                 obj.style.transition='all '+time+'s ease-in-out';
-            },
+            }, */
         }
 		
 	</script>
