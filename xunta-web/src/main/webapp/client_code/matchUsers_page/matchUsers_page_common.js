@@ -132,7 +132,13 @@ function showOnePageMatchUser(matchUsers){
 		if(noMatchUserDiv.length<=0){
 			noMatchUserDiv=$("<div></div>").attr("class","noMatchUser").attr("id","noMatchUser").text("更多");
 		}else{
-			noMatchUser.remove();
+			//2018.01.24  叶夷  IE浏览器不兼容remove方法，所以如果是IE浏览器，则改成removeNode(true)方法
+			var browserName=userAgent[1];
+			if(browserName=="IE8" || browserName=="IE9" || browserName=="IE10" || browserName=="IE11"){
+				noMatchUser.removeNode(true);
+			}else{
+				noMatchUser.remove();
+			}
 		}
 		
 		var length=matchUserList.length>requestOneCounts?requestOneCounts:matchUserList.length;
