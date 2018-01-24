@@ -133,12 +133,13 @@ function showOnePageMatchUser(matchUsers){
 			noMatchUserDiv=$("<div></div>").attr("class","noMatchUser").attr("id","noMatchUser").text("更多");
 		}else{
 			//2018.01.24  叶夷  IE浏览器不兼容remove方法，所以如果是IE浏览器，则改成removeNode(true)方法
-			var browserName=userAgent[1];
+			removeDiv(noMatchUser,userAgent[1]);
+			/*var browserName=userAgent[1];
 			if(browserName=="IE8" || browserName=="IE9" || browserName=="IE10" || browserName=="IE11"){
 				noMatchUser.removeNode(true);
 			}else{
 				noMatchUser.remove();
-			}
+			}*/
 		}
 		
 		var length=matchUserList.length>requestOneCounts?requestOneCounts:matchUserList.length;
@@ -172,7 +173,8 @@ function addDivForScroll(matchUsers){
 	//var noMatchUserDivHeight=noMatchUserDiv.height();
 	var divForScroll=$("#divForScroll");
 	if(divForScroll.length>0){
-		divForScroll.remove();
+		removeDiv(divForScroll,userAgent[1]);
+		//divForScroll.remove();
 	}
 	var matchUserListContentHeight = $("#showMatchUsers").height();//滚动条的内容高度
 	var matchUsersHeight=$(".showMatchUsers").height();
@@ -219,7 +221,8 @@ function response_user_selected_cp(cp_arr){
 	var myTagDiv=$(".mytag");
 	if(myTagDiv.length>0){
 		for(var a=0;a<myTagDiv.length;a++){
-			myTagDiv[a].remove();
+			//myTagDiv[a].remove();
+			removeDiv(myTagDiv[a],userAgent[1]);
 		}
 	}
 	$("#header").css("height","auto");

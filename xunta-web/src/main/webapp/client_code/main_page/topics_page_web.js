@@ -240,6 +240,7 @@ function bigCPAnimate(cpNodeByDistance){
 	
 	setTimeout(function() {
 		cpNodeByDistance.remove();
+		//removeDiv(cpNodeByDistance,userAgent[1]);
 		//cpValue.splice(cpValue.length-1,cpValue.length-1);
 		//$("#cp-container").height(cpValue[cpValue.length-1].cpBottom);
 		requestCPSuccese=true;
@@ -1025,7 +1026,9 @@ function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 			
 			//cp_innode.css("z-index","");
 			yesItem.remove();
+			//removeDiv(yesItem,userAgent[1]);
 			noItem.remove();
+			//removeDiv(noItem,userAgent[1]);
 			/*yesItem.unbind();
 			noItem.unbind();*/
 			//cp_node.unbind();
@@ -1040,7 +1043,9 @@ function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 			//calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
 			$(".cover").unbind();
 			$(".cover").remove();
+			//removeDiv($(".cover"),userAgent[1]);
 			cpNodeByDistance.remove();
+			//removeDiv(cpNodeByDistance,userAgent[1]);
 			
 			//event.stopPropagation();阻止事件冒泡。
 			//这是为了防止选中标签之后取消再次点击时，点击cover，cover删除之后cp_node的点击事件又再次触发
@@ -1055,6 +1060,7 @@ function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 			
 			autoOverflow();
 			cpNodeByDistance.remove();
+			//removeDiv(cpNodeByDistance,userAgent[1]);
 			
 			//2017.11.15 叶夷  选择标签之后进入聊天列表的按钮必须浮现
 			enterdialogList.css("z-index","102");
@@ -1073,10 +1079,13 @@ function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 			
 			//cp_innode.css("z-index","");
 			$(".cover").remove();
+			//removeDiv($(".cover"),userAgent[1]);
 			/*yesItem.hide();
 			noItem.hide();*/
 			yesItem.remove();
+			//removeDiv(yesItem,userAgent[1]);
 			noItem.remove();
+			//removeDiv(noItem,userAgent[1]);
 			
 			//cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			//恢复成原来大小再选择
@@ -1093,6 +1102,7 @@ function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 		noItem.click(function() {
 			autoOverflow();
 			cpNodeByDistance.remove();
+			//removeDiv(cpNodeByDistance,userAgent[1]);
 			
 			//2017.11.15 叶夷  标签消失之后进入聊天列表的按钮必须浮现
 			enterdialogList.css("z-index","102");
@@ -1100,14 +1110,18 @@ function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 			//cp_innode.css("z-index","");
 			$(".cover").unbind();
 			$(".cover").remove();
+			//removeDiv($(".cover"),userAgent[1]);
 			yesItem.remove();
+			//removeDiv(yesItem,userAgent[1]);
 			noItem.remove();
+			//removeDiv(noItem,userAgent[1]);
 			//cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			//现变小
 			$("#outcpid"+cpid).find(".incp").find("div").animate({
 				opacity:0
 			}, 1000,function() {
 				$("#outcpid"+cpid).remove();
+				//removeDiv($("#outcpid"+cpid),userAgent[1]);
 		    });
 			/*$("#outcpid"+cpid).remove();*/
 			//位置重新计算,left值不改变，然后通过中心点进行排序，通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
@@ -1258,6 +1272,7 @@ function showSelectTag(cpid,text,selectTagNumText){
 		
 		timeOutSuccess = setTimeout(function() {
 			animateCp.remove();
+			//removeDiv(animateCp,userAgent[1]);
 			myTag.show();
 			$("#cpid"+cpid).css("opacity", "0.2");// 推荐标签变暗
 			$("#cpid"+cpid).css("cursor", "auto");// 点击小手不见
@@ -1424,11 +1439,14 @@ function unSelectCP(cpid){
 		deleteButton.click(function() {
 			autoOverflow();
 			deleteButton.remove();
+			//removeDiv(deleteButton,userAgent[1]);
 			cancelButton.remove();
+			//removeDiv(cancelButton,userAgent[1]);
 			myTag.unbind();
 			sendUnSelectCP(cpid);
 			$(".cover").unbind();
 			$(".cover").remove();
+			//removeDiv($(".cover"),userAgent[1]);
 			
 			//2017.12.27 叶夷  取消选择的标签把数据从数组中删除
 			for(var i in myTagArray){
@@ -1473,12 +1491,15 @@ function showButton(className,buttonText){
 /**当点击我的标签，取消选择或者点击黑布的时候*/
 function cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight){
 	deleteButton.remove();
+	//removeDiv(deleteButton,userAgent[1]);
 	cancelButton.remove();
+	//removeDiv(cancelButton,userAgent[1]);
 	myTag.css("height",myTagHeight+"px");
 	myTag.css("z-index","");
 	myTagSelectNumberNode.hide();
 	$(".cover").unbind();
 	$(".cover").remove();
+	//removeDiv($(".cover"),userAgent[1]);
 	myTag.attr("class","mytag");
 }
 
@@ -1499,6 +1520,7 @@ function showUnSelectCP(data){
 		cp_node.css("opacity", "1");
 		cp_node.css("cursor", "pointer");
 		myTag.remove();
+		//removeDiv(myTag,userAgent[1]);
 		
 		// 取消的时候将高度还原
 		// 获得点击取消选择标签时位置变化之后的添加标签的top值
@@ -2482,6 +2504,7 @@ function animateForSize(muDiv, muSize, second) {// 移动的物体，变化的�
 	}, second * 1000, function() {
 		if(muSize==0){
 			muDiv.remove();
+			//removeDiv(muDiv,userAgent[1]);
 		}
     });
 }
@@ -2706,6 +2729,7 @@ function sendSelectedCPFail(cpid,text){
 	mytag.click(function(){
 		//现将感叹号去除，再重新选择
 		mytag.find(".myTagFail").remove();
+		//removeDiv(mytag.find(".myTagFail"),userAgent[1]);
 		sendSelectCP(userId, cpid,text, "P");
 		//chooseCP(cp_node,cpid,text,"P");
 	});
@@ -2719,6 +2743,7 @@ function myTagAgainBindingClick(cpid){
 	myTagFail=mytag.find(".myTagFail");
 	if(myTagFail.length>0){// 只有选择标签出错时
 		myTagFail.remove();
+		//removeDiv(myTagFail,userAgent[1]);
 		mytag.click(function(){
 			sendUnSelectCP(cpid);
 		});
@@ -2885,6 +2910,7 @@ function closeImageBox() {
 	autoOverflow();
 	$("#ImageBox").hide();
 	$(".cover").remove();
+	//removeDiv($(".cover"),userAgent[1]);
 }
 
 /*

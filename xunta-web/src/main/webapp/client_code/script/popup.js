@@ -70,6 +70,7 @@ jQuery(document).ready(function($){
                 event.preventDefault();
                 //$('.cd-popup').removeClass('is-visible');//这种写法只是删除了定义字,没有删除元素.xu
                 $('.cd-popup').remove();
+                //removeDiv($('.cd-popup'),userAgent[1]);
             });
         },
         addButton:function(args,method,f){
@@ -98,6 +99,7 @@ jQuery(document).ready(function($){
             if(!$(".cd-popup").length)
             {
                 $(".cd-popup").remove();
+                //removeDiv($(".cd-popup"),userAgent[1]);
             }
             this.createDom($("body"),"confirm",a,f);
             $('.cd-popup').addClass('is-visible');
@@ -108,6 +110,7 @@ jQuery(document).ready(function($){
             if(!$(".cd-popup").length)
             {
                 $(".cd-popup").remove();
+                //removeDiv($(".cd-popup"),userAgent[1]);
             }
             this.createDom($("body"),"prompt",a,f);
             $('.cd-popup').addClass('is-visible');
@@ -118,12 +121,14 @@ jQuery(document).ready(function($){
 
 function toast_popup(msg,timeout){
 	$("#toastoutline").remove();
+	//removeDiv($("#toastoutline"),userAgent[1]);
 	var toastE = $("<div class='toastoutline' id='toastoutline'><div class='toastinline' id='toastinline'>   "+msg+" </div> </div>")
 	$("body").append(toastE);
 	$("#toastinline").css("margin-left",($("#toastoutline").width()-$("#toastinline").width())/2);
 	setTimeout(
 		function(){
 			toastE.remove();
+			//removeDiv(toastE,userAgent[1]);
 		},
 		timeout
 	)

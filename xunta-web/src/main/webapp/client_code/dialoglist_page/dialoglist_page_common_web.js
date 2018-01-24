@@ -23,7 +23,8 @@ function showDialogList(data){
 	//将聊天列表的数据放入之前先将存在的数据删除
 	var allDialog=$(".dialog");
 	for(var i=0;i<allDialog.length;i++){
-		allDialog.eq(i).remove();
+		//allDialog.eq(i).remove();
+		removeDiv(allDialog.eq(i),userAgent[1]);
 	}
 	
 	//将聊天列表的外框的height设置
@@ -257,12 +258,14 @@ function makeDialogListTop(toUserName,toUserImg,respondeUserId){
 		copyOneDialogDiv.attr("id",respondeUserId);
 		copyOneDialogDiv.find("img").attr("src",toUserImg);
 		copyOneDialogDiv.find(".dialog_content_name").text(toUserName);
-		copyOneDialogDiv.find('.unread').remove();
+		//copyOneDialogDiv.find('.unread').remove();
+		removeDiv(copyOneDialogDiv.find('.unread'),userAgent[1]);
 	}else{
 		copyOneDialogDiv=oneDialogDiv.clone();
 		
 		//先将节点从dialog_list删除再放入第一位中
-		oneDialogDiv.remove();
+		//oneDialogDiv.remove();
+		removeDiv(oneDialogDiv,userAgent[1]);
 	}
 	$("#dialog_list").prepend(copyOneDialogDiv);
 	copyOneDialogDiv.click(function() {//绑定点击事件.

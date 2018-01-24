@@ -81,6 +81,7 @@ function requestTopMatchedUsers(userId,requestTopMUNum){
 //首页未读消息去除
 function removeUnreadNum() {
 	$('.unread').remove();
+	//removeDiv($('.unread'),userAgent[1]);
 	//进入匹配人详情页则右下角的按钮消失
 	$("#enterdialogList").hide();
 }

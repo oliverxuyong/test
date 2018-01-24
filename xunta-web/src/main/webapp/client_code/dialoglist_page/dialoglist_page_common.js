@@ -43,5 +43,6 @@ function enterDialogPage(toUserId,toUserName,toUserImage) {
 
 //未读消息去除
 function removeUnreadNum(toUserId) {
-	$('#' + toUserId).find('.unread').remove()
+	//$('#' + toUserId).find('.unread').remove()
+	removeDiv($('#' + toUserId).find('.unread'),userAgent[1]);
 }

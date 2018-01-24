@@ -70,6 +70,8 @@ function markSendPosterSuccess(tmpPid, postTimelong, postTimeStr) {//接受服�
 	//取消黑色跳豆
 	//console.log("这里有时候是undefined, 要查一下. element:"+element.html());
 	element.find(".detail .postsending").remove();
+	//removeDiv(element.find(".detail .postsending"),userAgent[1]);
+
 	var postTimeLongMinute = postTimelong / 1000 / 60;
 	var intervalEnough = ((postTimeLongMinute - 2) > (lastPostTimeLongMinute)) || ((postTimeLongMinute + 2) < (lastPostTimeLongMinute))
 	if ((lastPostTimeLongMinute == 0) || intervalEnough) {//彬彬: 时间码是否显示的判断. //不论是滞后2分钟还是超前2分钟,都显示出.针对消息晚到的情况.xu

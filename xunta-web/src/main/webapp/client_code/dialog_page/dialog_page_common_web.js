@@ -137,6 +137,7 @@ function showSameSelectCp(data){
 	if(selectCPs.length>0){
 		for(var index in selectCPs){
 			selectCPs.eq(index).remove();
+			//removeDiv(selectCPs.eq(index),userAgent[1]);
 		}
 	}
 	

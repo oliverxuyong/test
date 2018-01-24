@@ -183,11 +183,13 @@ function setSpecialGroupReq(){
 function removeIframe(P_winName){
     if($("#"+P_winName) != null){
         $("#"+P_winName).remove();
+        //removeDiv($("#"+P_winName),userAgent[1]);
     }
 }
 
 function removeAllIframes(){
    $("iframe").remove();
+   //removeDiv($("iframe"),userAgent[1]);
 }
 
 function hideAllIframes(){

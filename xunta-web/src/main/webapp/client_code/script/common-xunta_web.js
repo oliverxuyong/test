@@ -93,3 +93,13 @@ function cutStringIfTooLong(str,maxLength){
 		return str;			
 	}
 }
+
+//2018.01.24  叶夷  IE浏览器不兼容remove方法，所以如果是IE浏览器，则改成removeNode(true)方法，将所有的remove方法为了浏览器兼容修改成这里的removeDiv
+function removeDiv(divName,browserName){
+	//var browserName=userAgent[1];
+	if(browserName=="IE8" || browserName=="IE9" || browserName=="IE10" || browserName=="IE11"){
+		divName.removeNode(true);
+	}else{
+		divName.remove();
+	}
+}
