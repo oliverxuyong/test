@@ -18,7 +18,7 @@ html, body {
 }
 
 .userimg{
-	padding:5px;
+	margin:5px;
 	float: left;
 	width:100%;
 	border-radius:20%;
@@ -96,7 +96,7 @@ html, body {
     padding-left: 8px;
     padding-right: 8px;
     padding-bottom: 3px;
-    margin-top: 1.2%;/*这里必须是百分数,计划我的标签框高度时要用到.*/
+    margin-top: 1.2%;/*杩欓噷蹇呴』鏄櫨鍒嗘暟,璁″垝鎴戠殑鏍囩妗嗛珮搴︽椂瑕佺敤鍒�.*/
     margin-right: 6px;
     font-size: 13px;
     letter-spacing: 1px;
@@ -106,7 +106,7 @@ html, body {
     background-color: #f5f5f5;
     /* text-shadow: 1px 1px 0.3em black; */
     /* box-shadow: 1px 1px 1px black; */
-    position: relative;/*设为relative,下级的absolute才能生效*/
+    position: relative;/*璁句负relative,涓嬬骇鐨刟bsolute鎵嶈兘鐢熸晥*/
 }
     
 .negative{

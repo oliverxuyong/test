@@ -59,7 +59,9 @@ function setMatchUserListNode(matchUser,matchUserContent,matchUserContentTop,use
 	var userImgHeight=matchUserWidth*0.067;//图片的高度是聊天列表宽度的0.1026
 	var userImgMargin=userImgHeight;
 	var userimg=matchUser.find("img");
-	var userimgPadding=parseInt(userimg.css("padding"));
+	var userimgMarginRight=parseInt(userimg.css("margin-right"));
+	//var userimgPadding=document.getElementById("userimg").style.paddingLeft;
+	//console.log("测试："+userimg.css("padding")+" "+userimgPadding)
 	userimg.css("height",userImgHeight);
 	userimg.css("width",userImgHeight);
 	userimg.css("margin-left",userImgMargin);
@@ -70,13 +72,13 @@ function setMatchUserListNode(matchUser,matchUserContent,matchUserContentTop,use
 	header.css("width",headerWidth);
 	
 	//内容css设置
-	var matchUserContentWidth=matchUserWidth-userImgHeight-userimgPadding*2-(userImgMargin*2)-2;
+	var matchUserContentWidth=matchUserWidth-userImgHeight-userimgMarginRight*2-(userImgMargin*2)-2;
 	//dialogContent.css("height",dialogWidth*0.1026);
 	matchUserContent.css("width",matchUserContentWidth);
 	//matchUserContent.css("margin-left",userImgMargin*2/3);
 	
 	//内容顶部设置
-	var matchUserContentTopHeight=userImgHeight/2+userimgPadding;
+	var matchUserContentTopHeight=userImgHeight/2+userimgMarginRight;
 	matchUserContentTop.css("height",matchUserContentTopHeight);
 	
 	//设置文字内容的line-height
