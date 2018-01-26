@@ -269,29 +269,54 @@ function changeUnreadColor(){
 
 /**2017.10.16 叶夷  聊天列表消息置顶*/
 function makeDialogListTop(toUserName,toUserImg,respondeUserId){
-	var oneDialogDiv=$("#"+respondeUserId);
-	var copyOneDialogDiv;
-	if(oneDialogDiv.length<=0){//判断聊天列表中是否有这个人的存在，如果不存在则将它加上且置顶
-		copyOneDialogDiv=$(".dialog").eq(0).clone();
-		copyOneDialogDiv.attr("id",respondeUserId);
-		copyOneDialogDiv.find("img").attr("src",toUserImg);
-		copyOneDialogDiv.find(".dialog_content_name").text(toUserName);
-		copyOneDialogDiv.find('.unread').remove();
-		//removeDiv(copyOneDialogDiv.find('.unread'),userAgent[1]);
+	if($(".dialog").eq(0).length<=0){//这里是判断如果聊天列表为空的情况,重新创建
+		var time1 = new Date().format("yyyy-MM-dd hh:mm:ss");
+		appendDialogElement(time1,"","默认",respondeUserId,toUserImg,toUserName);
 	}else{
-		copyOneDialogDiv=oneDialogDiv.clone();
+		var oneDialogDiv=$("#"+respondeUserId);
+		var copyOneDialogDiv;
+		if(oneDialogDiv.length<=0){//判断聊天列表中是否有这个人的存在，如果不存在则将它加上且置顶
+			copyOneDialogDiv=$(".dialog").eq(0).clone();
+			copyOneDialogDiv.attr("id",respondeUserId);
+			copyOneDialogDiv.find("img").attr("src",toUserImg);
+			copyOneDialogDiv.find(".dialog_content_name").text(toUserName);
+			copyOneDialogDiv.find('.unread').remove();
 		
-		//先将节点从dialog_list删除再放入第一位中
-		oneDialogDiv.remove();
-		//removeDiv(oneDialogDiv,userAgent[1]);
+		}else{
+			copyOneDialogDiv=oneDialogDiv.clone();
+		
+			//先将节点从dialog_list删除再放入第一位中
+			oneDialogDiv.remove();
+			//removeDiv(oneDialogDiv,userAgent[1]);
+		}
+		$("#dialog_list").prepend(copyOneDialogDiv);
+		copyOneDialogDiv.click(function() {//绑定点击事件.
+			enterDialogPage(respondeUserId,toUserName,toUserImg);
+		});
+		return copyOneDialogDiv;
 	}
-	$("#dialog_list").prepend(copyOneDialogDiv);
-	copyOneDialogDiv.click(function() {//绑定点击事件.
-		enterDialogPage(respondeUserId,toUserName,toUserImg);
-	});
-	
-	return copyOneDialogDiv;
 }
+//时间转换的方法,比如将时间转换为yyyy-MM-dd hh:mm:ss的形式
+Date.prototype.format = function(fmt) { 
+    var o = { 
+       "M+" : this.getMonth()+1,                 //月份 
+       "d+" : this.getDate(),                    //日 
+       "h+" : this.getHours(),                   //小时 
+       "m+" : this.getMinutes(),                 //分 
+       "s+" : this.getSeconds(),                 //秒 
+       "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+       "S"  : this.getMilliseconds()             //毫秒 
+   }; 
+   if(/(y+)/.test(fmt)) {
+           fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+   }
+    for(var k in o) {
+       if(new RegExp("("+ k +")").test(fmt)){
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        }
+    }
+   return fmt; 
+}        
 
 /**start:叶夷  2017年3月20日
  * matchUsers_page中的username也必须修改
