@@ -526,7 +526,7 @@ height:0px;
 	left:0px;
 	border-radius:50%; 
 	//border:1px solid #e5efff;
-	cursor:pointer;
+	//cursor:pointer;
 	//opacity:0.3;
 	//background-color:#fffff0;
 		//filter:Alpha(opacity=50);
@@ -561,7 +561,7 @@ height:0px;
 	border: 1px solid rgba(255, 255, 255, 0.4);
 	padding: 4px 4px 2px 4px;
 	border-radius: 15%;
-	
+	cursor:pointer;
 	//text-shadow:blue;
 	//text-shadow:{0 0 0.3em #87F,0 0 0.3em #87F,0 0 0.3em #87F};
 }
