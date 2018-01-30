@@ -34,7 +34,7 @@ function syncUser(cookieUserStr){//cookie之后到这里.如果是新用户,服�
    
    //放在这里判断,应该是各种登录最后都汇集到这里:
    if(u.image==null||u.image==""){
-   		u.image="http://42.121.136.225:8888/user-pic2.jpg";
+   		u.image="https://42.121.136.225:8888/user-pic2.jpg";//2018.01.29 叶夷    将http更改成https
    }
    
    if(u.name==null||u.type==null||u.unionid==null){
@@ -45,7 +45,7 @@ function syncUser(cookieUserStr){//cookie之后到这里.如果是新用户,服�
    
    
     $.ajax({
-        url : "http://" + domain + "/xunta-web/save_user",
+        url : "https://" + domain + "/xunta-web/save_user",//2018.01.29 叶夷    将http更改成https
         action : "post",
         contentType : "application/x-www-form-urlencoded; charset=utf-8",
         dataType : "jsonp",
@@ -91,7 +91,7 @@ function checkUser(userInfoJsonStr) {//读取localStorage之后到这里.
  
 	    var u = JSON.parse(userInfoJsonStr);
 	    $.ajax({
-	        url : "http://" + domain + "/xunta-web/checkuser",
+	        url : "https://" + domain + "/xunta-web/checkuser",//2018.01.29 叶夷    将http更改成https
         action : "post",
         timeout : 7000,
         dataType : "jsonp",
@@ -205,7 +205,7 @@ function checkonmobileno(){//输入手机号后执行这个方法,向后台传�
     userMobileNum = input_mobileno;//在本页全局变量中存放用户手机号.
     console.log("checkonmobileno - userMobileNum:"+userMobileNum);
     var data2send = {phonenumber : input_mobileno};
-    url = "http://"+domain+"/xunta-web/check_mobilenum_ifexist";
+    url = "https://"+domain+"/xunta-web/check_mobilenum_ifexist";//2018.01.29 叶夷    将http更改成https
     ajax2server_Jsonp(url,data2send,"callback_checkonmobileno");
 }//上为请求,下为回调.
 function callback_checkonmobileno(receivedData){
@@ -252,7 +252,7 @@ function requestSendSMSCode4Resetpassword(){//在忘记密码并显示图形码�
     var data2send = {	phonenumber : userMobileNum,
         graph_code:input_graphcode   	}
     console.log("图码="+input_graphcode+"|"+userMobileNum);
-    var url = "http://"+domain+"/xunta-web/get_mobilephone_validatecode";
+    var url = "https://"+domain+"/xunta-web/get_mobilephone_validatecode";//2018.01.29 叶夷    将http更改成https
     ajax2server_Jsonp(url,data2send,"callback_requestSendSMSCode4Resetpassword");
     $("#button_requestSendSMSCode4Resetpasswordfont").text("再次发送短信码");
 }//上为请求,下为回调.
@@ -269,7 +269,7 @@ function callback_requestSendSMSCode4Resetpassword(receivedData){//短信码若�
 
 function changGraphCode(){
     var time = new Date();
-    $("#graphcode img").attr("src","http://"+domain+"/xunta-web/get_graph_validatecode?time=new Date()?time="+time);
+    $("#graphcode img").attr("src","https://"+domain+"/xunta-web/get_graph_validatecode?time=new Date()?time="+time);//2018.01.29 叶夷    将http更改成https
 }
 
 function requestSendSMSCode(){//手机号为新并输入图形码后,按请求短信码按钮则执行这个方法.
@@ -277,7 +277,7 @@ function requestSendSMSCode(){//手机号为新并输入图形码后,按请求�
     var data2send = {	phonenumber : userMobileNum,
         graph_code:input_graphcode   	}
     console.log("图码="+input_graphcode+"|"+userMobileNum);
-    var url = "http://"+domain+"/xunta-web/get_mobilephone_validatecode";
+    var url = "https://"+domain+"/xunta-web/get_mobilephone_validatecode";//2018.01.29 叶夷    将http更改成https
     ajax2server_Jsonp(url,data2send,"callback_requestSendSMSCode");
     $("#button_requestSendSMSCodefontfont").text("再次发送短信码");
 }//上为请求,下为回调.
@@ -299,7 +299,7 @@ function loginbymobilephone(){//老用户正常登录按钮后执行这个方法
     var data2send = {	password : input_password,
         phonenumber : userMobileNum,
     };
-    url = "http://"+domain+"/xunta-web/login_mobilephone";
+    url = "https://"+domain+"/xunta-web/login_mobilephone";//2018.01.29 叶夷    将http更改成https
     ajax2server_Jsonp(url,data2send,"callback_loginbymobilephone");
 }//上为请求,下为回调.
 function callback_loginbymobilephone(receivedData){
@@ -325,7 +325,7 @@ function resetandloginbymobilephone(){//老用户按重设密码并登录按钮�
         newpasswd : input_password,
         phonenumber : userMobileNum,
         phonevalidatecode : input_smscode  };
-    url = "http://"+domain+"/xunta-web/resetpwandlogin";
+    url = "https://"+domain+"/xunta-web/resetpwandlogin";//2018.01.29 叶夷    将http更改成https
     ajax2server_Jsonp(url,data2send,"callback_resetandloginbymobilephone");
 }//上为请求,下为回调.
 function callback_resetandloginbymobilephone(receivedData){
@@ -349,7 +349,7 @@ function registerbymobilephone(){//新用户最后按钮注册并登录按钮执
         password : input_password,
         phonenumber : userMobileNum,
         phonevalidatecode : input_smscode  };
-    url = "http://"+domain+"/xunta-web/register_mobilephone";
+    url = "https://"+domain+"/xunta-web/register_mobilephone";//2018.01.29 叶夷    将http更改成https
     ajax2server_Jsonp(url,data2send,"callback_registerbymobilephone");
 }//上为请求,下为回调.
 function callback_registerbymobilephone(receivedData){
@@ -398,7 +398,7 @@ function preDefinedUserInfo(){
             var testtype='QQ';
 			var testuid='670182701776637952';
 			var testname='语擎';
-			var testimage='http://q.qlogo.cn/qqapp/1104713537/339A9FCD49DE1268435D7F2E18C4FD2E/40';
+			var testimage='https://q.qlogo.cn/qqapp/1104713537/339A9FCD49DE1268435D7F2E18C4FD2E/40';//2018.01.29 叶夷    将http更改成https
 			var testoriginalid = "339A9FCD49DE1268435D7F2E18C4FD2E";
 			var testunionid="339A9FCD49DE1268435D7F2E18C4FD2E";
 			

@@ -148,7 +148,7 @@ function  getHistoryMsg(userId,toUserId,firstMsgId){
 	}
 	
 	$.ajax({
-        url:"http://xunta.so:3000/v1/history_msg",
+        url:"https://xunta.so:3000/v1/history_msg",//2018.01.29 叶夷    将http更改成https
         type:"POST",
         dataType:"jsonp",
         jsonp:"callback",
@@ -177,7 +177,7 @@ function  getHistoryMsg(userId,toUserId,firstMsgId){
 function showTitle() {
 	var titleTextContent=cutStringIfTooLong(toUserName,10);
 	//在聊天页title上加上头像
-	var userimg=$("<img src="+toUserImage+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
+	var userimg=$("<img src="+toUserImage+" onerror="+"javascript:this.src='"+"https://42.121.136.225:8888/user-pic2.jpg"+"'>");//2018.01.29 叶夷    将http更改成https
 	$('#header').append(userimg);
 	var titleText=$('#title');
 	var titleTextWidth=titleText.height()/32*26;//头像小一点.

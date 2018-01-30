@@ -404,7 +404,8 @@ public class LoginController {
 			String domain = getDomainWithOutContext(request);
 			if (domain.contains("www")) {
 			} else {
-				domain = "http://www." + domain.substring(domain.indexOf("http://") + 7);
+				//2018.01.29  叶夷  将http更改成https
+				domain = "https://www." + domain.substring(domain.indexOf("https://") + 7);
 			}
 			logger.debug("set cookie on domain:" + domain);
 
@@ -430,8 +431,8 @@ public class LoginController {
 			 */
 			if (domainWithContext.contains("www")) {
 			} else {
-				domainWithContext = "http://www."
-						+ domainWithContext.substring(domainWithContext.indexOf("http://") + 7);
+				domainWithContext = "https://www."//2018.01.29 叶夷    将http更改成https
+						+ domainWithContext.substring(domainWithContext.indexOf("https://") + 7);//2018.01.29 叶夷    将http更改成https
 				request.getSession().setAttribute("indexpageurl", domainWithContext + "client_code/index.html");
 				logger.debug("==> redirect to url :" + domainWithContext + "showindexpage?indexpageurl="
 						+ domainWithContext + "client_code/index.html&name=" + name + "&uid=" + uid + "&unionid="

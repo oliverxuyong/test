@@ -1,6 +1,6 @@
 function requestDialogList(){
 	$.ajax({
-        url:"http://xunta.so:3000/v1/chat_list",
+        url:"https://xunta.so:3000/v1/chat_list",//2018.01.29 叶夷    将http更改成https
         type:"POST",
         dataType:"jsonp",
         jsonp:"callback",

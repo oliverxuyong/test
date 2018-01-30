@@ -25,7 +25,9 @@ public class SimpleClient {
 		// HttpMethod method = new
 		// GetMethod("http://10.1.14.20:8088/workflowController/service/todo/addTask");
 		// 使用POST方法
-		String url ="http://222.73.117.140:8044/mt";
+		//String url ="http://222.73.117.140:8044/mt";
+		//2018.01.29  叶夷  将xunta该成https
+		String url = "https://222.73.117.140:8044/mt";
 		//String url ="http://localhost/xunta-web/mt";
 		PostMethod method = new PostMethod(url);
 

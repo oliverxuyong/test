@@ -259,8 +259,8 @@
 		log2root("发送微信分享链接自定义消息给后台  :"+url);
 		var requestUrl,link;
 		if(url.indexOf("www.xunta.so")>=0){
-			requestUrl="http://www.xunta.so/xunta-web/sendShareLinksMsg";
-			link = "http://www.xunta.so/wxShareLinksLogin"
+			requestUrl="https://www.xunta.so/xunta-web/sendShareLinksMsg";/*2018.01.29 叶夷    将http更改成https*/
+			link = "https://www.xunta.so/wxShareLinksLogin"
 		}else if(url.indexOf("www.ainiweddingcloud.com")>=0){
 			requestUrl="http://www.ainiweddingcloud.com/xunta-web/sendShareLinksMsg";
 			link = "http://www.ainiweddingcloud.com/wxShareLinksLogin"

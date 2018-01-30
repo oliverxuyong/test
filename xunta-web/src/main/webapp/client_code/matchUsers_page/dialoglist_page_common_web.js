@@ -53,7 +53,7 @@ function showDialogList(data){
 function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
 	var dialog=$("<div></div>").attr("class", "dialog cursor").attr("id", toUserId);
 	//onerror是实现获得图片失败的时候放的默认图片,只要有一个图片路径就行
-	var toUserImg="<img src="+toUserImgUrl+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>";
+	var toUserImg="<img src="+toUserImgUrl+" onerror="+"javascript:this.src='"+"https://42.121.136.225:8888/user-pic2.jpg"+"'>";
 	var dialogContent=$("<div></div>").attr("class", "dialog_content");
 	
 	var dialogContentTop=$("<div></div>").attr("class", "dialog_content_top");

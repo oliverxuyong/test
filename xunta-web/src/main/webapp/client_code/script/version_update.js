@@ -9,7 +9,7 @@ var app_version = {
  */
 function versionUpdate() {
 	api.ajax({
-		url : 'http://'+domain+'.so/xunta-web/update_info',
+		url : 'https://'+domain+'.so/xunta-web/update_info',//2018.01.29 叶夷    将http更改成https
 		method : 'post',
 		timeout : 30,
 		dataType : 'json',

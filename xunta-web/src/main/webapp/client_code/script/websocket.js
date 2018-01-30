@@ -648,7 +648,7 @@ function notifyNewMessage(originalPageTitle) {
 function loadSoundFile() {//如果声音文件已存在,则直接返回它所在的elemment.如果不存在,则创建一个后返回.
 	var audioE = $('#audioFileE');
 	if (audioE[0] == undefined) {
-		audioE = $('<audio id="audioFileE"><source src="http://www.xunta.so/xunta-web/client_code/sound/youhaveamessage.wav" type="audio/wav"></audio>');
+		audioE = $('<audio id="audioFileE"><source src="https://www.xunta.so/xunta-web/client_code/sound/youhaveamessage.wav" type="audio/wav"></audio>');//2018.01.29 叶夷    将http更改成https
 		//audioE = $('<audio id="audioFileE"><source src="/client_code/sound/youhaveamessage.wav" type="audio/wav"></audio>');//服务器对client_code这个路径有时会加上,有时不加上.暂用上面的绝对路径.
 		audioE.appendTo('body');//载入声音文件
 		console.log("播放新消息所用的audio元素不存在,已新建了一个.");

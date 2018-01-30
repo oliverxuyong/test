@@ -44,7 +44,7 @@ function handleCookie(){
 
     var u = JSON.parse(cookieUserStr);
    if(u.image==null||u.image==""){
-   		u.image="http://42.121.136.225:8888/user-pic2.jpg";
+   		u.image="https://42.121.136.225:8888/user-pic2.jpg";//2018.01.29 叶夷    将http更改成https
    		toast("授权登录的第三方帐号缺少头像数据,暂时采用本系统默认用户头像.建议登录后马上更改头像.");
    }
    if(u.name==null||u.type==null||u.unionid==null){
@@ -183,9 +183,9 @@ function qq_login() {
 	
 	var redirect_uri;
 	if(domain == 'www.xunta.so'){
-		redirect_uri = "http://xunta.so/qq_callback";
+		redirect_uri = "https://xunta.so/qq_callback";//2018.01.29 叶夷    将http更改成https
 	}else{
-		redirect_uri = "http://"+domain+"/qq_callback";
+		redirect_uri = "https://"+domain+"/qq_callback";//2018.01.29 叶夷    将http更改成https
 	}
 	
     window.location = "https://graph.qq.com/oauth2.0/authorize?client_id="+qqappid+"&redirect_uri="+redirect_uri+"&response_type=code&state="+qqappkey+"&scope=get_user_info,add_topic,add_one_blog,add_album,upload_pic,list_album,add_share,check_page_fans,add_t,add_pic_t,del_t,get_repost_list,get_info,get_other_info,get_fanslist,get_idollist,add_idol,del_ido,get_tenpay_addr";
@@ -195,7 +195,7 @@ function qq_login() {
  * WX登录请求并获取WX用户信息 9.14 Fang
  * */
 function wx_login() {
-    var redirect_uri = "http://"+domain+"/wx_callback";
+    var redirect_uri = "https://"+domain+"/wx_callback";//2018.01.29 叶夷    将http更改成https
     window.location = "https://open.weixin.qq.com/connect/qrconnect?appid="+wxappid+"&redirect_uri=" + redirect_uri + "&response_type=code&scope=snsapi_login&state="+wxstate+"#wechat_redirec";
 }
 

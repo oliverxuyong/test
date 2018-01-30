@@ -6,7 +6,7 @@ function showMatchUsers(matchUsers,userid,username,img_src,positiveCommonCps,neg
 	var matchUser=$("<div></div>").attr("class","matchUser").attr("id","matchUser"+userid);//一个匹配人
 	
 	//var userimg=$("<div></div>").attr("class","userimg").append("<img src='"+userimgUrl+"'/>");//一个匹配人的头像
-	var userimg="<img src="+userimgUrl+" class='userimg' onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>";
+	var userimg="<img src="+userimgUrl+" class='userimg' onerror="+"javascript:this.src='"+"https://42.121.136.225:8888/user-pic2.jpg"+"'>";
 	
 	var matchUserContent=$("<div></div>").attr("class", "matchUser_content");
 	

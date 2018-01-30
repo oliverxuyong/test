@@ -167,7 +167,7 @@ function setPageTitle(){
 }
 
 function setPageICO(){
-	$("#favicon_ico").attr("href","http://"+domain+"/xunta-web/client_code/icon/"+faviconUrl);
+	$("#favicon_ico").attr("href","https://"+domain+"/xunta-web/client_code/icon/"+faviconUrl);//2018.01.29 叶夷    将http更改成https
 } 
 
 function setSpecialGroupReq(){

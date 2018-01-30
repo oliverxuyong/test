@@ -2160,7 +2160,7 @@ function muAddImg(i,matchedUserArr,isFirst){
 		var muUserName=matchedUserArr[i].username;
 		
 		var muNode=$("<div></div>").attr("class","mu").attr("id","mu"+muId);
-		var muNodeImg=$("<img src="+muImg+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
+		var muNodeImg=$("<img src="+muImg+" onerror="+"javascript:this.src='"+"https://42.121.136.225:8888/user-pic2.jpg"+"'>");//2018.01.29 叶夷    将http更改成https
 		muNode.append(muNodeImg);
 		$("#header-container").append(muNode);
 		

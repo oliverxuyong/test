@@ -54,7 +54,7 @@ public class CrossOriginFilter implements Filter {
 		{
 			String requestURI = req.getRequestURI();
 			if(requestURI.equals("/xunta-web/")||requestURI.equals("/")){
-				String replace = (req.getRequestURL().toString()).replaceAll("http://","http://www.");
+				String replace = (req.getRequestURL().toString()).replaceAll("https://","https://www.");//2018.01.29  叶夷 将http更改成https
 				res.sendRedirect(replace);
 				return;
 			}else{
