@@ -77,7 +77,7 @@ function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory) {//�
 	content_P = $("<div class='detail'></div>").text(content);
 	
 	if(myOrOther=="my"){
-		var postsending = $("<img class='postsending' src='../image/jumpingbean.gif' onerror=javascript:this.src='https://42.121.136.225:8888/user-pic2.jpg' >");//2018.01.29 叶夷    将http更改成https
+		var postsending = $("<img class='postsending' src='https://www.xunta.so/xunta-web/client_code/image/jumpingbean.gif' onerror=javascript:this.src='https://42.121.136.225:8888/user-pic2.jpg' >");//2018.01.29 叶夷    将http更改成https
 		content_P.append(postsending);
 	}
 	
@@ -108,7 +108,7 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
 		noHistoryMsg=true;//没有历史消息
 		showAllPosters(msgJson);
 		$("#loadingtext").attr("class", "");
-		$("#loading img").attr("src", "../image/threedotmoving.jpg");
+		$("#loading img").attr("src", "https://www.xunta.so/xunta-web/client_code/image/threedotmoving.jpg");
 		$("#loadingtext").text("无更多消息");
 		$("#loadingwrap").unbind('click');
 		//点击后马上取消这个事件绑定.
@@ -116,7 +116,7 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
 		noHistoryMsg=false;//有历史消息
 		showAllPosters(msgJson);
 		$("#loadingtext").attr("class", "cursor");
-		$("#loading img").attr("src", "../image/threedotmoving.jpg");
+		$("#loading img").attr("src", "https://www.xunta.so/xunta-web/client_code/image/threedotmoving.jpg");
 		$("#loadingtext").text("查看更多消息");
 	}
 }

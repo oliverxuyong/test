@@ -82,4 +82,4 @@ input[type='checkbox'],input[type='radio']{vertical-align:middle;}
 .more-rule{float: left;width: 90%;height: 30px;line-height: 30px;cursor: pointer;padding: 0 0 0 5%;display: none;}
 
 
-.check-div{float: left;width: 98%;height: 30px;line-height: 30px;padding:0 0 0 2%;border-bottom: 1px solid #D3D6DD;background:url('../image/titbg.gif') center top repeat-x;}
+.check-div{float: left;width: 98%;height: 30px;line-height: 30px;padding:0 0 0 2%;border-bottom: 1px solid #D3D6DD;background:url('https://www.xunta.so/xunta-web/client_code/image/titbg.gif') center top repeat-x;}

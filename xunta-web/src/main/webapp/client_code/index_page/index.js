@@ -44,7 +44,7 @@ function clearTopicsPageOpenMark() {
         function showLoadingtext(){
             if ($("#loadinganimation").find("#loadingtext").length == 0) {
                 $("#loadinganimation").append($("<div></div>").attr("id", "loadingtext").text("正在登录中..."));
-                $("#loadinganimation").append($("<img>").attr("src", "image/tractor-short.gif"));
+                $("#loadinganimation").append($("<img>").attr("src", "https://www.xunta.so/xunta-web/client_code/image/tractor-short.gif"));
             }
         }
         function createPublicParam4UserInfo(userinfo){

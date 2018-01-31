@@ -6,13 +6,13 @@
 		<meta name="apple-mobile-web-app-capable" content="yes"/>
 		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 		<title>聊天页</title>
-		<link rel="stylesheet" type="text/css" href="dialog_page.css"/>
-		<link rel="stylesheet" type="text/css" href="dialog_page_web.css"/>
-		<link rel="stylesheet" type="text/css" href="inputframe.css"/>
-        <link rel="stylesheet" type="text/css" href="../css/popup.css"/>
-        <link rel="stylesheet" type="text/css" href="../css/popcontext.css"/>
-        <link rel="stylesheet" type="text/css" href="../css/common_web.css"/>
-        <link rel="prefetch" href="../image/acclaim-50x173.png" />
+		<link rel="stylesheet" type="text/css" href="https://www.xunta.so/xunta-web/client_code/dialog_page.css"/>
+		<link rel="stylesheet" type="text/css" href="https://www.xunta.so/xunta-web/client_code/dialog_page_web.css"/>
+		<link rel="stylesheet" type="text/css" href="https://www.xunta.so/xunta-web/client_code/inputframe.css"/>
+        <link rel="stylesheet" type="text/css" href="https://www.xunta.so/xunta-web/client_code/css/popup.css"/>
+        <link rel="stylesheet" type="text/css" href="https://www.xunta.so/xunta-web/client_code/css/popcontext.css"/>
+        <link rel="stylesheet" type="text/css" href="https://www.xunta.so/xunta-web/client_code/css/common_web.css"/>
+        <link rel="prefetch" href="https://www.xunta.so/xunta-web/client_code/image/acclaim-50x173.png" />
         <link rel="prefetch" id="prefetch_adminimage" href="" />
 		<link rel="prefetch" id="prefetch_userimage" href="" />
 
@@ -25,7 +25,7 @@
 			<span id="title">
 			(昵称怎以没有读取到呢?)
 			</span>
-<div id="goback" onclick="backBtn()"><img src="../image/goback6.png" /></div>
+<div id="goback" onclick="backBtn()"><img src="https://www.xunta.so/xunta-web/client_code/image/goback6.png" /></div>
 				
 		</div>
 		
@@ -37,7 +37,7 @@
 		
 		<div id="dialog_box">
 			<div id="loadingwrap">
-				<div id="loading"><img src="../image/threedotmoving.gif" />
+				<div id="loading"><img src="https://www.xunta.so/xunta-web/client_code/image/threedotmoving.gif" />
 					<div id="loadingtext">聊天记录加载中...</div>
 				</div>
 			</div>
@@ -69,7 +69,7 @@
 		<!-- <input type="text" id="inputbox" value=""  onfocus="inputboxOnFocus(this)" onblur="inputboxOnBlur(this)" onkeypress="if(event.keyCode==13){Javascript:inputSubmit()}"/> -->
 		<div id="inputframe">
 			<input type="text" id="inputbox" value="" onkeypress="if(event.keyCode==13){Javascript:inputSubmit()}"/>
-			<div id="inputsubmit" onclick="inputSubmit()" ><img src="../image/return9.png" /></div>
+			<div id="inputsubmit" onclick="inputSubmit()" ><img src="https://www.xunta.so/xunta-web/client_code/image/return9.png" /></div>
 		</div>
 
 
@@ -77,13 +77,13 @@
 		
 		
 	</body>
-	<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="dialog_page_common.js"></script>
-	<script type="text/javascript" src="dialog_page_common_web.js"></script>
-    <script type="text/javascript" src="../script/common-xunta.js"></script>
-    <script type="text/javascript" src="../script/common-xunta_web.js"></script>
-    <script type="text/javascript" src="../script/popup.js"></script>
-	<script type="text/javascript" src="../script/popcontext.js"></script>
+	<script type="text/javascript" src="https://www.xunta.so/xunta-web/client_code/script/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="https://www.xunta.so/xunta-web/client_code/dialog_page/dialog_page_common.js"></script>
+	<script type="text/javascript" src="https://www.xunta.so/xunta-web/client_code/dialog_page/dialog_page_common_web.js"></script>
+    <script type="text/javascript" src="https://www.xunta.so/xunta-web/client_code/script/common-xunta.js"></script>
+    <script type="text/javascript" src="https://www.xunta.so/xunta-web/client_code/script/common-xunta_web.js"></script>
+    <script type="text/javascript" src="https://www.xunta.so/xunta-web/client_code/script/popup.js"></script>
+	<script type="text/javascript" src="https://www.xunta.so/xunta-web/client_code/script/popcontext.js"></script>
 	<!-- 这是为了移动端web的调试 
 	<script src="../script/debuggap.js" type="text/javascript"></script>-->
 
@@ -177,14 +177,14 @@
 			if (isSuccess) {//无事可做.
 				console.log("历史消息,延时检查说成功了 对话页");
 				log2root("历史消息,延时检查说成功了 对话页");
-				$("#loading img").attr("src", "../image/threedotmoving.jpg");
+				$("#loading img").attr("src", "https://www.xunta.so/xunta-web/client_code/image/threedotmoving.jpg");
 			} else {
 				console.log("历史消息,延时检查说没成功");
 				log2root("历史消息,延时检查说没成功");
 				$("#loadingtext").text("网络有点慢,等会儿点击这里再试试.");
 				$("#loadingwrap").click(function(evt) {//填加再次请求的点击事件:
 //					alert("点击了");
-					$("#loading img").attr('src', '../image/threedotmoving.gif');//恢复动态图片.
+					$("#loading img").attr('src', 'https://www.xunta.so/xunta-web/client_code/image/threedotmoving.gif');//恢复动态图片.
 					$("#loadingtext").text("再次请求中...");
                     window.parent.initToLoadPostHist(userId,toUserId,firstMsgId,requestMsgCounts,sort);
 

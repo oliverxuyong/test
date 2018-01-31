@@ -48,10 +48,10 @@ function afterCheckedSendPosterSuccess(tmpPid, SendPosterSuccess) {//一般发�
 		console.log("afterCheckedSendPosterSuccess 失败, 取消跳豆,加上感叹号.");
 		log2root("afterCheckedSendPosterSuccess 失败, 取消跳豆,加上感叹号.");
 		var thePosterElement = $("#dialog_box").find("#" + tmpPid);
-		thePosterElement.find(".postsending").attr('src', "../image/acclaim-50x173.png");
+		thePosterElement.find(".postsending").attr('src', "https://www.xunta.so/xunta-web/client_code/image/acclaim-50x173.png");
 		thePosterElement.click(function() {
 			var thePosterElementObj = $("#dialog_box").find("#" + tmpPid);
-			thePosterElementObj.find(".postsending").attr('src', '../image/jumpingbean.gif');
+			thePosterElementObj.find(".postsending").attr('src', 'https://www.xunta.so/xunta-web/client_code/image/jumpingbean.gif');
 			afterInput(thePosterElement.find(".detail").text(), tmpPid);
 			//发言再次发送后, 后台要判断一下tmpPid是否已经发过了,如果有,,则返回原来的topicid和内容.否则会重复.
 			thePosterElement.unbind('click');

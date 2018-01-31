@@ -1,9 +1,9 @@
 function showWebsocketStatus(OnOrClosed) {
 	var onlineofflineimgE = $("#showonlineoffline img");
 	if (OnOrClosed == "ws_on") {
-		onlineofflineimgE.attr("src", "../image/dot-green.png");
+		onlineofflineimgE.attr("src", "https://www.xunta.so/xunta-web/client_code/image/dot-green.png");
 	} else {
-		onlineofflineimgE.attr("src", "../image/dot-gray.png");
+		onlineofflineimgE.attr("src", "https://www.xunta.so/xunta-web/client_code/image/dot-gray.png");
 	}
 }
 

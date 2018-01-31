@@ -26,7 +26,7 @@ width:100%;
 	//overflow-y:scroll;
 	-webkit-overflow-scrolling: touch;
 	overflow:hidden;
-	background: url(../image/backgroundstar.jpg) no-repeat;
+	background: url(https://www.xunta.so/xunta-web/client_code/image/backgroundstar.jpg) no-repeat;
 	background-size:100% 100%;
 	
 }
@@ -318,7 +318,7 @@ height:0px;
 	width:3%;
 	height:30px;
 	//line-height:25px;
-	background:url('../image/plus3.jpg') center center no-repeat;
+	background:url('https://www.xunta.so/xunta-web/client_code/image/plus3.jpg') center center no-repeat;
 	background-size:100% 100%;
 	position:fixed;
 	opacity:0.5;
@@ -487,7 +487,7 @@ height:0px;
 	color:#8C8C8C;
 	//border:1px #8C8C8C solid;
 	border-radius: 4px;
-	background:url('../image/titbg.gif') center top repeat-x;
+	background:url('https://www.xunta.so/xunta-web/client_code/image/titbg.gif') center top repeat-x;
 	width:48px;
 	background-size:5px;
 	float:right;

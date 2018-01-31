@@ -2720,7 +2720,7 @@ function showMatchedUsers(){
 function sendSelectedCPFail(cpid,text){
 	// 1.在我的标签上加感叹号
 	var mytag=$("#mytag"+cpid);
-	var myTagFaildImg=$("<img />").attr("src", "../image/acclaim-50x173.png").attr("class","myTagFail");
+	var myTagFaildImg=$("<img />").attr("src", "https://www.xunta.so/xunta-web/client_code/image/acclaim-50x173.png").attr("class","myTagFail");
 	mytag.append(myTagFaildImg);
 	
 	// 2.将我的标签的点击事件绑定为选择标签

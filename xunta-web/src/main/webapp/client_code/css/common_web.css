@@ -8,7 +8,7 @@
 用于顶部通用返回与关闭
 */
 ._topBar{
-    position:fixed;background:url('../image/titbg.gif') center top repeat-x;width:100%;height:30px;
+    position:fixed;background:url('https://www.xunta.so/xunta-web/client_code/image/titbg.gif') center top repeat-x;width:100%;height:30px;
     border-radius: 2px;
 }
 ._backBtn{

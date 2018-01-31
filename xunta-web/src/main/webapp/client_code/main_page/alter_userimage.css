@@ -66,7 +66,7 @@
 	margin: 0;
 	height: 31px;
 	line-height: 31px;
-	background: url(../image/titbg.gif) center top repeat-x #CBE4EF;
+	background: url(https://www.xunta.so/xunta-web/client_code/image/titbg.gif) center top repeat-x #CBE4EF;
 }
 .tit b {
 	float: left;
@@ -87,10 +87,10 @@ a.cls {
 	line-height: 200px;
 }
 a.cls, a.cls:link, a.cls:visited {
-	background: url(../image/cls.gif) center 0 no-repeat;
+	background: url(https://www.xunta.so/xunta-web/client_code/image/cls.gif) center 0 no-repeat;
 }
 a.cls:hover {
-	background: url(../image/cls.gif) center -20px no-repeat;
+	background: url(https://www.xunta.so/xunta-web/client_code/image/cls.gif) center -20px no-repeat;
 }
 .box {
 	border: 1px #999999 solid;
@@ -98,7 +98,7 @@ a.cls:hover {
 }
 /*圆角边框*/
 .lt, .rt, .lb, .rb {
-	background-image: url(../image/abg.png);
+	background-image: url(https://www.xunta.so/xunta-web/client_code/image/abg.png);
 	filter: alpha(opacity=10);
 	-moz-opacity: .1;
 	opacity: .1;

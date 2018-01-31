@@ -172,7 +172,7 @@ function setPageICO(){
 
 function setSpecialGroupReq(){
 	if(domain=="www.ainiweddingcloud.com" && $("#ainilogo").length==0){
-		var logo = $("<img id='ainilogo' src='image/aini.jpg' />");
+		var logo = $("<img id='ainilogo' src='https://www.xunta.so/xunta-web/client_code/image/aini.jpg' />");
 		logo.css("padding-top","5%");
 		logo.css("width","100%");
 		$("#welcomepicture_container").append(logo);
