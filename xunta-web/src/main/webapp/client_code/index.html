@@ -24,14 +24,14 @@
 
 	</head>
 	<body>
-		<div id="loadinganimation">
+		<div id="loadinganimation" style="text-align:center">
             <img src="image/tractor-short.gif" alt="Oops,进度条因网络不畅无法显示"/>
 			<div id="loadingtext">
 				正在登录...
 			</div>
 		</div>
 		
-		<div id="welcomepicture_container">
+		<div id="welcomepicture_container" style="display:none">
             <img id="welcome2" src="image/welcome2.png" />
 		</div>
 		
@@ -110,6 +110,9 @@
      
 <!--body以上完全相同-->
 	<script type="text/javascript">
+		loadCss("index_page/index.css");
+		loadJs("index_page/index.js");	
+	
         var userId;
         var userName;
         var userImage;
@@ -134,8 +137,7 @@
         window.onload = start;//window.onload = readyMethod();//后面加括号是不对的,但是会造成什么问题还待查.xu 1.28
 
 		function start(){ //0110 在body里的onload这个方法是什么意思? //qq微信登录成功后,会重新刷新index页面,再次从这里执行. 手机登录成功后,会在本地存储用户信息,然后回到这里.
-			loadCss("index_page/index.css");
-			loadJs("index_page/index.js");	
+			jsAfterStart();
 		}
         
         //装加载js文件加载之后要运行的方法
@@ -365,16 +367,16 @@
         script.language = 'javascript';
         script.src= src;
         var done = false;
-        script.onload =script.onreadystatechange = function() {//js和css文件加载后再进行start中的方法
-                /* if (!done &&(!script.readyState ||  script.readyState == 'loaded' || script.readyState == 'complete')) {
+        /*script.onload =script.onreadystatechange = function() {//js和css文件加载后再进行start中的方法
+                 if (!done &&(!script.readyState ||  script.readyState == 'loaded' || script.readyState == 'complete')) {
                         done = true;
                 }
                 script.onload = script.onreadystatechange = null;
                 if (callback) {
                         callback.call(script);
-                } */
-                jsAfterStart();
-        }
+                } 
+                //jsAfterStart();
+        }*/
         document.getElementsByTagName('head')[0].appendChild(script);
 	}
 
