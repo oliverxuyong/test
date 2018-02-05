@@ -103,12 +103,7 @@
 	<script type="text/javascript" src="script/common-xunta_web.js"></script>
 	<script type="text/javascript" src="script/version_update.js"></script>
     <script type="text/javascript" src="index_page/index_web.js"></script>
-    
-    
      <!-- <script type="text/javascript" src="index_page/index.js"></script> -->
-     <script id="script_src1" type="text/javascript" ></script>
-     
-     
      <script type="text/javascript" src="script/popup.js"></script>
      <!--2017.11.14 叶夷  微信JS-SDK是微信公众平台面向网页开发者提供的基于微信内的网页开发工具包。在需要调用JS接口的页面引入如下JS文件 -->
     <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
@@ -139,7 +134,13 @@
         window.onload = start;//window.onload = readyMethod();//后面加括号是不对的,但是会造成什么问题还待查.xu 1.28
 
 		function start(){ //0110 在body里的onload这个方法是什么意思? //qq微信登录成功后,会重新刷新index页面,再次从这里执行. 手机登录成功后,会在本地存储用户信息,然后回到这里.
-			//log2root("开始进行JS-SDK验证");
+			loadCss("index_page/index.css");
+			loadJs("index_page/index.js");	
+		}
+        
+        //装加载js文件加载之后要运行的方法
+        function jsAfterStart(){
+        	//log2root("开始进行JS-SDK验证");
 			sendWeChatShareLinkMsg();	
 			
 			console.log("现在运行的是wolf 1版本.");
@@ -171,7 +172,7 @@
 			$(window).resize(function(){
 				setBodyHeightWidth();
 			}); 
-		}
+        }
         
       function userInfoIsReady(userInfoStr){//本地已有用户信息,经服务器验证用户存在后,回到这里.
       	createPublicParam4UserInfo(userInfoStr);//获得用户信息后,为相关的公共变量赋值.
@@ -357,18 +358,36 @@
 	    });
 	}
 	
-	//动态关联css文件和js文件
-	function trendsChangeCSSAndJs(){
-		//添加css
-		var head = document.getElementsByTagName('head')[0];
-	    var link = document.createElement('link');
-	    link.href = 'index_page/index.css';
-	    link.rel = 'stylesheet';
-	    link.type = 'text/css';
-	    head.appendChild(link);
-	    
-	    var temp=document.getElementById("script_src1");
-	    temp.src="index_page/index.js";
+	//动态加载js和 css文件
+	function loadJs(src) {
+        var script = document.createElement('script');
+        script.type="text/javascript";
+        script.language = 'javascript';
+        script.src= src;
+        var done = false;
+        script.onload =script.onreadystatechange = function() {//js和css文件加载后再进行start中的方法
+                /* if (!done &&(!script.readyState ||  script.readyState == 'loaded' || script.readyState == 'complete')) {
+                        done = true;
+                }
+                script.onload = script.onreadystatechange = null;
+                if (callback) {
+                        callback.call(script);
+                } */
+                jsAfterStart();
+        }
+        document.getElementsByTagName('head')[0].appendChild(script);
+	}
+
+	function loadCss(url) {
+        var link = document.createElement('link');
+        link.type="text/css";
+        link.rel = "stylesheet";
+        link.href = url;
+        link.media = 'screen';
+        document.getElementsByTagName('head')[0].appendChild(link);
+        /* if (callback) {
+                callback.call(link);
+        } */
 	}
 	
 	</script>
