@@ -309,6 +309,72 @@ public class LoginController {
 		}
 		responseCookieAndHtml(request, response, uid, unionid, image, name, type, openid);
 	}
+	
+	/**2018.02.02  叶夷   微信小程序登录*/
+	@RequestMapping("/wxMiniAppsLogin")
+	public void wxMiniAppsLogin(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException,
+			WeiboException, IllegalArgumentException, IllegalAccessException, JSONException,
+			weibo4j.org.json.JSONException, UnsupportedEncodingException {
+		logger.info("微信从小程序登录:"+request.getQueryString());
+		response.setContentType("text/html; charset=utf-8");
+		String code = request.getParameter("code");
+		logger.debug("code:" + code);
+
+		// 获得登录的url
+		String loginUrl = request.getRequestURL().toString();
+		logger.info("从微信小程序进来的url:" + loginUrl);
+
+		String codeToToken = "https://api.weixin.qq.com/sns/jscode2session?appid=" + appid + "&secret=" + appsecret
+				+ "&kjs_code=" + code + "&grant_type=authorization_code";
+		String weiXinInfo = httpclientReq(codeToToken);
+		logger.debug("weiXinInfo: " + weiXinInfo);
+		org.json.JSONObject weiXinInfoJson = new org.json.JSONObject(weiXinInfo);
+		String accessToken = weiXinInfoJson.get("access_token").toString();
+		String openid = weiXinInfoJson.get("openid").toString();
+
+		logger.debug("============");
+		logger.debug("openid: " + openid);
+		logger.debug("============");
+
+		String userInfo = httpclientReq("https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken
+				+ "&openid=" + openid + "&lang=zh_CN");
+		logger.debug("get json: \n" + userInfo);
+		JSONObject userInfoJson = new JSONObject(new String(userInfo.getBytes("ISO-8859-1"), "UTF-8"));
+		String nickname = userInfoJson.get("nickname").toString();
+		String sex = userInfoJson.get("sex").toString();
+		String unionid = userInfoJson.get("unionid").toString();
+		// 获取wechat头像并保存本地
+		String headImgUrl = userInfoJson.get("headimgurl").toString();
+		logger.debug("imageUrl ====>  " + headImgUrl);
+
+		if (sex.equals("1")) {
+			sex = "男";
+		} else {
+			sex = "女";
+		}
+		String uid = unionid;
+		String image = headImgUrl;
+		String name = nickname;
+		String type = "WX";
+		so.xunta.beans.User finduser = userDao.findUserByThirdPartyIdAndType(uid, type);
+		if (finduser != null) {
+			image = finduser.getImgUrl();
+			name = finduser.getName();
+		}
+		// TemplateMessageTestUtils.saveAsFileWriter(uid, openid);
+
+		// 更新已关注的用户openid
+		// TempInsertOpenidUtils.updateOpenid();
+
+		// 如果有些用户的openid没有保存，则登录时保存更新
+		User user = userDao.findUserByThirdPartyId(unionid);
+		if (user != null && user.getOpenid() == null) {
+			logger.debug("user openid: " + openid);
+			user.setOpenid(openid);
+			userDao.updateUser(user);
+		}
+		responseCookieAndHtml(request, response, uid, unionid, image, name, type, openid);
+	}
 
 	@RequestMapping("/wx_callback")
 	public void wx_callback(String code, HttpServletRequest request, HttpServletResponse response)
