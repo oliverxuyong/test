@@ -1,6 +1,6 @@
 function requestDialogList(){
 	$.ajax({
-        url:"https://xunta.so:3000/v1/chat_list",
+        url:"http://xunta.so:3000/v1/chat_list",
         type:"POST",
         dataType:"jsonp",
         jsonp:"callback",
