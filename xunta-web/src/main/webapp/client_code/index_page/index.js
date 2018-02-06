@@ -141,4 +141,8 @@ function closeAllDialogPages(){
     }
 }
 
-
+//2018.02.05  叶夷     进入公司简介页面
+function enterProfilePage() {
+	console.log("enterProfilePage");
+	openWin('profile_page', 'profile_page/profile_page.html', "");
+}
