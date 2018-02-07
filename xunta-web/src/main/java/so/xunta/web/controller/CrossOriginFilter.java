@@ -49,6 +49,9 @@ public class CrossOriginFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest)request;
 		StringBuffer url = req.getRequestURL();  
 		logger.debug("请求:"+req.getRequestURL());
+		if(url.equals("http://www.xunta.so/xunta-web/")){
+			logger.info("有用户请求xunta网址");
+		}
 		String urlstr = url.toString();
 		if(urlstr.indexOf("www")==-1)
 		{
