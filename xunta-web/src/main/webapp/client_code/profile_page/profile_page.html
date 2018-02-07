@@ -77,6 +77,21 @@
 	<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="../script/common-xunta_web.js"></script>
 	<script type="text/javascript">
+		//2018.02.07 叶夷     静态资源的路径动态的创建
+		var preUrl=window.location.protocol+"//"+document.domain;//获得静态资源路径的协议+域名
+		//将需要的js文件变成js代码生成
+		loadJs(preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+		loadJs(preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+
+		//2018.02.07  叶夷    动态加载js和 css文件的方法
+		function loadJs(src) {
+			var script = document.createElement('script');
+			script.type="text/javascript";
+			script.language = 'javascript';
+			script.src= src;
+			document.getElementsByTagName('head')[0].appendChild(script);
+		}
+	
 		function backBtn(){
 			closeWin('profile_page');
 		}

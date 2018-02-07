@@ -194,26 +194,29 @@ function addDivForScroll(matchUsers){
 }
 
 //滚动条顶部则刷新页面和滑倒底部请求下一批
-$(".showMatchUsers").scroll(function(){
-	var cpShowHeight = $(this).height();//可见高度  
-	var cpShowContentHeight = $(this).get(0).scrollHeight;//内容高度  
-	var cpShowScrollTop =$(this).scrollTop();//滚动高度  
-	if(cpShowScrollTop<=0){//滚动到顶部，重新请求
-		if(myTagIds.length>0){
-			requestUserCpMatchUsers();
-		}else{
-			requestDetailMatchedUsers();
-		}
-	}else if(0<=Math.abs(cpShowContentHeight -cpShowHeight-cpShowScrollTop) 
-			&& Math.abs(cpShowContentHeight -cpShowHeight-cpShowScrollTop)<=2 
-			){ //滑动到底部
-		//改变更多标签按钮的内容
-		$("#noMatchUser").html("正在加载...");
-		//console.log("测试滑动到底部");
-		//请求下一批匹配人列表
-		showOnePageMatchUser($("#showMatchUsers"));//显示匹配人列表
-	} 
-});
+function srcollBottom(){
+	$(".showMatchUsers").scroll(function(){
+		var cpShowHeight = $(this).height();//可见高度  
+		var cpShowContentHeight = $(this).get(0).scrollHeight;//内容高度  
+		var cpShowScrollTop =$(this).scrollTop();//滚动高度  
+		if(cpShowScrollTop<=0){//滚动到顶部，重新请求
+			if(myTagIds.length>0){
+				requestUserCpMatchUsers();
+			}else{
+				requestDetailMatchedUsers();
+			}
+		}else if(0<=Math.abs(cpShowContentHeight -cpShowHeight-cpShowScrollTop) 
+				&& Math.abs(cpShowContentHeight -cpShowHeight-cpShowScrollTop)<=2 
+				){ //滑动到底部
+			//改变更多标签按钮的内容
+			$("#noMatchUser").html("正在加载...");
+			//console.log("测试滑动到底部");
+			//请求下一批匹配人列表
+			showOnePageMatchUser($("#showMatchUsers"));//显示匹配人列表
+		} 
+	});
+}
+
 
 //2017.12.27 叶夷   显示匹配列表详细信息页的我选择的标签
 function response_user_selected_cp(cp_arr){

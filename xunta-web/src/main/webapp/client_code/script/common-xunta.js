@@ -61,4 +61,3 @@ function excludeSpecial(str){
     str = str.replace(/[\@\#\$\%\^\&\*\{\}\:\"\<\>\?]/,'');  
     return str;  
 }
-

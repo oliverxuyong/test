@@ -6,10 +6,10 @@
 		<meta name="apple-mobile-web-app-capable" content="yes"/>
 		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 		<title>聊天页</title>
-		<link rel="stylesheet" type="text/css" href="matchUsers_page.css"/>
+		<!-- <link rel="stylesheet" type="text/css" href="matchUsers_page.css"/>
 		<link rel="stylesheet" type="text/css" href="matchUsers_page_web.css"/>
 		<link rel="stylesheet" type="text/css" href="dialoglist_page.css"/>
-		<link rel="stylesheet" type="text/css" href="dialoglist_page_web.css"/>
+		<link rel="stylesheet" type="text/css" href="dialoglist_page_web.css"/> -->
         <link rel="prefetch" href="../image/acclaim-50x173.png" />
         <link rel="prefetch" id="prefetch_adminimage" href="" />
 		<link rel="prefetch" id="prefetch_userimage" href="" />
@@ -105,14 +105,14 @@
     		</div>
 		</div>
 	</body>
-	<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
+	<!-- <script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="../script/common-xunta.js"></script>
     <script type="text/javascript" src="../script/common-xunta_web.js"></script>
     <script type="text/javascript" src="matchUsers_page_common_web.js"></script>
     <script type="text/javascript" src="matchUsers_page_common.js"></script>
-    <!-- 这是聊天列表的js信息 -->
+    	这是聊天列表的js信息
     <script type="text/javascript" src="dialoglist_page_common_web.js"></script>
-    <script type="text/javascript" src="dialoglist_page_common.js"></script>
+    <script type="text/javascript" src="dialoglist_page_common.js"></script> -->
     <!-- 下拉刷新控件 -->
     <!-- <script src="../script/idangerous.swiper.min.js"></script>  -->
     <!-- 这是为了移动端web的调试 
@@ -125,17 +125,18 @@
 		/* <link rel="stylesheet" type="text/css" href="matchUsers_page.css"/>
 		<link rel="stylesheet" type="text/css" href="matchUsers_page_web.css"/>
 		<link rel="stylesheet" type="text/css" href="dialoglist_page.css"/>
-		<link rel="stylesheet" type="text/css" href="dialoglist_page_web.css"/> */
+		<link rel="stylesheet" type="text/css" href="dialoglist_page_web.css"/>  */
 		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page.css");
 		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page_web.css");
 		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page.css");
 		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page_web.css");
 		//将需要的js文件变成js代码生成
 		loadJs(preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+		loadJs(preUrl+"/xunta-web/client_code/script/jquery.nicescroll.min.js");
 		loadJs(preUrl+"/xunta-web/client_code/script/common-xunta.js");
 		loadJs(preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
-		loadJs(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page.js");
-		loadJs(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page_web.js");
+		loadJs(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page_common_web.js");
+		loadJs(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page_common.js");
 		loadJs(preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page_common_web.js");
 		loadJs(preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page_common.js");
 
@@ -197,6 +198,7 @@
             execRoot("setCurrentPageId('matchUsers_page')");
             
           	response_user_selected_cp(myTagArray);
+          	srcollBottom();//监听滑动时间
         }
         //2017.12.20  叶夷    这里是实现匹配人详情页tab滑动的效果
         window.onload = function (){

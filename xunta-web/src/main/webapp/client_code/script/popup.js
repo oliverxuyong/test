@@ -1,4 +1,5 @@
-jQuery(document).ready(function($){
+/*	2018.02.07   叶夷    目前不知道这个方法是用来什么的，但是由于在用js改变js文件静态资源方法中会报错，所以先注释
+ * jQuery(document).ready(function($){
     // var event=event?event:(window.event?window.event:null);
     $('.cd-popup-trigger').on('click', function(event){
         event.preventDefault();
@@ -117,7 +118,7 @@ jQuery(document).ready(function($){
         }
     });
     api = new XunApi(window,document);
-});
+});*/
 
 function toast_popup(msg,timeout){
 	$("#toastoutline").remove();

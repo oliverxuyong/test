@@ -96,7 +96,7 @@
 		</div>
 		
 	</body>
-	<!-- <script type="text/javascript" src="script/jquery-1.11.3.min.js"></script>
+	<!--<script type="text/javascript" src="script/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="script/sockjs-0.3.min.js"></script>
 	<script type="text/javascript" src="script/websocket.js"></script>
 	<script type="text/javascript" src="script/websocket_web.js"></script>
@@ -122,10 +122,10 @@
 		<link rel="stylesheet" type="text/css" href="login/login.css"/>
         <link rel="stylesheet" type="text/css" href="css/common_web.css"/>
         <link rel="stylesheet" type="text/css" href="css/popup.css"/> */
-		loadCss(preUrl+"/xunta-web/client_code/index_page/index.css");
-        loadCss(preUrl+"/xunta-web/client_code/login/login.css");
-        loadCss(preUrl+"/xunta-web/client_code/css/common_web.css");
-        loadCss(preUrl+"/xunta-web/client_code/css/popup.css");
+		loadCss(document,preUrl+"/xunta-web/client_code/index_page/index.css");
+        loadCss(document,preUrl+"/xunta-web/client_code/login/login.css");
+        loadCss(document,preUrl+"/xunta-web/client_code/css/common_web.css");
+        loadCss(document,preUrl+"/xunta-web/client_code/css/popup.css");
         //将需要的js文件变成js代码生成
         /* src="script/jquery-1.11.3.min.js">
 		src="script/sockjs-0.3.min.js">
@@ -139,21 +139,21 @@
     	src="index_page/index_web.js">
      	src="index_page/index.js">
     	src="script/popup.js"> */
-    	loadJs(preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
-    	loadJs(preUrl+"/xunta-web/client_code/script/sockjs-0.3.min.js");
-    	loadJs(preUrl+"/xunta-web/client_code/script/websocket.js");
-    	loadJs(preUrl+"/xunta-web/client_code/script/websocket_web.js");
-    	loadJs(preUrl+"/xunta-web/client_code/login/login.js");
-    	loadJs(preUrl+"/xunta-web/client_code/login/login_web.js");
-    	loadJs(preUrl+"/xunta-web/client_code/script/common-xunta.js");
-    	loadJs(preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
-    	loadJs(preUrl+"/xunta-web/client_code/script/version_update.js");
-    	loadJs(preUrl+"/xunta-web/client_code/index_page/index_web.js");
-    	loadJs(preUrl+"/xunta-web/client_code/index_page/index.js");
-    	loadJs(preUrl+"/xunta-web/client_code/script/popup.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/sockjs-0.3.min.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/websocket.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/websocket_web.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/login/login.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/login/login_web.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/common-xunta.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/version_update.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/index_page/index_web.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/index_page/index.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/popup.js");
     	
     	//2018.02.07  叶夷    动态加载js和 css文件的方法
-    	function loadJs(src) {
+    	function loadJs(atDocument,src) {
     	    var script = document.createElement('script');
     	    script.type="text/javascript";
     	    script.language = 'javascript';
@@ -169,16 +169,21 @@
     	            } 
     	            //jsAfterStart();
     	    }*/
-    	    document.getElementsByTagName('head')[0].appendChild(script);
+    	    atDocument.getElementsByTagName('head')[0].appendChild(script);
+    	    /* var temp=atDocument.getElementsByTagName('head')[0];
+    	    document.getElementsByTagName('head')[0].append(script); */
     	}
 
-    	function loadCss(url) {
+    	function loadCss(atDocument,url) {
     	    var link = document.createElement('link');
     	    link.type="text/css";
     	    link.rel = "stylesheet";
     	    link.href = url;
     	    link.media = 'screen';
-    	    document.getElementsByTagName('head')[0].appendChild(link);
+    	    atDocument.getElementsByTagName('head')[0].appendChild(link);
+    	   /*  var temp=atDocument.getElementsByTagName('head')[0];
+    	    document.getElementsByTagName('head')[0].append(link); */
+    	    //document.childNodes[1].childNodes[1].append(link);
     	    /* if (callback) {
     	            callback.call(link);
     	    } */
@@ -426,6 +431,5 @@
 	        }
 	    });
 	}
-	
 	</script>
 </html>
