@@ -385,7 +385,7 @@ public class LoginController {
 	private void responseCookieAndHtml(HttpServletRequest request, HttpServletResponse response, String uid,
 			String unionid, String image, String name, String type, String openid) {
 		try {
-
+			
 			Cookie cookie_name = new Cookie("name", URLEncoder.encode(name, "UTF-8"));
 			Cookie cookie_userid = new Cookie("uid", uid);
 			Cookie cookie_unionid = new Cookie("unionid", unionid);
@@ -401,10 +401,15 @@ public class LoginController {
 			Cookie cookie_type = new Cookie("type", type);
 			List<Cookie> cookies = new ArrayList<Cookie>();
 
+			//2018.02.08  叶夷   获取请求路径的协议
+			String protocal=request.getScheme();
+			
 			String domain = getDomainWithOutContext(request);
 			if (domain.contains("www")) {
 			} else {
-				domain = "http://www." + domain.substring(domain.indexOf("http://") + 7);
+				//domain = "http://www." + domain.substring(domain.indexOf("http://") + 7);
+				//2018.02.08  叶夷   将协议变成请求的协议
+				domain = protocal+"://www." + domain.substring(domain.indexOf(protocal+"://") + 7);
 			}
 			logger.debug("set cookie on domain:" + domain);
 
@@ -430,8 +435,10 @@ public class LoginController {
 			 */
 			if (domainWithContext.contains("www")) {
 			} else {
-				domainWithContext = "http://www."
-						+ domainWithContext.substring(domainWithContext.indexOf("http://") + 7);
+				//domainWithContext = "http://www."
+				//2018.02.08  叶夷   将协议变成请求的协议
+				domainWithContext = protocal+"://www."
+						+ domainWithContext.substring(domainWithContext.indexOf(protocal+"://") + 7);
 				request.getSession().setAttribute("indexpageurl", domainWithContext + "client_code/index.html");
 				logger.debug("==> redirect to url :" + domainWithContext + "showindexpage?indexpageurl="
 						+ domainWithContext + "client_code/index.html&name=" + name + "&uid=" + uid + "&unionid="
