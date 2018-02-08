@@ -89,7 +89,7 @@ function removeUnreadNum() {
 //标签搜索
 function responseSearchTag(text){
 	$.ajax({
-        url:"http://xunta.so:3000/v1/find/tag",
+        url:window.location.protocol+"//xunta.so:3000/v1/find/tag",
         type:"POST",
         dataType:"jsonp",
         jsonp:"callback",
@@ -314,7 +314,7 @@ function upload() {
 	formData.append('userid', userId);
 	formData.append('file', $('#file')[0].files[0]);
 	$.ajax({
-		url : "http://"+domain+"/xunta-web/upload", //server script to process data
+		url : window.location.protocol+"//"+domain+"/xunta-web/upload", //server script to process data
 		type : 'POST',
 		beforeSend : beforeSendHandler,
 		data : formData,

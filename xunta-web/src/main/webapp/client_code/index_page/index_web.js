@@ -167,7 +167,7 @@ function setPageTitle(){
 }
 
 function setPageICO(){
-	$("#favicon_ico").attr("href","http://"+domain+"/xunta-web/client_code/icon/"+faviconUrl);
+	$("#favicon_ico").attr("href",window.location.protocol+"//"+domain+"/xunta-web/client_code/icon/"+faviconUrl);
 } 
 
 function setSpecialGroupReq(){

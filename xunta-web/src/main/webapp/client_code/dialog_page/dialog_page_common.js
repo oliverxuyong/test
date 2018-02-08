@@ -148,7 +148,7 @@ function  getHistoryMsg(userId,toUserId,firstMsgId){
 	}
 	
 	$.ajax({
-        url:"http://xunta.so:3000/v1/history_msg",
+        url:window.location.protocol+"//xunta.so:3000/v1/history_msg",
         type:"POST",
         dataType:"jsonp",
         jsonp:"callback",

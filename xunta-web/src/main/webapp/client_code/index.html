@@ -109,7 +109,7 @@
      <script type="text/javascript" src="index_page/index.js"></script>
      <script type="text/javascript" src="script/popup.js"></script> -->
      <!--2017.11.14 叶夷  微信JS-SDK是微信公众平台面向网页开发者提供的基于微信内的网页开发工具包。在需要调用JS接口的页面引入如下JS文件 -->
-    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <!-- <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script> -->
      
 <!--body以上完全相同-->
 	<script type="text/javascript">
@@ -151,6 +151,7 @@
     	loadJs(document,preUrl+"/xunta-web/client_code/index_page/index_web.js");
     	loadJs(document,preUrl+"/xunta-web/client_code/index_page/index.js");
     	loadJs(document,preUrl+"/xunta-web/client_code/script/popup.js");
+    	loadJs(document,window.location.protocol+"//res.wx.qq.com/open/js/jweixin-1.2.0.js");
     	
     	//2018.02.07  叶夷    动态加载js和 css文件的方法
     	function loadJs(atDocument,src) {
@@ -339,11 +340,11 @@
 		log2root("发送微信分享链接自定义消息给后台  :"+url);
 		var requestUrl,link;
 		if(url.indexOf("www.xunta.so")>=0){
-			requestUrl="http://www.xunta.so/xunta-web/sendShareLinksMsg";
-			link = "http://www.xunta.so/wxShareLinksLogin"
+			requestUrl=window.location.protocol+"//www.xunta.so/xunta-web/sendShareLinksMsg";
+			link = window.location.protocol+"//www.xunta.so/wxShareLinksLogin"
 		}else if(url.indexOf("www.ainiweddingcloud.com")>=0){
-			requestUrl="http://www.ainiweddingcloud.com/xunta-web/sendShareLinksMsg";
-			link = "http://www.ainiweddingcloud.com/wxShareLinksLogin"
+			requestUrl=window.location.protocol+"//www.ainiweddingcloud.com/xunta-web/sendShareLinksMsg";
+			link = window.location.protocol+"//www.ainiweddingcloud.com/wxShareLinksLogin"
 		}
 		
 		$.ajax({
