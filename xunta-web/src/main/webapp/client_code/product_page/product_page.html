@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title></title>
+        <meta property="qc:admins" content="650003246763061666375" />
+        
+        <style>
+        	body {
+				position:fixed;
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height:100%;
+				background-color: #ffffff;
+				cursor:auto;
+				overflow-y:hidden;
+				overflow-x:hidden;
+			}
+
+			#header {
+				float:left;
+				width:100%; 
+				height: 50px; 
+				background-color:#3e4b49;
+				border-bottom:1px solid #d0d0d0; z-index:12;
+				position:relative;
+			}
+	
+			#header img{
+				position:absolute;
+			}
+
+			#goback{position:relative;height:50px;font-size:22px;float:left;z-index:15}
+			#goback img{height:16px; width:22px; margin-top:16px;margin-left:17px;margin-right:10px;}
+        </style>
+	</head>
+	<body>
+		<div id="header">
+			<div id="goback" onclick="backBtn()"><img src="../image/goback6.png" /></div>
+		</div>
+		<div id="content" style="position:absolute;top:50px;overflow-x:hidden;">
+			<table width='100%' border="0" cellpadding="10" cellspacing="5" style="/* margin-top:22px; */ margin-bottom:5px;">
+     		 <tbody>
+      			<!-- <tr>
+        			<td height="35" colspan="2" align="left" valign="top" bgcolor="#FFFF99"><p>&nbsp;</p>
+        			<p align="center">上海语擎信息科技有限公司</p>
+          			<p align="center">	
+          				<a href="http://www.xunta.so" class="STYLE35">XunTa.so | 寻TA<span class="STYLE31"> 点</span>搜</a>
+          			</p>
+          			<p align="center">&nbsp;</p>
+        			</td>
+      			</tr> -->
+      			<tr>
+        			<td colspan="2" align="left" valign="top" bgcolor="#C6DBC9"><span class="STYLE33"><strong>语擎公司做什么?</strong></span></td>
+      			</tr>
+      			<tr>
+        			<td colspan="2" align="left" valign="top" bgcolor="#F0F0F0">
+        			<p>上海语擎信息科技有限公司致力于社交大数据的深度学习算法. 我们开发的XunTa(寻Ta)可按照用户设置的任意兴趣组合将最适合彼此互动的人匹配在一起. 注意是任何兴趣组合哦! 从此你的关系触角可按照你自己设定的方向任意延伸, 所有人都被你"点兵点将".</p>
+        			<img src="../image/welcome2.png" style="width:100%;height:50%;"/>
+        			</td>
+      			</tr>
+      			<tr>
+      				<!-- <td width="187" height="134" align="left" valign="top" bgcolor="#F0F0F0"> -->
+        			<td align="left" valign="top" bgcolor="#F0F0F0" style="font-size:13px;">
+        				<p>地址：上海市闵行区浦江镇陈行公路2388号-2号2层</p>
+        				<p>联系电话：15770541592</p>
+        				<p>邮箱：2712178485@qq.com</p>
+        			</td>
+        		</tr>
+    		</tbody>
+    	   </table>
+		</div>
+		
+	</body>
+	<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../script/common-xunta_web.js"></script>
+	<script type="text/javascript">
+		//2018.02.07 叶夷     静态资源的路径动态的创建
+		var preUrl=window.location.protocol+"//"+document.domain;//获得静态资源路径的协议+域名
+		//将需要的js文件变成js代码生成
+		loadJs(preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+		loadJs(preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+
+		//2018.02.07  叶夷    动态加载js和 css文件的方法
+		function loadJs(src) {
+			var script = document.createElement('script');
+			script.type="text/javascript";
+			script.language = 'javascript';
+			script.src= src;
+			document.getElementsByTagName('head')[0].appendChild(script);
+		}
+	
+		function backBtn(){
+			closeWin('profile_page');
+		}
+		
+		//计算公司信息内容div的height
+		var headerHeright=$("#header").height();
+		var bodyHeight=$("body").height();
+		var contentHeight=bodyHeight-headerHeright;
+		$("#content").css("height",contentHeight+"px");
+		
+	</script>
+</html>
