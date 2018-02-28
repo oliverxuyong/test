@@ -23,7 +23,7 @@
 				float:left;
 				width:100%; 
 				height: 50px; 
-				background-color:#3e4b49;
+				/* background-color:#3e4b49; */
 				border-bottom:1px solid #d0d0d0; z-index:12;
 				position:relative;
 			}
@@ -34,14 +34,29 @@
 
 			#goback{position:relative;height:50px;font-size:22px;float:left;z-index:15}
 			#goback img{height:16px; width:22px; margin-top:16px;margin-left:17px;margin-right:10px;}
+			
+			#title{    
+				position: absolute;
+    			text-align: center;
+    			color: #888888;
+    			float: left;
+    			height: 32px;
+    			width: 100%;
+    			line-height: 32px;
+    			margin-top: 12px;
+    			font-size: 18px;
+    			z-index: 13;
+    		}
+			
         </style>
 	</head>
 	<body>
 		<div id="header">
+			<span id="title">在圈子里找到和你有相同关注点的人</span>
 			<div id="goback" onclick="backBtn()"><img src="../image/goback6.png" /></div>
 		</div>
 		<div id="content" style="position: absolute;top: 50px;overflow-x: hidden;height: 811px;width: 100%;">
-			<div style="
+			<!-- <div style="
     				background-color: #C6DBC9;
    	 				height: 40px;
     				margin: 5px 5px 5px 5px;
@@ -50,8 +65,8 @@
     				line-height: 40px;
     				text-align: center;
     				font-weight: bold;
-			">xunta是什么？</div>
-			<img alt="" src="../image/productPageImg1.png" style="width: 100%;margin: 5px 5px 5px 5px;">
+			">xunta是什么？</div> -->
+			<!-- <img alt="" src="../image/productPageImg1.png" style="width: 100%;margin: 5px 5px 5px 5px;"> -->
 			<img alt="" src="../image/productPageImg2.png" style="width: 100%;margin: 5px 5px 5px 5px;">
 			<img alt="" src="../image/productPageImg3.png" style="width: 100%;margin: 5px 5px 5px 5px;">
 			<img alt="" src="../image/productPageImg4.png" style="width: 100%;margin: 5px 5px 5px 5px;">
