@@ -69,7 +69,8 @@
     			<div class="mu" id="mutemp14" style="/* left: 313px; */width: 19px;height: 19px;/* top: 5px; */"></div>
     			<div class="mu" id="mutemp15" style="/* left: 296px; */width: 18px;height: 18px;/* top: 2px; */"></div>
     			 -->
-    			
+    			 <!-- 这是匹配人头像引导话 -->
+    			<img src="../image/guideMUBubble.png" id="guideMUBubble" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" style="margin-top: 161px;width: 65%;display: inline-block;position: absolute;right:0px;display:none;">
 			</div>
 
 			<!-- 我的标签 -->
@@ -82,6 +83,10 @@
 				<!-- <div class="mytag" id="addtag2" onclick="addTag()" style="width:86px;"> 万有引力 					
 					<div class="mytag-selectednumber">123</div>
 				</div> -->
+				<!-- 这是我的标签加号上的圆圈 -->
+				<img src="../image/guideAddtagCircle.png" id="guideAddtagCircle" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" 
+					style="top: 187px;position: absolute;left: 0px;/* display:none; */width: 65px;"
+				>
 				
 			</div>
 
@@ -253,9 +258,34 @@
 			prepareTopicsPage();
 			setRootVars();
 			
-			//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
-			//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
-			requestCP(userId,requestCPNum,++currentRequestedCPPage);
+			//匹配人容器的大小设置,为了引导页的显示，先将匹配人容器的大小计算出来
+			setMatchUsersContainerSize();
+			
+			//2018.02.27  叶夷    这里写如果出现引导页的动画
+			var isShowGuide=true;//是否需要出现引导页，这是由后台传过来的参数决定
+			if(isShowGuide){//需要引导页，在用户浏览完引导内容之后再显示首页内容
+				//1.先将匹配人的引导显示出来
+				var isGuideMatchUser=true;//表示这是引导时显示的匹配头像，为了位置固定不变
+				showGuideMatchUsers(isGuideMatchUser);//显示了匹配人头像
+				
+				timeOutSuccess=setTimeout(function(){
+					showGuideMUBubble();//显示匹配人头像的引导文字
+					$("#mytag-container").show();
+				},aniSecond * 0.4* 1000);
+				
+				//将添加标签的圆圈位置固定好且显示
+				showGuideAddtagCircle();
+				
+				
+				
+				
+				
+				
+			}else{//不需要引导页则直接显示首页内容
+				//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
+				//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
+				requestCP(userId,requestCPNum,++currentRequestedCPPage);
+			}
 			
 			//2017.08.23 叶夷   各个控件根据屏幕调整
 			showMatchedUsers();
