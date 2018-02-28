@@ -70,7 +70,7 @@
     			<div class="mu" id="mutemp15" style="/* left: 296px; */width: 18px;height: 18px;/* top: 2px; */"></div>
     			 -->
     			 <!-- 这是匹配人头像引导话 -->
-    			<img src="../image/guideMUBubble.png" id="guideMUBubble" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" style="margin-top: 161px;width: 65%;display: inline-block;position: absolute;right:0px;display:none;">
+    			<img src="../image/guideMUBubble.png" id="guideMUBubble" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" style="/* margin-top: 161px; */width: 65%;display: inline-block;position: absolute;right:0px;display:none;">
 			</div>
 
 			<!-- 我的标签 -->
@@ -274,10 +274,14 @@
 				},aniSecond * 0.4* 1000);
 				
 				//将添加标签的圆圈位置固定好且显示
-				showGuideAddtagCircle();
+				timeOutSuccess=setTimeout(function(){
+					showGuideAddtagCircle();
+				},aniSecond * 0.5* 1000);
 				
-				
-				
+				//显示指向加号按钮的箭头
+				timeOutSuccess=setTimeout(function(){
+					showGuideAddtagCircle();
+				},aniSecond * 0.5* 1000);
 				
 				
 				

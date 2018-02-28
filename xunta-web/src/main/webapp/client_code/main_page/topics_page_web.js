@@ -3119,8 +3119,8 @@ function showGuideMatchUsers(isGuideMatchUser){
 //显示匹配人头像的引导文字
 function showGuideMUBubble(){
 	var guideMUBubble=$("#guideMUBubble");
-	var matchUsersHeight=$("matchUsers").height();
-	var guideMUBubbleTop=matchUsersHeight*4/5;
+	var matchUsersHeight=$("#matchUsers").height();
+	var guideMUBubbleTop=matchUsersHeight*4.2/5;
 	guideMUBubble.css("top",guideMUBubbleTop);
 	guideMUBubble.show();
 }
@@ -3130,20 +3130,19 @@ function showGuideAddtagCircle(){
 	//为了让圆圈正好框在加号上，先获取加号的中心点x,y
 	var addTagTop=addTag.offset().top;//这是加号相对于屏幕的top值
 	var addTagLeft=addTag.offset().left;//这是加号相对于屏幕的left值
-	var temp=document.getElementById("addtag");
-	var addTagWidth=document.getElementById("addtag").offsetWidth;
+	var addTagWidth=addTag.width()+parseInt(addTag.css("padding-left"))+parseInt(addTag.css("padding-right"))+2;
 	var addTagHeight=addTag.height();
 	var addTagX=addTagLeft+addTagWidth/2;//这是加号中心点的x坐标
-	var addTagY=addTagHeight+addTagHeight/2;//这是加号中心点y坐标
+	var addTagY=addTagTop+addTagHeight/2;//这是加号中心点y坐标
 	
 	//圆圈的大小设置为加号宽的两倍
 	var guideAddtagCircleWidth=addTagWidth*2;
 	
 	//计算圆圈的top的left值
-	var guideAddtagCircleTop=addTagY-guideAddtagCircleWidth;
-	var guideAddtagCircleLeft=addTagX-guideAddtagCircleWidth;
+	var guideAddtagCircleTop=addTagY-addTagWidth+2;
+	var guideAddtagCircleLeft=addTagX-addTagWidth-1;
 	var guideAddtagCircle=$("#guideAddtagCircle");
-	guideAddtagCircle.css("width",guideAddtagCircleWidth);
+	guideAddtagCircle.css("width",(guideAddtagCircleWidth+1));
 	guideAddtagCircle.css("height",guideAddtagCircleWidth);
 	guideAddtagCircle.css("top",guideAddtagCircleTop);
 	guideAddtagCircle.css("left",guideAddtagCircleLeft);
