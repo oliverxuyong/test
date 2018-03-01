@@ -2005,16 +2005,16 @@ function setMUPosition(i,matchedUserArr){
 	y=parseInt(Math.random()*(matchUserContainerYEnd-matchUserContainerYStart))+matchUserContainerYStart;
 	
 	var xMiddle,yMiddle;
-	xMiddle=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
-	yMiddle=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; 
 	if(i==0){
-//		xMiddle=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
-//		yMiddle=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; 
+		xMiddle=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
+		yMiddle=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; 
 		x=parseInt(Math.random()*10)+(xMiddle-5);
 		y=parseInt(Math.random()*10)+(yMiddle-5);
 	}
 	
 	if(isGuideMatchUser){//如果是引导时出现的匹配头像,则五个头像固定位置
+		xMiddle=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
+		yMiddle=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; 
 		if(i==0){ 
 			x=xMiddle+15;
 			y=yMiddle-5;
@@ -3159,6 +3159,8 @@ function showGuideAddtagCircleAndArrow(){
 	//箭头来回动画
 	arrowAnimateCircle(guideAddtagArrow,guideAddtagArrowTop,guideAddtagArrowLeft);
 	
+	guideAddtagCircle.show();
+	guideAddtagArrow.show();
 }
 var power=1;//幂次方，用来实现动画的来回循环
 //箭头来回循环动画效果
@@ -3253,7 +3255,7 @@ function alertWinForGuide(_context,_w,_h){
     tipsObj = document.createElement('div');
     bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background:#000;position:absolute;top:0;left:0;z-index:200;opacity:0.2;filter:alpha(opacity =20);";
     document.body.appendChild(bgObj);
-    htmlBgObj.style.cssText = "position:absolute;top:" + (iTop + Math.abs((iHeight - _h) / 2.5)) + "px;left:" + (iLeft + Math.abs((iWidth - _w) / 2))  + "px;width:" + _w + "px;height:" + _h + "px;z-index:201;border:1px solid #D3D6DD;border-radius:20px;background-color:#eee;";
+    htmlBgObj.style.cssText = "position:absolute;top:" + (iTop + Math.abs((iHeight - _h) / 2.5)) + "px;left:" + (iLeft + Math.abs((iWidth - _w) / 2))  + "px;width:" + _w + "px;height:" + _h + "px;z-index:202;border:1px solid #D3D6DD;border-radius:20px;background-color:#eee;";
     tipsObj.style.cssText = "top:" + (iTop + Math.abs((iHeight - _h) / 2) - 30) + "px;left:" + (iLeft + Math.abs((iWidth - _w) / 2))  + "px;width:" + _w + "px;z-index:202;";
     htmlBgObj.id = "htmlObj";
     tipsObj.id = "tipsObj";
@@ -3280,6 +3282,10 @@ function alertWinForGuide(_context,_w,_h){
 		for(var i in matchUsers){
 			matchUsers.eq(i).remove();
 		}
+		//引导页消失的时候这两个数组要清零，为了不妨碍之后的匹配人头像正常显示
+		muNowData.splice(0, muNowData.length);
+		muChangeData.splice(0, muNowData.length);
+		
 		//删除对话气泡
 		var guideMUBubble=$("#guideMUBubble");
 		guideMUBubble.remove();
