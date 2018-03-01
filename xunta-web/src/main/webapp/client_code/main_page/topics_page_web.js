@@ -1639,7 +1639,7 @@ var aniSecond=3;//秒数
 var muNowData = new Array();
 var muChangeData=new Array();//这是排名改变之后新的muNowData的数据
 // 2017.07.04 叶夷 显示匹配人列表，没有数据的时候先用模拟数据
-function showMatchPeople(matchedUserArr,isGuideMatchUser) {// 传入的参数为：所需的匹配人列表数据(且排好了顺序)
+function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹配人列表数据(且排好了顺序)
 	if (muNowData.length == 0) {// 如果是用户一开始上线，匹配人列表没有
 		
 		//测试数据，先固定下来
@@ -1696,7 +1696,7 @@ function showMatchPeople(matchedUserArr,isGuideMatchUser) {// 传入的参数为
 			//2017.11.06 叶夷  将匹配人初始化状态更改为使用排斥力算法
 			muChangeData=[].concat(muNowData);
 			
-			getMuChangeData(matchedUserArr,isGuideMatchUser);
+			getMuChangeData(matchedUserArr);
 			setPositionAndNotIntersect();
 			muChangeDataIfIntersect();//判断是否相交
 			
@@ -1712,7 +1712,7 @@ function showMatchPeople(matchedUserArr,isGuideMatchUser) {// 传入的参数为
 			}
 		}
 		
-		allMuAnimate(matchedUserArr,isGuideMatchUser);//全部匹配人变化动画
+		allMuAnimate(matchedUserArr);//全部匹配人变化动画
 		
 		/*//log2root("圆计算好之后放入");
 		for (var i = 0; i < matchedUserArr.length; i++) {
@@ -1775,7 +1775,7 @@ function showMatchPeople(matchedUserArr,isGuideMatchUser) {// 传入的参数为
 /**
  * 2017.11.15 叶夷  匹配人动画
  */
-function allMuAnimate(matchedUserArr,isGuideMatchUser){
+function allMuAnimate(matchedUserArr){
 	//开始移动之前先将多余的匹配圆去除
 	if(muNowData.length>matchedUserArr.length){
 		for(var removeIndex=matchedUserArr.length;removeIndex<muNowData.length;removeIndex++){
@@ -1793,7 +1793,7 @@ function allMuAnimate(matchedUserArr,isGuideMatchUser){
 		
 		//将匹配圆位置计算完成了，才将新来的匹配人放到页面中
 		if(muDiv.length<=0){
-			muDiv=muAddImg(j,muNowData,true,isGuideMatchUser);
+			muDiv=muAddImg(j,muNowData,true);
 		}
 		
 		var moveWidth=radius*2;
@@ -1833,7 +1833,7 @@ function muDataQueueEnd(matchedUserArr){
 
 //排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换，后面的判断是判断是否为第一次判段相交
 //true代码第一次判断相交页面需要加上匹配圆div，如果不是则不需要
-function getMuChangeData(matchedUserArr,isGuideMatchUser){
+function getMuChangeData(matchedUserArr){
 	//将muNowData的数据和改变的排名数据计算之后获得新的muNewData，即下面的muNewData
 	for(var i = 0; i < matchedUserArr.length; i++){//将排名改变的数据遍历
 		var muserid = matchedUserArr[i].userid;// 这是匹配人id
@@ -1860,7 +1860,7 @@ function getMuChangeData(matchedUserArr,isGuideMatchUser){
 		
 		//这里是判断一开始的时候匹配用户没有满的情况
 		if(i>muChangeData.length-1){
-			setMUPosition(i,matchedUserArr,isGuideMatchUser);
+			setMUPosition(i,matchedUserArr);
 			//muAddImg(i,matchedUserArr,isFirstIntersect);
 			muChangeData=[].concat(muNowData);
 		}
@@ -1971,7 +1971,7 @@ var startMatchUserCount=0;//一开始循环的次数
  * 叶夷 2017.09.14 匹配人头像静态情况下的位置放置 1.随机找到一个(x,y)点，这个点必须在装匹配人列表的范围
  * 2.然后和存在的所有匹配人头像对比是否相交 3.如果相交则x++,x到达范围则y++,直到找到一个不会相交的点
  */
-function setMUPosition(i,matchedUserArr,isGuideMatchUser){
+function setMUPosition(i,matchedUserArr){
 	/*var muNodeWidth=muNode.width();
 	var radius=muNodeWidth/2;// 这是半径
 */	
@@ -1984,6 +1984,9 @@ function setMUPosition(i,matchedUserArr,isGuideMatchUser){
 	
 	//定义radius
 	var radius=setMatchUsersSize(i);
+	if(isGuideMatchUser){//如果是引导时出现的匹配头像,则五个头像放大一点
+		radius=radius+3;
+	}
 	
 	setBorder(headerContainer,radius);
 	// 1.1 在随机中设置几个特殊情况
@@ -2014,22 +2017,22 @@ function setMUPosition(i,matchedUserArr,isGuideMatchUser){
 	if(isGuideMatchUser){//如果是引导时出现的匹配头像,则五个头像固定位置
 		if(i==0){ 
 			x=xMiddle+15;
-			y=yMiddle-15;
+			y=yMiddle-5;
 		}else if(i==1){
-			x=muNowData[0].x+muNowData[0].radius+20;
-			y=muNowData[0].y-muNowData[0].radius-15;
+			x=muNowData[0].x+muNowData[0].radius*2.2;
+			y=muNowData[0].y+muNowData[0].radius;
 		}else if(i==2){ 
-			x=muNowData[0].x-muNowData[0].radius-20;
-			y=muNowData[0].y+muNowData[0].radius+10;
+			x=muNowData[0].x-muNowData[0].radius*2.2;
+			y=muNowData[0].y+muNowData[0].radius*0.8;
 		}else if(i==3){
-			x=muNowData[0].x-muNowData[0].radius-20;
-			y=muNowData[0].y-muNowData[0].radius-15;
+			x=muNowData[0].x+muNowData[0].radius*1.8;
+			y=muNowData[0].y-muNowData[0].radius*1.5;
 		}else if(i==4){
-			x=muNowData[0].x+muNowData[0].radius+20;
-			y=muNowData[0].y+muNowData[0].radius+10;
+			x=muNowData[0].x-muNowData[0].radius*1.5;
+			y=muNowData[0].y-muNowData[0].radius*1.2;
 		}else if(i==5){
 			x=muNowData[0].x;
-			y=muNowData[0].y+muNowData[0].radius+40;
+			y=muNowData[0].y+muNowData[0].radius*2;
 		}
 	}
 	
@@ -2176,7 +2179,7 @@ function muPosition(userid,x, y, radius, img_src,username) {
 }
 
 /** 2017.08.23 叶夷 将匹配人div加上头像图片 */
-function muAddImg(i,matchedUserArr,isFirst,isGuideMatchUser){
+function muAddImg(i,matchedUserArr,isFirst){
 	if(matchedUserArr[i]!=null){
 		var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
 		 
@@ -3084,7 +3087,7 @@ function updateNickname(newNickname){
 /**start:叶夷  2018.02.27   这里是引导页的模块
  */
 //将匹配人的引导显示
-function showGuideMatchUsers(isGuideMatchUser){
+function showGuideMatchUsers(){
 	var newMatchedUserArr=new Array();// 装后台发来的匹配人
 	var mpId=new Array(1,2,3,4,5,6/*,7,8,9,10,11,12,13,14,15*/);// 模拟的匹配人ID
 	var mpImg=new Array("../image/guideMU1.png",
@@ -3114,7 +3117,7 @@ function showGuideMatchUsers(isGuideMatchUser){
 	for(var j=0;j<length;j++){
 		newMatchedUserArr.push(new MatchPeople(mpId[j],mpImg[j]));
 	}
-	showMatchPeople(newMatchedUserArr,isGuideMatchUser); 
+	showMatchPeople(newMatchedUserArr); 
 }
 //显示匹配人头像的引导文字
 function showGuideMUBubble(){
@@ -3125,7 +3128,7 @@ function showGuideMUBubble(){
 	guideMUBubble.show();
 }
 //将添加标签的圆圈位置固定好且显示
-function showGuideAddtagCircle(){
+function showGuideAddtagCircleAndArrow(){
 	var addTag=$("#addtag");
 	//为了让圆圈正好框在加号上，先获取加号的中心点x,y
 	var addTagTop=addTag.offset().top;//这是加号相对于屏幕的top值
@@ -3146,8 +3149,146 @@ function showGuideAddtagCircle(){
 	guideAddtagCircle.css("height",guideAddtagCircleWidth);
 	guideAddtagCircle.css("top",guideAddtagCircleTop);
 	guideAddtagCircle.css("left",guideAddtagCircleLeft);
+	
+	//计算箭头的位置
+	var guideAddtagArrow=$("#guideAddtagArrow");
+	var guideAddtagArrowTop=addTagY+addTagWidth-25;
+	var guideAddtagArrowLeft=addTagX+addTagWidth-25;
+	guideAddtagArrow.css("top",guideAddtagArrowTop);
+	guideAddtagArrow.css("left",guideAddtagArrowLeft);
+	//箭头来回动画
+	arrowAnimateCircle(guideAddtagArrow,guideAddtagArrowTop,guideAddtagArrowLeft);
+	
+}
+var power=1;//幂次方，用来实现动画的来回循环
+//箭头来回循环动画效果
+function arrowAnimateCircle(guideAddtagArrow,guideAddtagArrowTop,guideAddtagArrowLeft){
+	var guideAddtagArrowTopAnimate=guideAddtagArrowTop-Math.pow((-1),power)*3;
+	var guideAddtagArrowLeftAnimate=guideAddtagArrowLeft-Math.pow((-1),power)*3;
+	guideAddtagArrow.animate({
+		top : guideAddtagArrowTopAnimate,
+		left : guideAddtagArrowLeftAnimate
+	}, 500);
+	//递归循环
+	if(!arrowAnimateStop){//循环
+		timeOutSuccess=setTimeout(function(){
+			++power;
+			arrowAnimateCircle(guideAddtagArrow,guideAddtagArrowTop,guideAddtagArrowLeft)
+		},500);
+	}
+}
+//监测在引导页的时候点击屏幕
+function clickMainPage(bgObj){
+	bgObj.parentNode.removeChild(bgObj);  
+	//console.log("点击屏幕");
+	//点击屏幕箭头动画停止
+	arrowAnimateStop=true;
+	//引导页的其它东西隐藏
+	var guideAddtagCircle=$("#guideAddtagCircle");
+	guideAddtagCircle.remove();
+	var guideAddtagArrow=$("#guideAddtagArrow");
+	guideAddtagArrow.remove();
+	
+	//显示添加标签的气泡
+	var guideMUBubble=$("#guideMUBubble");
+	guideMUBubble.attr('src','../image/guideAddtagBubble.png'); 
+	
+	//出现引导页的添加标签的样式
+	guideAddTag();
+}
+//出现引导页的添加标签的样式
+function guideAddTag() {
+	execRoot("sendClickAddTagMsg()");
+	
+	var _obj = $("#showatloaded");
+	var _h = _obj.height()/4.5;
+	var _w = _obj.width()*0.80;
+
+	var contextresult = [];
+	contextresult.push('<div id="entrytag" style="margin-top:4%;">');
+	contextresult
+			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:searchToAddTag();}'></p>");
+	contextresult
+			.push('<div class="btn-div" onclick="searchToAddTag()">确定</div>');
+	contextresult.push('</div>');
+	contextresult
+			.push('<div class="searchtag_suggest" id="gov_search_suggest"></div>');
+	contextresult
+			.push('<div id="guideAddTagText" style="color: #909090;position: absolute;bottom: 20%;width: 100%;text-align: center;">头脑一片空白?&nbsp;看看这里</div>');
+	contextresult
+			.push('<img src="../image/guideAddtagDownArrow.png" style="width: 7%;position: absolute;bottom: 7%;left: 46%;"/>');
+	alertWinForGuide(contextresult.join(''), _w, _h);
+	//alertWin(contextresult.join(''),"添加'关键词'", _w, _h);
+	
+	//将添加标签的确定按钮两个字的字体大小调整
+	var btnIdvWidth=$(".btn-div").width();
+	var btnDivFontSize=btnIdvWidth/2;
+	if(btnDivFontSize>17){
+		btnDivFontSize=17;
+	}
+	$(".btn-div").css("font-size",btnDivFontSize+"px");
+	
+	//调整引导页添加标签框的位置,以文字气泡为参照物
+	var guideMUBubble=$("#guideMUBubble");
+	var guideMUBubbleTop=guideMUBubble.offset().top;
+	var guideMUBubbleHeight=guideMUBubble.height();
+	var htmlObj=$("#htmlObj");
+	var htmlObjTop=guideMUBubbleTop+guideMUBubbleHeight+guideMUBubbleHeight/5;
+	htmlObj.css("top",htmlObjTop);
 }
 
+/**
+ * 弹出框
+ * @param _context 弹出内容
+ * @param _w 弹出高度
+ * @param _h 弹出宽度
+ */
+function alertWinForGuide(_context,_w,_h){
+	var iWidth =  $(window).width();
+    var iHeight =  $(window).height();
+    var iTop = $(window).scrollTop();
+    var iLeft = $(window).scrollLeft();
+    bgObj = document.createElement('div');
+    htmlBgObj = document.createElement('div');
+    tipsObj = document.createElement('div');
+    bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background:#000;position:absolute;top:0;left:0;z-index:200;opacity:0.2;filter:alpha(opacity =20);";
+    document.body.appendChild(bgObj);
+    htmlBgObj.style.cssText = "position:absolute;top:" + (iTop + Math.abs((iHeight - _h) / 2.5)) + "px;left:" + (iLeft + Math.abs((iWidth - _w) / 2))  + "px;width:" + _w + "px;height:" + _h + "px;z-index:201;border:1px solid #D3D6DD;border-radius:20px;background-color:#eee;";
+    tipsObj.style.cssText = "top:" + (iTop + Math.abs((iHeight - _h) / 2) - 30) + "px;left:" + (iLeft + Math.abs((iWidth - _w) / 2))  + "px;width:" + _w + "px;z-index:202;";
+    htmlBgObj.id = "htmlObj";
+    tipsObj.id = "tipsObj";
+    var result = [];
+//    result.push('<div id="bodyBgObj">');
+//    result.push('<div class="pop-title">');
+//    result.push('<div class="title-div"><span>'+_title+'</span></div>');
+//    result.push('<div class="close-div" onclick="closePop()"> &times; </div>');
+//    result.push('</div>');
+
+    result.push(_context);
+    result.push('</div>');
+    tipsObj.innerHTML="";
+    htmlBgObj.innerHTML= result.join('');
+    document.body.appendChild(tipsObj);
+    document.body.appendChild(htmlBgObj);
+    
+    //绑定点击事件，点击之后引导页的东西全部消失
+	bgObj.addEventListener('click',function(){
+		isGuideMatchUser=false;
+		closePop();//关闭对话框
+		//将匹配人头像删除
+		var matchUsers=$(".mu");
+		for(var i in matchUsers){
+			matchUsers.eq(i).remove();
+		}
+		//删除对话气泡
+		var guideMUBubble=$("#guideMUBubble");
+		guideMUBubble.remove();
+		
+		//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
+		//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
+		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+	},false);
+}
 
 /**
  * end:叶夷

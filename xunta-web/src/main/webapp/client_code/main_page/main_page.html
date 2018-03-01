@@ -69,7 +69,7 @@
     			<div class="mu" id="mutemp14" style="/* left: 313px; */width: 19px;height: 19px;/* top: 5px; */"></div>
     			<div class="mu" id="mutemp15" style="/* left: 296px; */width: 18px;height: 18px;/* top: 2px; */"></div>
     			 -->
-    			 <!-- 这是匹配人头像引导话 -->
+    			<!-- 引导页：这是匹配人头像引导话 -->
     			<img src="../image/guideMUBubble.png" id="guideMUBubble" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" style="/* margin-top: 161px; */width: 65%;display: inline-block;position: absolute;right:0px;display:none;">
 			</div>
 
@@ -83,10 +83,13 @@
 				<!-- <div class="mytag" id="addtag2" onclick="addTag()" style="width:86px;"> 万有引力 					
 					<div class="mytag-selectednumber">123</div>
 				</div> -->
-				<!-- 这是我的标签加号上的圆圈 -->
+				<!-- 引导页：这是我的标签加号上的圆圈 -->
 				<img src="../image/guideAddtagCircle.png" id="guideAddtagCircle" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" 
-					style="top: 187px;position: absolute;left: 0px;/* display:none; */width: 65px;"
-				>
+					style="top: 187px;position: absolute;left: 0px;/* display:none; */width: 65px;">
+					
+				<!-- 引导页：这是我的标签指向加号的箭头-->
+				<img src="../image/guideAddtagArrow.png" id="guideAddtagArrow" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" 
+					style="top: 187px;position: absolute;left: 0px;/* display:none; */width: 65px;">
 				
 			</div>
 
@@ -246,6 +249,9 @@
 		var unreadObjList=new Array();//2017.08.16 为了装所有的未读信息，然后将数组传给聊天列表
 		var firstRequestTopMatchedUsers=true;//2017.09.04  叶夷      判断是否是第一次请求匹配列表
 		var firstRequestMyCp=true;//2017.11.13  叶夷      判断是否是第一次请求我的标签
+		
+		var arrowAnimateStop=false;//判断箭头来回动画是否停止,false是不停止，true是停止
+		var isGuideMatchUser=true;//表示这是引导时显示的匹配头像，为了位置固定不变
 
 		function start(pageParamsStr) {//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
 			//2018.02.07 判断是否引入jquery文件
@@ -264,9 +270,17 @@
 			//2018.02.27  叶夷    这里写如果出现引导页的动画
 			var isShowGuide=true;//是否需要出现引导页，这是由后台传过来的参数决定
 			if(isShowGuide){//需要引导页，在用户浏览完引导内容之后再显示首页内容
-				//1.先将匹配人的引导显示出来
-				var isGuideMatchUser=true;//表示这是引导时显示的匹配头像，为了位置固定不变
-				showGuideMatchUsers(isGuideMatchUser);//显示了匹配人头像
+				//先用一块透明的布覆盖在屏幕上，为了之后的点击屏幕时间
+				var bgObj = document.createElement('div');
+				bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background-color:rgba(0,0,0,0);position:absolute;top:0;left:0;z-index:200;opacity:0.0;filter:alpha(opacity =0);";
+    			document.body.appendChild(bgObj);
+    			//绑定点击事件
+    			bgObj.addEventListener('click',function(){
+    				clickMainPage(bgObj);
+    			},false);
+				
+				//将匹配人的引导显示出来
+				showGuideMatchUsers();//显示了匹配人头像
 				
 				timeOutSuccess=setTimeout(function(){
 					showGuideMUBubble();//显示匹配人头像的引导文字
@@ -275,16 +289,8 @@
 				
 				//将添加标签的圆圈位置固定好且显示
 				timeOutSuccess=setTimeout(function(){
-					showGuideAddtagCircle();
+					showGuideAddtagCircleAndArrow();
 				},aniSecond * 0.5* 1000);
-				
-				//显示指向加号按钮的箭头
-				timeOutSuccess=setTimeout(function(){
-					showGuideAddtagCircle();
-				},aniSecond * 0.5* 1000);
-				
-				
-				
 			}else{//不需要引导页则直接显示首页内容
 				//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
 				//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
