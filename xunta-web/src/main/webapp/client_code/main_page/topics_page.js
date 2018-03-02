@@ -276,6 +276,32 @@ function enterMatchUsersPage() {
 function responseTopMatchedUsers(muData) {
 	var matchedUserArr = muData.matched_user_arr;// 获得后台发送的匹配人排名信息数组
 	
+	//2018.03.02   叶夷   这里是为了引导页出现的匹配人头像消失的效果
+	//将匹配人头像动画消失
+	var matchUsers=$(".mu");
+	if(matchUsers.length>0){
+		//等推荐标签动画完成再进行动画
+		timeOutSuccess = setTimeout(function() {
+			for(var i in matchUsers){
+				matchUsers.eq(i).find("img").animate({
+					width : 0,
+					height : 0
+				}, 1000, function() {
+					matchUsers.eq(i).remove();
+				});
+			}
+		},2000);
+		timeOutSuccess = setTimeout(function() {
+			//引导页消失的时候这两个数组要清零，为了不妨碍之后的匹配人头像正常显示
+			muNowData.splice(0, muNowData.length);
+			muChangeData.splice(0, muNowData.length);
+		},2000);
+		//等引导匹配头像消失和推荐标签动画完成再进行匹配人位置算法
+		timeOutSuccess = setTimeout(function() {
+			showMatchPeople(matchedUserArr);// 显示匹配人列表
+		},4000);
+	}
+	
 	//2017.11.13 等推荐标签动画完成再进行匹配人位置算法
 	timeOutSuccess = setTimeout(function() {
 		showMatchPeople(matchedUserArr);// 显示匹配人列表

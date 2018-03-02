@@ -284,11 +284,11 @@
 				
 				timeOutSuccess=setTimeout(function(){
 					showGuideMUBubble();//显示匹配人头像的引导文字
-					$("#mytag-container").show();
-				},aniSecond * 0.4* 1000+1000);
+				},aniSecond * 0.4* 1000);
 				
 				//将添加标签的圆圈位置固定好且显示
 				timeOutSuccess=setTimeout(function(){
+					$("#mytag-container").show();
 					showGuideAddtagCircleAndArrow();
 				},aniSecond * 0.4* 1000+2000);
 			}else{//不需要引导页则直接显示首页内容

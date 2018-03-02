@@ -2619,6 +2619,11 @@ function sendKeyWordToBack(input_value,data) {
 	
 	// 输入框为空的话，结果不显示
 	if(input_value!="" && data.length!=0){
+		//2018.03.02   叶夷     在这里判断如果是引导页的添加框，一旦有搜索结果的出现，guideAddTagText消失
+		var guideAddTagText=$("#guideAddTagText");
+		if(guideAddTagText.length>0){
+			guideAddTagText.remove();
+		}
 		
 		$("#htmlObj").css("height","300px");
 		suggestWrap.show();
@@ -3089,7 +3094,7 @@ function updateNickname(newNickname){
 //将匹配人的引导显示
 function showGuideMatchUsers(){
 	var newMatchedUserArr=new Array();// 装后台发来的匹配人
-	var mpId=new Array(1,2,3,4,5,6/*,7,8,9,10,11,12,13,14,15*/);// 模拟的匹配人ID
+	var mpId=new Array(1,2,3,4,5,6);// 模拟的匹配人ID
 	var mpImg=new Array("../image/guideMU1.png",
 						"../image/guideMU2.png",
 						"../image/guideMU3.png",
@@ -3125,7 +3130,11 @@ function showGuideMUBubble(){
 	var matchUsersHeight=$("#matchUsers").height();
 	var guideMUBubbleTop=matchUsersHeight*4.2/5;
 	guideMUBubble.css("top",guideMUBubbleTop);
+	guideMUBubble.css("opacity",0);
 	guideMUBubble.show();
+	guideMUBubble.animate({
+		opacity:1
+	}, 1000);
 }
 //将添加标签的圆圈位置固定好且显示
 function showGuideAddtagCircleAndArrow(){
@@ -3216,9 +3225,9 @@ function guideAddTag() {
 	contextresult
 			.push('<div class="searchtag_suggest" id="gov_search_suggest"></div>');
 	contextresult
-			.push('<div id="guideAddTagText" style="color: #909090;position: absolute;bottom: 20%;width: 100%;text-align: center;">头脑一片空白?&nbsp;看看这里</div>');
-	contextresult
-			.push('<img src="../image/guideAddtagDownArrow.png" style="width: 7%;position: absolute;bottom: 7%;left: 46%;"/>');
+			.push('<div id="guideAddTagText" style="color: #909090;position: absolute;bottom: 2%;width: 100%;text-align: center;">'
+				  +'<div>头脑一片空白?&nbsp;看看这里</div>'
+				  +'<img src="../image/guideAddtagDownArrow.png" style="width: 6%"/></div>');
 	alertWinForGuide(contextresult.join(''), _w, _h);
 	//alertWin(contextresult.join(''),"添加'关键词'", _w, _h);
 	
@@ -3277,15 +3286,7 @@ function alertWinForGuide(_context,_w,_h){
 	bgObj.addEventListener('click',function(){
 		isGuideMatchUser=false;
 		closePop();//关闭对话框
-		//将匹配人头像删除
-		var matchUsers=$(".mu");
-		for(var i in matchUsers){
-			matchUsers.eq(i).remove();
-		}
-		//引导页消失的时候这两个数组要清零，为了不妨碍之后的匹配人头像正常显示
-		muNowData.splice(0, muNowData.length);
-		muChangeData.splice(0, muNowData.length);
-		
+
 		//删除对话气泡
 		var guideMUBubble=$("#guideMUBubble");
 		guideMUBubble.remove();
