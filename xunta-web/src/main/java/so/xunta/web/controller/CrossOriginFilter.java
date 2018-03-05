@@ -47,11 +47,18 @@ public class CrossOriginFilter implements Filter {
 		response.setCharacterEncoding(code);
 		HttpServletResponse res = (HttpServletResponse)response;
 		HttpServletRequest req = (HttpServletRequest)request;
-		StringBuffer url = req.getRequestURL();  
+		StringBuffer url = req.getRequestURL();
+		String sourceChannel = req.getParameter("from");
 		logger.debug("请求:"+req.getRequestURL());
 		String urlstr = url.toString();
 		if(urlstr.equals("http://www.xunta.so/xunta-web/")){
-			logger.info("有用户请求xunta网址");
+			if(sourceChannel==null){
+				logger.info("有一般用户请求xunta网址");
+			}else if(sourceChannel.equals("baidu")){
+				logger.info("有baidu用户从网页版请求xunta网址");
+			}else if(sourceChannel.equals("weibo")){
+				logger.info("有weibo用户从网页版请求xunta网址");
+			}
 		}
 		if(urlstr.indexOf("www")==-1)
 		{
