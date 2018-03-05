@@ -54,10 +54,8 @@ public class CrossOriginFilter implements Filter {
 		if(urlstr.equals("http://www.xunta.so/xunta-web/")){
 			if(sourceChannel==null){
 				logger.info("有一般用户请求xunta网址");
-			}else if(sourceChannel.equals("baidu")){
-				logger.info("有baidu用户从网页版请求xunta网址");
-			}else if(sourceChannel.equals("weibo")){
-				logger.info("有weibo用户从网页版请求xunta网址");
+			}else{
+				logger.info("有"+sourceChannel+"用户从网页版请求xunta网址");
 			}
 		}
 		if(urlstr.indexOf("www")==-1)
