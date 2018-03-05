@@ -141,4 +141,13 @@ function closeAllDialogPages(){
     }
 }
 
-
+//2018.02.05  叶夷     进入公司简介页面
+function enterProfilePage() {
+	console.log("enterProfilePage");
+	openWin('profile_page', 'profile_page/profile_page.html', "");
+}
+//2018.02.05  叶夷     进入产品介绍页面
+function enterProductPage() {
+	console.log("enterProductPage");
+	openWin('product_page', 'product_page/product_page.html', "");
+}

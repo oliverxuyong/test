@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title></title>
+        <meta property="qc:admins" content="650003246763061666375" />
+        
+        <style>
+        	body {
+				position:fixed;
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height:100%;
+				background-color: #ffffff;
+				cursor:auto;
+				overflow-y:hidden;
+				overflow-x:hidden;
+			}
+
+			#header {
+				float:left;
+				width:100%; 
+				height: 50px; 
+				/* background-color:#3e4b49; */
+				border-bottom:1px solid #d0d0d0; z-index:12;
+				position:relative;
+			}
+	
+			#header img{
+				position:absolute;
+			}
+
+			#goback{position:relative;height:50px;font-size:22px;float:left;z-index:15}
+			#goback img{height:16px; width:22px; margin-top:16px;margin-left:17px;margin-right:10px;}
+			
+			#title{    
+				position: absolute;
+    			text-align: center;
+    			color: #888888;
+    			float: left;
+    			height: 32px;
+    			width: 100%;
+    			line-height: 32px;
+    			margin-top: 12px;
+    			//font-size: 18px;
+    			z-index: 13;
+    			font-size:1em;
+    		}
+			
+        </style>
+	</head>
+	<body>
+		<div id="header">
+			<span id="title">在圈子里找到和你有相同关注点的人</span>
+			<div id="goback" onclick="backBtn()"><img src="../image/goback6.png" /></div>
+		</div>
+		<div id="content" style="position: absolute;top: 50px;overflow-x: hidden;height: 811px;width: 100%;">
+			<div style="
+    				width: 100%;
+    				float: left;
+    				text-align: center;
+    				background:url('../image/productTextBg.png');
+    				color: white;
+    				margin: 5px 5px 0px 5px;
+    				height: 60%;
+    				line-height: 40px;
+    				padding-top: 10%;
+    				font-size:1em;
+			">
+			<div>这里不是论坛、不是社区</div>
+			<div>而是一种你前所未见的形式</div>
+			<div>专为特别的你设计，无论你处在什么水平</div>
+			<div>添加自己的关注点</div>
+			<div>总能找到和你相配的Ta</div>
+			<div>一起交流，学习，约伴...</div>
+			</div> 
+			<!-- <img alt="" src="../image/productPageImg1.png" style="width: 100%;margin: 5px 5px 5px 5px;"> -->
+			<img alt="" src="../image/productPageImg2.png" style="width: 100%;margin: 0px 5px 5px 5px;">
+			<img alt="" src="../image/productPageImg3.png" style="width: 100%;margin: 5px 5px 5px 5px;">
+			<img alt="" src="../image/productPageImg4.png" style="width: 100%;margin: 5px 5px 5px 5px;">
+			<img alt="" src="../image/productPageImg5.png" style="width: 100%;margin: 5px 5px 5px 5px;">
+		</div>
+		
+	</body>
+	<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../script/common-xunta_web.js"></script>
+	<script type="text/javascript">
+		//2018.02.07 叶夷     静态资源的路径动态的创建
+		var preUrl=window.location.protocol+"//"+document.domain;//获得静态资源路径的协议+域名
+		//将需要的js文件变成js代码生成
+		loadJs(preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+		loadJs(preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+
+		//2018.02.07  叶夷    动态加载js和 css文件的方法
+		function loadJs(src) {
+			var script = document.createElement('script');
+			script.type="text/javascript";
+			script.language = 'javascript';
+			script.src= src;
+			document.getElementsByTagName('head')[0].appendChild(script);
+		}
+	
+		function backBtn(){
+			closeWin('product_page');
+		}
+		
+		//计算公司信息内容div的height
+		var headerHeright=$("#header").height();
+		var bodyHeight=$("body").height();
+		var contentHeight=bodyHeight-headerHeright;
+		$("#content").css("height",contentHeight+"px");
+		
+	</script>
+</html>

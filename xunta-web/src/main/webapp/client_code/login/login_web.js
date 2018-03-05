@@ -183,9 +183,9 @@ function qq_login() {
 	
 	var redirect_uri;
 	if(domain == 'www.xunta.so'){
-		redirect_uri = "http://xunta.so/qq_callback";
+		redirect_uri = window.location.protocol+"//xunta.so/qq_callback";
 	}else{
-		redirect_uri = "http://"+domain+"/qq_callback";
+		redirect_uri = window.location.protocol+"//"+domain+"/qq_callback";
 	}
 	
     window.location = "https://graph.qq.com/oauth2.0/authorize?client_id="+qqappid+"&redirect_uri="+redirect_uri+"&response_type=code&state="+qqappkey+"&scope=get_user_info,add_topic,add_one_blog,add_album,upload_pic,list_album,add_share,check_page_fans,add_t,add_pic_t,del_t,get_repost_list,get_info,get_other_info,get_fanslist,get_idollist,add_idol,del_ido,get_tenpay_addr";
@@ -195,7 +195,7 @@ function qq_login() {
  * WX登录请求并获取WX用户信息 9.14 Fang
  * */
 function wx_login() {
-    var redirect_uri = "http://"+domain+"/wx_callback";
+    var redirect_uri = window.location.protocol+"//"+domain+"/wx_callback";
     window.location = "https://open.weixin.qq.com/connect/qrconnect?appid="+wxappid+"&redirect_uri=" + redirect_uri + "&response_type=code&scope=snsapi_login&state="+wxstate+"#wechat_redirec";
 }
 
