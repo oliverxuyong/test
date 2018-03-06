@@ -429,6 +429,7 @@ public class LoginController {
 			logger.info("登录时获取路径的协议:" + protocal);
 			
 			String domain = getDomainWithOutContext(request);
+			logger.debug("domain:" + domain);
 			if (domain.contains("www")) {
 			} else {
 				//domain = "http://www." + domain.substring(domain.indexOf("http://") + 7);
@@ -454,6 +455,7 @@ public class LoginController {
 			// request.getRequestDispatcher("/client_code/index.html").forward(request,
 			// response);
 			String domainWithContext = getDomainWithContext(request);
+			logger.debug("domainWithContext:" + domainWithContext);
 			/**
 			 * check if has 'www' in url
 			 */
