@@ -52,10 +52,10 @@ public class WXAppletUnionidController {
 		String wxAppletInfo = httpclientReq(codeToToken);
 		logger.debug("weiXinInfo: " + wxAppletInfo);
 		org.json.JSONObject wxAppletInfoJson = new org.json.JSONObject(wxAppletInfo);
-		String errcode=wxAppletInfoJson.getString("errcode");
+		boolean errcodeExit=wxAppletInfoJson.isNull("errcode");
 		String openid,unionid;
 		JSONObject obj = new JSONObject();
-		if(errcode==null){
+		if(errcodeExit){
 			//正常返回的JSON数据包
 			/*{
 			      "openid": "OPENID",
@@ -68,6 +68,7 @@ public class WXAppletUnionidController {
 			obj.put("unionid", unionid);
 		}else{//错误时返回JSON数据包(示例为Code无效)
 			logger.error("Code无效");
+			String errcode=wxAppletInfoJson.getString("errcode");
 			obj.put("errcode", errcode);
 		}
 		responseBack(request, response, obj);
