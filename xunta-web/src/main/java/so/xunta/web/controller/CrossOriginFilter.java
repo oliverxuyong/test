@@ -69,16 +69,20 @@ public class CrossOriginFilter implements Filter {
 		if(urlstr.indexOf("www")==-1)
 		{
 			String requestURI = req.getRequestURI();
+			logger.info("测试Filter requestURI:" + requestURI);
 			if(requestURI.equals("/xunta-web/")||requestURI.equals("/")){
 				String replace = (req.getRequestURL().toString()).replaceAll(protocal+"//",protocal+"//www.");
+				logger.info("测试Filter replace:" + replace);
 				res.sendRedirect(replace);
 				return;
 			}else{
+				logger.info("测试Filter1");
 				chain.doFilter(request, res);
 			}
 			
 			
 		}else{
+			logger.info("测试Filter2");
 			//logger.debug("域名："+tempContextUrl);
 			//res.addHeader("Access-Control-Allow-Origin", tempContextUrl);
 			chain.doFilter(request, res);
