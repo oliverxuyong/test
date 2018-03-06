@@ -1,9 +1,13 @@
 package so.xunta.web.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Writer;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -11,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import so.xunta.utils.IdWorker;
 
 /**
@@ -31,6 +36,16 @@ public class WXAppletUnionidController {
 			HttpServletResponse response) throws IOException {
 		logger.info("微信从小程序进入");
 		response.setContentType("text/html; charset=utf-8");
+		
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+		StringBuilder stringBuilder = new StringBuilder();
+		String line = null;
+		while((line=bufferedReader.readLine())!=null){
+		    stringBuilder.append(line);
+		}
+		String body = stringBuilder.toString();
+		logger.debug("模版消息接口被调用时返回的数据包：body="+body);
+		
 		String code = request.getParameter("code");
 		logger.debug("code:" + code);
 		String codeToToken = "https://api.weixin.qq.com/sns/jscode2session?appid=wx2e46b44f01234193&secret=b9d7395119ef2771a3ce033f3c2cafb1&js_code="+code+"&grant_type=authorization_code";
