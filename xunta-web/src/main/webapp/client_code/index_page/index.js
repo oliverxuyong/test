@@ -57,7 +57,7 @@ function clearTopicsPageOpenMark() {
         
 		function readXuntaConfigXml() {//读取config, 
             $.ajax({
-                url : "xunta_config.xml",
+                url : preUrl+"/xunta-web/client_code/xunta_config.xml",
                 dataType : 'xml',
                 type : 'GET',
                 async : false,

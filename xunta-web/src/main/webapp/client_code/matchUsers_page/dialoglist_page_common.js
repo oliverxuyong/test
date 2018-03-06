@@ -38,7 +38,7 @@ function enterDialogPage(toUserId,toUserName,toUserImage) {
 	};
 	console.log("enterDialogPage toUserId=" + toUserId+"|toUserName="+toUserName);
 //	openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
-	openWin(toUserId,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
+	openWin(toUserId,preUrl+'/xunta-web/client_code/dialog_page/dialog_page.html',JSON.stringify(pageParam));
 }
 
 //未读消息去除

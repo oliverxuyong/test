@@ -199,7 +199,7 @@ function enterDialogPage(toUserId,toUserName,muImg) {
 	}
 	
 	// openWin(topicid,'dialog_page/dialog_page.html',JSON.stringify(pageParam));
-	openWin(toUserId, 'dialog_page/dialog_page.html', JSON.stringify(pageParam));
+	openWin(toUserId, preUrl+'/xunta-web/client_code/dialog_page/dialog_page.html', JSON.stringify(pageParam));
 	//打开了聊天页的时候将数据传给后台
 	var paraStr = userId + "','" + toUserId;
 	execRoot("request_openDialogPage('"+ paraStr +"')");
@@ -266,7 +266,7 @@ function enterMatchUsersPage() {
 	}
 	
 	console.log("enterDialogListPage userId=" + userId);
-	openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', JSON
+	openWin('matchUsers_page', preUrl+'/xunta-web/client_code/matchUsers_page/matchUsers_page.html', JSON
 			.stringify(pageParam));
 	//进入聊天列表页聊天未读信息清空
 	unreadObjList.splice(0,unreadObjList.length);

@@ -57,7 +57,7 @@ public class CrossOriginFilter implements Filter {
 		logger.info("登录时获取路径的协议:" + protocal);
 		
 		//if(urlstr.equals("http://www.xunta.so/xunta-web/")){
-		if(urlstr.equals(protocal+"://www.xunta.so/xunta-web/")){
+		if(urlstr.equals(protocal+"//www.xunta.so/xunta-web/")){
 			if(sourceChannel==null){
 				logger.info("有一般用户请求xunta网址");
 			}else if(sourceChannel.equals("baidu")){
@@ -70,7 +70,7 @@ public class CrossOriginFilter implements Filter {
 		{
 			String requestURI = req.getRequestURI();
 			if(requestURI.equals("/xunta-web/")||requestURI.equals("/")){
-				String replace = (req.getRequestURL().toString()).replaceAll("http://","http://www.");
+				String replace = (req.getRequestURL().toString()).replaceAll(protocal+"//",protocal+"//www.");
 				res.sendRedirect(replace);
 				return;
 			}else{

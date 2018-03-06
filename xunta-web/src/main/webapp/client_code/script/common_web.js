@@ -3,7 +3,7 @@
  */
 
 function closeAndRedirect() {
-    openWin('main_page', 'main_page/main_page.html', '');
+    openWin('main_page', preUrl+'/xunta-web/client_code/main_page/main_page.html', '');
     execRoot("setCurrentPageId('main_page')");
     exec("main_page","removeUnreadNum('null')");
     closeWin(_tmpPageId);

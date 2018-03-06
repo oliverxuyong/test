@@ -5,7 +5,7 @@ function backBtn(){
 		exec('matchUsers_page',"reduceUnread('"+toUserId+"')");
 		exec('matchUsers_page',"removeUnreadNum('"+toUserId+"')");
 		exec('matchUsers_page',"changeUnreadColor()");
-		openWin('matchUsers_page', 'matchUsers_page/matchUsers_page.html', '');
+		openWin('matchUsers_page', preUrl+'/xunta-web/client_code/matchUsers_page/matchUsers_page.html', '');
 	}else{
 		closeWin(toUserId);
 	}
@@ -34,7 +34,7 @@ function closeBtn(){
 		exec('matchUsers_page',"removeUnreadNum('"+toUserId+"')");
 	}
 	
-	openWin('main_page', 'main_page/main_page.html', '');
+	openWin('main_page', 'preUrl+'/xunta-web/client_code/main_page/main_page.html', '');
 	closeWin(_tmpPageId);
 }
 //显示历史信息
