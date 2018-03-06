@@ -32,7 +32,7 @@ public class WXAppletUnionidController {
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
 	@RequestMapping("/getWXAppletUnionid")
-	public JSONObject getWXAppletUnionid(HttpServletRequest request,
+	public void getWXAppletUnionid(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		logger.info("微信从小程序进入");
 		response.setContentType("text/html; charset=utf-8");
@@ -70,8 +70,8 @@ public class WXAppletUnionidController {
 			logger.error("Code无效");
 			obj.put("errcode", errcode);
 		}
-		//responseBack(request, response, obj);
-		return obj;
+		responseBack(request, response, obj);
+		//return obj;
 	}
 	
 	private String httpclientReq(String url) {
@@ -92,7 +92,7 @@ public class WXAppletUnionidController {
 		return response;
 	}
 
-	/*private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
+	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
 			throws IOException {
 		logger.debug("执行responseBack...");
 		boolean jsonP = false;
@@ -113,5 +113,5 @@ public class WXAppletUnionidController {
 			out.write(");");
 			logger.debug("返回成功。。。");
 		}
-	}*/
+	}
 }
