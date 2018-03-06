@@ -425,7 +425,7 @@ public class LoginController {
 			List<Cookie> cookies = new ArrayList<Cookie>();
 
 			//2018.02.08  叶夷   获取请求路径的协议
-			String protocal=request.getScheme();
+			String protocal="https：";
 			logger.info("登录时获取路径的协议:" + protocal);
 			
 			String domain = getDomainWithOutContext(request);

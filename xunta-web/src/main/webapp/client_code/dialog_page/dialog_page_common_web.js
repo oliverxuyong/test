@@ -34,7 +34,7 @@ function closeBtn(){
 		exec('matchUsers_page',"removeUnreadNum('"+toUserId+"')");
 	}
 	
-	openWin('main_page', 'preUrl+'/xunta-web/client_code/main_page/main_page.html', '');
+	openWin('main_page', preUrl+'/xunta-web/client_code/main_page/main_page.html', '');
 	closeWin(_tmpPageId);
 }
 //显示历史信息
