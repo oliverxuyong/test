@@ -425,6 +425,7 @@ public class LoginController {
 
 			//2018.02.08  叶夷   获取请求路径的协议
 			String protocal=request.getScheme();
+			logger.info("登录时获取路径的协议:" + protocal);
 			
 			String domain = getDomainWithOutContext(request);
 			if (domain.contains("www")) {
