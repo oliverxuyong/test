@@ -68,7 +68,7 @@ public class WXAppletUnionidController {
 			obj.put("unionid", unionid);
 		}else{//错误时返回JSON数据包(示例为Code无效)
 			logger.error("Code无效");
-			String errcode=wxAppletInfoJson.getString("errcode");
+			int errcode=wxAppletInfoJson.getInt("errcode");
 			obj.put("errcode", errcode);
 		}
 		responseBack(request, response, obj);
