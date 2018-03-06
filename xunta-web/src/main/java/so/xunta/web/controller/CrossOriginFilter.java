@@ -54,7 +54,7 @@ public class CrossOriginFilter implements Filter {
 		
 		//2018.03.06  叶夷  将这里的http协议更改成请求的协议
 		String protocal=request.getScheme();
-		logger.info("登录时获取路径的协议:" + protocal);
+		logger.info("测试Filter urlstr:" + urlstr);
 		
 		//if(urlstr.equals("http://www.xunta.so/xunta-web/")){
 		if(urlstr.equals(protocal+"//www.xunta.so/xunta-web/")){
