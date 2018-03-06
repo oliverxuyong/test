@@ -54,7 +54,7 @@ public class CrossOriginFilter implements Filter {
 		
 		//2018.03.06  叶夷  将这里的http协议更改成请求的协议
 		String protocal=request.getScheme();
-		logger.info("测试Filter urlstr:" + urlstr);
+		//logger.info("测试Filter urlstr:" + urlstr);
 		
 		//if(urlstr.equals("http://www.xunta.so/xunta-web/")){
 		if(urlstr.equals(protocal+"//www.xunta.so/xunta-web/")){
@@ -67,20 +67,20 @@ public class CrossOriginFilter implements Filter {
 		if(urlstr.indexOf("www")==-1)
 		{
 			String requestURI = req.getRequestURI();
-			logger.info("测试Filter requestURI:" + requestURI);
+			//logger.info("测试Filter requestURI:" + requestURI);
 			if(requestURI.equals("/xunta-web/")||requestURI.equals("/")){
 				String replace = (req.getRequestURL().toString()).replaceAll(protocal+"//",protocal+"//www.");
-				logger.info("测试Filter replace:" + replace);
+				//logger.info("测试Filter replace:" + replace);
 				res.sendRedirect(replace);
 				return;
 			}else{
-				logger.info("测试Filter1");
+				//logger.info("测试Filter1");
 				chain.doFilter(request, res);
 			}
 			
 			
 		}else{
-			logger.info("测试Filter2");
+			//logger.info("测试Filter2");
 			//logger.debug("域名："+tempContextUrl);
 			//res.addHeader("Access-Control-Allow-Origin", tempContextUrl);
 			chain.doFilter(request, res);
