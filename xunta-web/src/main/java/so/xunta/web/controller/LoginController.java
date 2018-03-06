@@ -317,6 +317,7 @@ public class LoginController {
 	public void wxMiniAppsLogin(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException,
 			WeiboException, IllegalArgumentException, IllegalAccessException, JSONException,
 			weibo4j.org.json.JSONException, UnsupportedEncodingException {
+		logger.info("微信从小程序登录url:"+request.getRequestURL());
 		logger.info("微信从小程序登录:"+request.getQueryString());
 		response.setContentType("text/html; charset=utf-8");
 		
