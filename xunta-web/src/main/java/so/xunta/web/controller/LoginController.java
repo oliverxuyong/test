@@ -69,7 +69,7 @@ public class LoginController {
 	@Autowired
 	private OpenId2EventScopeService openId2EventScopeService;
 
-	static Logger logger = Logger.getRootLogger();
+	static Logger logger = Logger.getLogger(LoginController.class);
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
