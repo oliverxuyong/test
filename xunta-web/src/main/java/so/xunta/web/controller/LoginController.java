@@ -310,7 +310,9 @@ public class LoginController {
 		responseCookieAndHtml(request, response, uid, unionid, image, name, type, openid);
 	}
 	
-	/**2018.02.02  叶夷   微信小程序登录*/
+	/*
+	 * 2018.02.02  叶夷   微信小程序登录
+	*/
 	@RequestMapping("/wxAppletLogin")
 	public void wxMiniAppsLogin(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException,
 			WeiboException, IllegalArgumentException, IllegalAccessException, JSONException,
@@ -318,6 +320,16 @@ public class LoginController {
 		logger.info("微信从小程序登录:"+request.getQueryString());
 		response.setContentType("text/html; charset=utf-8");
 		
+		String[] paremetersArray=request.getQueryString().split("&");
+		String uid,unionid,image,name,type,openid;
+		unionid=paremetersArray[0].split("=")[1];
+		uid=unionid;	
+		image=paremetersArray[1].split("=")[1];
+		name=paremetersArray[2].split("=")[1];
+		type="WXApplet";
+		openid=paremetersArray[3].split("=")[1];
+		
+		responseCookieAndHtml(request, response, uid, unionid, image, name, type, openid);
 	}
 
 	@RequestMapping("/wx_callback")
