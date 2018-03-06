@@ -32,11 +32,11 @@ public class WXAppletUnionidController {
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
 	@RequestMapping("/getWXAppletUnionid")
-	public void getWXAppletUnionid(HttpServletRequest request,
+	public JSONObject getWXAppletUnionid(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		logger.info("微信从小程序进入");
 		response.setContentType("text/html; charset=utf-8");
-		
+		/*
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(request.getInputStream()));
 		StringBuilder stringBuilder = new StringBuilder();
 		String line = null;
@@ -44,7 +44,7 @@ public class WXAppletUnionidController {
 		    stringBuilder.append(line);
 		}
 		String body = stringBuilder.toString();
-		logger.debug("模版消息接口被调用时返回的数据包：body="+body);
+		logger.debug("模版消息接口被调用时返回的数据包：body="+body);*/
 		
 		String code = request.getParameter("code");
 		logger.debug("code:" + code);
@@ -70,10 +70,11 @@ public class WXAppletUnionidController {
 			logger.error("Code无效");
 			obj.put("errcode", errcode);
 		}
-		responseBack(request, response, obj);
+		//responseBack(request, response, obj);
+		return obj;
 	}
 	
-	public static String httpclientReq(String url) {
+	private String httpclientReq(String url) {
 		HttpClient httpClient = new HttpClient();
 		GetMethod getMethod = new GetMethod(url); // 创建GET方法的实
 		String response = null;
@@ -91,7 +92,7 @@ public class WXAppletUnionidController {
 		return response;
 	}
 
-	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
+	/*private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
 			throws IOException {
 		logger.debug("执行responseBack...");
 		boolean jsonP = false;
@@ -112,5 +113,5 @@ public class WXAppletUnionidController {
 			out.write(");");
 			logger.debug("返回成功。。。");
 		}
-	}
+	}*/
 }
