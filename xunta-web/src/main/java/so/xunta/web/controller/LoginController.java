@@ -475,7 +475,7 @@ public class LoginController {
 				response.sendRedirect(recirectUrl);
 				return;
 			}
-			domainWithContext="https://www.xunta.so/xunta-web/";
+			domainWithContext=domainWithContext.replace("http:", "https:");
 			logger.debug("==>redirect to url :" + domainWithContext);
 			response.sendRedirect(domainWithContext + "client_code/index.html");
 		} catch (IOException e) {
