@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService{
 			throw new RuntimeException("用户类型未指定\n");
 		}
 		
-		if(!user.getType().equals("QQ")&&!user.getType().equals("WX")&&!user.getType().equals("WXApplet")&&!user.getType().equals("Phone")&&!user.getType().equals("sys"))
+		if(!user.getType().equals("QQ")&&!user.getType().equals("WX")&&!user.getType().equals("Phone")&&!user.getType().equals("sys"))
 		{
 			throw new RuntimeException("用户类型不在QQ WX Phone类别中");
 		}

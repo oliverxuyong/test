@@ -327,10 +327,10 @@ public class LoginController {
 		uid=unionid;	
 		image=paremetersArray[1].split("=")[1];
 		name=paremetersArray[2].split("=")[1];
-		type="WXApplet";
+		type="WX";
 		openid=paremetersArray[3].split("=")[1];
 		
-		so.xunta.beans.User finduser = userDao.findUserByThirdPartyIdAndType(uid, type);
+		/*so.xunta.beans.User finduser = userDao.findUserByThirdPartyIdAndType(uid, type);
 		if (finduser != null) {
 			image = finduser.getImgUrl();
 			name = finduser.getName();
@@ -342,7 +342,7 @@ public class LoginController {
 			logger.debug("user openid: " + openid);
 			user.setOpenid(openid);
 			userDao.updateUser(user);
-		}
+		}*/
 		
 		responseCookieAndHtml(request, response, uid, unionid, image, name, type, openid);
 	}
