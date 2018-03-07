@@ -2617,18 +2617,29 @@ function sendKeyWordToBack(input_value,data) {
 		searchTag(suggestWrap,data[i]);
 	}
 	
+	var guideAddTagText=$("#guideAddTagText");
+	
 	// 输入框为空的话，结果不显示
 	if(input_value!="" && data.length!=0){
 		//2018.03.02   叶夷     在这里判断如果是引导页的添加框，一旦有搜索结果的出现，guideAddTagText消失
-		var guideAddTagText=$("#guideAddTagText");
 		if(guideAddTagText.length>0){
-			guideAddTagText.remove();
+			guideAddTagText.hide();
 		}
 		
 		$("#htmlObj").css("height","300px");
 		suggestWrap.show();
+		
 	}else{
-		$("#htmlObj").css("height","100px");
+		//2018.03.07  因为存在引导页，添加标签框如果没有搜索结果则变回之前的引导页的添加框的模样
+    	var guideMUBubble=$("#guideMUBubble");
+    	if(guideMUBubble.length>=0){
+    		var _obj = $("#showatloaded");
+    		var _h = _obj.height()/4.5;
+    		$("#htmlObj").css("height",_h);
+    		guideAddTagText.show();
+    	}else{
+    		$("#htmlObj").css("height","100px");
+    	}
 		suggestWrap.hide();
 	}
 }
@@ -2687,6 +2698,15 @@ function addCpShow(data){
 		//console.log("添加标签成功");
     	toast_popup("添加标签成功",2500);
     	closePop();// 添加标签框关掉
+    	
+    	//2018.03.07  因为存在引导页，所以在这里判断引导页的气泡是否存在，存在则去除
+    	var guideMUBubble=$("#guideMUBubble");
+    	if(guideMUBubble.length>=0){
+    		guideMUBubble.remove();
+    		//因为是引导页的添加标签，所以添加完标签之后数据开始请求
+    		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+    	}
+    	
 	}else{
 		//console.log("标签添加过,请重新添加");
     	toast_popup("标签添加过,请重新添加",2500);
@@ -3246,6 +3266,18 @@ function guideAddTag() {
 	var htmlObj=$("#htmlObj");
 	var htmlObjTop=guideMUBubbleTop+guideMUBubbleHeight+guideMUBubbleHeight/5;
 	htmlObj.css("top",htmlObjTop);
+	
+	//将guideAddTagText绑定点击事件
+	var guideAddTagText=window.document.getElementById('guideAddTagText');
+	guideAddTagText.addEventListener('click',function(){
+		isGuideMatchUser=false;
+		closePop();//关闭对话框
+
+		//删除对话气泡
+		var guideMUBubble=$("#guideMUBubble");
+		guideMUBubble.remove();
+		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+	});
 }
 
 /**
@@ -3282,7 +3314,7 @@ function alertWinForGuide(_context,_w,_h){
     document.body.appendChild(tipsObj);
     document.body.appendChild(htmlBgObj);
     
-    //绑定点击事件，点击之后引导页的东西全部消失
+    /*//绑定点击事件，点击之后引导页的东西全部消失
 	bgObj.addEventListener('click',function(){
 		isGuideMatchUser=false;
 		closePop();//关闭对话框
@@ -3294,7 +3326,7 @@ function alertWinForGuide(_context,_w,_h){
 		//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
 		//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
 		requestCP(userId,requestCPNum,++currentRequestedCPPage);
-	},false);
+	},false);*/
 }
 
 /**
