@@ -330,6 +330,20 @@ public class LoginController {
 		type="WXApplet";
 		openid=paremetersArray[3].split("=")[1];
 		
+		so.xunta.beans.User finduser = userDao.findUserByThirdPartyIdAndType(uid, type);
+		if (finduser != null) {
+			image = finduser.getImgUrl();
+			name = finduser.getName();
+		}
+
+		// 如果有些用户的openid没有保存，则登录时保存更新
+		User user = userDao.findUserByThirdPartyId(unionid);
+		if (user != null && user.getOpenid() == null) {
+			logger.debug("user openid: " + openid);
+			user.setOpenid(openid);
+			userDao.updateUser(user);
+		}
+		
 		responseCookieAndHtml(request, response, uid, unionid, image, name, type, openid);
 	}
 
