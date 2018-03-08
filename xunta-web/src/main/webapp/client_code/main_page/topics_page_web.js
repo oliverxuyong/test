@@ -2705,6 +2705,8 @@ function addCpShow(data){
     		guideMUBubble.remove();
     		//因为是引导页的添加标签，所以添加完标签之后数据开始请求
     		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+    		//2018.03.08  叶夷      在引导页点击添加标签数据传给后台
+    		sendGuidePageAddTag(userId);
     	}
     	
 	}else{
@@ -3277,6 +3279,9 @@ function guideAddTag() {
 		var guideMUBubble=$("#guideMUBubble");
 		guideMUBubble.remove();
 		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+		
+		//2018.03.08  叶夷      点击向下箭头按钮数据传给后台
+		sendClickGuideAddTagText(userId);
 	});
 }
 
@@ -3341,6 +3346,9 @@ function responseIfUserInited(data){
 		//绑定点击事件
 		bgObj.addEventListener('click',function(){
 			clickMainPage(bgObj);
+			
+			//2018.03.08  叶夷      点击出现第二步的引导页，数据传给后台
+			sendShowGuidePageSecond();
 		},false);
 		
 		//将匹配人的引导显示出来

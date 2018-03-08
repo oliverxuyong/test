@@ -361,3 +361,17 @@ function ifUserInited(userId){
 	var paraStr = userId;
 	execRoot("ifUserInited('"+ paraStr +"')");
 }
+//2018.03.08  叶夷    通过请求请求服务器判断是否出现引导页
+function sendShowGuidePageSecond(){
+	execRoot("sendShowGuidePageSecond()");
+}
+//2018.03.08  叶夷      点击向下箭头按钮数据传给后台
+function sendClickGuideAddTagText(userId){
+	var paraStr = userId;
+	execRoot("sendClickGuideAddTagText('"+ paraStr +"')");
+}
+//2018.03.08  叶夷      在引导页点击添加标签数据传给后台
+function sendGuidePageAddTag(userId){
+	var paraStr = userId;
+	execRoot("sendGuidePageAddTag('"+ paraStr +"')");
+}

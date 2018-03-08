@@ -316,8 +316,9 @@ function requestMutualCP(userId , toUserid) {
 	WS_Send(json_obj);
 }
 
-//2018.03.08  叶夷    通过请求请求服务器判断是否出现引导页
+//2018.03.08  叶夷    通过请求服务器判断是否出现引导页
 function ifUserInited(userId) {
+	console.log("通过请求服务器判断是否出现引导页");
 	var json_obj = {
 		_interface : "1114-1",
 		interface_name : "if_user_inited",
@@ -325,6 +326,36 @@ function ifUserInited(userId) {
 		timestamp:""
 	};
 	WS_Send(json_obj);
+}
+
+//2018.03.08  叶夷  点击出现引导页步骤二数据传给后台
+function sendShowGuidePageSecond(){
+	console.log("点击出现引导页步骤二数据传给后台");
+	var json_obj = {
+			_interface : "9115-1"
+		};
+		WS_Send(json_obj);
+}
+
+//2018.03.08  叶夷   点击向下箭头按钮数据传给后台
+function sendClickGuideAddTagText(){
+	console.log("点击向下箭头按钮数据传给后台");
+	var json_obj = {
+			_interface : "9116-1",
+			my_user_id : userId.toString(),
+			timestamp:""
+		};
+		WS_Send(json_obj);
+}
+//2018.03.08  叶夷    在引导页点击添加标签数据传给后台
+function sendGuidePageAddTag(){
+	console.log("在引导页点击添加标签数据传给后台");
+	var json_obj = {
+			_interface : "9117-1",
+			my_user_id : userId.toString(),
+			timestamp:""
+		};
+		WS_Send(json_obj);
 }
 
 function tasksOnWired() {//ws连接事件的响应执行方法:
