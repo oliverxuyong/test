@@ -39,7 +39,8 @@ function syncUser(cookieUserStr){//cookie之后到这里.如果是新用户,服�
    
    if(u.name==null||u.type==null||u.unionid==null){
         toast("账号信息不全，请重新登录");
-        showLogin();
+        //showLogin();
+        tmpLoginForGetUserInfo();
         return;
    }
    
@@ -113,7 +114,8 @@ function checkUser(userInfoJsonStr) {//读取localStorage之后到这里.
                 userInfoIsReady(JSON.stringify(userInfoJsonObj));
             } else {
                 console.log("checkUser证实localstorage中的用户数据在服务器上不存在,进入登录页面.")
-                showLogin();
+                //showLogin();
+                tmpLoginForGetUserInfo();
             }
         },
         error : function(data, textStatus) {//网线拔了后,浏览器会报jquery无网错误,但不会走到这里.
@@ -146,6 +148,46 @@ function showLogin(){
     //2017.11.17  叶夷  在这里判断如果是PC和ipad,则三个登录方式都显示，如果是移动端，则只有手机登录
     showLoginMode();
 }
+
+/**2018.03.08  叶夷      
+ * 为了测试阶段取消登陆页面，在这里把上面的方法（登录页面出现的方法showLogin()）在这里被替代
+ * 在这里从服务器获取用户信息数据，之后直接调用exitmobilelogin_gobacktoindexpage(receivedData)方法
+ * receivedData数据格式
+ * 	{ "userid", userid,
+	  "username", username,
+	  "image_url", image_url,
+	  "code", "1",
+	  "message", "登录成功"}
+ */
+function tmpLoginForGetUserInfo(){
+	//放一个模拟数据用来测试
+	var receivedData = 
+			{ userid:"932909988979019776",
+			  username: "叶汉良",
+			  image_url: "../image/guideMU1.png",
+			  code: "1",
+			  message: "登录成功"};
+	exitmobilelogin_gobacktoindexpage(receivedData);
+	
+	/*$.ajax({
+        url : window.location.protocol+"//" + domain + "/tmp_login",
+        action : "post",
+        dataType : "jsonp",
+        jsonp : 'callback',
+        contentType : "application/x-www-form-urlencoded; charset=utf-8",
+        async : false,
+        success : function(data, textStatus) {
+        	console.log("tmp_login获得用户信息："+JSON.stringify(data));
+        	exitmobilelogin_gobacktoindexpage(receivedData);
+        },
+        error : function(data, textStatus) {//网线拔了后,浏览器会报jquery无网错误,但不会走到这里.
+        	console.log("tmp_login获得用户信息,重新请求.")
+        	log2root("tmp_login获得用户信息,重新请求.")
+        	tmpLoginForGetUserInfo();
+        }
+	});*/
+}
+
 /**2017.11.17  叶夷  在这里判断如果是PC和ipad,则三个登录方式都显示，如果是移动端，则只有手机登录*/
 function showLoginMode(){
 	console.log("判断终端类型 "+userAgent);
