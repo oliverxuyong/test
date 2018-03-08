@@ -398,10 +398,15 @@ public class MobilePhoneRegisterController {
 	public void userTmpLogin(String phonenumber,String password,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		Long userid = idWorker.nextId();
 		String username = tmpUserIdDao.getTmpUserId();
+		
+		User new_user = new User(userid, idWorker.nextId()+"", username,"http://42.121.136.225:8888/user-pic2.jpg", "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
+		new_user.setEvent_scope("salsa");
+		User u = userService.addUser(new_user);
+		
 		JSONObject ret = new JSONObject();
 		ret.put("userid", userid);
 		ret.put("username", username);
-		ret.put("image_url", "http://42.121.136.225:8888/user-pic2.jpg");
+		ret.put("image_url", u.getImgUrl());
 		ret.put("code", "1");
 		ret.put("message", "登录成功");
 		responseBack(request, response, ret);
