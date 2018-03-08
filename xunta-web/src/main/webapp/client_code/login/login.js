@@ -178,12 +178,12 @@ function tmpLoginForGetUserInfo(){
         async : false,
         success : function(data, textStatus) {
         	console.log("tmp_login获得用户信息："+JSON.stringify(data));
-        	exitmobilelogin_gobacktoindexpage(receivedData);
+        	exitmobilelogin_gobacktoindexpage(data);
         },
         error : function(data, textStatus) {//网线拔了后,浏览器会报jquery无网错误,但不会走到这里.
         	console.log("tmp_login获得用户信息,重新请求.")
         	log2root("tmp_login获得用户信息,重新请求.")
-        	tmpLoginForGetUserInfo();
+        	//tmpLoginForGetUserInfo();
         }
 	});*/
 }

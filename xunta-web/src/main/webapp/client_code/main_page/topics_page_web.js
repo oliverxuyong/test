@@ -3337,8 +3337,9 @@ function alertWinForGuide(_context,_w,_h){
 //2018.03.08  叶夷      服务器回复判断是否出现引导页
 function responseIfUserInited(data){
 	//2018.02.27  叶夷    这里写如果出现引导页的动画
-	var isShowGuide=true;//是否需要出现引导页，这是由后台传过来的参数决定
-	if(isShowGuide){//需要引导页，在用户浏览完引导内容之后再显示首页内容
+	var isShowGuide=0;//测试版本
+	//var isShowGuide=data.if_user_inited;//是否需要出现引导页，这是由后台传过来的参数决定
+	if(isShowGuide==0){//需要引导页，在用户浏览完引导内容之后再显示首页内容
 		//先用一块透明的布覆盖在屏幕上，为了之后的点击屏幕时间
 		var bgObj = document.createElement('div');
 		bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background-color:rgba(0,0,0,0);position:absolute;top:0;left:0;z-index:200;opacity:0.0;filter:alpha(opacity =0);";
