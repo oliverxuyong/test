@@ -268,7 +268,10 @@
 			//匹配人容器的大小设置,为了引导页的显示，先将匹配人容器的大小计算出来
 			setMatchUsersContainerSize();
 			
-			//2018.02.27  叶夷    这里写如果出现引导页的动画
+			//2018.03.08  叶夷    通过请求请求服务器判断是否出现引导页
+			ifUserInited(userId);
+			
+			/* //2018.02.27  叶夷    这里写如果出现引导页的动画
 			var isShowGuide=true;//是否需要出现引导页，这是由后台传过来的参数决定
 			if(isShowGuide){//需要引导页，在用户浏览完引导内容之后再显示首页内容
 				//先用一块透明的布覆盖在屏幕上，为了之后的点击屏幕时间
@@ -296,7 +299,7 @@
 				//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
 				//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
 				requestCP(userId,requestCPNum,++currentRequestedCPPage);
-			}
+			} */
 			
 			//2017.08.23 叶夷   各个控件根据屏幕调整
 			showMatchedUsers();

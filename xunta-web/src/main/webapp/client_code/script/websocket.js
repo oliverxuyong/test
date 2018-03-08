@@ -315,6 +315,18 @@ function requestMutualCP(userId , toUserid) {
 	};
 	WS_Send(json_obj);
 }
+
+//2018.03.08  叶夷    通过请求请求服务器判断是否出现引导页
+function ifUserInited(userId) {
+	var json_obj = {
+		_interface : "1114-1",
+		interface_name : "if_user_inited",
+		my_user_id : userId.toString(),
+		timestamp:""
+	};
+	WS_Send(json_obj);
+}
+
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
 	task_RequestCP();
@@ -490,7 +502,13 @@ function checkMessageInterface(evnt) {
 	if (jsonObj._interface == '1113-2') {
 		console.log("返回用户请求指定cp匹配的用户:"+JSON.stringify(jsonObj.cp_matched_user_arr));
 		exec("matchUsers_page","responseUserCpMatchUsers("+evnt.data+")");
-	}}
+	}
+	//2018.03.08  叶夷    通过请求请求服务器回复判断是否出现引导页
+	if (jsonObj._interface == '1114-2') {
+		console.log("返回是否出现引导页:"+JSON.stringify(jsonObj));
+		exec("main_page","responseIfUserInited("+evnt.data+")");
+	}
+}
 
 
 function browserOnlineOfflineEvent(){

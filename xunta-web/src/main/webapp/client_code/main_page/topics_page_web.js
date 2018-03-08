@@ -3329,6 +3329,39 @@ function alertWinForGuide(_context,_w,_h){
 	},false);*/
 }
 
+//2018.03.08  叶夷      服务器回复判断是否出现引导页
+function responseIfUserInited(data){
+	//2018.02.27  叶夷    这里写如果出现引导页的动画
+	var isShowGuide=true;//是否需要出现引导页，这是由后台传过来的参数决定
+	if(isShowGuide){//需要引导页，在用户浏览完引导内容之后再显示首页内容
+		//先用一块透明的布覆盖在屏幕上，为了之后的点击屏幕时间
+		var bgObj = document.createElement('div');
+		bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background-color:rgba(0,0,0,0);position:absolute;top:0;left:0;z-index:200;opacity:0.0;filter:alpha(opacity =0);";
+		document.body.appendChild(bgObj);
+		//绑定点击事件
+		bgObj.addEventListener('click',function(){
+			clickMainPage(bgObj);
+		},false);
+		
+		//将匹配人的引导显示出来
+		showGuideMatchUsers();//显示了匹配人头像
+		
+		timeOutSuccess=setTimeout(function(){
+			showGuideMUBubble();//显示匹配人头像的引导文字
+		},aniSecond * 0.4* 1000);
+		
+		//将添加标签的圆圈位置固定好且显示
+		timeOutSuccess=setTimeout(function(){
+			$("#mytag-container").show();
+			showGuideAddtagCircleAndArrow();
+		},aniSecond * 0.4* 1000+2000);
+	}else{//不需要引导页则直接显示首页内容
+		//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
+		//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
+		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+	}
+}
+
 /**
  * end:叶夷
  */

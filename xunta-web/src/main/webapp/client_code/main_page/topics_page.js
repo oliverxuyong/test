@@ -355,3 +355,9 @@ function upload() {
 		toast("传输失败，请检查网络");
 	});
 }
+
+//2018.03.08  叶夷    通过请求请求服务器判断是否出现引导页
+function ifUserInited(userId){
+	var paraStr = userId;
+	execRoot("ifUserInited('"+ paraStr +"')");
+}
