@@ -142,12 +142,12 @@ public class UserController {
 			/*
 			 * 查询用户是否存在初始化话题
 			 * 		如果不存在初始化话题,就初始化话题
-			 */
+			 *
 			if(user.getIfInitedTopics()==0){//代表没有初始化话题列表
 				//recommendService.initRecommendParm(user);
 				user.setIfInitedTopics(1);
 				userService.updateUser(user);		
-			}
+			}*/
 		} catch (Exception e) {
 			logger.error("添加用户失败"+e.getMessage(), e);
 		}
