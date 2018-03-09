@@ -35,10 +35,11 @@
             		<!-- 2018.01.08 叶夷   这是显示我的标签的地方 -->
 					<div id="header" style="display:none">
 							<div id="title" >
-								<span>通过关注点筛选</span>
+								<span id="titleText" style="line-height:48px;">通过关注点筛选</span>
 								<div id="groupChat" class="groupChat">
-									<img src="../image/groupChatAdd.png">
-									<div id="groupChatText" style="float: right;height: 100%;margin-right:15px;">发起群聊话题...</div>
+									<img id='groupChatAdd' class="groupChatAdd" src="../image/groupChatAdd.png">
+									<input id='inputGroupChat' class='inputGroupChat' value='群话题' disabled="disabled" onfocus="if(this.value=='发起限时群话题...') {this.value=''}" onblur="if(this.value=='') {this.value='发起限时群话题...'}" autofocus="autofocus">
+									<!-- <div id="groupChatText" style="float: right;height: 100%;margin-right:15px;">发起群聊话题...</div> -->
 								</div>
 							</div>
 							<!-- <div id="title">匹配人列表页</div> -->
@@ -137,11 +138,13 @@
 		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page_web.css");
 		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page.css");
 		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page_web.css");
+		loadCss(preUrl+"/xunta-web/client_code/css/popup.css");
 		//将需要的js文件变成js代码生成
 		loadJs(preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
 		loadJs(preUrl+"/xunta-web/client_code/script/jquery.nicescroll.min.js");
 		loadJs(preUrl+"/xunta-web/client_code/script/common-xunta.js");
 		loadJs(preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+		loadJs(preUrl+"/xunta-web/client_code/script/popup.js");
 		loadJs(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page_common_web.js");
 		loadJs(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page_common.js");
 		loadJs(preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page_common_web.js");
@@ -216,7 +219,7 @@
     		
     		//wrap的height设置
     		var headerHeight=$("#header").height();
-    		var wrapHeight=document.body.clientHeight-headerHeight;
+    		var wrapHeight=document.body.clientHeight;
     		wrap.style.height=wrapHeight+"px";
     		
             var tabClick = wrap.querySelectorAll('.tabClick')[0];

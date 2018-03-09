@@ -1,5 +1,8 @@
 //返回上一页   2016/12/25 deng
 function backBtn(){
+	//2018.03.09   叶夷   点击回退键将添加群聊框还原
+	resetGroupChat();
+	
 	//退出聊天列表时首页的未读消息数去除
 	exec('main_page',"removeUnreadNum()");
 	

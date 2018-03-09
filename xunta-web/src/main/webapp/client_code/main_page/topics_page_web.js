@@ -125,6 +125,7 @@ var fullTextArray=new Array();
 // i表示一批推荐标签的第几个标签
 function appendElement(/*i, */cpid,text,selectTagNum) {
 	var cp_container = $("#cp-container");// 装推荐标签的容器
+	minCPSize = $("body").width()/8;
 	
 	// 这是cp的选择人数
 	//var selectTagNum =cp.howmanypeople_selected;
@@ -256,7 +257,7 @@ function deleteBigCp(){
 	}
 }
 
-var minCPSize = $("body").width()/8;// 最小内圆的大小
+var minCPSize;// 最小内圆的大小
 var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 13;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值

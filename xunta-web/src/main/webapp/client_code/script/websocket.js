@@ -343,7 +343,7 @@ function sendShowGuidePageSecond(){
 }
 
 //2018.03.08  叶夷   点击向下箭头按钮数据传给后台
-function sendClickGuideAddTagText(){
+function sendClickGuideAddTagText(userId){
 	console.log("点击向下箭头按钮数据传给后台");
 	var json_obj = {
 			_interface : "9116-1",
@@ -353,12 +353,20 @@ function sendClickGuideAddTagText(){
 		WS_Send(json_obj);
 }
 //2018.03.08  叶夷    在引导页点击添加标签数据传给后台
-function sendGuidePageAddTag(){
+function sendGuidePageAddTag(userId){
 	console.log("在引导页点击添加标签数据传给后台");
 	var json_obj = {
 			_interface : "9117-1",
 			my_user_id : userId.toString(),
 			timestamp:""
+		};
+		WS_Send(json_obj);
+}
+//2018.03.09  叶夷   有人点击发起群聊话题数据传给后台
+function sendGroupChatInfo(){
+	console.log("有人点击发起群聊话题数据传给后台");
+	var json_obj = {
+			_interface : "9118-1",
 		};
 		WS_Send(json_obj);
 }
