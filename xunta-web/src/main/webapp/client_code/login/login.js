@@ -160,18 +160,18 @@ function showLogin(){
 	  "message", "登录成功"}
  */
 function tmpLoginForGetUserInfo(){
-	/*//放一个模拟数据用来测试
+	//放一个模拟数据用来测试
 	var receivedData = 
 			{ userid:"932909988979019776",
 			  username: "叶汉良",
 			  image_url: "../image/guideMU1.png",
 			  code: "1",
 			  message: "登录成功"};
-	exitmobilelogin_gobacktoindexpage(receivedData);*/
+	exitmobilelogin_gobacktoindexpage(receivedData);
 	
-	$.ajax({
+	/*$.ajax({
         url : window.location.protocol+"//" + domain + "/tmp_login",
-        action : "post",
+        action : "get",
         dataType : "jsonp",
         jsonp : 'callback',
         contentType : "application/x-www-form-urlencoded; charset=utf-8",
@@ -181,11 +181,11 @@ function tmpLoginForGetUserInfo(){
         	exitmobilelogin_gobacktoindexpage(data);
         },
         error : function(data, textStatus) {//网线拔了后,浏览器会报jquery无网错误,但不会走到这里.
-        	console.log("tmp_login获得用户信息,重新请求.")
-        	log2root("tmp_login获得用户信息,重新请求.")
+        	console.log("tmp_login获得用户信息失败,重新请求.")
+        	log2root("tmp_login获得用户信息失败,重新请求.")
         	//tmpLoginForGetUserInfo();
         }
-	});
+	});*/
 }
 
 /**2017.11.17  叶夷  在这里判断如果是PC和ipad,则三个登录方式都显示，如果是移动端，则只有手机登录*/

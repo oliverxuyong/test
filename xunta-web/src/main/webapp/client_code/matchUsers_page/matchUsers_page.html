@@ -19,7 +19,7 @@
 		
     <body>
     	<div id="goback" onclick="backBtn()"><img src="../image/goback5.png" /></div>
-		<div class="wrap" id="wrap">
+		<div class="wrap" id="wrap" >
     		<ul class="tabClick">
         		<li class="active">匹配</li>
         		<li>对话</li>
@@ -33,7 +33,14 @@
         		<!-- 第一个页面 -->
             	<div class="tabList">
             		<!-- 2018.01.08 叶夷   这是显示我的标签的地方 -->
-					<div id="header">
+					<div id="header" style="display:none">
+							<div id="title" >
+								<span>通过关注点筛选</span>
+								<div id="groupChat" class="groupChat">
+									<img src="../image/groupChatAdd.png">
+									<div id="groupChatText" style="float: right;height: 100%;margin-right:15px;">发起群聊话题...</div>
+								</div>
+							</div>
 							<!-- <div id="title">匹配人列表页</div> -->
 							<!-- <div class="_closeBtn" onclick="closeBtn()"><img src="../image/close.png" ></div> -->
 					</div>

@@ -97,7 +97,16 @@ var myTagIds=new Array();//点击过的我的标签id
 var myTagContainerLine=0;//我的标签框标签行数
 function addMyCp(cpid,text){
 		var header=$("#header");
+		header.show();
 		var beforeHeaderHeight=header.height();//在我的标签放置之前的标签框的高度
+		
+		//2018.03.09   调整发起群聊话题按钮的位置
+		var groupChat=document.getElementById("groupChat");
+		var groupChatText=document.getElementById("groupChatText");
+		var groupChatTextWidth=groupChatText.offsetWidth;
+		var groupChatWidth=parseInt(groupChatTextWidth)+17+15+12;
+		groupChat.style.width=groupChatWidth+"px";
+		
 		
 		var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
 		//myTag.css("font-size",createSampleMyTag());
