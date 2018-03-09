@@ -404,7 +404,7 @@ public class MobilePhoneRegisterController {
 		User u = userService.addUser(new_user);
 		
 		JSONObject ret = new JSONObject();
-		ret.put("userid", userid);
+		ret.put("userid", userid+"");
 		ret.put("username", username);
 		ret.put("image_url", u.getImgUrl());
 		ret.put("code", "1");
