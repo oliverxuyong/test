@@ -1,15 +1,17 @@
 //返回上一页   2016/12/25 deng
 function backBtn(){
-	//2018.03.09   叶夷   点击回退键将添加群聊框还原
-	resetGroupChat();
-	
-	//退出聊天列表时首页的未读消息数去除
-	exec('main_page',"removeUnreadNum()");
-	
-	//聊天列表未读数去除
-	exec('matchUsers_page',"changeUnreadColor()");
-	
-	openWin('main_page', 'main_page/main_page.html', '');
+	//2018.03.09   叶夷   点击回退键将添加群聊框还原，在这里做判断，如果是还原群聊框则仅仅还原，否则是页面会退
+	if($(".groupChatAdd2").length>0){//在这里用群聊框回退键是否存在来判断是页面回退还是群聊框还原
+		resetGroupChat();
+	}else{
+		//退出聊天列表时首页的未读消息数去除
+		exec('main_page',"removeUnreadNum()");
+		
+		//聊天列表未读数去除
+		exec('matchUsers_page',"changeUnreadColor()");
+		
+		openWin('main_page', 'main_page/main_page.html', '');
+	}
 }
 
 //关闭当前页，返回主界面   2016/12/25 deng

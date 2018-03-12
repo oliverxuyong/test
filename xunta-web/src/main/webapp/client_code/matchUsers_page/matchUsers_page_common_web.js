@@ -34,7 +34,6 @@ function showMatchUsers(matchUsers,userid,username,img_src,positiveCommonCps,neg
 		}
 	}
 	
-	//一个匹配人的发消息按钮
 	var sendMsgButton=$("<div></div>").attr("class","sendMsg").text("发消息");
 	sendMsgButton.click(function() {
 		enterDialogPage(userid,username,img_src);
@@ -42,6 +41,13 @@ function showMatchUsers(matchUsers,userid,username,img_src,positiveCommonCps,neg
 	
 	var matchUserContentTop=$("<div></div>").attr("class", "matchUser_content_top");
 	matchUserContentTop.append(usernameDiv).append(sendMsgButton);
+	
+	//一个匹配人的发消息按钮
+	if($(".groupChatAdd2").length>0){
+		sendMsgButton.hide();
+		var guideChatCheckBox=$("<input class='guideChatCheckBox' id='guideChatCheckBox"+userid+"' type='checkbox'><label for='guideChatCheckBox"+userid+"'></label>");
+		matchUserContentTop.append(guideChatCheckBox);
+	}
 	
 	matchUserContent.append(matchUserContentTop).append(userPositiveTags).append(userNegativeTags);
 	matchUser.append(userimg).append(matchUserContent);
@@ -171,12 +177,15 @@ var groupOldChatWidth;//这是添加群聊框变化之前的width
 var inputGroupChatWidth;//这是添加群聊输入框变长之前的width;
 //2018.03.09 叶夷    点击出现发起群聊话题输入框
 function showGroupSearchInput(){
+	//取消变长输入框的点击事件
+	$("#inputGroupChat").unbind();
+	$("#groupChat").unbind();
 	//先保存添加群聊的按钮的高度，为了之后的还原
 	var groupChat=document.getElementById("groupChat");
 	groupOldChatWidth=groupChat.offsetWidth;
 	//先将通过关注点筛选文字隐藏
-	var titleText=document.getElementById("titleText");
-	titleText.style.display="none";
+	var titleText=$("#titleText");
+	titleText.hide();
 	//将加号图片更改放在右边,class更改成groupChatAdd2
 	var groupChatAdd=document.getElementById("groupChatAdd");
 	groupChatAdd.setAttribute("class", "groupChatAdd2");
@@ -186,7 +195,7 @@ function showGroupSearchInput(){
 	inputGroupChat.setAttribute("class", "inputGroupChat2");
 	$("#inputGroupChat").val("发起限时群话题...");
 	//输入框拉长动画
-	var titleWidth=document.getElementById("title").offsetWidth;
+	var titleWidth=document.getElementById("title").offsetWidth-20;//这20是阴影效果
 	$("#groupChat").animate({
 		width:titleWidth
 	},500,function(){
@@ -196,9 +205,6 @@ function showGroupSearchInput(){
 		var inputNewGroupChatWidth=groupChatGrowWidth+inputGroupChatWidth-17-12-5;
 		$("#inputGroupChat").css("width",inputNewGroupChatWidth);
 		//inputGroupChat.offsetWidth=inputNewGroupChatWidth;//input宽度加长
-		
-		//取消变长输入框的点击事件
-		$("#groupChat").unbind();
 		
 		//2018.03.09  叶夷    有人点击发起群聊话题则将数据返回给后台
 		$("#groupChatAdd").click(function(){
@@ -210,11 +216,27 @@ function showGroupSearchInput(){
 		});
 		//log2root("inputGroupChat变化后的高度："+$("#inputGroupChat").height());
 	});
+	
+	//2018.03.12 叶夷   点击群聊按钮之后，将发送消息按钮隐藏，然后加入复选框
+	var sendMsgs=$(".sendMsg");
+	for(var temp=0;temp<sendMsgs.length;temp++){
+		sendMsgs.eq(temp).hide();
+	}
+	//加入复选框
+	var matchUserContentTops=$(".matchUser_content_top");
+	var matchUsers=$(".matchUser");
+	for(var temp=0;temp<matchUserContentTops.length;temp++){
+		var userid=matchUsers.eq(temp).attr("id").replace(/[^0-9]/ig,"");
+		var guideChatCheckBox=$("<input class='guideChatCheckBox' id='guideChatCheckBox"+userid+"' type='checkbox'><label for='guideChatCheckBox"+userid+"'></label>");
+		matchUserContentTops.eq(temp).append(guideChatCheckBox);
+	}
 }
 
 /**2018.03.09   叶夷   点击回退键将添加群聊框还原
  * */
 function resetGroupChat(){
+	$("#groupChatAdd").unbind();
+	
 	$("#inputGroupChat").val("群话题");
 	//将添加群聊标签框还原
 	var groupChatAdd=document.getElementById("groupChatAdd");
@@ -236,4 +258,14 @@ function resetGroupChat(){
 		//alert("测试2："+window.event.srcElement.tagName);
 		showGroupSearchInput();
 	});
+	
+	//2018.03.12 叶夷  取消群聊按钮之后，将发送消息按钮显示，复选框消失
+	var guideChatCheckBoxs=$(".guideChatCheckBox");
+	for(var temp=0;temp<guideChatCheckBoxs.length;temp++){
+		guideChatCheckBoxs.eq(temp).remove();
+	}
+	var sendMsgs=$(".sendMsg");
+	for(var temp=0;temp<sendMsgs.length;temp++){
+		sendMsgs.eq(temp).show();
+	}
 }

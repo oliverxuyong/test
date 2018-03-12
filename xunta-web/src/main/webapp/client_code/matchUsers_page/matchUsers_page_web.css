@@ -100,7 +100,7 @@ html, body {
     margin-right: 6px;
     font-size: 13px;
     letter-spacing: 1px;
-    border: 1px solid #969494;
+    border: 1px solid rgba(150, 148, 148, 0.26);
     cursor: pointer;
     color: #3a3a3a;
     background-color: #f5f5f5;
