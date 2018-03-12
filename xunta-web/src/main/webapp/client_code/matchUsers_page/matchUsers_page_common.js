@@ -252,11 +252,11 @@ function response_user_selected_cp(cp_arr){
   	//2018.03.09   调整发起群聊话题按钮的位置,放在这里是因为这里的位置收header大小的影响
 	var groupChat=$("#groupChat");
 	inputGroupChatWidth=$("#wrap").width()/7;
-	//log2root("inputGroupChatWidth："+inputGroupChatWidth);
+	log2root("inputGroupChatWidth："+inputGroupChatWidth);
 	var inputGroupChat=$("#inputGroupChat");
 	inputGroupChat.css("width",inputGroupChatWidth);
-	var groupChatWidth=inputGroupChatWidth+17+12+5;
-	//log2root("inputGroupChat变化前的高度："+$("#inputGroupChat").height());
+	var groupChatWidth=inputGroupChatWidth+17+12+10;
+	log2root("groupChatWidth："+groupChatWidth);
 	groupChat.css("width",groupChatWidth);
 	inputGroupChat.click(function(){
 		showGroupSearchInput();

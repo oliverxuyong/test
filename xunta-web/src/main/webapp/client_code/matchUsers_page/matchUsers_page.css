@@ -183,7 +183,8 @@ ul{
 	height: 28px;
 	border: none;
 	background-color: transparent;
-	color: #9ca5b6;
+	//color: #9ca5b6;
+	color:#494949;
 	float:right;
 	width: 61%;
 	//margin-top:3px;
