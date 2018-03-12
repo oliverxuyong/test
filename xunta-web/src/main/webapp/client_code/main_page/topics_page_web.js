@@ -109,11 +109,12 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	setTimeout(function() {
 		cpsStartAnimate=false;
 		// 叶夷 2017.07.11 等请求cp动画完成之后再请求用户匹配缩略表
-		if(firstRequestTopMatchedUsers==true){
+		if(firstRequestTopMatchedUsers==true && isShowGuide==1){
 			requestTopMatchedUsers(userId,requestTopMUNum); 
 			//addMPData();
 			//匹配人容器的大小设置
 			//setMatchUsersContainerSize();
+			isShowGuide=1;
 		}
 	},2000);
 }
@@ -3334,12 +3335,12 @@ function alertWinForGuide(_context,_w,_h){
 		requestCP(userId,requestCPNum,++currentRequestedCPPage);
 	},false);*/
 }
-
+var isShowGuide=1;//这是由后台传过来的参数决定,0代表需要，1代表不需要，这里用来判断是否出现引导页，如果=0也用来判断出现引导页的登录的那一次不请求匹配头像。
 //2018.03.08  叶夷      服务器回复判断是否出现引导页
 function responseIfUserInited(data){
 	//2018.02.27  叶夷    这里写如果出现引导页的动画
 	//var isShowGuide=0;//测试版本
-	var isShowGuide=data.if_user_inited;//是否需要出现引导页，这是由后台传过来的参数决定
+	isShowGuide=data.if_user_inited;//是否需要出现引导页，这是由后台传过来的参数决定,0代表需要，1代表不需要
 	if(isShowGuide==0){//需要引导页，在用户浏览完引导内容之后再显示首页内容
 		//先用一块透明的布覆盖在屏幕上，为了之后的点击屏幕时间
 		var bgObj = document.createElement('div');

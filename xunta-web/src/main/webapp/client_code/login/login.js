@@ -176,10 +176,10 @@ function tmpLoginForGetUserInfo(){
         dataType : "jsonp",
         jsonp : 'callback',
         jsonpCallback : "callback_registerbymobilephone",
-        success : function(data, textStatus) {
+        /*success : function(data, textStatus) {
         	console.log("tmp_login获得用户信息："+JSON.stringify(data));
         	exitmobilelogin_gobacktoindexpage(data);
-        },
+        },*/
         error : function(data, textStatus) {//网线拔了后,浏览器会报jquery无网错误,但不会走到这里.
         	console.log("tmp_login获得用户信息失败,重新请求.")
         	log2root("tmp_login获得用户信息失败,重新请求.")
