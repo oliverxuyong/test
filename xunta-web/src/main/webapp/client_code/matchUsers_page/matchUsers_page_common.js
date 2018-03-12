@@ -243,4 +243,21 @@ function response_user_selected_cp(cp_arr){
 	
 	//2017.12.13 叶夷  请求详细匹配人列表
   	requestDetailMatchedUsers();
+  	
+  	//2018.03.09   调整发起群聊话题按钮的位置,放在这里是因为这里的位置收header大小的影响
+	var groupChat=$("#groupChat");
+	inputGroupChatWidth=$("#wrap").width()/9;
+	//log2root("inputGroupChatWidth："+inputGroupChatWidth);
+	$("#inputGroupChat").css("width",inputGroupChatWidth);
+	var groupChatWidth=inputGroupChatWidth+17+12+5;
+	//log2root("inputGroupChat变化前的高度："+$("#inputGroupChat").height());
+	groupChat.css("width",groupChatWidth);
+	groupChat.click(function(){
+		showGroupSearchInput();
+	});
+}
+
+//2018.03.09  叶夷    有人点击发起群聊话题则将数据返回给后台
+function sendGroupChatInfo(){
+	execRoot("sendGroupChatInfo()");
 }

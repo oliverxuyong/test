@@ -80,7 +80,9 @@ function initToGetCP(userId,requestNum,currentPage) {
 function task_RequestCP() {//检查并执行话题列表请求任务.
 	if (doRequestCP) {//检查并执行 请求话题列表的任务.xu9.9
 		console.log("CP请求任务为true,现在执行请求...");
-		requestCP();
+		//2018.03.08   叶夷   因为存在引导页，所以在websocket刚创建成功的时候，调用请求是否打开引导页的方法
+		//requestCP();
+		ifUserInited(userId);
 	}
 }
 
@@ -315,6 +317,60 @@ function requestMutualCP(userId , toUserid) {
 	};
 	WS_Send(json_obj);
 }
+
+//2018.03.08  叶夷    通过请求服务器判断是否出现引导页
+function ifUserInited(userId) {
+	doRequestCP = true;	//任务筐中登记.
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("通过请求服务器判断是否出现引导页");
+		var json_obj = {
+			_interface : "1114-1",
+			interface_name : "if_user_inited",
+			my_user_id : userId.toString(),
+			timestamp:""
+		};
+		WS_Send(json_obj);
+	}
+}
+
+//2018.03.08  叶夷  点击出现引导页步骤二数据传给后台
+function sendShowGuidePageSecond(){
+	console.log("点击出现引导页步骤二数据传给后台");
+	var json_obj = {
+			_interface : "9115-1"
+		};
+		WS_Send(json_obj);
+}
+
+//2018.03.08  叶夷   点击向下箭头按钮数据传给后台
+function sendClickGuideAddTagText(userId){
+	console.log("点击向下箭头按钮数据传给后台");
+	var json_obj = {
+			_interface : "9116-1",
+			my_user_id : userId.toString(),
+			timestamp:""
+		};
+		WS_Send(json_obj);
+}
+//2018.03.08  叶夷    在引导页点击添加标签数据传给后台
+function sendGuidePageAddTag(userId){
+	console.log("在引导页点击添加标签数据传给后台");
+	var json_obj = {
+			_interface : "9117-1",
+			my_user_id : userId.toString(),
+			timestamp:""
+		};
+		WS_Send(json_obj);
+}
+//2018.03.09  叶夷   有人点击发起群聊话题数据传给后台
+function sendGroupChatInfo(){
+	console.log("有人点击发起群聊话题数据传给后台");
+	var json_obj = {
+			_interface : "9118-1",
+		};
+		WS_Send(json_obj);
+}
+
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
 	task_RequestCP();
@@ -490,7 +546,13 @@ function checkMessageInterface(evnt) {
 	if (jsonObj._interface == '1113-2') {
 		console.log("返回用户请求指定cp匹配的用户:"+JSON.stringify(jsonObj.cp_matched_user_arr));
 		exec("matchUsers_page","responseUserCpMatchUsers("+evnt.data+")");
-	}}
+	}
+	//2018.03.08  叶夷    通过请求请求服务器回复判断是否出现引导页
+	if (jsonObj._interface == '1114-2') {
+		console.log("返回是否出现引导页:"+JSON.stringify(jsonObj));
+		exec("main_page","responseIfUserInited("+evnt.data+")");
+	}
+}
 
 
 function browserOnlineOfflineEvent(){

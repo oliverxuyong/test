@@ -97,6 +97,7 @@ var myTagIds=new Array();//点击过的我的标签id
 var myTagContainerLine=0;//我的标签框标签行数
 function addMyCp(cpid,text){
 		var header=$("#header");
+		header.show();
 		var beforeHeaderHeight=header.height();//在我的标签放置之前的标签框的高度
 		
 		var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
@@ -164,4 +165,75 @@ function rgb2hex(rgb) {
 	return ("0" + parseInt(x).toString(16)).slice(-2);
 	}
 	return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-	}
+}
+
+var groupOldChatWidth;//这是添加群聊框变化之前的width
+var inputGroupChatWidth;//这是添加群聊输入框变长之前的width;
+//2018.03.09 叶夷    点击出现发起群聊话题输入框
+function showGroupSearchInput(){
+	//先保存添加群聊的按钮的高度，为了之后的还原
+	var groupChat=document.getElementById("groupChat");
+	groupOldChatWidth=groupChat.offsetWidth;
+	//先将通过关注点筛选文字隐藏
+	var titleText=document.getElementById("titleText");
+	titleText.style.display="none";
+	//将加号图片更改放在右边,class更改成groupChatAdd2
+	var groupChatAdd=document.getElementById("groupChatAdd");
+	groupChatAdd.setAttribute("class", "groupChatAdd2");
+	groupChatAdd.src="../image/groupChatReturn.png";
+	//将输入框更改放在左边,class更改成inputGroupChat2
+	var inputGroupChat=document.getElementById("inputGroupChat");
+	inputGroupChat.setAttribute("class", "inputGroupChat2");
+	$("#inputGroupChat").val("发起限时群话题...");
+	//输入框拉长动画
+	var titleWidth=document.getElementById("title").offsetWidth;
+	$("#groupChat").animate({
+		width:titleWidth
+	},500,function(){
+		//动画结束后input可以输入且宽度加长，加号图片替换成回车图片
+		inputGroupChat.disabled="";//有效
+		var groupChatGrowWidth=titleWidth-groupOldChatWidth;//整个添加群聊框增长的width，input也增长这么多
+		var inputNewGroupChatWidth=groupChatGrowWidth+inputGroupChatWidth-17-12-5;
+		$("#inputGroupChat").css("width",inputNewGroupChatWidth);
+		//inputGroupChat.offsetWidth=inputNewGroupChatWidth;//input宽度加长
+		
+		//取消变长输入框的点击事件
+		$("#groupChat").unbind();
+		
+		//2018.03.09  叶夷    有人点击发起群聊话题则将数据返回给后台
+		$("#groupChatAdd").click(function(){
+			//alert("测试1："+window.event.srcElement.tagName);
+			sendGroupChatInfo();//发送给后台
+			resetGroupChat();
+			toast("功能开发中，敬请期待");
+			return false;// 阻止事件冒泡和默认操作
+		});
+		//log2root("inputGroupChat变化后的高度："+$("#inputGroupChat").height());
+	});
+}
+
+/**2018.03.09   叶夷   点击回退键将添加群聊框还原
+ * */
+function resetGroupChat(){
+	$("#inputGroupChat").val("群话题");
+	//将添加群聊标签框还原
+	var groupChatAdd=document.getElementById("groupChatAdd");
+	groupChatAdd.setAttribute("class", "groupChatAdd");
+	var inputGroupChat=document.getElementById("inputGroupChat");
+	inputGroupChat.setAttribute("class", "inputGroupChat");
+	$("#groupChat").css("width",groupOldChatWidth);
+	inputGroupChat.disabled="disableb";//无效
+	$("#inputGroupChat").css("width",inputGroupChatWidth);
+	groupChatAdd.src="../image/groupChatAdd.png";
+		
+	var titleText=$("#titleText");
+	titleText.show();
+	
+	//2018.03.09   调整发起群聊话题按钮的位置
+	var groupChat=$("#groupChat");
+	groupChat.css("width",groupOldChatWidth);
+	groupChat.click(function(){
+		//alert("测试2："+window.event.srcElement.tagName);
+		showGroupSearchInput();
+	});
+}
