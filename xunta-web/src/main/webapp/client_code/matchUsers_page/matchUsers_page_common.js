@@ -161,7 +161,12 @@ function showOnePageMatchUser(matchUsers){
 			noMatchUserDiv=$("<div></div>").attr("class","noMatchUser").attr("id","noMatchUser").text("更多");
 			matchUsers.append(noMatchUserDiv);
 		}
-		noMatchUserDiv.html("没有了");
+		if($(".matchUser").length>0){
+			noMatchUserDiv.html("没有了");
+		}else{
+			noMatchUserDiv.html("还没有匹配人，再去添加一些关注点吧");
+		}
+		
 	}
 }
 
