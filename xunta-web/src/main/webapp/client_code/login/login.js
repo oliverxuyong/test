@@ -401,7 +401,7 @@ function callback_registerbymobilephone(receivedData){
         console.log("手机注册成功:"+receivedData.userid+"|"+receivedData.username);
         $("#mobilephone-login-container").hide();
         exitmobilelogin_gobacktoindexpage(receivedData);
-         toast("手机注册成功,进入主页...");
+        //toast("手机注册成功,进入主页...");
     }else{
         console.log("手机注册不成功:"+receivedData.code+"|"+receivedData.message);
         toast(receivedData.message);
