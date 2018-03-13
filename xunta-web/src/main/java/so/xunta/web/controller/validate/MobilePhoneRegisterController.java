@@ -35,6 +35,7 @@ import so.xunta.server.MobilePhoneCodeService;
 import so.xunta.server.UserService;
 import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
+import so.xunta.utils.MakeUserImgUtil;
 import so.xunta.utils.validate.HttpSender;
 
 @Controller
@@ -397,11 +398,14 @@ public class MobilePhoneRegisterController {
 	@RequestMapping("/tmp_login")
 	public void userTmpLogin(String phonenumber,String password,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		Long userid = idWorker.nextId();
-		String username ="Dancer" + tmpUserIdDao.getTmpUserId();
+		String username ="Dancer " + tmpUserIdDao.getTmpUserId();
+		String imgLocation = System.getProperty("catalina.home")+"/uploadimages/";
+		String defaultImgSrc = imgLocation + "DefaultImg"+(1+new Random().nextInt(11))+".jpg";
+		String userImgSrc = imgLocation + userid + ".jpg";
 		
-		String imgSrc = "http://42.121.136.225:8888/DefaultImg"+(1+new Random().nextInt(11))+".jpg";
+		MakeUserImgUtil.addTextToImage(defaultImgSrc, userImgSrc, username);
 		
-		User new_user = new User(userid, idWorker.nextId()+"", username,imgSrc, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
+		User new_user = new User(userid, idWorker.nextId()+"", username,userImgSrc, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
 		new_user.setEvent_scope("salsa");
 		User u = userService.addUser(new_user);
 		
