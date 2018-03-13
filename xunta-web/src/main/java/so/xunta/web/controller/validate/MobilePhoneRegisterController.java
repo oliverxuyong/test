@@ -397,14 +397,16 @@ public class MobilePhoneRegisterController {
 	@RequestMapping("/tmp_login")
 	public void userTmpLogin(String phonenumber,String password,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		Long userid = idWorker.nextId();
-		String username = tmpUserIdDao.getTmpUserId();
+		String username ="Dancer" + tmpUserIdDao.getTmpUserId();
 		
-		User new_user = new User(userid, idWorker.nextId()+"", username,"http://42.121.136.225:8888/user-pic2.jpg", "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
+		String imgSrc = "http://42.121.136.225:8888/DefaultImg"+(1+new Random().nextInt(11));
+		
+		User new_user = new User(userid, idWorker.nextId()+"", username,imgSrc, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
 		new_user.setEvent_scope("salsa");
 		User u = userService.addUser(new_user);
 		
 		JSONObject ret = new JSONObject();
-		ret.put("userid", userid);
+		ret.put("userid", userid+"");
 		ret.put("username", username);
 		ret.put("image_url", u.getImgUrl());
 		ret.put("code", "1");
