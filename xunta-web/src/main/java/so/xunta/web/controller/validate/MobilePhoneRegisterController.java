@@ -401,7 +401,7 @@ public class MobilePhoneRegisterController {
 		String username ="Dancer " + tmpUserIdDao.getTmpUserId();
 		String imgLocation = System.getProperty("catalina.home")+"/uploadimages/";
 		String defaultImgSrc = imgLocation + "DefaultImg"+(1+new Random().nextInt(11))+".jpg";
-		String userImgSrc = imgLocation + userid + ".jpg";
+		String userImgSrc = "/useravatar/" + userid + "/.jpg/image";
 		
 		MakeUserImgUtil.addTextToImage(defaultImgSrc, userImgSrc, username);
 		
