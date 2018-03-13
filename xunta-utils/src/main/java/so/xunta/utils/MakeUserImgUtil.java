@@ -43,16 +43,16 @@ public class MakeUserImgUtil {
 			double stringHeight = getFontHeight(g2, f1);
 			double stringSize = getFontSize(g2, f1, text);
 			double textStartX = (image.getWidth(null) - stringSize) / 2;
-			double textStartY = (image.getHeight(null) - stringHeight) / 2;
+			double textStartY = (image.getHeight(null) - stringHeight) / 1.8;
 			g2.drawString(text, (int) textStartX, (int) textStartY);
 
-			g2.setColor(Color.white);
+			g2.setColor(new Color(242,242,242));
 			Font f2 = new Font(fontFamily, Font.BOLD + Font.ITALIC, 70);
 			g2.setFont(f2);
 			double stringHeight2 = getFontHeight(g2, f2);
 			double stringSize2 = getFontSize(g2, f2, text);
 			double textStartX2 = (image.getWidth(null) - stringSize2) / 2 - 2;
-			double textStartY2 = (image.getHeight(null) - stringHeight2) / 2 - 2;
+			double textStartY2 = (image.getHeight(null) - stringHeight2) / 1.8 - 2;
 			g2.drawString(text, (int) textStartX2, (int) textStartY2);
 
 			g2.dispose();
