@@ -4,6 +4,7 @@ function backBtn(){
 	if($(".groupChatAdd2").length>0){//在这里用群聊框回退键是否存在来判断是页面回退还是群聊框还原
 		resetGroupChat();
 	}else{
+		$("#groupChat").unbind();//2018.03.13   叶夷    这里是因为每次打开匹配人列表页的时候，群聊按钮就会重新生成绑定点击事件，所以在这里的时候将点击事件取消
 		//退出聊天列表时首页的未读消息数去除
 		exec('main_page',"removeUnreadNum()");
 		

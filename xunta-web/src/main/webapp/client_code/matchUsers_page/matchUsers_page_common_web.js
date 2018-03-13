@@ -206,6 +206,9 @@ function showGroupSearchInput(){
 		$("#inputGroupChat").css("width",inputNewGroupChatWidth);
 		//inputGroupChat.offsetWidth=inputNewGroupChatWidth;//input宽度加长
 		
+		console.log("点击之后群聊按钮的大小:inputNewGroupChatWidth="+inputNewGroupChatWidth);
+		console.log("点击之后群聊按钮的大小:groupChatWidth="+titleWidth);
+		
 		//2018.03.09  叶夷    有人点击发起群聊话题则将数据返回给后台
 		$("#groupChatAdd").click(function(){
 			//alert("测试1："+window.event.srcElement.tagName);
@@ -268,4 +271,7 @@ function resetGroupChat(){
 	for(var temp=0;temp<sendMsgs.length;temp++){
 		sendMsgs.eq(temp).show();
 	}
+	
+	console.log("还原之后群聊按钮的大小:inputGroupChatWidth="+inputGroupChatWidth);
+	console.log("还原之后群聊按钮的大小:groupChatWidth="+groupOldChatWidth);
 }

@@ -264,7 +264,8 @@ function response_user_selected_cp(cp_arr){
 	groupChat.click(function(){
 		showGroupSearchInput();
 	});
-	
+	console.log("一开始群聊按钮的大小:inputGroupChatWidth="+inputGroupChatWidth);
+	console.log("一开始群聊按钮的大小:groupChatWidth="+groupChatWidth);
 }
 
 //2018.03.09  叶夷    有人点击发起群聊话题则将数据返回给后台
