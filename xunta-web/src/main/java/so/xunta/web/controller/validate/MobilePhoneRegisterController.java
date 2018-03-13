@@ -399,7 +399,7 @@ public class MobilePhoneRegisterController {
 		Long userid = idWorker.nextId();
 		String username ="Dancer" + tmpUserIdDao.getTmpUserId();
 		
-		String imgSrc = "http://42.121.136.225:8888/DefaultImg"+(1+new Random().nextInt(11));
+		String imgSrc = "http://42.121.136.225:8888/DefaultImg"+(1+new Random().nextInt(11))+".jpg";
 		
 		User new_user = new User(userid, idWorker.nextId()+"", username,imgSrc, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
 		new_user.setEvent_scope("salsa");
