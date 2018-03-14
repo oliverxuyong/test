@@ -212,7 +212,7 @@ function showGroupSearchInput(){
 		//2018.03.09  叶夷    有人点击发起群聊话题则将数据返回给后台
 		$("#groupChatAdd").click(function(){
 			//alert("测试1："+window.event.srcElement.tagName);
-			sendGroupChatInfo();//发送给后台
+			sendGroupChatAddInfo();//发送给后台
 			resetGroupChat();
 			toast("功能开发中，敬请期待");
 			return false;// 阻止事件冒泡和默认操作
@@ -258,6 +258,7 @@ function resetGroupChat(){
 	var groupChat=$("#groupChat");
 	groupChat.css("width",groupOldChatWidth);
 	groupChat.click(function(){
+		sendGroupChatInfo();
 		//alert("测试2："+window.event.srcElement.tagName);
 		showGroupSearchInput();
 	});
