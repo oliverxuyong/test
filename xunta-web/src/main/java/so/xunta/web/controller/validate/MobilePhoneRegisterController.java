@@ -37,6 +37,7 @@ import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
 import so.xunta.utils.MakeUserImgUtil;
 import so.xunta.utils.validate.HttpSender;
+import so.xunta.web.controller.imagepath.ImagePathUtil;
 
 @Controller
 public class MobilePhoneRegisterController {
@@ -401,11 +402,12 @@ public class MobilePhoneRegisterController {
 		String username ="Dancer " + tmpUserIdDao.getTmpUserId();
 		String imgLocation = System.getProperty("catalina.home")+"/uploadimages/";
 		String defaultImgSrc = imgLocation + "DefaultImg"+(1+new Random().nextInt(11))+".jpg";
-		String userImgSrc = "/useravatar/" + userid + "/.jpg/image";
+		String userImgSrc = imgLocation + userid + ".jpg";
+		String userImgUrl = ImagePathUtil.getPath(request, "/useravatar/" + userid + "/jpg/image");
 		
 		MakeUserImgUtil.addTextToImage(defaultImgSrc, userImgSrc, username);
 		
-		User new_user = new User(userid, idWorker.nextId()+"", username,userImgSrc, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
+		User new_user = new User(userid, idWorker.nextId()+"", username, userImgUrl, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
 		new_user.setEvent_scope("salsa");
 		User u = userService.addUser(new_user);
 		
