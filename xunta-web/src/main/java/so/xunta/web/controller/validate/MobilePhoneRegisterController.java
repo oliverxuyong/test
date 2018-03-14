@@ -408,7 +408,7 @@ public class MobilePhoneRegisterController {
 		MakeUserImgUtil.addTextToImage(defaultImgSrc, userImgSrc, username);
 		
 		User new_user = new User(userid, idWorker.nextId()+"", username, userImgUrl, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
-		new_user.setEvent_scope("salsa");
+		new_user.setEvent_scope("xunta_salsa");
 		User u = userService.addUser(new_user);
 		
 		JSONObject ret = new JSONObject();
@@ -418,6 +418,8 @@ public class MobilePhoneRegisterController {
 		ret.put("code", "1");
 		ret.put("message", "登录成功");
 		responseBack(request, response, ret);
+		
+		logger.info("用户： "+username+" 登陆");
 	}
 	
 	@RequestMapping("/check_mobilenum_ifexist")

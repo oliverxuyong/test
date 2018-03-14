@@ -61,4 +61,18 @@ public class InitUserWSController {
 		user.setIfInitedTopics(1);
 		userService.updateUser(user);	
 	}
+	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "9118-1")
+	public void userStartTopic(WebSocketSession session, TextMessage message){
+		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
+		User user = userService.findUser(userId);
+		logger.info("用户"+user.getName()+"发起了一个群聊");
+	}
+	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "9119-1")
+	public void userClickTopic(WebSocketSession session, TextMessage message){
+		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
+		User user = userService.findUser(userId);
+		logger.info("用户"+user.getName()+"点了群聊键");
+	}
 }
