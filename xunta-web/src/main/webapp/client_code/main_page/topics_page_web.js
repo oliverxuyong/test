@@ -3377,13 +3377,6 @@ function responseIfUserInited(data){
 		var bgObj = document.createElement('div');
 		bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background-color:rgba(0,0,0,0);position:absolute;top:0;left:0;z-index:200;opacity:0.0;filter:alpha(opacity =0);";
 		document.body.appendChild(bgObj);
-		//绑定点击事件
-		bgObj.addEventListener('click',function(){
-			clickMainPage(bgObj);
-			
-			//2018.03.08  叶夷      点击出现第二步的引导页，数据传给后台
-			sendShowGuidePageSecond();
-		},false);
 		
 		//将匹配人的引导显示出来
 		showGuideMatchUsers();//显示了匹配人头像
@@ -3396,6 +3389,15 @@ function responseIfUserInited(data){
 		timeOutSuccess=setTimeout(function(){
 			$("#mytag-container").show();
 			showGuideAddtagCircleAndArrow();
+			
+			//透明不绑定点击事件，放在这里是因为需要引导页步骤一完全显示之后才能点击
+			bgObj.addEventListener('click',function(){
+				clickMainPage(bgObj);
+				
+				//2018.03.08  叶夷      点击出现第二步的引导页，数据传给后台
+				sendShowGuidePageSecond();
+			},false);
+			
 		},aniSecond * 0.4* 1000+1000);
 	}else{//不需要引导页则直接显示首页内容
 		//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
