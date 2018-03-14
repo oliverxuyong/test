@@ -258,17 +258,24 @@ function response_user_selected_cp(cp_arr){
 	var groupChatWidth=inputGroupChatWidth+17+12+10;
 	log2root("groupChatWidth："+groupChatWidth);
 	groupChat.css("width",groupChatWidth);
-	inputGroupChat.click(function(){
+	/*inputGroupChat.click(function(){
+		sendGroupChatInfo();
 		showGroupSearchInput();
-	});
+	});*/
 	groupChat.click(function(){
+		sendGroupChatInfo();
 		showGroupSearchInput();
 	});
 	console.log("一开始群聊按钮的大小:inputGroupChatWidth="+inputGroupChatWidth);
 	console.log("一开始群聊按钮的大小:groupChatWidth="+groupChatWidth);
 }
 
-//2018.03.09  叶夷    有人点击发起群聊话题则将数据返回给后台
+//2018.03.09  叶夷    有人点击群聊话题回车键返回给后台
+function sendGroupChatAddInfo(){
+	execRoot("sendGroupChatAddInfo()");
+}
+
+//2018.03.14  叶夷    有人点击群聊话题按钮返回给后台
 function sendGroupChatInfo(){
 	execRoot("sendGroupChatInfo()");
 }

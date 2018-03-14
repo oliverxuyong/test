@@ -362,11 +362,20 @@ function sendGuidePageAddTag(userId){
 		};
 		WS_Send(json_obj);
 }
-//2018.03.09  叶夷   有人点击发起群聊话题数据传给后台
-function sendGroupChatInfo(){
-	console.log("有人点击发起群聊话题数据传给后台");
+//2018.03.09  叶夷   有人点击群聊话题回车键数据传给后台
+function sendGroupChatAddInfo(){
+	console.log("有人点击群聊话题回车键数据传给后台");
 	var json_obj = {
 			_interface : "9118-1",
+		};
+		WS_Send(json_obj);
+}
+
+//2018.03.09  叶夷   有人点击群聊话题按钮数据传给后台
+function sendGroupChatInfo(){
+	console.log("有人点击群聊话题按钮数据传给后台");
+	var json_obj = {
+			_interface : "9119-1",
 		};
 		WS_Send(json_obj);
 }
