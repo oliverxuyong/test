@@ -276,10 +276,19 @@ function enterMatchUsersPage() {
 function responseTopMatchedUsers(muData) {
 	var matchedUserArr = muData.matched_user_arr;// 获得后台发送的匹配人排名信息数组
 	//2017.11.13 等推荐标签动画完成再进行匹配人位置算法
-	showMatchPeople(matchedUserArr);// 显示匹配人列表
+	//showMatchPeople(matchedUserArr);// 显示匹配人列表
 	/*timeOutSuccess = setTimeout(function() {
 		showMatchPeople(matchedUserArr);// 显示匹配人列表
 	},2000);*/
+	
+	//2018.03.14  叶夷   在这里进行判断，如果matchedUserArr没有数据则显示引导页匹配人，如果有则隐藏
+	if(matchedUserArr.length>0){
+		hideGuideMatchUsers();
+		showMatchPeople(matchedUserArr);// 显示匹配人列表
+	}else{
+		showMatchPeople(matchedUserArr);// 显示匹配人列表
+		showGuideMatchUsers();
+	}
 }
 
 // 2017.07.07 叶夷 匹配用户改变
@@ -287,7 +296,15 @@ function push_matched_user(newMuData) {
 	var newMatchedUserArr = newMuData.new_user_arr;// 获得后台发送的匹配人排名信息数组
 	// 如果有新数据，先判断动画有没有运行完
 	if (circleEnd) {// 如果运行完，则直接进入程序运行
-		showMatchPeople(newMatchedUserArr);
+		//2018.03.14  叶夷   在这里进行判断，如果matchedUserArr没有数据则显示引导页匹配人，如果有则隐藏
+		if(newMatchedUserArr.length>0){
+			hideGuideMatchUsers();
+			showMatchPeople(newMatchedUserArr);// 显示匹配人列表
+		}else{
+			showMatchPeople(newMatchedUserArr);// 显示匹配人列表
+			showGuideMatchUsers();
+		}
+		//showMatchPeople(newMatchedUserArr);
 	} else {// 如果没有运行完则将新数据放入队列中
 		muDataQueue.push(newMatchedUserArr);
 	}

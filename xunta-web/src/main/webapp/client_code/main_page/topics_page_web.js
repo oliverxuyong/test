@@ -957,8 +957,8 @@ function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
 	var yesItem=$("body").find(".yesItem");
 	var noItem=$("body").find(".noItem");
 	if(yesItem.length<=0 || noItem.length<=0){
-		yesItem=$("<div></div>").attr("class","yesItem").text("收了");//收下按钮
-		noItem=$("<div></div>").attr("class","noItem").text("反感");//消失按钮
+		yesItem=$("<div></div>").attr("class","yesItem").text("关注");//收下按钮
+		noItem=$("<div></div>").attr("class","noItem").text("厌恶");//消失按钮
 		$("body").append(yesItem).append(noItem);
 	/*}
 	if(yesItem.css("display")=='none' && noItem.css("display")=='none'){*/
@@ -1642,164 +1642,138 @@ var muNowData = new Array();
 var muChangeData=new Array();//这是排名改变之后新的muNowData的数据
 // 2017.07.04 叶夷 显示匹配人列表，没有数据的时候先用模拟数据
 function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹配人列表数据(且排好了顺序)
-	var tempSecond=0;//用来判断匹配人列表是否需要等待的秒数
 	
-	//2018.03.02   叶夷   这里是为了引导页出现的匹配人头像消失的效果,如果存在引导页的匹配人头像，则直接消失，其它按照正常匹配人算法来
-	//将匹配人头像动画消失
-	for(var i=1;i<=6;i++){
-		var matchUser=$("#mu"+i);
-		if(matchUser.length>0){
-			tempSecond=1000;
-			guideMuAnimateRemove(tempSecond,matchUser);
-		}
-	}
-	timeOutSuccess = setTimeout(function() {
-		//引导页消失的时候这两个数组要清零，为了不妨碍之后的匹配人头像正常显示
-		muNowData.splice(0, muNowData.length);
-		muChangeData.splice(0, muNowData.length);
+	
+	if (muNowData.length == 0) {// 如果是用户一开始上线，匹配人列表没有
 		
+		//测试数据，先固定下来
+		/*muNowData.push(muPosition(1,393.5, 102, 36,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
+		muNowData.push(muPosition(2,461.9375, 85.375, 33.6,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_669143375538163712/jpg/image"));
+		muNowData.push(muPosition(3,324.4375,130.875, 31.5,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_671612515800715264/jpg/image"));
+		muNowData.push(muPosition(4,322.9375,50.375, 29.5,"http://q.qlogo.cn/qqapp/1104713537/5610B8A29AD893CB93284098C11549C8/40"));
+		muNowData.push(muPosition(5,441.0625,143.5, 27,"http://42.121.136.225:8888/user-pic2.jpg"));
+		muNowData.push(muPosition(6,494.5,134, 25,"http://q.qlogo.cn/qqapp/1104713537/9DB80ECB26EB4571E6F176543D4DEFD4/40"));
+		muNowData.push(muPosition(7,372.5,33, 23,"http://q.qlogo.cn/qqapp/1104713537/2CD480E191D757CFF15536FC6B655176/40"));
+		muNowData.push(muPosition(8,371.5,155, 21,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_708988162394951680/jpg/image"));
+		muNowData.push(muPosition(9,449,29.5, 18.5,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_670182701776637952/jpg/image"));
+		muNowData.push(muPosition(10,498.5,46, 18,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_720907019216883712/jpg/image"));
+		muNowData.push(muPosition(11,399.5, 102, 17.5,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
+		muNowData.push(muPosition(12,459.9, 67.3, 17,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
+		muNowData.push(muPosition(13,324.4, 118.8, 16.5,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
+		muNowData.push(muPosition(14,471.9,129.3, 16,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
+		muNowData.push(muPosition(15,321, 48.5, 15.5,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));*/
 		
-		if (muNowData.length == 0) {// 如果是用户一开始上线，匹配人列表没有
+		/*// 2017.09.06 叶夷
+		// matchedUserArr.length改成现有的匹配人div的数量，因为匹配人数量有可能比这个数量少,会导致后面的对比产生null异常
+		for (var i = 0; i < matchedUserArr.length; i++) {
+			//var muNode=$("#mutemp"+(i+1));// 这是已经放在页面的匹配人头像div
 			
-			//测试数据，先固定下来
-			/*muNowData.push(muPosition(1,393.5, 102, 36,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
-			muNowData.push(muPosition(2,461.9375, 85.375, 33.6,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_669143375538163712/jpg/image"));
-			muNowData.push(muPosition(3,324.4375,130.875, 31.5,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_671612515800715264/jpg/image"));
-			muNowData.push(muPosition(4,322.9375,50.375, 29.5,"http://q.qlogo.cn/qqapp/1104713537/5610B8A29AD893CB93284098C11549C8/40"));
-			muNowData.push(muPosition(5,441.0625,143.5, 27,"http://42.121.136.225:8888/user-pic2.jpg"));
-			muNowData.push(muPosition(6,494.5,134, 25,"http://q.qlogo.cn/qqapp/1104713537/9DB80ECB26EB4571E6F176543D4DEFD4/40"));
-			muNowData.push(muPosition(7,372.5,33, 23,"http://q.qlogo.cn/qqapp/1104713537/2CD480E191D757CFF15536FC6B655176/40"));
-			muNowData.push(muPosition(8,371.5,155, 21,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_708988162394951680/jpg/image"));
-			muNowData.push(muPosition(9,449,29.5, 18.5,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_670182701776637952/jpg/image"));
-			muNowData.push(muPosition(10,498.5,46, 18,"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_720907019216883712/jpg/image"));
-			muNowData.push(muPosition(11,399.5, 102, 17.5,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
-			muNowData.push(muPosition(12,459.9, 67.3, 17,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
-			muNowData.push(muPosition(13,324.4, 118.8, 16.5,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
-			muNowData.push(muPosition(14,471.9,129.3, 16,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));
-			muNowData.push(muPosition(15,321, 48.5, 15.5,"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40"));*/
+			//这是测试
+			var muNodeWidth=muNode.width();
+			var radius=muNodeWidth/2;// 这是半径
+			var x=muNowData[i].x;
+			var y=muNowData[i].y;
+			var muNodeTop=y-radius;
+			var muNodeLeft=x-radius;
+			muNode.css("top",muNodeTop);
+			muNode.css("left",muNodeLeft);
 			
-			/*// 2017.09.06 叶夷
-			// matchedUserArr.length改成现有的匹配人div的数量，因为匹配人数量有可能比这个数量少,会导致后面的对比产生null异常
-			for (var i = 0; i < matchedUserArr.length; i++) {
-				//var muNode=$("#mutemp"+(i+1));// 这是已经放在页面的匹配人头像div
+			setMUPosition(i,matchedUserArr);//位置计算好
+			//log2root("muNowData的长度:"+muNowData.length);//为了解决出现位置没地放所报的错
+			//log2root("是否有一个圆会跟别的圆相交，重新再计算: "+intersect+" "+startMatchUserCount);
+			if(intersect && startMatchUserCount<=100){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
+				//避免出现刚开始的时候匹配人的圆出现重复出现的情况，将前端页面匹配圆删除
 				
-				//这是测试
-				var muNodeWidth=muNode.width();
-				var radius=muNodeWidth/2;// 这是半径
-				var x=muNowData[i].x;
-				var y=muNowData[i].y;
-				var muNodeTop=y-radius;
-				var muNodeLeft=x-radius;
-				muNode.css("top",muNodeTop);
-				muNode.css("left",muNodeLeft);
-				
-				setMUPosition(i,matchedUserArr);//位置计算好
-				//log2root("muNowData的长度:"+muNowData.length);//为了解决出现位置没地放所报的错
-				//log2root("是否有一个圆会跟别的圆相交，重新再计算: "+intersect+" "+startMatchUserCount);
-				if(intersect && startMatchUserCount<=100){//只要有一个圆不是跟所有圆都不想交，则重新再来,避免出现偶然的相交情况
-					//避免出现刚开始的时候匹配人的圆出现重复出现的情况，将前端页面匹配圆删除
-					
-					console.log("有一个圆会跟别的圆相交，重新再计算");
-					//log2root("有一个圆会跟别的圆相交，重新再计算");
-					muNowData.splice(0, muNowData.length);
-					//$(".mu").find("img").remove();
-					for (var i = 0; i < matchedUserArr.length; i++) {
-						setMUPosition(i,matchedUserArr);//位置计算好
-					}
-					break;
-				}
-			}*/
-			
-			//接下来就是遍历匹配人改变后的数组，将相交的匹配圆一点点移动
-			for(var c=0;c<notIntersectCount;c++){
-				//2017.11.06 叶夷  将匹配人初始化状态更改为使用排斥力算法
-				muChangeData=[].concat(muNowData);
-				
-				getMuChangeData(matchedUserArr);
-				setPositionAndNotIntersect();
-				muChangeDataIfIntersect();//判断是否相交
-				
-				//排名改变之后就将改变的数组数值复制到muNowData中，再清空muChangeData
-				muNowData=[].concat(muChangeData);
-				muChangeData.splice(0, muChangeData.length);
-				averageForChangeX.splice(0, averageForChangeX.length);
-				averageForChangeY.splice(0, averageForChangeY.length);
-				log2root("匹配圆初始化第"+(c+1)+"次"+"->intersect="+intersect);
-				console.log("匹配圆初始化第"+(c+1)+"次");
-				if(!intersect){
-					break;
-				}
-			}
-			
-			allMuAnimate(matchedUserArr);//全部匹配人变化动画
-			
-			/*//log2root("圆计算好之后放入");
-			for (var i = 0; i < matchedUserArr.length; i++) {
-				muAddImg(i,matchedUserArr,true);
-			}*/
-		} else{
-			
-			//测试
-			/*muChangeData=[].concat(muNowData);
-			getMuChangeData(matchedUserArr);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
-			setPositionAndNotIntersect();*/
-			
-			circleEnd = false;//动画开始
-			
-			//判断是否相交的次数
-			for(var c=0;c<notIntersectCount;c++){
-				if(chooseOneCpStart||cpsStartAnimate){
-					log2root("正在选择标签，匹配圆动画位置计算算法暂停");
-					console.log("正在选择标签，匹配圆动画位置计算算法暂停");
-					muChangeData=[].concat(muNowData);
-					break;
-				}
-				
-				muChangeData=[].concat(muNowData);
-				getMuChangeData(matchedUserArr);
-				//接下来就是遍历匹配人改变后的数组，将相交的匹配圆一点点移动
-				changeCount=0;
-				while(true){
-					var allOver=setPositionAndNotIntersect();
-					if(allOver || (changeCount>maxChangeCount)){
-						break;
-					}
-					++changeCount;
-					log2root("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
-					console.log("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
-				}
-				muChangeDataIfIntersect();//判断是否相交
-				//排名改变之后就将改变的数组数值复制到muNowData中，再清空muChangeData
-				muNowData=[].concat(muChangeData);
-				muChangeData.splice(0, muChangeData.length);
-				averageForChangeX.splice(0, averageForChangeX.length);
-				averageForChangeY.splice(0, averageForChangeY.length);
-				log2root("匹配圆变化是否相交 第"+(c+1)+"次");
-				console.log("匹配圆变化是否相交 第"+(c+1)+"次");
-				if(!intersect){//不相交
-					break;
-				}
+				console.log("有一个圆会跟别的圆相交，重新再计算");
+				//log2root("有一个圆会跟别的圆相交，重新再计算");
 				muNowData.splice(0, muNowData.length);
+				//$(".mu").find("img").remove();
+				for (var i = 0; i < matchedUserArr.length; i++) {
+					setMUPosition(i,matchedUserArr);//位置计算好
+				}
+				break;
+			}
+		}*/
+		
+		//接下来就是遍历匹配人改变后的数组，将相交的匹配圆一点点移动
+		for(var c=0;c<notIntersectCount;c++){
+			//2017.11.06 叶夷  将匹配人初始化状态更改为使用排斥力算法
+			muChangeData=[].concat(muNowData);
+			
+			getMuChangeData(matchedUserArr);
+			setPositionAndNotIntersect();
+			muChangeDataIfIntersect();//判断是否相交
+			
+			//排名改变之后就将改变的数组数值复制到muNowData中，再清空muChangeData
+			muNowData=[].concat(muChangeData);
+			muChangeData.splice(0, muChangeData.length);
+			averageForChangeX.splice(0, averageForChangeX.length);
+			averageForChangeY.splice(0, averageForChangeY.length);
+			log2root("匹配圆初始化第"+(c+1)+"次"+"->intersect="+intersect);
+			console.log("匹配圆初始化第"+(c+1)+"次");
+			if(!intersect){
+				break;
+			}
+		}
+		
+		allMuAnimate(matchedUserArr);//全部匹配人变化动画
+		
+		/*//log2root("圆计算好之后放入");
+		for (var i = 0; i < matchedUserArr.length; i++) {
+			muAddImg(i,matchedUserArr,true);
+		}*/
+	} else{
+		
+		//测试
+		/*muChangeData=[].concat(muNowData);
+		getMuChangeData(matchedUserArr);//排名改变后的匹配人重新装在数组muChangeData中，方便下面的位置整体位置变换
+		setPositionAndNotIntersect();*/
+		
+		circleEnd = false;//动画开始
+		
+		//判断是否相交的次数
+		for(var c=0;c<notIntersectCount;c++){
+			if(chooseOneCpStart||cpsStartAnimate){
+				log2root("正在选择标签，匹配圆动画位置计算算法暂停");
+				console.log("正在选择标签，匹配圆动画位置计算算法暂停");
+				muChangeData=[].concat(muNowData);
+				break;
 			}
 			
-			allMuAnimate(matchedUserArr);//全部匹配人变化动画
-			
-			//这是为了解决排名改变还没有计算完新的排名又出现的问题
-			timeOutSuccess=setTimeout(function(){
-				muDataQueueEnd(matchedUserArr);
-			},aniSecond * 0.4);
+			muChangeData=[].concat(muNowData);
+			getMuChangeData(matchedUserArr);
+			//接下来就是遍历匹配人改变后的数组，将相交的匹配圆一点点移动
+			changeCount=0;
+			while(true){
+				var allOver=setPositionAndNotIntersect();
+				if(allOver || (changeCount>maxChangeCount)){
+					break;
+				}
+				++changeCount;
+				log2root("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
+				console.log("匹配圆变化是否相交 第"+(c+1)+"次  ->排名改变第"+changeCount+"次循环");
+			}
+			muChangeDataIfIntersect();//判断是否相交
+			//排名改变之后就将改变的数组数值复制到muNowData中，再清空muChangeData
+			muNowData=[].concat(muChangeData);
+			muChangeData.splice(0, muChangeData.length);
+			averageForChangeX.splice(0, averageForChangeX.length);
+			averageForChangeY.splice(0, averageForChangeY.length);
+			log2root("匹配圆变化是否相交 第"+(c+1)+"次");
+			console.log("匹配圆变化是否相交 第"+(c+1)+"次");
+			if(!intersect){//不相交
+				break;
+			}
+			muNowData.splice(0, muNowData.length);
 		}
-	},tempSecond);
-}
-
-//引导页的动画头像消失
-function guideMuAnimateRemove(tempSecond,matchUser){
-	matchUser.find("img").animate({
-		width : 0,
-		height : 0
-	}, tempSecond, function() {
-		matchUser.remove();
-	});
+		
+		allMuAnimate(matchedUserArr);//全部匹配人变化动画
+		
+		//这是为了解决排名改变还没有计算完新的排名又出现的问题
+		timeOutSuccess=setTimeout(function(){
+			muDataQueueEnd(matchedUserArr);
+		},aniSecond * 0.4);
+	}
 }
 
 /**
@@ -2042,7 +2016,7 @@ function setMUPosition(i,matchedUserArr){
 		y=parseInt(Math.random()*10)+(yMiddle-5);
 	}
 	
-	if(isGuideMatchUser){//如果是引导时出现的匹配头像,则五个头像固定位置
+	/*if(isGuideMatchUser){//如果是引导时出现的匹配头像,则五个头像固定位置
 		xMiddle=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
 		yMiddle=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; 
 		if(i==0){ 
@@ -2064,7 +2038,7 @@ function setMUPosition(i,matchedUserArr){
 			x=muNowData[0].x;
 			y=muNowData[0].y+muNowData[0].radius*2;
 		}
-	}
+	}*/
 	
 	// 3.然后和存在的所有匹配人头像对比是否相交
 	for(var j=matchUserContainerYStart;j<=matchUserContainerYEnd;j++){
@@ -3177,8 +3151,112 @@ function showGuideMatchUsers(){
 	for(var j=0;j<length;j++){
 		newMatchedUserArr.push(new MatchPeople(mpId[j],mpImg[j]));
 	}
-	showMatchPeople(newMatchedUserArr); 
+	//showMatchPeople(newMatchedUserArr); 
+	setGuideMatchUsersPosition(newMatchedUserArr);
 }
+/**2018.03.14  叶夷   引导页匹配人显示*/
+function setGuideMatchUsersPosition(matchedUserArr){
+	var firstMUX,firstMUY,firstMURadius;
+	for(var i=0;i<matchedUserArr.length;i++){
+		/**start:设置引导匹配头像的位置*/
+		var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
+		var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
+		var muUserName= matchedUserArr[i].username;// 获得匹配人列表的匹配人头像
+		
+		// 1.确定装匹配人列表的范围
+		var headerContainer=$("#header-container");
+		//定义radius
+		var radius=setMatchUsersSize(i);
+		if(isGuideMatchUser){//如果是引导时出现的匹配头像,则五个头像放大一点
+			radius=radius+3;
+		}
+		
+		setBorder(headerContainer,radius);
+		// 1.1 在随机中设置几个特殊情况
+		if(i<5 && i>0){
+			var betweenX=(matchUserContainerXEnd-matchUserContainerXStart)/8;// 往中间靠拢的值
+			var betweenY=(matchUserContainerYEnd-matchUserContainerYStart)/8;// 往中间靠拢的值
+			matchUserContainerXStart=headerContainer.width()/2+radius+betweenX;// 开始位置往中间靠拢
+			matchUserContainerXEnd=headerContainer.width()-radius-10-betweenX;
+			matchUserContainerYStart=radius+5+betweenY;
+			matchUserContainerYEnd=headerContainer.height()-radius-5-betweenY;
+		}
+		// 2.在范围内随机取点
+		var x,y;
+		x=parseInt(Math.random()*(matchUserContainerXEnd-matchUserContainerXStart))+matchUserContainerXStart;
+		y=parseInt(Math.random()*(matchUserContainerYEnd-matchUserContainerYStart))+matchUserContainerYStart;
+		
+		var xMiddle,yMiddle;
+		xMiddle=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
+		yMiddle=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; 
+		if(i==0){ 
+			x=xMiddle+15;
+			y=yMiddle-5;
+			firstMUX=x;
+			firstMUY=y;
+			firstMURadius=radius;
+		}else if(i==1){
+			x=firstMUX+firstMURadius*2.2;
+			y=firstMUY+firstMURadius;
+		}else if(i==2){ 
+			x=firstMUX-firstMURadius*2.2;
+			y=firstMUY+firstMURadius*0.8;
+		}else if(i==3){
+			x=firstMUX+firstMURadius*1.8;
+			y=firstMUY-firstMURadius*1.5;
+		}else if(i==4){
+			x=firstMUX-firstMURadius*1.5;
+			y=firstMUY-firstMURadius*1.2;
+		}else if(i==5){
+			x=firstMUX;
+			y=firstMUY+firstMURadius*2;
+		}
+		/**end:设置引导匹配头像的位置*/
+		
+		/**start:将引导匹配头像放入html中*/
+		var muNode=$("<div></div>").attr("class","mu").attr("id","mu"+muId);
+		var muNodeImg=$("<img src="+muImg+" style='border:0;' onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
+		muNode.append(muNodeImg);
+		$("#header-container").append(muNode);
+		var muNodeTop=y-radius;
+		var muNodeLeft=x-radius;
+		var muWidth=0;
+		muNode.css("top",muNodeTop);
+		muNode.css("left",muNodeLeft);
+		muNode.css("width",muWidth);
+		muNode.css("height",muWidth);
+		var muImgWidth=muWidth-10;
+		var muImgMargin=(muWidth-muImgWidth)/2;
+		muNodeImg.css("margin-top",muImgMargin);
+		muNodeImg.css("margin-left",muImgMargin);
+		muNodeImg.css("width",muImgWidth);
+		muNodeImg.css("height",muImgWidth);
+		/**end:将引导匹配头像放入html中*/
+		//动画开始
+		animateForSize(muNode, radius*2, aniSecond * 0.4);// 扩大
+	}
+}
+/**2018.03.14  叶夷   引导页匹配人消失*/
+function hideGuideMatchUsers(){
+	for(var i=1;i<=6;i++){
+		var matchUser=$("#mu"+i);
+		if(matchUser.length>0){//如果存在
+			animateForSize(matchUser, 0, aniSecond * 0.4);
+		}
+	}
+}
+
+//引导页的动画头像消失
+function guideMuAnimateRemove(tempSecond,matchUser){
+	matchUser.find("img").animate({
+		width : 0,
+		height : 0
+	}, tempSecond, function() {
+		matchUser.remove();
+	});
+}
+
+
 //显示匹配人头像的引导文字
 function showGuideMUBubble(){
 	var guideMUBubble=$("#guideMUBubble");

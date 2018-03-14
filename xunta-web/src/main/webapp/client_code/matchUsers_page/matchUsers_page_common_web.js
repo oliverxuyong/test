@@ -186,6 +186,7 @@ function showGroupSearchInput(){
 	//先将通过关注点筛选文字隐藏
 	var titleText=$("#titleText");
 	titleText.hide();
+	//titleText.css("visibility","hidden");
 	//将加号图片更改放在右边,class更改成groupChatAdd2
 	var groupChatAdd=document.getElementById("groupChatAdd");
 	groupChatAdd.setAttribute("class", "groupChatAdd2");
@@ -253,6 +254,7 @@ function resetGroupChat(){
 		
 	var titleText=$("#titleText");
 	titleText.show();
+	//titleText.css("visibility","visible");
 	
 	//2018.03.09   调整发起群聊话题按钮的位置
 	var groupChat=$("#groupChat");
