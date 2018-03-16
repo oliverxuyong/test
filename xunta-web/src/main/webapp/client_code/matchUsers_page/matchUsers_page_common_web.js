@@ -186,7 +186,6 @@ function showGroupSearchInput(){
 	//先将通过关注点筛选文字隐藏
 	var titleText=$("#titleText");
 	titleText.hide();
-	//titleText.css("visibility","hidden");
 	//将加号图片更改放在右边,class更改成groupChatAdd2
 	var groupChatAdd=document.getElementById("groupChatAdd");
 	groupChatAdd.setAttribute("class", "groupChatAdd2");
@@ -201,8 +200,7 @@ function showGroupSearchInput(){
 		width:titleWidth
 	},500,function(){
 		//动画结束后input可以输入且宽度加长，加号图片替换成回车图片
-		//inputGroupChat.readOnly="";//有效
-		inputGroupChat.disabled="";//无效
+		inputGroupChat.disabled="";//有效
 		var groupChatGrowWidth=titleWidth-groupOldChatWidth;//整个添加群聊框增长的width，input也增长这么多
 		var inputNewGroupChatWidth=groupChatGrowWidth+inputGroupChatWidth-17-12-5;
 		$("#inputGroupChat").css("width",inputNewGroupChatWidth);
@@ -250,13 +248,11 @@ function resetGroupChat(){
 	inputGroupChat.setAttribute("class", "inputGroupChat");
 	$("#groupChat").css("width",groupOldChatWidth);
 	inputGroupChat.disabled="disableb";//无效
-	//inputGroupChat.readOnly="readonly";//有效
 	$("#inputGroupChat").css("width",inputGroupChatWidth);
 	groupChatAdd.src="../image/groupChatAdd.png";
 		
 	var titleText=$("#titleText");
 	titleText.show();
-	//titleText.css("visibility","visible");
 	
 	//2018.03.09   调整发起群聊话题按钮的位置
 	var groupChat=$("#groupChat");

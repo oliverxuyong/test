@@ -379,6 +379,14 @@ function sendGroupChatInfo(){
 		};
 		WS_Send(json_obj);
 }
+//2018.03.16  叶夷     引导页出来的时候发送请求给后台
+function sendShowGuidePageFirst(){
+	console.log(" 引导页出来的时候发送请求给后台");
+	var json_obj = {
+			_interface : "9120-1",
+		};
+		WS_Send(json_obj);
+}
 
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");

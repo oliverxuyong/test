@@ -193,6 +193,7 @@
 	<script src="../script/debuggap.js" type="text/javascript"></script>-->
 	
 	<script type="text/javascript">
+	console.log("加载main_page前的时间："+new Date());
 		//2018.02.07 叶夷     静态资源的路径动态的创建
 		var preUrl=window.location.protocol+"//"+document.domain;//获得静态资源路径的协议+域名
 		//将需要的css文件变成js代码生成
@@ -259,8 +260,9 @@
 		
 		var arrowAnimateStop=false;//判断箭头来回动画是否停止,false是不停止，true是停止
 		var isGuideMatchUser=true;//表示这是引导时显示的匹配头像，为了位置固定不变
-
+		console.log("main_page导入文件的时间："+new Date());
 		function start(pageParamsStr) {//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
+			console.log("加载main_page后的时间："+new Date());
 			//2018.02.07 判断是否引入jquery文件
 			if(typeof jQuery == 'undefined'){
 			    window.alert("没有jquery");

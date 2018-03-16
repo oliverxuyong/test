@@ -370,10 +370,15 @@ function sendGuidePageAddTag(userId){
 //2018.02.05  叶夷     进入公司简介页面
 function enterProfilePage() {
 	console.log("enterProfilePage");
-	openWin('profile_page', preUrl+'/xunta-web/client_code/profile_page/profile_page.html', "");
+	openWin('profile_page', 'profile_page/profile_page.html', "");
 }
 //2018.02.05  叶夷     进入产品介绍页面
 function enterProductPage() {
 	console.log("enterProductPage");
-	openWin('product_page', preUrl+'/xunta-web/client_code/product_page/product_page.html', "");
+	openWin('product_page', 'product_page/product_page.html', "");
+}
+//2018.03.16  叶夷     引导页出来的时候发送请求给后台
+function sendShowGuidePageFirst() {
+	console.log("sendShowGuidePageFirst");
+	execRoot("sendShowGuidePageFirst()");
 }

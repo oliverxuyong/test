@@ -249,6 +249,7 @@ function openNewWin(winName, winUrl, data){
     var iframeObj = $('<iframe id="' + winName + '"' + ' src="' + winUrl + '"' + ' class="iframe_windows"/>');
     iframeObj.css("zIndex",zIndex);
     iframeObj.load(function() {
+    	//console.log("main_page加载好的时间："+new Date());
         console.log('创建页面:' + winName);
         log2root('创建页面:' + winName);
         if (data != "") {
@@ -259,6 +260,7 @@ function openNewWin(winName, winUrl, data){
         }
     });
     window.parent.$('body').append(iframeObj);
+    //console.log("main_page的iframe开始导入的时间："+new Date());
     
 //    //2018.02.07  叶夷     在创建页面之前将css和js文件创建
 //    if(winName=="main_page"){

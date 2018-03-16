@@ -258,10 +258,6 @@ function response_user_selected_cp(cp_arr){
 	var groupChatWidth=inputGroupChatWidth+17+12+10;
 	log2root("groupChatWidth："+groupChatWidth);
 	groupChat.css("width",groupChatWidth);
-	/*inputGroupChat.click(function(){
-		sendGroupChatInfo();
-		showGroupSearchInput();
-	});*/
 	groupChat.click(function(){
 		sendGroupChatInfo();
 		showGroupSearchInput();
