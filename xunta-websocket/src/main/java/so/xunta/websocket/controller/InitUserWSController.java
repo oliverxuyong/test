@@ -75,4 +75,11 @@ public class InitUserWSController {
 		User user = userService.findUser(userId);
 		logger.info("用户"+user.getName()+"点了群聊键");
 	}
+	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "9120-1")
+	public void userShowGuidePage(WebSocketSession session, TextMessage message){
+		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
+		User user = userService.findUser(userId);
+		logger.info("用户"+user.getName()+"开始引导");
+	}
 }
