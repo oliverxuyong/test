@@ -171,7 +171,13 @@
         </table>
     </div>
     <!-- 引导页：这是匹配人头像引导话 -->
-    			<img src="../image/guideMUBubble.png" id="guideMUBubble" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" style="z-index:202;width: 65%;display: inline-block;position: absolute;right:0px;display:none;">
+    <img src="../image/guideMUBubble.png" id="guideMUBubble" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" style="z-index:202;width: 65%;display: inline-block;position: absolute;right:0px;display:none;">
+    <!-- 关于公司信息 -->
+    <div class="footer" style="position: absolute;top: 97%;color:#666666;font-size: 12px;text-align: center;width: 100%;">
+			<a style="margin-right: 10px;text-decoration: underline;cursor: pointer;" onclick="enterProfilePage()">关于我们</a>
+			<a style="margin-right: 10px;text-decoration: underline;cursor: pointer;" onclick="enterProductPage()">产品介绍</a>
+			沪ICP备13012815号-1
+		</div>
 </body>
 	<!-- <script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="../script/jquery.nicescroll.min.js"></script>
@@ -187,6 +193,7 @@
 	<script src="../script/debuggap.js" type="text/javascript"></script>-->
 	
 	<script type="text/javascript">
+	console.log("加载main_page前的时间："+new Date());
 		//2018.02.07 叶夷     静态资源的路径动态的创建
 		var preUrl=window.location.protocol+"//"+document.domain;//获得静态资源路径的协议+域名
 		//将需要的css文件变成js代码生成
@@ -253,8 +260,9 @@
 		
 		var arrowAnimateStop=false;//判断箭头来回动画是否停止,false是不停止，true是停止
 		var isGuideMatchUser=true;//表示这是引导时显示的匹配头像，为了位置固定不变
-
+		console.log("main_page导入文件的时间："+new Date());
 		function start(pageParamsStr) {//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
+			console.log("加载main_page后的时间："+new Date());
 			//2018.02.07 判断是否引入jquery文件
 			if(typeof jQuery == 'undefined'){
 			    window.alert("没有jquery");

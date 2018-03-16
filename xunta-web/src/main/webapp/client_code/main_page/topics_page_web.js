@@ -3342,7 +3342,7 @@ function clickMainPage(bgObj){
 }
 //出现引导页的添加标签的样式
 function guideAddTag() {
-	execRoot("sendClickAddTagMsg()");
+	//execRoot("sendClickAddTagMsg()");
 	
 	var _obj = $("#showatloaded");
 	var _h = _obj.height()/4.5;
@@ -3451,6 +3451,7 @@ function responseIfUserInited(data){
 	//var isShowGuide=0;//测试版本
 	isShowGuide=data.if_user_inited;//是否需要出现引导页，这是由后台传过来的参数决定,0代表需要，1代表不需要
 	if(isShowGuide==0){//需要引导页，在用户浏览完引导内容之后再显示首页内容
+		sendShowGuidePageFirst();
 		//先用一块透明的布覆盖在屏幕上，为了之后的点击屏幕时间
 		var bgObj = document.createElement('div');
 		bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background-color:rgba(0,0,0,0);position:absolute;top:0;left:0;z-index:200;opacity:0.0;filter:alpha(opacity =0);";
