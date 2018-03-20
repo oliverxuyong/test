@@ -182,4 +182,34 @@ border-bottom:1px solid #d8d8d8;}*/
     background: url(../image/titbg.gif);
     background-size: 10px;
 }
+
+.twoBarCode{
+	 float: left;
+    width: 100%;
+    text-align: center;
+    height: 170%;
+    background-color: white;
+    margin-top: 2%;
+}
+
+.twoBarCodeImg{
+	 margin-bottom: 2%;
+    margin-top: 2%;
+    height: 70%;
+    width: 90%;
+    margin-left: 5%;
+    border-bottom: 1px solid #eae6e6;
+    padding-bottom: 10px;
+}
+
+.twoBarCodeImg img{
+	width: 166px;
+    height: 100%;
+}
+
+.twoBarCodeText{
+    font-size: 1.1em;
+    color: #9e9e9e;
+}
+
 /*end:叶夷*/

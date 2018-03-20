@@ -332,6 +332,16 @@ function ifUserInited(userId) {
 		WS_Send(json_obj);
 	}
 }
+//2018.03.20  叶夷    获取微信二维码
+function requestTwoBarCode(userId){
+	var json_obj = {
+			_interface : "1115-1",
+			interface_name : "request_twoBarCode",
+			uid : userId.toString(),
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
 
 //2018.03.08  叶夷  点击出现引导页步骤二数据传给后台
 function sendShowGuidePageSecond(){
@@ -568,6 +578,12 @@ function checkMessageInterface(evnt) {
 	if (jsonObj._interface == '1114-2') {
 		console.log("返回是否出现引导页:"+JSON.stringify(jsonObj));
 		exec("main_page","responseIfUserInited("+evnt.data+")");
+	}
+	
+	//2018.03.20  叶夷    通过请求服务器返回微信关注二维码
+	if (jsonObj._interface == '1115-2') {
+		console.log("返回微信公众号关注二维码路径:"+JSON.stringify(jsonObj));
+		exec("main_page","responseTwoBarCode("+evnt.data+")");
 	}
 }
 
