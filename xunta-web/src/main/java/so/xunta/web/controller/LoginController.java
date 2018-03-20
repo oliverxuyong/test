@@ -40,6 +40,7 @@ import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
 import so.xunta.server.OpenId2EventScopeService;
 import so.xunta.server.WeChatService;
+import so.xunta.utils.HttpRequestUtil;
 import so.xunta.utils.IdWorker;
 import so.xunta.utils.WeChatServerConfiCheckUtils;
 import so.xunta.websocket.config.Constants;
@@ -848,7 +849,7 @@ public class LoginController {
 					+ "]"
 					+ "}";
 			logger.info("menuString="+menuString);
-			JSONObject jsonObject=weChatService.httpRequest(url, "POST", menuString);
+			JSONObject jsonObject=HttpRequestUtil.httpRequest(url, "POST", menuString);
 			logger.info("创建菜单结果:"+jsonObject);
 			/**
 			 * end:2017.12.07 叶夷  创建自定义菜单

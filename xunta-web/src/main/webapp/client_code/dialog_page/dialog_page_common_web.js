@@ -299,6 +299,8 @@ function sendFirstTalk(inputValue) {
 			.push("<p class='addtag-div'><textarea type='text' class='tag-name' id='pop_tagName' onkeypress=''>我们都对"+inputValue+"有兴趣，要一起聊聊吗？</textarea></p>");
 	contextresult
 			.push('<div class="btn-div-dialogPage" onclick="inputSubmit()">发送</div>');
+	contextresult
+			.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="http://42.121.136.225:8888/user-pic2.jpg"></div><span class="twoBarCodeText">欢迎关注xunta点so</span></div>');
 	contextresult.push('</div>')
 	alertWin(contextresult.join(''), "打个招呼吧", _w, _h);
 	
@@ -317,4 +319,9 @@ function sendFirstTalk(inputValue) {
 	//2017.12.21  叶夷   聊天页的弹出框top值下移
 	var htmlObjTop=$("#header").height()+$("#selectCp-container").height()+parseInt($("#selectCp-container").css("padding-bottom"))+10;
 	$("#htmlObj").css("top",htmlObjTop+"px");
+	
+	//2018.03.20  叶夷   调整二维码图片的宽度
+	var twoBarCodeImg=$(".twoBarCodeImg");
+	var twoBarCodeImgHeight=twoBarCodeImg.height();
+	twoBarCodeImg.find("img").css("width",twoBarCodeImgHeight);
 }
