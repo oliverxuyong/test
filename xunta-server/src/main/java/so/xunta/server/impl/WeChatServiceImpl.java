@@ -1,26 +1,11 @@
 package so.xunta.server.impl;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.sql.Timestamp;
 import java.util.Formatter;
 import java.util.List;
 import java.util.UUID;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -32,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import so.xunta.beans.Token;
 import so.xunta.persist.TokenDao;
 import so.xunta.server.WeChatService;
+import so.xunta.utils.HttpRequestUtil;
 
 @Service
 @Transactional
@@ -106,7 +92,7 @@ public class WeChatServiceImpl implements WeChatService{
 		if (token == null) {//新的token
 			String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
 			// 发起GET请求获取凭证
-			JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+			JSONObject jsonObject = HttpRequestUtil.httpRequest(requestUrl, "GET", null);
 			if (null != jsonObject) {
 				String newAccessToken = jsonObject.getString("access_token");
 				int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
@@ -126,7 +112,7 @@ public class WeChatServiceImpl implements WeChatService{
 			}else{//失效了
 				String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
 				// 发起GET请求获取凭证
-				JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+				JSONObject jsonObject = HttpRequestUtil.httpRequest(requestUrl, "GET", null);
 				if (null != jsonObject) {
 					String newAccessToken = jsonObject.getString("access_token");
 					int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
@@ -151,7 +137,7 @@ public class WeChatServiceImpl implements WeChatService{
      * @param outputStr 提交的数据
      * @return JSONObject(通过JSONObject.get(key)的方式获取json对象的属性值)
      */
-	@Override
+	/*@Override
     public JSONObject httpRequest(String requestUrl, String requestMethod, String outputStr) {
         JSONObject jsonObject = null;
         StringBuffer buffer = new StringBuffer();
@@ -207,25 +193,25 @@ public class WeChatServiceImpl implements WeChatService{
         	logger.error("https request error:{}", e);
         }
         return jsonObject;
-    }
+    }*/
     
     /**
     * 类名: MyX509TrustManager </br>
     * 包名： com.souvc.weixin.util
     * 描述: 证书信任管理器（用于https请求）  </br>
      */
-    public class MyX509TrustManager implements X509TrustManager {
-
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
-
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
-
-        public X509Certificate[] getAcceptedIssuers() {
-            return null;
-        }
-    }
+//    public class MyX509TrustManager implements X509TrustManager {
+//
+//        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+//        }
+//
+//        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+//        }
+//
+//        public X509Certificate[] getAcceptedIssuers() {
+//            return null;
+//        }
+//    }
 	
 	/*@Override
 	public String httpsRequest(String requestUrl, String requestMethod, String outputStr) {
@@ -285,7 +271,7 @@ public class WeChatServiceImpl implements WeChatService{
 		String accessToken = getToken(appid, appsecret); // 微信凭证，access_token
 		String requestUrl = apiTicketUrl.replace("ACCESS_TOKEN", accessToken);
 		// 发起GET请求获取凭证
-		JSONObject jsonObject= httpRequest(requestUrl, "GET", null);
+		JSONObject jsonObject= HttpRequestUtil.httpRequest(requestUrl, "GET", null);
 		return jsonObject.getString("ticket");
 	}
 
@@ -354,7 +340,7 @@ public class WeChatServiceImpl implements WeChatService{
 			logger.debug("json: " + json);
 			logger.debug("============================");
 
-			JSONObject resultJson = httpRequest(url, "POST", json.toString());
+			JSONObject resultJson = HttpRequestUtil.httpRequest(url, "POST", json.toString());
 			String errmsg = (String) resultJson.get("errmsg");
 
 			logger.info("模版消息发送结果:" + errmsg);
@@ -371,7 +357,7 @@ public class WeChatServiceImpl implements WeChatService{
 				if(errcode.equals("40001")){//如果模版消息token错误则重新获取token，重新发送
 					String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
 					// 发起GET请求获取凭证
-					JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+					JSONObject jsonObject = HttpRequestUtil.httpRequest(requestUrl, "GET", null);
 					Token tokenObject=getTokenForMysql(appid);
 					if (null != jsonObject) {
 						String newAccessToken = jsonObject.getString("access_token");
