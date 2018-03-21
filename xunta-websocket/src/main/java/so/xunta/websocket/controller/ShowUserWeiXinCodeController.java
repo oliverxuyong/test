@@ -37,7 +37,8 @@ public class ShowUserWeiXinCodeController {
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1115-1")
 	public void ReturnUserWeiXinCode(WebSocketSession session, TextMessage message){
-		String matched_user_id=session.getAttributes().get("matched_user_id").toString();
+		JSONObject params = new JSONObject(message.getPayload());
+		String matched_user_id=params.get("matched_user_id").toString();
 		logger.debug("1115-1  matched_user_id="+matched_user_id);
 		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 		User user = userService.findUser(userId);
