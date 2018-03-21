@@ -35,24 +35,25 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import so.xunta.beans.User;
-import so.xunta.persist.UserDao;
-import so.xunta.server.LoggerService;
-import so.xunta.server.OpenId2EventScopeService;
-import so.xunta.server.WeChatService;
-import so.xunta.utils.IdWorker;
-import so.xunta.utils.WeChatServerConfiCheckUtils;
-import so.xunta.websocket.config.Constants;
-import weibo4j.Account;
-import weibo4j.Users;
-import weibo4j.model.WeiboException;
-
 import com.qq.connect.QQConnectException;
 import com.qq.connect.api.OpenID;
 import com.qq.connect.api.qzone.UserInfo;
 import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.oauth.Oauth;
+
+import so.xunta.beans.User;
+import so.xunta.persist.UserDao;
+import so.xunta.server.LoggerService;
+import so.xunta.server.OpenId2EventScopeService;
+import so.xunta.server.WeChatService;
+import so.xunta.utils.HttpRequestUtil;
+import so.xunta.utils.IdWorker;
+import so.xunta.utils.WeChatServerConfiCheckUtils;
+import so.xunta.websocket.config.Constants;
+import weibo4j.Account;
+import weibo4j.Users;
+import weibo4j.model.WeiboException;
 
 @Controller
 public class LoginController {
@@ -734,7 +735,7 @@ public class LoginController {
 		// 随机数
 		String nonce = request.getParameter("nonce");
 		// 随机字符串
-		String echostr = request.getParameter("echostr");
+		//String echostr = request.getParameter("echostr");
 		WeChatServerConfiCheckUtils wcscs = new WeChatServerConfiCheckUtils();
 		logger.info("验证结果:" + wcscs.checkSignature(serverToken, signature, timestamp, nonce));
 		if (wcscs.checkSignature(serverToken, signature, timestamp, nonce)) {
@@ -848,7 +849,7 @@ public class LoginController {
 					+ "]"
 					+ "}";
 			logger.info("menuString="+menuString);
-			JSONObject jsonObject=weChatService.httpRequest(url, "POST", menuString);
+			JSONObject jsonObject=HttpRequestUtil.httpRequest(url, "POST", menuString);
 			logger.info("创建菜单结果:"+jsonObject);
 			/**
 			 * end:2017.12.07 叶夷  创建自定义菜单
