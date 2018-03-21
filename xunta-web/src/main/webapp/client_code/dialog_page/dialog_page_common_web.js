@@ -288,7 +288,7 @@ var allCommonTags="";
 var noHistoryMsg;
 
 //2017.12.13  叶夷  弹出一句话的框
-function sendFirstTalk(inputValue) {
+function sendFirstTalk(inputValue,weChatQRCodeUrl) {
 	var _obj = $("body");
 	var _h = 160;
 	var _w = _obj.width()-80;
@@ -300,7 +300,7 @@ function sendFirstTalk(inputValue) {
 	contextresult
 			.push('<div class="btn-div-dialogPage" onclick="inputSubmit()">发送</div>');
 	contextresult
-			.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="http://42.121.136.225:8888/user-pic2.jpg"></div><span class="twoBarCodeText">欢迎关注xunta点so</span></div>');
+			.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="'+weChatQRCodeUrl+'"></div><span class="twoBarCodeText">欢迎关注xunta点so</span></div>');
 	contextresult.push('</div>')
 	alertWin(contextresult.join(''), "打个招呼吧", _w, _h);
 	

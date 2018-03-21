@@ -257,7 +257,7 @@ function responseMutualCP(data){
 	/*if(noHistoryMsg){
 		sendFirstTalk(allCommonTags);
 	}*/
-	sendFirstTalk(allCommonTags);//这是测试效果
+	requestTwoBarCode();//这是测试效果
 }
 //请求微信关注二维码
 function requestTwoBarCode(){
@@ -266,5 +266,6 @@ function requestTwoBarCode(){
 }
 
 function responseTwoBarCode(data){
-	
+	var weChatQRCodeUrl=data.weChatQRCodeUrl;
+	sendFirstTalk(allCommonTags,weChatQRCodeUrl);
 }
