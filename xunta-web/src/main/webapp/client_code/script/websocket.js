@@ -333,11 +333,12 @@ function ifUserInited(userId) {
 	}
 }
 //2018.03.20  叶夷    获取微信二维码
-function requestTwoBarCode(userId){
+function requestTwoBarCode(userId,toUserid){
 	var json_obj = {
 			_interface : "1115-1",
 			interface_name : "request_twoBarCode",
 			uid : userId.toString(),
+			matched_user_id : toUserid.toString(),
 			timestamp:""
 		};
 	WS_Send(json_obj);
@@ -583,7 +584,8 @@ function checkMessageInterface(evnt) {
 	//2018.03.20  叶夷    通过请求服务器返回微信关注二维码
 	if (jsonObj._interface == '1115-2') {
 		console.log("返回微信公众号关注二维码路径:"+JSON.stringify(jsonObj));
-		exec("main_page","responseTwoBarCode("+evnt.data+")");
+		var matched_user_id=jsonObj.matched_user_id;
+		exec(matched_user_id,"responseTwoBarCode("+evnt.data+")");
 	}
 }
 

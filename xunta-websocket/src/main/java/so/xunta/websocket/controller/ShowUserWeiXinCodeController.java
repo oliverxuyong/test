@@ -37,6 +37,8 @@ public class ShowUserWeiXinCodeController {
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1115-1")
 	public void ReturnUserWeiXinCode(WebSocketSession session, TextMessage message){
+		String matched_user_id=session.getAttributes().get("matched_user_id").toString();
+		logger.debug("1115-1  matched_user_id="+matched_user_id);
 		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 		User user = userService.findUser(userId);
 		String qRCodeUrl = user.getWeChatQRCodeUrl();
@@ -48,7 +50,10 @@ public class ShowUserWeiXinCodeController {
 			String accessToken = weChatService.getToken(weChatProperties.getAppid(), weChatProperties.getAppsecret());
 			
 			String sceneStr = userId+"";
-			qRCodeUrl = CreateTemporaryTwoBarCodeUtil.getTicket(accessToken, sceneStr);
+			//2018.03.21  叶夷    将二维码参数转为json在转为string传送
+			JSONObject sceneStrJson=new JSONObject();
+			sceneStrJson.put("userId", sceneStr);
+			qRCodeUrl = CreateTemporaryTwoBarCodeUtil.getTicket(accessToken, sceneStrJson.toString());
 			user.setWeChatQRCodeUrl(qRCodeUrl);
 			userService.updateUser(user);
 		}
@@ -56,6 +61,7 @@ public class ShowUserWeiXinCodeController {
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "1115-2");
 		returnJson.put("weChatQRCodeUrl", qRCodeUrl);
+		returnJson.put("matched_user_id", matched_user_id);
 		socketService.chat2one(session, returnJson);
 	}
 }

@@ -884,8 +884,20 @@ public class LoginController {
 				eventKey=eventKey.substring(eventKey.indexOf("_")+1);
 			}
 			logger.info("存储的eventKey="+eventKey);
-			//2017.12.07 叶夷  将openid和二维码参数存储
-			openId2EventScopeService.setOpenId(fromUserName, eventKey);
+			JSONObject eventKeyJson=new JSONObject(eventKey);
+			String userId="";
+			if(!eventKeyJson.isNull("userId")){
+				userId=eventKeyJson.getString("userId");
+				logger.debug("eventKey->userId="+userId);
+			}
+			String eventScope="";
+			if(!eventKeyJson.isNull("eventScope")){
+				eventScope=eventKeyJson.getString("eventScope");
+				logger.debug("eventKey->eventScope="+eventScope);
+				//2017.12.07 叶夷  将openid和二维码参数存储
+				openId2EventScopeService.setOpenId(fromUserName, eventScope);
+			}
 		}
     } 
+    
 }

@@ -261,7 +261,7 @@ function responseMutualCP(data){
 }
 //请求微信关注二维码
 function requestTwoBarCode(){
-	var paraStr = userId ;
+	var paraStr = userId + "','" + toUserId; ;
 	execRoot("requestTwoBarCode('"+ paraStr +"')");
 }
 

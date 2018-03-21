@@ -300,7 +300,7 @@ function sendFirstTalk(inputValue,weChatQRCodeUrl) {
 	contextresult
 			.push('<div class="btn-div-dialogPage" onclick="inputSubmit()">发送</div>');
 	contextresult
-			.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="'+weChatQRCodeUrl+'"></div><span class="twoBarCodeText">欢迎关注xunta点so</span></div>');
+			.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="'+weChatQRCodeUrl+'"></div><span class="twoBarCodeText">感谢你成为我们的vip用户，微信扫一扫，你就能随时收到别人的消息</span></div>');
 	contextresult.push('</div>')
 	alertWin(contextresult.join(''), "打个招呼吧", _w, _h);
 	
