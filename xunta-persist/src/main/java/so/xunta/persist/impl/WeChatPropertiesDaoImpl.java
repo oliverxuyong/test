@@ -12,7 +12,6 @@ import so.xunta.persist.WeChatPropertiesDao;
 
 /**
  * @author Bright Zheng
- * 使用Redis 值为Set类型完成C2U的操作
  * */
 @Repository
 public class WeChatPropertiesDaoImpl implements WeChatPropertiesDao {

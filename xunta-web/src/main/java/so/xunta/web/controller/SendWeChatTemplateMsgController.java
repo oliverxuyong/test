@@ -81,7 +81,9 @@ public class SendWeChatTemplateMsgController {
 		User touser=userService.findUser(Long.valueOf(touserid));
 		String toopenid=touser.getOpenid();
 		logger.debug("模版消息接口被调用时获取的openid：toopenid="+toopenid);
-		logger.debug("确保openid不为空的结果："+(toopenid!=null)+" "+(!toopenid.equals(""))+" "+(!toopenid.equals("\"\"")));
+		if(toopenid!=null){
+			logger.debug("确保openid不为空的结果："+(!toopenid.equals(""))+" "+(!toopenid.equals("\"\"")));
+		}
 		//2018.01.05 叶夷   确保openid不为空才进行后面操作
 		if(toopenid!=null && !toopenid.equals("") && !toopenid.equals("\"\"")){
 			//2018.01.04 叶夷  通过usergroup来获取接者所需的模版消息信息

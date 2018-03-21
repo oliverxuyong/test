@@ -44,6 +44,7 @@ public class User extends IdEntity{
 	private Timestamp last_update_time;
 	@ColumnDefault(value="xunta_common")
 	private String event_scope;
+	private String weChatQRCodeUrl;
 
 	/**
 	 * 用户名不能重复
@@ -188,5 +189,10 @@ public class User extends IdEntity{
 	public void setLast_update_time(Timestamp last_update_time) {
 		this.last_update_time = last_update_time;
 	}
-	
+	public String getWeChatQRCodeUrl() {
+		return weChatQRCodeUrl;
+	}
+	public void setWeChatQRCodeUrl(String weChatQRCodeUrl) {
+		this.weChatQRCodeUrl = weChatQRCodeUrl;
+	}
 }
