@@ -879,10 +879,10 @@ public class LoginController {
 				logger.info("eventKeyJson=" + eventKeyJson.toString()+" "+(eventKeyJson.has("userId")));
 				if (eventKeyJson.has("userId")) {
 					logger.info("获得微信二维码参数中的userId");
-					String userId = eventKeyJson.getString("userId");
+					Long userId = eventKeyJson.getLong("userId");
 					logger.info("eventKey->userId=" + userId);
 					// 通过userid查找用户，然后存储openid
-					User user = userDao.findUserByUserid(Long.valueOf(userId));
+					User user = userDao.findUserByUserid(userId);
 					if (user != null) {
 						user.setOpenid(fromUserName);
 						userDao.updateUser(user);
