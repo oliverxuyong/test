@@ -874,20 +874,10 @@ public class LoginController {
 				/**
 				 * end: 2018.03.22  叶夷    发送客服消息
 				 */
-				
-				/*
-				 * SimpleDateFormat df = new
-				 * SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式 String
-				 * result=weChatService.sendWechatmsgToUser( fromUserName,
-				 * templateid, templateurl, "#FF0000",
-				 * ""+"["+sameSelectTagList+"]", towCode_templateContent,
-				 * df.format(new Date()), "", appid, appsecret);
-				 * if(result.equals("success")){ logger.info("关注成功模版消息发送成功");
-				 * }else{ logger.error("关注成功模版消息发送失败"); }
-				 */
 
+				logger.info("eventKey=" + eventKey);
 				eventKey = eventKey.substring(eventKey.indexOf("_") + 1);
-				logger.info("存储的eventKey=" + eventKey);
+				logger.info("转换后的eventKey=" + eventKey);
 				JSONObject eventKeyJson = new JSONObject(eventKey);
 				String userId = "";
 				if (!eventKeyJson.isNull("userId")) {

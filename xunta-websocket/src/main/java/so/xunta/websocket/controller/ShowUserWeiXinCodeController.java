@@ -50,13 +50,13 @@ public class ShowUserWeiXinCodeController {
 			WeChatProperties weChatProperties = weChatPropertiesService.getDataFromUserGroup(userGroup);
 			String accessToken = weChatService.getToken(weChatProperties.getAppid(), weChatProperties.getAppsecret());
 			
-			String sceneStr = userId+"";
-			logger.debug("二维码参数：sceneStr="+sceneStr);
+			String sceneStr = "{userId:"+userId+"}";
+			/*logger.debug("二维码参数：sceneStr="+sceneStr);
 			//2018.03.21  叶夷    将二维码参数转为json在转为string传送
 			JSONObject sceneStrJson=new JSONObject();
-			sceneStrJson.put("userId", sceneStr);
-			logger.debug("二维码参数：sceneStrJson="+sceneStrJson.toString());
-			qRCodeUrl = CreateTemporaryTwoBarCodeUtil.getTicket(accessToken, sceneStrJson.toString());
+			sceneStrJson.put("userId", sceneStr);*/
+			logger.debug("二维码参数：sceneStrJson="+sceneStr);
+			qRCodeUrl = CreateTemporaryTwoBarCodeUtil.getTicket(accessToken, sceneStr);
 			user.setWeChatQRCodeUrl(qRCodeUrl);
 			userService.updateUser(user);
 		}
