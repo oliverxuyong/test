@@ -76,9 +76,9 @@ public class ShowUserWeiXinCodeController {
 						JSONObject jsonObject1 = HttpRequestUtil.httpRequest(requestUrl, "GET", null);
 						Token tokenObject=weChatService.getTokenForMysql(weChatProperties.getAppid());
 						if (null != jsonObject1) {
-							String newAccessToken = jsonObject.getString("access_token");
+							String newAccessToken = jsonObject1.getString("access_token");
 							accessToken=newAccessToken;
-							int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
+							int expires_in = jsonObject1.getInt("expires_in");// 失效时间，以秒为单位
 							Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
 							Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
 							Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
@@ -86,9 +86,9 @@ public class ShowUserWeiXinCodeController {
 							tokenObject.setCreateTime(newcreateTime);
 							tokenObject.setFailureTime(newfailureTime);
 							tokenDao.updateToken(tokenObject);// 存在但是失效则更新
-							jsonObject = CreateTemporaryTwoBarCodeUtil.getTicket(accessToken, sceneStr);
-							if (null != jsonObject) {
-								String ticket = jsonObject.getString("ticket");
+							jsonObject1 = CreateTemporaryTwoBarCodeUtil.getTicket(accessToken, sceneStr);
+							if (null != jsonObject1) {
+								String ticket = jsonObject1.getString("ticket");
 								qRCodeUrl="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket="+ticket;//二维码参数路径
 							}
 						}
