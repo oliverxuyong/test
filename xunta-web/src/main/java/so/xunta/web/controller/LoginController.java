@@ -822,96 +822,93 @@ public class LoginController {
 //		return str.toString();
 		logger.info("ticket="+ticket);
 		if(!ticket.equals("") || ticket!=null){
-			
-			/**
-			 * start:2017.12.07 叶夷 删除自定义菜单
-			 */
-			/*logger.info("开始删除自定义菜单");
-			String menu_delete_url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
-			String deleteAccessToken=weChatService.getToken(appid, appsecret);
-			logger.info("accessToken="+deleteAccessToken);
-			String deleteUrl = menu_delete_url.replace("ACCESS_TOKEN", deleteAccessToken);
-			JSONObject deleteJsonObject=weChatService.httpRequest(deleteUrl, "GET", null);
-			logger.info("删除菜单结果:"+deleteJsonObject);*/
-			/**
-			 * end:2017.12.07 叶夷  删除自定义菜单
-			 */
-			
-			/**
-			 * start:2017.12.07 叶夷  创建自定义菜单
-			 */
-			logger.info("开始创建自定义菜单");
-			String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
-			String accessToken=weChatService.getToken(appid, appsecret);
-			logger.info("accessToken="+accessToken);
-			String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
-			String menuString="{\"button\":"
-					+ "["
-					+ "{"
-					+ "\"type\":\"view\","
-					+ "\"name\":\"请点我\","
-					+ "\"key\":\""+key+"\","
-					+ "\"url\":\""+templateurl+"\""
-					+ "}"
-					+ "]"
-					+ "}";
-			logger.info("menuString="+menuString);
-			JSONObject jsonObject=HttpRequestUtil.httpRequest(url, "POST", menuString);
-			logger.info("创建菜单结果:"+jsonObject);
-			/**
-			 * end:2017.12.07 叶夷  创建自定义菜单
-			 */
-			
-			logger.info("fromUserName="+fromUserName
-					+" templateid="+templateid
-					+" templateurl="+templateurl
-					+" templateContent="+towCode_templateContent
-					+" appid="+appid
-					+" appsecret="+appsecret);
-			SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
-			String result=weChatService.sendWechatmsgToUser(
-					fromUserName, 
-					templateid, 
-					templateurl,
-					"#FF0000",
-					""/*+"["+sameSelectTagList+"]"*/,
-					towCode_templateContent, 
-					df.format(new Date()),
-					"",
-					appid,
-					appsecret);
-			if(result.equals("success")){
-				logger.info("关注成功模版消息发送成功");
-			}else{
-				logger.error("关注成功模版消息发送失败");
-			}
-			
 			//2017.12.08 叶夷 如果是刚关注，二维码参数是qrscene_general
+			//	未关注时：event=subscribe   已关注时：event=SCAN
 			if(event.equals("subscribe")){
-				eventKey=eventKey.substring(eventKey.indexOf("_")+1);
-			}
-			logger.info("存储的eventKey="+eventKey);
-			JSONObject eventKeyJson=new JSONObject(eventKey);
-			String userId="";
-			if(!eventKeyJson.isNull("userId")){
-				userId=eventKeyJson.getString("userId");
-				logger.debug("eventKey->userId="+userId);
-				//通过userid查找用户，然后存储openid
-				User user=userDao.findUserByUserid(Long.valueOf(userId));
-				if(user!=null){
-					user.setOpenid(fromUserName);
-					userDao.updateUser(user);
-				}
-			}
 			
-			String eventScope="";
-			if(!eventKeyJson.isNull("eventScope")){
-				eventScope=eventKeyJson.getString("eventScope");
-				logger.debug("eventKey->eventScope="+eventScope);
-				//2017.12.07 叶夷  将openid和二维码参数存储
-				openId2EventScopeService.setOpenId(fromUserName, eventScope);
+				/**
+				 * start:2017.12.07 叶夷 删除自定义菜单
+				 */
+				/*logger.info("开始删除自定义菜单");
+				String menu_delete_url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
+				String deleteAccessToken = weChatService.getToken(appid, appsecret);
+				logger.info("accessToken=" + deleteAccessToken);
+				String deleteUrl = menu_delete_url.replace("ACCESS_TOKEN", deleteAccessToken);
+				JSONObject deleteJsonObject = HttpRequestUtil.httpRequest(deleteUrl, "GET", null);
+				logger.info("删除菜单结果:" + deleteJsonObject);*/
+				/**
+				 * end:2017.12.07 叶夷 删除自定义菜单
+				 */
+
+				/**
+				 * start:2017.12.07 叶夷 创建自定义菜单
+				 */
+				logger.info("开始创建自定义菜单");
+				String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+				String accessToken = weChatService.getToken(appid, appsecret);
+				logger.info("accessToken=" + accessToken);
+				String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
+				String menuString = "{\"button\":" + "[" + "{" + "\"type\":\"view\"," + "\"name\":\"请点我\","
+						+ "\"key\":\"" + key + "\"," + "\"url\":\"" + templateurl + "\"" + "}" + "]" + "}";
+				logger.info("menuString=" + menuString);
+				JSONObject jsonObject = HttpRequestUtil.httpRequest(url, "POST", menuString);
+				logger.info("创建菜单结果:" + jsonObject);
+				/**
+				 * end:2017.12.07 叶夷 创建自定义菜单
+				 */
+
+				logger.info("fromUserName=" + fromUserName + " templateid=" + templateid + " templateurl="
+						+ templateurl + " templateContent=" + towCode_templateContent + " appid=" + appid
+						+ " appsecret=" + appsecret);
+				
+				/**
+				 * start: 2018.03.22  叶夷    发送客服消息
+				 */
+				String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
+				String sendMessageUrl1=sendMessageUrl.replace("ACCESS_TOKEN", accessToken);
+				String content="在xunta中可按照你设置的任意“关注点”将与你最适合互动的人匹配在一起.从此你的关系触角可按照你自己设定的方向任意延伸, 所有人都被你“点兵点将”.";
+				String sendMessageString =  "{\"touser\": \""+fromUserName+"\",\"msgtype\": \"text\", \"text\": {\"content\": \""+content+"\"}}";
+				logger.info("sendMessageString=" + sendMessageString);
+				JSONObject sendMessagejsonObject = HttpRequestUtil.httpRequest(sendMessageUrl1, "POST", sendMessageString);
+				logger.info("创建菜单结果:" + sendMessagejsonObject);
+				/**
+				 * end: 2018.03.22  叶夷    发送客服消息
+				 */
+				
+				/*
+				 * SimpleDateFormat df = new
+				 * SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式 String
+				 * result=weChatService.sendWechatmsgToUser( fromUserName,
+				 * templateid, templateurl, "#FF0000",
+				 * ""+"["+sameSelectTagList+"]", towCode_templateContent,
+				 * df.format(new Date()), "", appid, appsecret);
+				 * if(result.equals("success")){ logger.info("关注成功模版消息发送成功");
+				 * }else{ logger.error("关注成功模版消息发送失败"); }
+				 */
+
+				eventKey = eventKey.substring(eventKey.indexOf("_") + 1);
+				logger.info("存储的eventKey=" + eventKey);
+				JSONObject eventKeyJson = new JSONObject(eventKey);
+				String userId = "";
+				if (!eventKeyJson.isNull("userId")) {
+					userId = eventKeyJson.getString("userId");
+					logger.debug("eventKey->userId=" + userId);
+					// 通过userid查找用户，然后存储openid
+					User user = userDao.findUserByUserid(Long.valueOf(userId));
+					if (user != null) {
+						user.setOpenid(fromUserName);
+						userDao.updateUser(user);
+					}
+				}
+
+				String eventScope = "";
+				if (!eventKeyJson.isNull("eventScope")) {
+					eventScope = eventKeyJson.getString("eventScope");
+					logger.debug("eventKey->eventScope=" + eventScope);
+					// 2017.12.07 叶夷 将openid和二维码参数存储
+					openId2EventScopeService.setOpenId(fromUserName, eventScope);
+				}
 			}
 		}
     } 
-    
 }
