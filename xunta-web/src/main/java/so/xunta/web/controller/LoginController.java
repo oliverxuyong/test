@@ -877,7 +877,7 @@ public class LoginController {
 				logger.info("转换后的eventKey=" + eventKey);
 				JSONObject eventKeyJson = new JSONObject(eventKey);
 				logger.debug("eventKeyJson=" + eventKeyJson.toString()+" "+(eventKeyJson.has("userId")));
-				if (!eventKeyJson.has("userId")) {
+				if (eventKeyJson.has("userId")) {
 					String userId = eventKeyJson.getString("userId");
 					logger.debug("eventKey->userId=" + userId);
 					// 通过userid查找用户，然后存储openid
@@ -887,8 +887,8 @@ public class LoginController {
 						userDao.updateUser(user);
 					}
 				}
-				logger.debug("eventKeyJson.isNull('eventScope')=" + eventKeyJson.isNull("eventScope"));
-				if (!eventKeyJson.isNull("eventScope")) {
+				logger.debug("eventKeyJson.has('eventScope')=" + eventKeyJson.has("eventScope"));
+				if (eventKeyJson.has("eventScope")) {
 					String eventScope = eventKeyJson.getString("eventScope");
 					logger.debug("eventKey->eventScope=" + eventScope);
 					// 2017.12.07 叶夷 将openid和二维码参数存储
@@ -912,7 +912,7 @@ public class LoginController {
 		logger.info("创建菜单结果:" + jsonObject);
 		
 		//如果请求微信的接口AccessToken失效，则重新获得且存储
-		if(!jsonObject.isNull("errmsg")){
+		if(jsonObject.has("errmsg")){
 			String errmsg = jsonObject.getString("errmsg");
 			if (!"ok".equals(errmsg)) { // 如果为errmsg为ok，则代表发送成功，公众号推送信息给用户了。
 				String errcode=jsonObject.get("errcode").toString();
