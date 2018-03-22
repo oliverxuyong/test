@@ -312,7 +312,7 @@ public class LoginController {
 		logger.debug("findUserByOpenId ====>  " + (user!=null));
 		if(user!=null){
 			logger.debug("findUserByOpenId ====>  unionid=" +unionid);
-			user.setUnion_id(unionid);
+			user.setThird_party_id(unionid);
 			userDao.updateUser(user);
 		}
 
