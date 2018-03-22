@@ -876,10 +876,11 @@ public class LoginController {
 				eventKey = eventKey.substring(eventKey.indexOf("_") + 1);
 				logger.info("转换后的eventKey=" + eventKey);
 				JSONObject eventKeyJson = new JSONObject(eventKey);
-				logger.debug("eventKeyJson=" + eventKeyJson.toString()+" "+(eventKeyJson.has("userId")));
+				logger.info("eventKeyJson=" + eventKeyJson.toString()+" "+(eventKeyJson.has("userId")));
 				if (eventKeyJson.has("userId")) {
+					logger.info("获得微信二维码参数中的userId");
 					String userId = eventKeyJson.getString("userId");
-					logger.debug("eventKey->userId=" + userId);
+					logger.info("eventKey->userId=" + userId);
 					// 通过userid查找用户，然后存储openid
 					User user = userDao.findUserByUserid(Long.valueOf(userId));
 					if (user != null) {
@@ -887,8 +888,9 @@ public class LoginController {
 						userDao.updateUser(user);
 					}
 				}
-				logger.debug("eventKeyJson.has('eventScope')=" + eventKeyJson.has("eventScope"));
+				logger.info("eventKeyJson.has('eventScope')=" + eventKeyJson.has("eventScope"));
 				if (eventKeyJson.has("eventScope")) {
+					logger.info("获得微信二维码参数中的eventScope");
 					String eventScope = eventKeyJson.getString("eventScope");
 					logger.debug("eventKey->eventScope=" + eventScope);
 					// 2017.12.07 叶夷 将openid和二维码参数存储
