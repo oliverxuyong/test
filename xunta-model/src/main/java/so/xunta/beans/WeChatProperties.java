@@ -21,11 +21,12 @@ public class WeChatProperties{
 	private String appsecret;
 	private String templateid;
 	private String templateurl;
+	private String twoCode_templateContent;
 	private String key;
 	public WeChatProperties() {
 	}
 	public WeChatProperties(Long id, String usergroup, String appid, String appsecret, String templateid,
-			String templateurl, String key) {
+			String templateurl,String twoCode_templateContent, String key) {
 		super();
 		this.id = id;
 		this.usergroup = usergroup;
@@ -33,6 +34,7 @@ public class WeChatProperties{
 		this.appsecret = appsecret;
 		this.templateid = templateid;
 		this.templateurl = templateurl;
+		this.twoCode_templateContent=twoCode_templateContent;
 		this.key = key;
 	}
 	public Long getId() {
@@ -70,6 +72,12 @@ public class WeChatProperties{
 	}
 	public void setTemplateurl(String templateurl) {
 		this.templateurl = templateurl;
+	}
+	public String getTwoCode_templateContent() {
+		return twoCode_templateContent;
+	}
+	public void setTwoCode_templateContent(String twoCode_templateContent) {
+		this.twoCode_templateContent = twoCode_templateContent;
 	}
 	public String getKey() {
 		return key;

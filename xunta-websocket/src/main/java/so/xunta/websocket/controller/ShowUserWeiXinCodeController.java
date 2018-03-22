@@ -43,7 +43,7 @@ public class ShowUserWeiXinCodeController {
 		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 		User user = userService.findUser(userId);
 		String qRCodeUrl = user.getWeChatQRCodeUrl();
-		
+		logger.debug("qRCodeUrl="+qRCodeUrl+" "+(qRCodeUrl==null));
 		if(qRCodeUrl == null){
 			String userGroup = user.getUserGroup();
 			
@@ -51,11 +51,11 @@ public class ShowUserWeiXinCodeController {
 			String accessToken = weChatService.getToken(weChatProperties.getAppid(), weChatProperties.getAppsecret());
 			
 			String sceneStr = userId+"";
-			logger.info("二维码参数：sceneStr="+sceneStr);
+			logger.debug("二维码参数：sceneStr="+sceneStr);
 			//2018.03.21  叶夷    将二维码参数转为json在转为string传送
 			JSONObject sceneStrJson=new JSONObject();
 			sceneStrJson.put("userId", sceneStr);
-			logger.info("二维码参数：sceneStrJson="+sceneStrJson.toString());
+			logger.debug("二维码参数：sceneStrJson="+sceneStrJson.toString());
 			qRCodeUrl = CreateTemporaryTwoBarCodeUtil.getTicket(accessToken, sceneStrJson.toString());
 			user.setWeChatQRCodeUrl(qRCodeUrl);
 			userService.updateUser(user);
