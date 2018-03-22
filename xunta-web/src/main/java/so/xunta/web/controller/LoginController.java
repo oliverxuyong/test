@@ -887,10 +887,9 @@ public class LoginController {
 						userDao.updateUser(user);
 					}
 				}
-
-				String eventScope = "";
+				logger.debug("eventKeyJson.isNull('eventScope')=" + eventKeyJson.isNull("eventScope"));
 				if (!eventKeyJson.isNull("eventScope")) {
-					eventScope = eventKeyJson.getString("eventScope");
+					String eventScope = eventKeyJson.getString("eventScope");
 					logger.debug("eventKey->eventScope=" + eventScope);
 					// 2017.12.07 叶夷 将openid和二维码参数存储
 					openId2EventScopeService.setOpenId(fromUserName, eventScope);
