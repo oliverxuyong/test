@@ -26,17 +26,12 @@ public class CreateTemporaryTwoBarCodeUtil {
 	 * @param sceneStr     二维码参数
 	 * @return   返回二维码图片路径
 	 */
-	public static String getTicket(String accessToken,String sceneStr) {
-		String ticket=null;
+	public static JSONObject getTicket(String accessToken,String sceneStr) {
 		String requestUrl = ticket_url.replace("TOKENPOST", accessToken);
 		//String postData="{\"action_name\":\"QR_LIMIT_SCENE\",\"action_info\":{\"scene\":{\"scene_str\": \"1\"}}}";//临时二维码,参数只能是数字
 		String postData="{\"action_name\":\"QR_LIMIT_STR_SCENE\",\"action_info\":{\"scene\":{\"scene_str\": \""+sceneStr+"\"}}}";//永久二维码
 		JSONObject jsonObject = HttpRequestUtil.httpRequest(requestUrl, "POST", postData);
-		logger.debug("请求ticket返回结果："+jsonObject);
-		if (null != jsonObject) {
-			ticket = jsonObject.getString("ticket");
-		}
-		String ticketUrl="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket="+ticket;//二维码参数路径
-		return ticketUrl;
+		logger.debug("请求带参数的二维码返回结果："+jsonObject);
+		return jsonObject;
 	}
 }

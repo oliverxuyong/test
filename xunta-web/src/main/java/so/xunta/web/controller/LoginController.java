@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,7 +43,9 @@ import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.oauth.Oauth;
 
+import so.xunta.beans.Token;
 import so.xunta.beans.User;
+import so.xunta.persist.TokenDao;
 import so.xunta.persist.UserDao;
 import so.xunta.server.LoggerService;
 import so.xunta.server.OpenId2EventScopeService;
@@ -69,6 +72,9 @@ public class LoginController {
 	
 	@Autowired
 	private OpenId2EventScopeService openId2EventScopeService;
+	
+	@Autowired
+	private TokenDao tokenDao;
 
 	static Logger logger = Logger.getLogger(LoginController.class);
 
@@ -843,16 +849,7 @@ public class LoginController {
 				/**
 				 * start:2017.12.07 叶夷 创建自定义菜单
 				 */
-				logger.info("开始创建自定义菜单");
-				String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
-				String accessToken = weChatService.getToken(appid, appsecret);
-				logger.info("accessToken=" + accessToken);
-				String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
-				String menuString = "{\"button\":" + "[" + "{" + "\"type\":\"view\"," + "\"name\":\"请点我\","
-						+ "\"key\":\"" + key + "\"," + "\"url\":\"" + templateurl + "\"" + "}" + "]" + "}";
-				logger.info("menuString=" + menuString);
-				JSONObject jsonObject = HttpRequestUtil.httpRequest(url, "POST", menuString);
-				logger.info("创建菜单结果:" + jsonObject);
+				String accessToken=createMenu();
 				/**
 				 * end:2017.12.07 叶夷 创建自定义菜单
 				 */
@@ -901,4 +898,48 @@ public class LoginController {
 			}
 		}
     } 
+    
+	//微信公众号创建自定义菜单
+    private String createMenu(){
+    	logger.info("开始创建自定义菜单");
+		String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+		String accessToken = weChatService.getToken(appid, appsecret);
+		logger.info("accessToken=" + accessToken);
+		String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
+		String menuString = "{\"button\":" + "[" + "{" + "\"type\":\"view\"," + "\"name\":\"请点我\","
+				+ "\"key\":\"" + key + "\"," + "\"url\":\"" + templateurl + "\"" + "}" + "]" + "}";
+		logger.info("menuString=" + menuString);
+		JSONObject jsonObject = HttpRequestUtil.httpRequest(url, "POST", menuString);
+		logger.info("创建菜单结果:" + jsonObject);
+		
+		//如果请求微信的接口AccessToken失效，则重新获得且存储
+		if(!jsonObject.isNull("errmsg")){
+			String errmsg = jsonObject.getString("errmsg");
+			if (!"ok".equals(errmsg)) { // 如果为errmsg为ok，则代表发送成功，公众号推送信息给用户了。
+				String errcode=jsonObject.get("errcode").toString();
+				logger.debug("errcode="+errcode);
+				if(errcode.equals("40001")){//如果模版消息token错误则重新获取token，重新发送
+					String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+					String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+					// 发起GET请求获取凭证
+					JSONObject jsonObject1 = HttpRequestUtil.httpRequest(requestUrl, "GET", null);
+					Token tokenObject=weChatService.getTokenForMysql(appid);
+					if (null != jsonObject1) {
+						String newAccessToken = jsonObject.getString("access_token");
+						accessToken=newAccessToken;
+						int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
+						Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
+						Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
+						Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
+						tokenObject.setAccessToken(newAccessToken);
+						tokenObject.setCreateTime(newcreateTime);
+						tokenObject.setFailureTime(newfailureTime);
+						tokenDao.updateToken(tokenObject);// 存在但是失效则更新
+						createMenu();
+					}
+				}
+			}
+		}
+		return accessToken;
+    }
 }
