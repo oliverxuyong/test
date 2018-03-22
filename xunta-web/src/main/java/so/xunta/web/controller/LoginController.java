@@ -300,9 +300,16 @@ public class LoginController {
 
 		// 更新已关注的用户openid
 		// TempInsertOpenidUtils.updateOpenid();
+		User user=null;
+		//2018.03.22  叶夷    通过openid查找用户是否存在然后更新用户信息
+		user=userDao.findUserByOpenId(openid);
+		if(user!=null){
+			user.setUnion_id(unionid);
+			userDao.updateUser(user);
+		}
 
 		// 如果有些用户的openid没有保存，则登录时保存更新
-		User user = userDao.findUserByThirdPartyId(unionid);
+		user = userDao.findUserByThirdPartyId(unionid);
 		if (user != null && user.getOpenid() == null) {
 			logger.debug("user openid: " + openid);
 			user.setOpenid(openid);
@@ -889,7 +896,14 @@ public class LoginController {
 			if(!eventKeyJson.isNull("userId")){
 				userId=eventKeyJson.getString("userId");
 				logger.debug("eventKey->userId="+userId);
+				//通过userid查找用户，然后存储openid
+				User user=userDao.findUserByUserid(Long.valueOf(userId));
+				if(user!=null){
+					user.setOpenid(fromUserName);
+					userDao.updateUser(user);
+				}
 			}
+			
 			String eventScope="";
 			if(!eventKeyJson.isNull("eventScope")){
 				eventScope=eventKeyJson.getString("eventScope");

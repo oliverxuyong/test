@@ -1,6 +1,6 @@
 input[type="text"], select, button {
 	-webkit-appearance: none;
-}/*去掉iphone中的默认样式,如input的内阴影等.*/
+}/*鍘绘帀iphone涓殑榛樿鏍峰紡,濡俰nput鐨勫唴闃村奖绛�.*/
 
 html, body {
 	height: 100%;
@@ -74,7 +74,7 @@ body{position:relative;
 #dialog_box .detail{padding:3px 4px;box-shadow:1px 1px 1px rgba(0, 0, 0, 0.24); border-radius:5px;display:inline-block;margin-top:3px}
 #dialog_box .other{padding-right:15%}
 #dialog_box .my{text-align:right;padding-left:15%;}
-#dialog_box .my .detail{position:relative; margin-right:40px;background-color:#f1e1ff;text-align:left}/*最后的text-align是为了让不满一行的文字靠左.*/
+#dialog_box .my .detail{position:relative; margin-right:40px;background-color:#f1e1ff;text-align:left}/*鏈�鍚庣殑text-align鏄负浜嗚涓嶆弧涓�琛岀殑鏂囧瓧闈犲乏.*/
 #dialog_box .my .detail .postsending{width:5px; position:absolute; top:-1px; left:-10px; border-bottom:1px solid gray;}
 #dialog_box .my .detail .postsendingfailed{width:4px; position:absolute; top:0px; left:-10px;}
 #dialog_box .other .user-pic{top:0; left:0}
@@ -83,7 +83,7 @@ body{position:relative;
 #dialog_box .other .recommend .plus-logo{position:absolute; top:2px; right:-18px; width:12px; height:12px}
 #dialog_box .other .detail .postunread{width:7px; position:absolute; top:2px; right:-11px;}
 
-/*聊天页刷新的按钮，暂时已取消 ——zheng 2017-03-20 
+/*鑱婂ぉ椤靛埛鏂扮殑鎸夐挳锛屾殏鏃跺凡鍙栨秷 鈥斺�攝heng 2017-03-20 
 #dialog_box .refresh{background: url(../image/refresh.png) no-repeat;position: relative;height: 19px;width: 22px;cursor: pointer;top:-20px;display: none;}*/
 
 #dialog_box .system{text-align:center}
@@ -97,11 +97,11 @@ body{position:relative;
 .mytopic {padding:4px; margin:3px; background-color:#f4f4f5; border-radius:4px}
 
 #e-lib {display:none}
-//.whoistalking {height:20px; width:20px; margin-left: 10px;}//这个在xunttest里有,但这里没有了.先暂时放这里,可能没有也可以.. xu 2016.3.7
+//.whoistalking {height:20px; width:20px; margin-left: 10px;}//杩欎釜鍦▁unttest閲屾湁,浣嗚繖閲屾病鏈変簡.鍏堟殏鏃舵斁杩欓噷,鍙兘娌℃湁涔熷彲浠�.. xu 2016.3.7
 .whoistalking {display:inline;position:relative; top:5px}
 .whoistalking img{margin-left:22px; margin-top: 0px; height:20px; width:20px; border-radius:4px}
 
-//私人对话框 @wsy 2016-10-18
+//绉佷汉瀵硅瘽妗� @wsy 2016-10-18
 /*#personalDialogHistory{font-size:5px; background-color: #ffffff; overflow-x:hidden;height:80%; width:100%;
 border-bottom:1px solid #d8d8d8;}*/
 #personalDialogHistory { } //not work
@@ -132,18 +132,18 @@ border-bottom:1px solid #d8d8d8;}*/
 #personalDialogHistory .p-send-time{display: block;text-align: center;color: #999;font-size: 8px;margin-bottom:6px;margin-top:10px;}
 #personalDialogHistory .p-nc{padding-left:20px;padding-right:20px;font-size:10px;color: #999;}
 
-/*start:叶夷    2017年3月22日
-		过往发言样式
+/*start:鍙跺し    2017骞�3鏈�22鏃�
+		杩囧線鍙戣█鏍峰紡
 */
 #bodyBgObj .p-user{position:relative;margin-bottom:10px}
 #bodyBgObj .p-other{padding-right:30px}
 #bodyBgObj .p-other .p-detail{position:relative;margin-left:20px;background-color:#EAF0F4}
 #bodyBgObj .p-detail{padding:3px 4px;box-shadow:1px 1px 1px rgba(0, 0, 0, 0.24); border-radius:5px;display:inline-block;margin-top:3px}
 #bodyBgObj .p-send-time{display: block;text-align: center;color: #999;font-size: 8px;margin-bottom:6px;margin-top:10px;}
-/*end:叶夷*/
+/*end:鍙跺し*/
 
-/*start:叶夷   2017.12.13
-		发送第一句话弹出框样式
+/*start:鍙跺し   2017.12.13
+		鍙戦�佺涓�鍙ヨ瘽寮瑰嚭妗嗘牱寮�
 */
 .tag-name{
     width: 98%;
@@ -208,8 +208,8 @@ border-bottom:1px solid #d8d8d8;}*/
 }
 
 .twoBarCodeText{
-    font-size: 1.1em;
+    font-size: 0.9em;
     color: #9e9e9e;
 }
 
-/*end:叶夷*/
+/*end:鍙跺し*/

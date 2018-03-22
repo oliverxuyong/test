@@ -145,4 +145,12 @@ public class UserDaoImpl implements UserDao {
 		Query query = session.createSQLQuery(sql).addEntity(User.class).setParameter("eventScope",eventScope);
 		return query.list();
 	}
+
+	@Override
+	public User findUserByOpenId(String openid) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "from User as u where u.openid = :openid";
+		Query query = session.createQuery(hql).setParameter("openid",openid);
+		return (User) query.uniqueResult();
+	}
 }
