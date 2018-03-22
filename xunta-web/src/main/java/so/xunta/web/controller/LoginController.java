@@ -309,6 +309,7 @@ public class LoginController {
 		User user=null;
 		//2018.03.22  叶夷    通过openid查找用户是否存在然后更新用户信息
 		user=userDao.findUserByOpenId(openid);
+		logger.debug("findUserByOpenId ====>  " + (user!=null));
 		if(user!=null){
 			user.setUnion_id(unionid);
 			userDao.updateUser(user);
@@ -316,7 +317,8 @@ public class LoginController {
 
 		// 如果有些用户的openid没有保存，则登录时保存更新
 		user = userDao.findUserByThirdPartyId(unionid);
-		if (user != null && user.getOpenid() == null) {
+		logger.debug("findUserByThirdPartyId ====>  " + (user!=null));
+		if (user != null /*&& user.getOpenid() == null*/) {//2018.03.22 叶夷    这里不能用getOpenid判断是否为null,放在这里是为什么我也不记得
 			logger.debug("user openid: " + openid);
 			user.setOpenid(openid);
 			userDao.updateUser(user);
