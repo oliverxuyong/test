@@ -876,8 +876,8 @@ public class LoginController {
 				eventKey = eventKey.substring(eventKey.indexOf("_") + 1);
 				logger.info("转换后的eventKey=" + eventKey);
 				JSONObject eventKeyJson = new JSONObject(eventKey);
-				logger.debug("eventKeyJson=" + eventKeyJson.toString());
-				if (!eventKeyJson.isNull("userId")) {
+				logger.debug("eventKeyJson=" + eventKeyJson.toString()+" "+(eventKeyJson.has("userId")));
+				if (!eventKeyJson.has("userId")) {
 					String userId = eventKeyJson.getString("userId");
 					logger.debug("eventKey->userId=" + userId);
 					// 通过userid查找用户，然后存储openid
