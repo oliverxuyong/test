@@ -890,8 +890,11 @@ public class LoginController {
 					// 通过userid查找用户，然后存储openid
 					User user = userDao.findUserByUserid(userId);
 					if (user != null) {
-						user.setOpenid(fromUserName);
-						userDao.updateUser(user);
+						User userFromOpenid=userDao.findUserByOpenId(fromUserName);//在这里判断两个网页用户被一个微信用户扫二维码的情况，如果一个微信用户已经扫描一个网页用户的二维码，那扫描别的网页用户的二维码则不做操作
+						if(userFromOpenid==null){
+							user.setOpenid(fromUserName);
+							userDao.updateUser(user);
+						}
 					}
 				}
 				logger.info("eventKeyJson.has('eventScope')=" + eventKeyJson.has("eventScope"));
