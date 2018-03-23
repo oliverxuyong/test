@@ -115,10 +115,11 @@ function searchToAddTag(isGuideToAddTag){
 	var suggestWrap = $('#gov_search_suggest');
 	var text = excludeSpecial($("#pop_tagName").val());//获得输入框的值,并且过滤特殊字符
 	var strLength=text.length;
-	var reg = "/^(\d+)|(\w+)|(\s+)$/g";//^\d+$表示纯数字      ^[^\w\s+]$ 纯符号的正则       ^\\s+$纯空格
-	if(text.match(reg) || strLength<=2){
+	var reg = /^(\d+)|(\w+)|(\s+)$/;//^\d+$表示纯数字      ^[^\w\s+]$ 纯符号的正则       ^\\s+$纯空格
+	var temp=reg.test(reg);
+	/*if(temp || strLength<=2){
 		toast('要添加有意义的关注点喔');
-	}else if(strLength>20){
+	}else*/ if(strLength>20){
 		toast('标签长度不能超过20个字符');
 	}else if(strLength<=0){
 		toast("标签内容不能为空");
