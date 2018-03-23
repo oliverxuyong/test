@@ -121,7 +121,7 @@ function searchToAddTag(isGuideToAddTag){
 	var regSign=/[\ |\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\,|\<|\.|\>|\/|\?|\，|\。|\、|\；|\‘|\’|\（|\）|\！|\·]/;//表示纯符号
 	var isPureDigital=regNumber.test(text);//是纯数字true
 	var haveSign=regSign.test(text);//含有符号true
-	if(isPureDigital || haveSign || strLength<=2){
+	if(isPureDigital || haveSign || strLength<2){
 		toast('要添加有意义的关注点喔');
 	}else if(strLength>20){
 		toast('标签长度不能超过20个字符');
