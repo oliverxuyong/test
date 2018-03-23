@@ -255,8 +255,8 @@ function responseMutualCP(data){
 	
 	//这里要做判断，如果没有聊天记录则出现第一句话弹出框
 	if(noHistoryMsg){
-		sendFirstTalk(allCommonTags);
-		//requestTwoBarCode();//这是测试效果
+		//sendFirstTalk(allCommonTags);
+		requestTwoBarCode();//这里是显示微信扫码关注效果
 	}
 }
 //请求微信关注二维码
