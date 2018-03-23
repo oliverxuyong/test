@@ -312,6 +312,8 @@ public class LoginController {
 		logger.debug("findUserByOpenId ====>  " + (user!=null));
 		if(user!=null){
 			logger.debug("findUserByOpenId ====>  unionid=" +unionid);
+			user.setName(name);
+			user.setImgUrl(image);
 			user.setThird_party_id(unionid);
 			user.setType("WX");//这里更改type应该会将扫码用户和微信登录用户当成同一个用户
 			userDao.updateUser(user);
