@@ -180,7 +180,7 @@ function requestMatchedUsers(userId,requestTopMUNum){
 }
 
 //2017.10.13 叶夷  添加标签
-function add_self_cp(uid,cpid,cptext){
+function add_self_cp(uid,cpid,cptext,isGuideToAddTag){
 	var json_obj;
 	if(cpid=="null" || cpid=="undefined"){
 		json_obj = {
@@ -188,6 +188,7 @@ function add_self_cp(uid,cpid,cptext){
 				 interface_name: "add_self_cp",
 				 uid:uid.toString(),
 				 cptext:cptext.toString(),
+				 isGuideToAddTag:isGuideToAddTag,
 				 timestamp:"",
 			};
 	}else{
@@ -197,6 +198,7 @@ function add_self_cp(uid,cpid,cptext){
 				 uid:uid.toString(),
 				 cpid:cpid,
 				 cptext:cptext.toString(),
+				 isGuideToAddTag:isGuideToAddTag,
 				 timestamp:"",
 			};
 	}
@@ -371,7 +373,7 @@ function sendGuidePageAddTag(userId){
 			my_user_id : userId.toString(),
 			timestamp:""
 		};
-		WS_Send(json_obj);
+	WS_Send(json_obj);
 }
 //2018.03.09  叶夷   有人点击群聊话题回车键数据传给后台
 function sendGroupChatAddInfo(){

@@ -2635,8 +2635,8 @@ function sendKeyWordToBack(input_value,data) {
 		
 	}else{
 		//2018.03.07  因为存在引导页，添加标签框如果没有搜索结果则变回之前的引导页的添加框的模样
-    	var guideMUBubble=$("#guideMUBubble");
-    	if(guideMUBubble.length>=0){
+    	var guideAddTagText=$("#guideAddTagText");
+    	if(guideAddTagText.length>=0){
     		var _obj = $("#showatloaded");
     		var _h = _obj.height()/4.5;
     		$("#htmlObj").css("height",_h);
@@ -2703,19 +2703,15 @@ function addCpShow(data){
     	toast_popup("添加标签成功",2500);
     	closePop();// 添加标签框关掉
     	
-    	//2018.03.07  因为存在引导页，所以在这里判断引导页的气泡是否存在，存在则去除
-    	var guideMUBubble=$("#guideMUBubble");
-    	if(guideMUBubble.length>=0){
-    		//2018.03.12  叶夷   如果引导页点击了选择标签，则后来不需要再请求我的标签
-    		firstRequestMyCp=false;
-    		
-    		guideMUBubble.remove();
-    		//因为是引导页的添加标签，所以添加完标签之后数据开始请求
-    		requestCP(userId,requestCPNum,++currentRequestedCPPage);
-    		//2018.03.08  叶夷      在引导页点击添加标签数据传给后台
-    		sendGuidePageAddTag(userId);
-    	}
     	
+    	var isGuideToAddTag=data.isGuideToAddTag;
+    	if(isGuideToAddTag==true || isGuideToAddTag=="true"){
+    		//2018.03.12  叶夷   如果引导页点击了选择标签，则后来不需要再请求我的标签
+        	firstRequestMyCp=false;
+        		
+        	//因为是引导页的添加标签，所以添加完标签之后数据开始请求
+        	requestCP(userId,requestCPNum,++currentRequestedCPPage);
+    	}
 	}else{
 		//console.log("标签添加过,请重新添加");
     	toast_popup("标签添加过,请重新添加",2500);
@@ -3353,7 +3349,7 @@ function guideAddTag() {
 	contextresult
 			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:searchToAddTag();}'></p>");
 	contextresult
-			.push('<div class="btn-div" onclick="searchToAddTag()">确定</div>');
+			.push('<div class="btn-div" onclick="guideSearchToAddTag()">确定</div>');
 	contextresult.push('</div>');
 	contextresult
 			.push('<div class="searchtag_suggest" id="gov_search_suggest"></div>');
@@ -3394,6 +3390,18 @@ function guideAddTag() {
 		//2018.03.08  叶夷      点击向下箭头按钮数据传给后台
 		sendClickGuideAddTagText(userId);
 	});
+}
+//引导页添加标签的功能
+function guideSearchToAddTag(){
+	//2018.03.12  叶夷   如果引导页点击了选择标签，则后来不需要再请求我的标签
+	//firstRequestMyCp=false;
+		
+	//因为是引导页的添加标签，所以添加完标签之后数据开始请求
+	//requestCP(userId,requestCPNum,++currentRequestedCPPage);
+	//2018.03.08  叶夷      在引导页点击添加标签数据传给后台
+	//sendGuidePageAddTag(userId);
+	var isGuideToAddTag=true;
+	searchToAddTag(isGuideToAddTag);
 }
 
 /**
