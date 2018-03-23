@@ -2708,7 +2708,7 @@ function addCpShow(data){
     	if(isGuideToAddTag==true || isGuideToAddTag=="true"){
     		//2018.03.12  叶夷   如果引导页点击了选择标签，则后来不需要再请求我的标签
         	firstRequestMyCp=false;
-        		
+        	$("#guideMUBubble").remove();	
         	//因为是引导页的添加标签，所以添加完标签之后数据开始请求
         	requestCP(userId,requestCPNum,++currentRequestedCPPage);
     	}
@@ -3347,7 +3347,7 @@ function guideAddTag() {
 	var contextresult = [];
 	contextresult.push('<div id="entrytag" style="margin-top:4%;">');
 	contextresult
-			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:searchToAddTag();}'></p>");
+			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:guideSearchToAddTag();}'></p>");
 	contextresult
 			.push('<div class="btn-div" onclick="guideSearchToAddTag()">确定</div>');
 	contextresult.push('</div>');
