@@ -2635,8 +2635,8 @@ function sendKeyWordToBack(input_value,data) {
 		
 	}else{
 		//2018.03.07  因为存在引导页，添加标签框如果没有搜索结果则变回之前的引导页的添加框的模样
-    	var guideAddTagText=$("#guideAddTagText");
-    	if(guideAddTagText.length>=0){
+    	//var guideAddTagText=$("#guideAddTagText");
+    	if(guideAddTagText.length>0){
     		var _obj = $("#showatloaded");
     		var _h = _obj.height()/4.5;
     		$("#htmlObj").css("height",_h);
