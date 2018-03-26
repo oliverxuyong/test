@@ -45,6 +45,7 @@ public class User extends IdEntity{
 	@ColumnDefault(value="xunta_common")
 	private String event_scope;
 	private String weChatQRCodeUrl;
+	private String remark;//这个字段是用来存储在扫描二维码的时候获取的用户xinxi
 
 	/**
 	 * 用户名不能重复
@@ -194,5 +195,11 @@ public class User extends IdEntity{
 	}
 	public void setWeChatQRCodeUrl(String weChatQRCodeUrl) {
 		this.weChatQRCodeUrl = weChatQRCodeUrl;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }

@@ -834,6 +834,7 @@ public class LoginController {
 //		return str.toString();
 		logger.info("ticket="+ticket);
 		if(!ticket.equals("") || ticket!=null){
+			String accessToken=null;
 			//2017.12.08 叶夷 如果是刚关注，二维码参数是qrscene_general
 			//	未关注时：event=subscribe   已关注时：event=SCAN
 			if(event.equals("subscribe")){
@@ -855,7 +856,7 @@ public class LoginController {
 				/**
 				 * start:2017.12.07 叶夷 创建自定义菜单
 				 */
-				String accessToken=createMenu();
+				accessToken=createMenu();
 				/**
 				 * end:2017.12.07 叶夷 创建自定义菜单
 				 */
@@ -877,7 +878,10 @@ public class LoginController {
 				/**
 				 * end: 2018.03.22  叶夷    发送客服消息
 				 */
-
+				
+				/**
+				 * start: 2018.03.26  叶夷    存储openid
+				 */
 				logger.info("eventKey=" + eventKey);
 				eventKey = eventKey.substring(eventKey.indexOf("_") + 1);
 				logger.info("转换后的eventKey=" + eventKey);
@@ -897,6 +901,13 @@ public class LoginController {
 						}
 					}
 				}
+				/**
+				 * start: 2018.03.26  叶夷    存储openid
+				 */
+				
+				/**
+				 * start: 2018.03.26  叶夷    存储二维码参数
+				 */
 				logger.info("eventKeyJson.has('eventScope')=" + eventKeyJson.has("eventScope"));
 				if (eventKeyJson.has("eventScope")) {
 					logger.info("获得微信二维码参数中的eventScope");
@@ -905,10 +916,60 @@ public class LoginController {
 					// 2017.12.07 叶夷 将openid和二维码参数存储
 					openId2EventScopeService.setOpenId(fromUserName, eventScope);
 				}
+				/**
+				 * start: 2018.03.26  叶夷    存储二维码参数
+				 */
 			}
+			/**
+			 * start: 2018.03.26  叶夷    通过openid获取用户信息
+			 */
+			getUserInfoFromOpenid(fromUserName,accessToken);
+			/**
+			 * start: 2018.03.26  叶夷   通过openid获取用户信息
+			 */
 		}
     } 
     
+    /**
+	 * start: 2018.03.26  叶夷    通过openid获取用户信息
+	 */
+	private void getUserInfoFromOpenid(String openid, String accessToken) {
+		logger.info("获取用户信息1   openid=" + openid+" accessToken="+accessToken);
+		if(accessToken==null || accessToken.equals("")){
+			String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+			String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+			// 发起GET请求获取凭证
+			JSONObject jsonObject1 = HttpRequestUtil.httpRequest(requestUrl, "GET", null);
+			Token tokenObject=weChatService.getTokenForMysql(appid);
+			if (null != jsonObject1) {
+				String newAccessToken = jsonObject1.getString("access_token");
+				accessToken=newAccessToken;
+				int expires_in = jsonObject1.getInt("expires_in");// 失效时间，以秒为单位
+				Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
+				Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
+				Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
+				tokenObject.setAccessToken(newAccessToken);
+				tokenObject.setCreateTime(newcreateTime);
+				tokenObject.setFailureTime(newfailureTime);
+				tokenDao.updateToken(tokenObject);// 存在但是失效则更新
+			}
+		}
+		logger.info("获取用户信息2   openid=" + openid+" accessToken="+accessToken);
+		User userFromOpenid=userDao.findUserByOpenId(openid);//在这里判断两个网页用户被一个微信用户扫二维码的情况，如果一个微信用户已经扫描一个网页用户的二维码，那扫描别的网页用户的二维码则不做操作
+		if(userFromOpenid!=null){
+			String remark=userFromOpenid.getRemark();
+			logger.info("remark=" + remark);
+			if(remark==null || remark.equals("")){
+				String getInfoTempUrl="https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+				String getInfoUrl=getInfoTempUrl.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openid);
+				JSONObject jsonObject = HttpRequestUtil.httpRequest(getInfoUrl, "GET", null);
+				logger.info("获取用户信息结果:" + jsonObject);
+				userFromOpenid.setRemark(jsonObject.toString());;
+				userDao.updateUser(userFromOpenid);
+			}
+		}
+	}
+
 	//微信公众号创建自定义菜单
     private String createMenu(){
     	logger.info("开始创建自定义菜单");
@@ -935,9 +996,9 @@ public class LoginController {
 					JSONObject jsonObject1 = HttpRequestUtil.httpRequest(requestUrl, "GET", null);
 					Token tokenObject=weChatService.getTokenForMysql(appid);
 					if (null != jsonObject1) {
-						String newAccessToken = jsonObject.getString("access_token");
+						String newAccessToken = jsonObject1.getString("access_token");
 						accessToken=newAccessToken;
-						int expires_in = jsonObject.getInt("expires_in");// 失效时间，以秒为单位
+						int expires_in = jsonObject1.getInt("expires_in");// 失效时间，以秒为单位
 						Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
 						Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
 						Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
