@@ -150,6 +150,11 @@ public class CpOperationWSController {
 		
 		User u = userService.findUser(uid);
 		String userEventScope = u.getEvent_scope();
+		int userIfInited= u.getIfInitedTopics();
+		if(userIfInited == 0){
+			u.setIfInitedTopics(1);
+			userService.updateUser(u);	
+		}
 		//String basicType= userEventScope.split("_")[0];
 		
 		logger.info("用户"+u.getName()+"添加了自己的CP:"+cpText);
