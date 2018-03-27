@@ -180,7 +180,7 @@ function requestMatchedUsers(userId,requestTopMUNum){
 }
 
 //2017.10.13 叶夷  添加标签
-function add_self_cp(uid,cpid,cptext){
+function add_self_cp(uid,cpid,cptext,isGuideToAddTag){
 	var json_obj;
 	if(cpid=="null" || cpid=="undefined"){
 		json_obj = {
@@ -188,6 +188,7 @@ function add_self_cp(uid,cpid,cptext){
 				 interface_name: "add_self_cp",
 				 uid:uid.toString(),
 				 cptext:cptext.toString(),
+				 isGuideToAddTag:isGuideToAddTag,
 				 timestamp:"",
 			};
 	}else{
@@ -197,6 +198,7 @@ function add_self_cp(uid,cpid,cptext){
 				 uid:uid.toString(),
 				 cpid:cpid,
 				 cptext:cptext.toString(),
+				 isGuideToAddTag:isGuideToAddTag,
 				 timestamp:"",
 			};
 	}
@@ -333,11 +335,12 @@ function ifUserInited(userId) {
 	}
 }
 //2018.03.20  叶夷    获取微信二维码
-function requestTwoBarCode(userId){
+function requestTwoBarCode(userId,toUserid){
 	var json_obj = {
 			_interface : "1115-1",
 			interface_name : "request_twoBarCode",
 			uid : userId.toString(),
+			matched_user_id : toUserid.toString(),
 			timestamp:""
 		};
 	WS_Send(json_obj);
@@ -370,7 +373,7 @@ function sendGuidePageAddTag(userId){
 			my_user_id : userId.toString(),
 			timestamp:""
 		};
-		WS_Send(json_obj);
+	WS_Send(json_obj);
 }
 //2018.03.09  叶夷   有人点击群聊话题回车键数据传给后台
 function sendGroupChatAddInfo(){
@@ -583,7 +586,8 @@ function checkMessageInterface(evnt) {
 	//2018.03.20  叶夷    通过请求服务器返回微信关注二维码
 	if (jsonObj._interface == '1115-2') {
 		console.log("返回微信公众号关注二维码路径:"+JSON.stringify(jsonObj));
-		exec("main_page","responseTwoBarCode("+evnt.data+")");
+		var matched_user_id=jsonObj.matched_user_id;
+		exec(matched_user_id,"responseTwoBarCode("+evnt.data+")");
 	}
 }
 

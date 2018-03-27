@@ -288,7 +288,7 @@ var allCommonTags="";
 var noHistoryMsg;
 
 //2017.12.13  叶夷  弹出一句话的框
-function sendFirstTalk(inputValue) {
+function sendFirstTalk(inputValue,weChatQRCodeUrl) {
 	var _obj = $("body");
 	var _h = 160;
 	var _w = _obj.width()-80;
@@ -299,8 +299,10 @@ function sendFirstTalk(inputValue) {
 			.push("<p class='addtag-div'><textarea type='text' class='tag-name' id='pop_tagName' onkeypress=''>我们都对"+inputValue+"有兴趣，要一起聊聊吗？</textarea></p>");
 	contextresult
 			.push('<div class="btn-div-dialogPage" onclick="inputSubmit()">发送</div>');
-	contextresult
-			.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="http://42.121.136.225:8888/user-pic2.jpg"></div><span class="twoBarCodeText">欢迎关注xunta点so</span></div>');
+	if(weChatQRCodeUrl!="" && weChatQRCodeUrl!=undefined && weChatQRCodeUrl!="undefined"){
+		contextresult
+		.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="'+weChatQRCodeUrl+'"></div><span class="twoBarCodeText">感谢你成为我们的vip用户，微信扫一扫，你就能随时收到别人的消息</span></div>');
+	}
 	contextresult.push('</div>')
 	alertWin(contextresult.join(''), "打个招呼吧", _w, _h);
 	
@@ -322,6 +324,8 @@ function sendFirstTalk(inputValue) {
 	
 	//2018.03.20  叶夷   调整二维码图片的宽度
 	var twoBarCodeImg=$(".twoBarCodeImg");
-	var twoBarCodeImgHeight=twoBarCodeImg.height();
-	twoBarCodeImg.find("img").css("width",twoBarCodeImgHeight);
+	if(twoBarCodeImg.length>0){
+		var twoBarCodeImgHeight=twoBarCodeImg.height();
+		twoBarCodeImg.find("img").css("width",twoBarCodeImgHeight);
+	}
 }

@@ -226,10 +226,12 @@ public class CpOperationWSController {
 				returnJson.put("error_msg", "您已添加过啦");
 			}
 		}
-
+		//2018.03.23  叶夷  在这里加上判断是否是引导页添加标签的标识
+		String isGuideToAddTag = params.getString("isGuideToAddTag");
 		returnJson.put("cpid",cpId.toString());
 		returnJson.put("cptext",cpText);
 		returnJson.put("message",returnMsg);
+		returnJson.put("isGuideToAddTag",isGuideToAddTag);
 		returnJson.put("timestamp", timestamp);
 		socketService.chat2one(session, returnJson);
 	}

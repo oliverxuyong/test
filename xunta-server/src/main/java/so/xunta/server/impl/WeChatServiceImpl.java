@@ -255,7 +255,8 @@ public class WeChatServiceImpl implements WeChatService{
 		return null;
 	}*/
 
-	private Token getTokenForMysql(String appid) {
+	@Override
+	public Token getTokenForMysql(String appid) {
 		logger.debug("开始进行token查询");
 		Token token=null;
 		List<Token> tokenList = tokenDao.getTokenForAppid(appid);
@@ -349,6 +350,7 @@ public class WeChatServiceImpl implements WeChatService{
 			logger.debug(resultJson);
 			logger.debug("============================");
 
+			//如果请求微信的接口AccessToken失效，则重新获得且存储
 			if ("ok".equals(errmsg)) { // 如果为errmsg为ok，则代表发送成功，公众号推送信息给用户了。
 				return "success";
 			}else{

@@ -111,16 +111,24 @@ function responseSearchTag(text){
 
 var addCPID;//用来添加标签的cpid,没有则为空
 //标签添加
-function searchToAddTag(){
+function searchToAddTag(isGuideToAddTag){
 	var suggestWrap = $('#gov_search_suggest');
-	var text = excludeSpecial($("#pop_tagName").val());//获得输入框的值,并且过滤特殊字符
-	var strLength=text.length;//
-	if(strLength>20){
+	//var text = excludeSpecial($("#pop_tagName").val());//获得输入框的值,并且过滤特殊字符
+	var text = $("#pop_tagName").val();
+	var strLength=text.length;
+	//var reg = /^(\d{1,2})|(\s{1,2})$/;//^\d+$表示纯数字      ^[^\w\s+]$ 纯符号的正则       ^\\s+$纯空格
+	var regNumber=/^\d+$/;//表示纯数字
+	var regSign=/[\ |\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\,|\<|\.|\>|\/|\?|\，|\。|\、|\；|\‘|\’|\（|\）|\！|\·]/;//表示纯符号
+	var isPureDigital=regNumber.test(text);//是纯数字true
+	var haveSign=regSign.test(text);//含有符号true
+	if(isPureDigital || haveSign || strLength<2){
+		toast('要添加有意义的关注点喔');
+	}else if(strLength>20){
 		toast('标签长度不能超过20个字符');
 	}else if(strLength<=0){
 		toast("标签内容不能为空");
 	}else{
-		var paraStr = userId + "','" + addCPID+"','"+text;
+		var paraStr = userId + "','" + addCPID+"','"+text+"','"+isGuideToAddTag;
 		execRoot("add_self_cp('"+ paraStr +"')");
 	}
 }

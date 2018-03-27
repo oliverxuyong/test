@@ -44,4 +44,7 @@ public interface UserDao {
 	
 	public List<User> findUsersByScope(String eventScope);
 	
+	//2018.03.22   叶夷   通过openid来判断用户是否存在
+	public User findUserByOpenId(String openid);
+	
 }

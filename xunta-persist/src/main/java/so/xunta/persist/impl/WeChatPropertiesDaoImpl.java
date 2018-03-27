@@ -1,5 +1,7 @@
 package so.xunta.persist.impl;
 
+import javax.transaction.Transactional;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -13,6 +15,8 @@ import so.xunta.persist.WeChatPropertiesDao;
 /**
  * @author Bright Zheng
  * */
+
+@Transactional
 @Repository
 public class WeChatPropertiesDaoImpl implements WeChatPropertiesDao {
 	Logger logger =Logger.getLogger(WeChatPropertiesDaoImpl.class);

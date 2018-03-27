@@ -254,17 +254,18 @@ function responseMutualCP(data){
 	showSameSelectCp(data);
 	
 	//这里要做判断，如果没有聊天记录则出现第一句话弹出框
-	/*if(noHistoryMsg){
-		sendFirstTalk(allCommonTags);
-	}*/
-	sendFirstTalk(allCommonTags);//这是测试效果
+	if(noHistoryMsg){
+		//sendFirstTalk(allCommonTags);
+		requestTwoBarCode();//这里是显示微信扫码关注效果
+	}
 }
 //请求微信关注二维码
 function requestTwoBarCode(){
-	var paraStr = userId ;
+	var paraStr = userId + "','" + toUserId; ;
 	execRoot("requestTwoBarCode('"+ paraStr +"')");
 }
 
 function responseTwoBarCode(data){
-	
+	var weChatQRCodeUrl=data.weChatQRCodeUrl;
+	sendFirstTalk(allCommonTags,weChatQRCodeUrl);
 }
