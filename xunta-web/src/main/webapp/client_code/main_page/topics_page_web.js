@@ -3333,8 +3333,12 @@ function clickMainPage(bgObj){
 	var guideMUBubble=$("#guideMUBubble");
 	guideMUBubble.attr('src','../image/guideAddtagBubble.png'); 
 	
-	//出现引导页的添加标签的样式
-	guideAddTag();
+	document.getElementById("guideMUBubble").onload = function () {
+		guideMUBubble.css('width','65%'); 
+        console.log("添加标签的气泡加载完毕");
+        //出现引导页的添加标签的样式
+    	guideAddTag();
+    }
 }
 //出现引导页的添加标签的样式
 function guideAddTag() {
@@ -3373,7 +3377,7 @@ function guideAddTag() {
 	var guideMUBubbleTop=guideMUBubble.offset().top;
 	var guideMUBubbleHeight=guideMUBubble.height();
 	var htmlObj=$("#htmlObj");
-	var htmlObjTop=guideMUBubbleTop+guideMUBubbleHeight+guideMUBubbleHeight/5;
+	var htmlObjTop=guideMUBubbleTop+guideMUBubbleHeight/*+guideMUBubbleHeight/10*/;
 	htmlObj.css("top",htmlObjTop);
 	
 	//将guideAddTagText绑定点击事件
