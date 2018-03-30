@@ -149,7 +149,28 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask(recommendService,userid+"");
 			recommendTaskPool.execute(recommendUpdateTask);
 			
+			//2018.03.30   叶夷    用户上线时接收消息
+			re_sendMsg(userid, 5);
 		}
+	}
+	//2018.03.30   叶夷    用户上线时接收消息
+	private void re_sendMsg(Long userid, int i) {
+
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println("补发");
+				WebSocketSession socketSession = getUserById(userid);
+				if (socketSession != null) {
+					websocketContext.executeMethod("submit_client_new_msg_id", socketSession, null);
+				} else {
+					System.out.println("opps ! session is null");
+				}
+
+			}
+		}).start();
+
 	}
 
 	/**
