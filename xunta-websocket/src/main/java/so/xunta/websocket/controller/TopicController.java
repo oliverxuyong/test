@@ -186,11 +186,11 @@ public class TopicController {
 	}
 	
 	/**
-	 * 接受或拒绝邀请
+	 * 接受或拒绝邀请这个接口不需要
 	 * @param session
 	 * @param message
 	 */
-	@WebSocketMethodAnnotation(ws_interface_mapping = "1118-1")
+	/*@WebSocketMethodAnnotation(ws_interface_mapping = "1118-1")
 	public void entrantOrRejectTopic(WebSocketSession session, TextMessage message){
 		org.json.JSONObject obj = new org.json.JSONObject(message.getPayload());
 		logger.debug("接受或拒绝邀请数据:"+obj.toString());
@@ -203,14 +203,14 @@ public class TopicController {
 			topicUserMapping.setUser_type(user_type);
 			topicUserMappingDao.updateTopicUserMapping(topicUserMapping);
 		}
-	}
+	}*/
 	
 	/**
 	 * 获得话题的所有历史消息
 	 * @param session
 	 * @param message
 	 */
-	@WebSocketMethodAnnotation(ws_interface_mapping = "1119-1")
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1118-1")
 	public void getTopicHistoryMsg(WebSocketSession session, TextMessage message){
 		org.json.JSONObject obj = new org.json.JSONObject(message.getPayload());
 		logger.debug("获得话题的所有历史消息:"+obj.toString());
@@ -235,7 +235,7 @@ public class TopicController {
 		}
 		
 		JSONObject chatmsgAllJSON = new JSONObject();
-		chatmsgAllJSON.put("_interface", "1119-2");
+		chatmsgAllJSON.put("_interface", "1118-2");
 		chatmsgAllJSON.put("topic_id", topic_id);
 		chatmsgAllJSON.put("chatmsgJSONArray", chatmsgJSONArray);
 		socketService.chat2one(session, chatmsgAllJSON);
@@ -250,7 +250,7 @@ public class TopicController {
 	 * @param session
 	 * @param message
 	 */
-	@WebSocketMethodAnnotation(ws_interface_mapping = "1120-1")
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1119-1")
 	public void getAllTopic(WebSocketSession session, TextMessage message){
 		org.json.JSONObject obj = new org.json.JSONObject(message.getPayload());
 		logger.debug("获得所有的话题:"+obj.toString());
@@ -310,7 +310,7 @@ public class TopicController {
 			chatmsgJSONArray.put(chatmsgReturnJSON);
 		}
 		JSONObject chatmsgAllJSON = new JSONObject();
-		chatmsgAllJSON.put("_interface", "1120-2");
+		chatmsgAllJSON.put("_interface", "1119-2");
 		chatmsgAllJSON.put("creator_uid", creator_uid);
 		chatmsgAllJSON.put("chatmsgJSONArray", chatmsgJSONArray);
 		socketService.chat2one(session, chatmsgAllJSON);
@@ -324,7 +324,7 @@ public class TopicController {
 	}
 	
 	//确认收到消息
-	@WebSocketMethodAnnotation(ws_interface_mapping = "1121-1")
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1120-1")
 	private void msg_received_confirm(WebSocketSession session, TextMessage message){
 		// 获取数据
 		org.json.JSONObject params = new org.json.JSONObject(message.getPayload());
