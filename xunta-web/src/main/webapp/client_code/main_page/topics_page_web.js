@@ -1761,7 +1761,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			averageForChangeY.splice(0, averageForChangeY.length);
 			log2root("匹配圆变化是否相交 第"+(c+1)+"次");
 			console.log("匹配圆变化是否相交 第"+(c+1)+"次");
-			if(!intersect){//不相交
+			if(!intersect || c==(notIntersectCount-1)){//不相交或者最后一次
 				break;
 			}
 			muNowData.splice(0, muNowData.length);
@@ -1925,7 +1925,7 @@ function getMuChangeData(matchedUserArr){
 					}*/
 					var muDiv=$("#mu"+muChangeData[muNowPositionNewNotExist].userid);//这是需要去除的匹配人
 					//muDiv.remove();
-					//animateForSize(muDiv, 0, aniSecond * 0.4);
+					animateForSize(muDiv, 0, aniSecond * 0.4);
 					muAddImg(i,matchedUserArr,false);
 
 					// 5.所有位置移动之后mpNowData数组的位置也要更新
@@ -1966,6 +1966,15 @@ function getMuChangeData(matchedUserArr){
 		}*/
 	}
 	
+	//循环完了之后将muChangeData多余的删除，因为会出现匹配人减少的情况
+	if(muChangeData.length>matchedUserArr.length){
+		for(var removeIndex=matchedUserArr.length;removeIndex<muChangeData.length;removeIndex++){
+			var removeMuDiv=$("#mu"+muChangeData[removeIndex].userid);
+			//removeMuDiv.remove();
+			animateForSize(removeMuDiv, 0, aniSecond * 0.4);
+		}
+		muChangeData.splice(matchedUserArr.length, muChangeData.length);
+	}
 }
 
 var intersect=true;//判断是否跟所有的圆都不相交，true为相交，false为不相交

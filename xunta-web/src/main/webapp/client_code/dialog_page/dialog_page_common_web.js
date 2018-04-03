@@ -132,13 +132,27 @@ var commonDislikeList=new Array();//4.双方都不喜欢的标签
  * @param data
  */
 function showSameSelectCp(data){
+	//2018.04.02 聊天页显示的标签标题删除
+	var selectCpTitle=$(".selectCp-title");
+	if(selectCpTitle.length>0){
+		for(var j=0;j<selectCpTitle.length;j++){
+			selectCpTitle.eq(j).remove();
+		}
+	}
+	
 	//在放入之前将共同选择的标签删除，避免共同选择的标签重复
 	var selectCPs=$(".selectCp");
 	if(selectCPs.length>0){
-		for(var index in selectCPs){
+		$(".selectCp-title").remove();//聊天页的
+		for(var index=0;index<selectCPs.length;index++){
 			selectCPs.eq(index).remove();
 			//removeDiv(selectCPs.eq(index),userAgent[1]);
 		}
+		//  聊天页显示的标签四种情况数组清空
+		likeList.splice(0, likeList.length);
+		commonLikeList.splice(0, commonLikeList.length);
+		dislikeList.splice(0, dislikeList.length);
+		commonDislikeList.splice(0, commonDislikeList.length);
 	}
 	
 	for(var i in data.msg){//2017.12.22   叶夷 先将四种情况区分了之后放入储存数组中
