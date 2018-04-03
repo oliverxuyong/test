@@ -1924,8 +1924,8 @@ function getMuChangeData(matchedUserArr){
 						}
 					}*/
 					var muDiv=$("#mu"+muChangeData[muNowPositionNewNotExist].userid);//这是需要去除的匹配人
-					//muDiv.remove();
-					animateForSize(muDiv, 0, aniSecond * 0.4);
+					muDiv.remove();
+					//animateForSize(muDiv, 0, aniSecond * 0.4);
 					muAddImg(i,matchedUserArr,false);
 
 					// 5.所有位置移动之后mpNowData数组的位置也要更新
