@@ -1,12 +1,9 @@
 package so.xunta.beans;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
 import org.springframework.data.annotation.Id;
 
 /**
@@ -15,17 +12,14 @@ import org.springframework.data.annotation.Id;
  *
  */
 @Entity
-@Table(name="tbl_topic_unreadmsg",uniqueConstraints = {@UniqueConstraint(columnNames={"topicid","msgid"})})
+@Table(name="tbl_topic_unreadmsg")
 public class TopicUnreadMsg {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
-	@Column(nullable=false)
 	private Long msgid;
-	@Column(nullable=false)
 	private Long topicid;//消息所来自的话题id
-	@Column(nullable=false)
 	private Long userid;
 	
 	public int getId() {
