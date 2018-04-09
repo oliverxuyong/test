@@ -312,10 +312,11 @@ public class TopicController {
 			JSONObject chatmsgReturnJSON = new JSONObject();
 			
 			String topic_id=topic.getTopic_id();
-			
+			logger.info("topic_id="+topic_id);
 			//通过topic和userid判断用户是否已经拒绝，已经拒绝的用户不能获得此话题
 			TopicUserMapping topicUserMapping=topicUserMappingDao.findTopicUserMappingByTopicIdAndUserId(topic_id, userid);
 			String userType=topicUserMapping.getUser_type();
+			logger.info("userType="+userType);
 			if(!userType.equals("REJECT")){
 				String topic_name=topic.getTopic_name();
 				//String topic_img=userService.findUser(Long.valueOf(userid)).getImgUrl();

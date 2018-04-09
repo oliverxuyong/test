@@ -75,7 +75,7 @@ function response_detail_matched_users(data){
 	//显示聊天列表
 	if(isFirst==true){
 		//requestDialogList();
-		requestTopicDialogList("");//这里换成这个是因为requestDialogList在mxunta上无效，不能测试
+		requestTopicDialogList("[]");//这里换成这个是因为requestDialogList在mxunta上无效，不能测试
 		
 		isFirst=false;
 	}
@@ -118,7 +118,7 @@ function responseUserCpMatchUsers(data){
 	//显示聊天列表
 	if(isFirst==true){
 		//requestDialogList();
-		requestTopicDialogList("");//这里换成这个是因为requestDialogList在mxunta上无效，不能测试
+		requestTopicDialogList("[]");//这里换成这个是因为requestDialogList在mxunta上无效，不能测试
 		
 		isFirst=false;
 	}
