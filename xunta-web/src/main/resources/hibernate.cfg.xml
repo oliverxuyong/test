@@ -17,5 +17,10 @@
 		<mapping class="so.xunta.beans.Token"/>
 		<mapping class="so.xunta.beans.EventScopeCpTypeMappingDO"/>
 		<mapping class="so.xunta.beans.WeChatProperties"/>
+		<mapping class="so.xunta.beans.Topic"/>
+		<mapping class="so.xunta.beans.TopicChatmsg"/>
+		<mapping class="so.xunta.beans.TopicHasUnreadMsgNum"/>
+		<mapping class="so.xunta.beans.TopicUnreadMsg"/>
+		<mapping class="so.xunta.beans.TopicUserMapping"/>
 	</session-factory>
 </hibernate-configuration>

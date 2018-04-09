@@ -18,10 +18,11 @@ public class TopicHasUnreadMsgNum {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
-	private Long userid;
 	@Column(unique=true,nullable=false)
 	private Long topicid;
 	private int unreadNum;
+	private Long userid;
+	
 	public int getId() {
 		return id;
 	}
