@@ -416,7 +416,7 @@ function requestCreateTopic(topic_name,creator_uid,user_ids){
 
 //2018.04.03 叶夷  发送群聊话题消息
 function requestSendTopicMsg(chatmsg_content,type,send_uid,send_name,send_img,topic_id,topic_name){
-	console.log("发送群聊话题消息:chatmsg_content="+chatmsg_content+" type="+type+" send_id="+send_id+" send_name="+send_name+" topic_name="+topic_name);
+	console.log("发送群聊话题消息:chatmsg_content="+chatmsg_content+" type="+type+" send_uid="+send_uid+" send_name="+send_name+" topic_name="+topic_name);
 	var json_obj = {
 			_interface : "1117-1",
 			chatmsg_content : chatmsg_content,

@@ -189,7 +189,7 @@
 			//这里没几句,暂时移到了上面.方法暂时注销.prepareDialogPage();//
             execRoot("setCurrentPageId('"+toUserId+"')");
             //console.log("preparePageVars userImage="+userImage);
-            if(topic==true || topic=="true"){//话题聊天页发送消息是不同的方法
+            if(isTopic==true || isTopic=="true"){//话题聊天页发送消息是不同的方法
             	create_datetime_long=new Date().getTime();
             	requestHistoryMsg();
             }else{

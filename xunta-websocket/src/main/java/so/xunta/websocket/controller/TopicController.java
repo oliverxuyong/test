@@ -294,9 +294,12 @@ public class TopicController {
 		org.json.JSONObject obj = new org.json.JSONObject(message.getPayload());
 		logger.debug("获得所有的话题:"+obj.toString());
 		String userid=obj.getString("userid");
-		String normalDialogList=obj.getString("normalDialogList");
+		String normalDialogList="";
+		if(obj.has("normalDialogList")){
+			normalDialogList=obj.getString("normalDialogList");
+		}
 		JSONArray normalDialogJSONArray=new JSONArray(normalDialogList);
-		logger.info("normalDialogList="+normalDialogList);
+		logger.info("normalDialogList="+normalDialogList+" normalDialogJSONArray="+normalDialogJSONArray.toString());
 		List<Topic> topicList=topicDao.findUserByCreatorUid(userid);
 		JSONArray chatmsgJSONArray=new JSONArray();
 		for(Topic topic:topicList){

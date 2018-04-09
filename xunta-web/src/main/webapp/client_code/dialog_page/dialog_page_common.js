@@ -21,7 +21,7 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
 	//chat.sendMsgToAll(inputValue);//发送消息给全部的人
 	//chat.sendPrivateMsg(toUserId,inputValue);
 	//execRoot("sendmsg('"+toUserId+"','"+inputValue+"')");//给单独的人发消息
-	if(topic==true || topic=="true"){//话题聊天页发送消息是不同的方法
+	if(isTopic==true || isTopic=="true"){//话题聊天页发送消息是不同的方法
 		requestSendTopicMsg(inputValue,"NORMAL",userId,userName,userImage,toUserId,toUserName);
 	}else{
 		exec("main_page","sendmsg('"+toUserId+"','"+inputValue+"','"+tmpPid+"')");
@@ -258,7 +258,7 @@ function responseMutualCP(data){
 	showSameSelectCp(data);
 	
 	//这里要做判断，如果没有聊天记录则出现第一句话弹出框  而且不是话题聊天页
-	if(noHistoryMsg && topic!=true && topic!="true"){
+	if(noHistoryMsg && isTopic!=true && isTopic!="true"){
 		//sendFirstTalk(allCommonTags);
 		requestTwoBarCode();//这里是显示微信扫码关注效果
 	}

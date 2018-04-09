@@ -43,7 +43,7 @@ function showAllPosters(data) {
 	if(data[0].msg_type=="INVITE"){
 		//显示邀请或拒绝对话框
 		var name=data[msg].from_user_name;
-		
+		entrantOrRejectTopic(name);
 	}else{
 		for(var msg in data){
 			var name=data[msg].from_user_name;
@@ -63,7 +63,7 @@ function showAllPosters(data) {
 	    	var postTimeLong =  new Date(postTimeStr.replace(new RegExp("-","gm"),"/").replace(/\"/g,"")).getTime();
 			markSendPosterSuccess(msgId, postTimeLong, postTimeStr);
 			
-			if(topic==true || topic=="true"){
+			if(isTopic==true || isTopic=="true"){
 				//将create_datetime_long参数的时间设置为最后一条的时间
 				if(msg==data.length-1){
 					create_time_long=data[msg].create_time_long;
@@ -82,7 +82,7 @@ function showAllPosters(data) {
 }
 
 //2018.04.09 叶夷  接受邀请或拒绝对话框 
-function entrantOrRejectTopic() {
+function entrantOrRejectTopic(name) {
 	api.prompt({
 		buttons : ['接受', '拒绝'],
 		title : name+'邀请你加入话题'+toUserName
