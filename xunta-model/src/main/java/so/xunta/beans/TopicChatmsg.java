@@ -21,10 +21,19 @@ public class TopicChatmsg extends IdEntity{
 	@Column(unique=true)
 	private String chatmsg_id;//机器生成
 	private String chatmsg_content;
-	private String type;//（INVITE 表示受到邀请时的第一句话，NORMAL 普通群聊消息）
+	private String type;//（INVITE 表示受到邀请时的第一句话，NORMAL 普通群聊消息 , SYSTEM系统消息  ）
 	private String send_uid;
 	private String topic_id;
 	private String create_datetime;
+	private long create_datetime_long;
+	
+	public long getCreate_datetime_long() {
+		return create_datetime_long;
+	}
+
+	public void setCreate_datetime_long(long create_datetime_long) {
+		this.create_datetime_long = create_datetime_long;
+	}
 
 	public TopicChatmsg() {
 	}

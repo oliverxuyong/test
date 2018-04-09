@@ -401,6 +401,84 @@ function sendShowGuidePageFirst(){
 		WS_Send(json_obj);
 }
 
+//2018.04.02  叶夷    创建群聊话题
+function requestCreateTopic(topic_name,creator_uid,userImage,user_ids){
+	console.log("创建群聊话题:topic_name="+topic_name+" creator_uid="+creator_uid+" userImage="+userImage+" user_ids="+user_ids);
+	var json_obj = {
+			_interface : "1116-1",
+			topic_name : topic_name.toString(),
+			creator_uid : creator_uid.toString(),
+			user_ids : user_ids.toString(),
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+
+//2018.04.03 叶夷  发送群聊话题消息
+function requestSendTopicMsg(chatmsg_content,type,send_uid,send_name,send_img,topic_id,topic_name){
+	console.log("发送群聊话题消息:chatmsg_content="+chatmsg_content+" type="+type+" send_id="+send_id+" send_name="+send_name+" topic_name="+topic_name);
+	var json_obj = {
+			_interface : "1117-1",
+			chatmsg_content : chatmsg_content,
+			type : type,
+			send_uid : send_uid,
+			topic_id : topic_id,
+			send_name : send_name,
+			send_userImage : send_img,
+			topic_name : topic_name,
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+
+//2018.04.08 叶夷  发请求群聊话题列表
+function requestTopicDialogList(userid,data){
+	console.log("发请求群聊话题列表:userid="+userid);
+	var json_obj = {
+			_interface : "1120-1",
+			userid:userid.toString(),
+			normalDialogList:data,
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+//2018.04.08 叶夷  发请求群聊话题历史消息
+function requestHistoryMsg(userId,topicId,conncount,create_datetime_long){
+	console.log("发请求群聊话题历史消息:userid="+userId+" topicId="+topicId+" conncount="+conncount+" create_datetime_long="+create_datetime_long);
+	var json_obj = {
+			_interface : "1119-1",
+			userid:topicId.toString(),
+			topic_id:topicId.toString(),
+			create_datetime_long:create_datetime_long,
+			msgCount:conncount,
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+//发送收到消息接口
+function sendmsg_received_confirm(msg_id,target_topicid){
+	console.log("发送收到消息接口");
+	var json_obj = {
+			_interface : "1121-1",
+			msg_id:msg_id.toString(),
+			target_topicid:target_topicid.toString(),
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+//接受或拒绝话题邀请
+function entrantOrRejectTopic(topic_id,user_id,user_type){
+	console.log("接受或拒绝话题邀请: topic_id="+topic_id+" user_id="+user_id+" user_type="+user_type);
+	var json_obj = {
+			_interface : "1118-1",
+			topic_id:topic_id.toString(),
+			user_id:user_id.toString(),
+			user_type:user_type.toString(),
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
 	task_RequestCP();
@@ -588,6 +666,37 @@ function checkMessageInterface(evnt) {
 		console.log("返回微信公众号关注二维码路径:"+JSON.stringify(jsonObj));
 		var matched_user_id=jsonObj.matched_user_id;
 		exec(matched_user_id,"responseTwoBarCode("+evnt.data+")");
+	}
+	
+	//2018.04.02  叶夷    通过请求服务器返回创建群聊话题是否成功
+	if (jsonObj._interface == '1116-2') {
+		console.log("通过请求服务器返回创建群聊话题是否成功:"+JSON.stringify(jsonObj));
+		exec("matchUsers_page","responseCreateTopic("+evnt.data+")");
+	}
+	
+	//2018.04.02  叶夷    接收话题消息
+	if (jsonObj._interface == '1117-2') {
+		console.log("接收话题消息:"+JSON.stringify(jsonObj));
+		exec("main_page","responseTopicMsg("+evnt.data+")");
+	}
+	
+	//2018.04.08  叶夷    接收群聊话题列表
+	if (jsonObj._interface == '1120-2') {
+		console.log("接收群聊话题列表:"+JSON.stringify(jsonObj));
+		exec("matchUsers_page","responseTopicDialogList("+evnt.data+")");
+	}
+	
+	//2018.04.08  叶夷    接收群聊话题历史消息
+	if (jsonObj._interface == '1119-2') {
+		console.log("接收群聊话题历史消息:"+JSON.stringify(jsonObj));
+		var topic_id=jsonObj.topic_id;
+		exec(topic_id,"responseHistoryMsg("+evnt.data+")");
+	}
+	
+	//2018.04.08  叶夷    刚打开页面时收到的未读消息数
+	if (jsonObj._interface == '1122-2') {
+		console.log("刚打开页面时收到的未读消息数:"+JSON.stringify(jsonObj));
+		exec("main_page","responseUnreadMsgCount("+evnt.data+")");
 	}
 }
 

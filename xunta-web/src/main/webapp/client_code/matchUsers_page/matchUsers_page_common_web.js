@@ -211,10 +211,47 @@ function showGroupSearchInput(){
 		
 		//2018.03.09  叶夷    有人点击发起群聊话题则将数据返回给后台
 		$("#groupChatAdd").click(function(){
-			//alert("测试1："+window.event.srcElement.tagName);
-			sendGroupChatAddInfo();//发送给后台
-			resetGroupChat();
-			toast("功能开发中，敬请期待");
+			//2018.04.02  叶夷   将创建群聊话题的要求写上
+			var inputGroupChat=$("#inputGroupChat");
+			var inputGroupChatText=inputGroupChat.val();
+			var regNumber=/^\d+$/;//表示纯数字
+			var regSign=/[\ |\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\,|\<|\.|\>|\/|\?|\，|\。|\、|\；|\‘|\’|\（|\）|\！|\·]/;//表示纯符号
+			var isPureDigital=regNumber.test(inputGroupChatText);//是纯数字true
+			var haveSign=regSign.test(inputGroupChatText);//含有符号true
+			var inputGroupChatTextLength=inputGroupChatText.length;
+			if(isPureDigital || haveSign || inputGroupChatTextLength<2){
+				toast('要添加有意义的话题名喔');
+			}else if(inputGroupChatTextLength>20){
+				toast('话题名长度不能超过20个字符');
+			}else if(inputGroupChatTextLength<=0){
+				toast("话题名不能为空");
+			}else{
+				//查看有几个选中框
+				var guideChatCheckBoxs=$(".guideChatCheckBox");
+				var isCheckedUserids=new Array();//保存选中的用户userid
+				if(guideChatCheckBoxs.length>0){
+					for(var i=0;i<guideChatCheckBoxs.length;i++){
+						var guideChatCheckBox=guideChatCheckBoxs.eq(i);
+						var icChecked=guideChatCheckBox.prop("checked");//判断是否选中，选中状态为true,未选中状态为false;
+						if(icChecked){
+							var isCheckedUserid=guideChatCheckBox.attr("id").replace(/[^\d]/g,"");
+							isCheckedUserids.push(isCheckedUserid);
+						}
+					}
+				}
+				if(isCheckedUserids.length<=0){
+					toast("请话题组成员");
+				}else{
+					//console.log("测试"+isCheckedUserids.toString());
+					//和服务端创建群聊话题接口对接
+					requestCreateTopic(inputGroupChatText,isCheckedUserids);
+				}
+			}
+			
+			//2018.04.02  这里是之前创建群聊话题的操作，被注释
+			//sendGroupChatAddInfo();//发送给后台
+			//resetGroupChat();//恢复点击之前的模样
+			//toast("功能开发中，敬请期待");
 			return false;// 阻止事件冒泡和默认操作
 		});
 		//log2root("inputGroupChat变化后的高度："+$("#inputGroupChat").height());

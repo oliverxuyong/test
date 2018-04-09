@@ -41,8 +41,8 @@ function showDialogList(data){
 		var toUserId=data[d].to_user_id;
 		var toUserImgUrl=data[d].to_user_imgUrl;
 		var toUserName=data[d].to_user_name;
-		
-		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName);
+		var isTopic=data[d].isTopic;
+		appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName,isTopic);
 	}
 //	var headerHeight=$("#header").height();
 	var tabClick=$(".tabClick");
@@ -53,10 +53,10 @@ function showDialogList(data){
 	dialogListOut.css("height",dialogListOutHeight+"px");
 	
 	/**2017.11.10  叶夷  将获取未读消息和之前的消息列表内容分隔*/
-    setUnreadObjList()
+    setUnreadObjList();
 }
 
-function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName){
+function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserName,isTopic){
 	var dialog=$("<div></div>").attr("class", "dialog cursor").attr("id", toUserId);
 	//onerror是实现获得图片失败的时候放的默认图片,只要有一个图片路径就行
 	var toUserImg="<img src="+toUserImgUrl+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>";
@@ -85,7 +85,7 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 	setDialogListNode(dialog,dialogContent);
 	
 	dialog.click(function() {//绑定点击事件.
-		enterDialogPage(toUserId,toUserName,toUserImgUrl);
+		enterDialogPage(toUserId,toUserName,toUserImgUrl,isTopic);
 	});
 }
 
@@ -274,7 +274,7 @@ function changeUnreadColor(){
 }
 
 /**2017.10.16 叶夷  聊天列表消息置顶*/
-function makeDialogListTop(toUserName,toUserImg,respondeUserId){
+function makeDialogListTop(toUserName,toUserImg,respondeUserId,isTopic){
 	if($(".dialog").eq(0).length<=0){//这里是判断如果聊天列表为空的情况,重新创建
 		var time1 = new Date().format("yyyy-MM-dd hh:mm:ss");
 		appendDialogElement(time1,"","默认",respondeUserId,toUserImg,toUserName);
@@ -287,7 +287,6 @@ function makeDialogListTop(toUserName,toUserImg,respondeUserId){
 			copyOneDialogDiv.find("img").attr("src",toUserImg);
 			copyOneDialogDiv.find(".dialog_content_name").text(toUserName);
 			copyOneDialogDiv.find('.unread').remove();
-		
 		}else{
 			copyOneDialogDiv=oneDialogDiv.clone();
 		
@@ -297,7 +296,7 @@ function makeDialogListTop(toUserName,toUserImg,respondeUserId){
 		}
 		$("#dialog_list").prepend(copyOneDialogDiv);
 		copyOneDialogDiv.click(function() {//绑定点击事件.
-			enterDialogPage(respondeUserId,toUserName,toUserImg);
+			enterDialogPage(respondeUserId,toUserName,toUserImg,isTopic);
 		});
 		return copyOneDialogDiv;
 	}

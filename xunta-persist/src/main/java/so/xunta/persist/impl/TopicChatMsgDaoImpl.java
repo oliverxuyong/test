@@ -26,12 +26,29 @@ public class TopicChatMsgDaoImpl implements TopicChatMsgDao {
 		return topicChatmsg;
 	}
 
+	@Override
+	public TopicChatmsg findNewTopicChatmsgByTopicId(String topic_id) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "from TopicChatmsg where topic_id = :topic_id ORDER BY create_datetime_long DESC LIMIT 1";
+		Query query = session.createQuery(hql).setParameter("topic_id", topic_id);
+		return (TopicChatmsg) query.list();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<TopicChatmsg> findTopicChatmsgByTopicId(String topic_id) {
+	public List<TopicChatmsg> findTopicChatmsgByTopicIdAndMsgType(String topicId, String type) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from TopicChatmsg where topic_id = :topic_id";
-		Query query = session.createQuery(hql).setParameter("topic_id", topic_id);
+		String hql = "from TopicChatmsg where topic_id = :topic_id and type= :type";
+		Query query = session.createQuery(hql).setParameter("topic_id", topicId).setParameter("type", type);
+		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TopicChatmsg> findTopicChatmsgByHistory(String topicId, long create_datetime_long, int msgCount) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "from TopicChatmsg where topic_id = :topic_id and create_datetime_long<:create_datetime_long ORDER BY create_datetime_long DESC LIMIT :msgCount";
+		Query query = session.createQuery(hql).setParameter("topic_id", topicId).setParameter("create_datetime_long", create_datetime_long).setParameter("msgCount", msgCount);
 		return query.list();
 	}
 }

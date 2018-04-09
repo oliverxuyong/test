@@ -47,7 +47,7 @@ public class SubmitClientNewMsgIdConrtroller {
 		}
 		
 		JSONObject chatmsgReturnJSON = new JSONObject();
-		chatmsgReturnJSON.put("_interface", "1121-2");
+		chatmsgReturnJSON.put("_interface", "1122-2");
 		chatmsgReturnJSON.put("allUnreadNum", allUnreadNum);
 		socketService.chat2one(session, chatmsgReturnJSON);
 	}

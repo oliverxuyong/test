@@ -303,6 +303,28 @@
 		
 		//发送消息之后服务器返回的消息
         function recevier(obj) {
+        	showMsg(obj);
+        };
+        
+        function sendmsg(toUserId,inputValue,handler){
+        	console.log("发送消息 - toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
+        	log2root("发送消息- toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
+        	chat.sendPrivateMsg(toUserId,inputValue,handler);
+        }
+        
+        //这是话题消息的返回操作
+        function responseTopicMsg(data){
+        	showMsg(data);
+        	
+        	//在这里发送收到消息接口
+        	var msg_id=data.handler;
+        	var target_topicid=data.window_id;
+        	var paraStr =msg_id+ "','"+target_topicid;
+			execRoot("sendmsg_received_confirm('" + paraStr + "')");
+        }
+        
+        //接收到服务器返回的消息之后的操作，不管是单聊还是话题群聊
+        function showMsg(obj){
         	console.log("测试发送消息后台返回结果："+JSON.stringify(obj));
         	log2root("测试发送消息后台返回结果："+JSON.stringify(obj));
 			
@@ -340,7 +362,7 @@
         			}
         		    
         		    if(window.parent.document.getElementById("matchUsers_page")!=null ){//聊天列表打开过,实现置顶
-        		    	exec("matchUsers_page", "makeDialogListTop('" + toUserName+"','"+toImgUrl+"','"+window_id +"')");
+        		    	exec("matchUsers_page", "makeDialogListTop('" + toUserName+"','"+toImgUrl+"','"+window_id +"','"+obj.isTopic+"')");
         		    	exec("matchUsers_page", "updateDialogContentAndTime('','"+toImgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
             		}
             	} else { 
@@ -351,7 +373,7 @@
             		//聊天列表未读消息提示
             		if(window.parent.document.getElementById("matchUsers_page")!=null ){//聊天列表打开过
             			exec("matchUsers_page", "unreadMsg('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"')");
-            			exec("matchUsers_page", "makeDialogListTop('"+user+"','"+imgUrl+"','"+respondeUserId+"')");
+            			exec("matchUsers_page", "makeDialogListTop('"+user+"','"+imgUrl+"','"+respondeUserId+"','"+obj.isTopic+"')");
             		}else{//聊天页表没有打开才将未读信息保存好
             			//2017.08.16   装所有的未读信息，为了将数组传给聊天列表
                 		var unreadNum=1;
@@ -382,17 +404,11 @@
             		execRoot("notifyNewMessage('"+pageTitle+"')");
             		
             		if(window.parent.document.getElementById(window_id)!=null ){//聊天列表打开过
-            			exec(window_id, "showSelfPoster('" + user + "','" + data +"','" +imgUrl+"','" + msgId+"','" + myOrOther+ "','" + false+"')");
+            			exec(window_id, "showSelfPoster('" + user + "','" + data +"','" +imgUrl+"','" + msgId+"','" + myOrOther+ "','" + false+"','" +obj.msg_type+"')");
             			//加上时间 
                 		exec(window_id, "markSendPosterSuccess('" + msgId + "','" + postTimeLong +"','" +postTimeStr+"')");
             		} 
             	}
-        };
-        
-        function sendmsg(toUserId,inputValue,handler){
-        	console.log("发送消息 - toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
-        	log2root("发送消息- toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
-        	chat.sendPrivateMsg(toUserId,inputValue,handler);
         }
 		
 		function setRootVars(){

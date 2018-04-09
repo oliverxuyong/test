@@ -21,7 +21,11 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
 	//chat.sendMsgToAll(inputValue);//发送消息给全部的人
 	//chat.sendPrivateMsg(toUserId,inputValue);
 	//execRoot("sendmsg('"+toUserId+"','"+inputValue+"')");//给单独的人发消息
-	exec("main_page","sendmsg('"+toUserId+"','"+inputValue+"','"+tmpPid+"')");
+	if(topic==true || topic=="true"){//话题聊天页发送消息是不同的方法
+		requestSendTopicMsg(inputValue,"NORMAL",userId,userName,userImage,toUserId,toUserName);
+	}else{
+		exec("main_page","sendmsg('"+toUserId+"','"+inputValue+"','"+tmpPid+"')");
+	}
 	
 	//装入任务框且判断是否发送成功
 	var str = "sendPoster('" + toUserId + "','" + inputValue + "','" + tmpPid + "')";
@@ -253,8 +257,8 @@ function responseMutualCP(data){
 	log2root("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
 	showSameSelectCp(data);
 	
-	//这里要做判断，如果没有聊天记录则出现第一句话弹出框
-	if(noHistoryMsg){
+	//这里要做判断，如果没有聊天记录则出现第一句话弹出框  而且不是话题聊天页
+	if(noHistoryMsg && topic!=true && topic!="true"){
 		//sendFirstTalk(allCommonTags);
 		requestTwoBarCode();//这里是显示微信扫码关注效果
 	}
@@ -268,4 +272,26 @@ function requestTwoBarCode(){
 function responseTwoBarCode(data){
 	var weChatQRCodeUrl=data.weChatQRCodeUrl;
 	sendFirstTalk(allCommonTags,weChatQRCodeUrl);
+}
+
+//2018.04.08 叶夷  发送话题页的消息
+function requestSendTopicMsg(chatmsg_content,type,send_id,send_name,send_img,topic_id,topic_name){
+	var paraStr =chatmsg_content+ "','"+type+"','" + send_id+ "','" + send_name+ "','" + send_img+ "','" + topic_id+ "','" + topic_name;
+	execRoot("requestSendTopicMsg('" + paraStr + "')");
+}
+
+//2018.04.08 叶夷  请求话题页的历史消息
+function requestHistoryMsg(){
+	var paraStr =userId+ "','"+toUserId+"','"+conncount+"','"+create_datetime_long;
+	execRoot("requestHistoryMsg('" + paraStr + "')");
+}
+//2018.04.08 叶夷  获取话题页的历史消息
+function responseHistoryMsg(data){
+	console.log("测试聊天记录请求后台返回结果："+JSON.stringify(data));
+	log2root("测试聊天记录请求后台返回结果："+JSON.stringify(data));
+	var chatmsgJSONArray=data.chatmsgJSONArray;
+	showDialogHistory(chatmsgJSONArray);
+	
+	//2017.08.30 叶夷  请求共同选择的标签
+	requestSelectCP();
 }

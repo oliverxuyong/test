@@ -275,3 +275,28 @@ function sendGroupChatAddInfo(){
 function sendGroupChatInfo(){
 	execRoot("sendGroupChatInfo()");
 }
+
+//2018.04.02 叶夷  创建群聊话题
+function requestCreateTopic(inputGroupChatText,isCheckedUserids){
+	var paraStr = inputGroupChatText + "','" + userId +"','"  + isCheckedUserids;
+	execRoot("requestCreateTopic('" + paraStr + "')");
+}
+//2018.04.02 叶夷  服务器返回创建群聊话题
+function responseCreateTopic(data){
+	var topicName=data.topic_name;
+	var topic_id=data.topic_id;
+	var send_msg=data.chatmsg_content;
+	var postTimeStr=data.create_datetime;
+	console.log("创建群聊话题成功");
+	//在话题列表显示群聊话题
+	makeDialogListTop(topicName,userImage,topic_id,true);
+    updateDialogContentAndTime("",userImage,send_msg,postTimeStr,topic_id);//更新聊天列表内容和时间
+    
+    //创建群聊话题之后，发送邀请
+    requestSendTopicMsg(send_msg,"INVITE",userId,userName,userImage,topic_id,topicName);
+}
+//2018.04.03 叶夷  发送群聊话题消息
+function requestSendTopicMsg(chatmsg_content,type,send_id,send_name,send_img,topic_id,topic_name){
+	var paraStr =chatmsg_content+ "','"+type+"','" + send_id+ "','" + send_name+ "','" + send_img+ "','" + topic_id+ "','" + topic_name;
+	execRoot("requestSendTopicMsg('" + paraStr + "')");
+}

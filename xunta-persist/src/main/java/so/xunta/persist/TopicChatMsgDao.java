@@ -11,5 +11,7 @@ import so.xunta.beans.TopicChatmsg;
 @Repository
 public interface TopicChatMsgDao {
 	public TopicChatmsg addTopicChatmsg(TopicChatmsg topicChatmsg);//添加消息
-	public List<TopicChatmsg> findTopicChatmsgByTopicId(String topicId);//通过查找topic_id获取该话题的所有TopicChatmsg
+	public TopicChatmsg findNewTopicChatmsgByTopicId(String topicId);//通过查找topic_id获取该话题最新一条信息
+	public List<TopicChatmsg> findTopicChatmsgByHistory(String topicId,long create_datetime_long,int msgCount);//分页查找msg,为了显示历史消息
+	public List<TopicChatmsg> findTopicChatmsgByTopicIdAndMsgType(String topicId,String type);//通过查找topic_id和type获取该话题的所有TopicChatmsg
 }

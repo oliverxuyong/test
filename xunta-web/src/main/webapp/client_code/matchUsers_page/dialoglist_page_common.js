@@ -12,7 +12,8 @@ function requestDialogList(){
         success:function(data, textStatus) {
         	console.log("测试聊天列表请求后台返回结果："+JSON.stringify(data));
         	log2root("测试聊天列表请求后台返回结果："+JSON.stringify(data));
-        	showDialogList(data);
+        	//showDialogList(data);
+        	requestTopicDialogList(data);
         },
         error:function(data, textStatus) {
             console.log("聊天列表请求错误"+data);
@@ -23,7 +24,7 @@ function requestDialogList(){
 }
 
 //进入聊天页，别人的uid和我的uid都需要
-function enterDialogPage(toUserId,toUserName,toUserImage) {
+function enterDialogPage(toUserId,toUserName,toUserImage,isTopic) {
 	//var toUserImage=$("#"+toUserId).find("img").attr("src");
 	var pageParam = {
 		"toUserId" : toUserId,
@@ -34,6 +35,7 @@ function enterDialogPage(toUserId,toUserName,toUserImage) {
 		"userImage" : userImage,
 		"server_domain" : domain,
 		"userAgent":userAgent,
+		"isTopic":isTopic,
 		"topicPageSign":"yes"
 	};
 	console.log("enterDialogPage toUserId=" + toUserId+"|toUserName="+toUserName);
@@ -45,4 +47,16 @@ function enterDialogPage(toUserId,toUserName,toUserImage) {
 function removeUnreadNum(toUserId) {
 	$('#' + toUserId).find('.unread').remove()
 	//removeDiv($('#' + toUserId).find('.unread'),userAgent[1]);
+}
+
+//2018.04.08 叶夷  发请求群聊话题列表
+function requestTopicDialogList(data){
+	var paraStr =userId+"','"+data;
+	execRoot("requestTopicDialogList('" + paraStr + "')");
+}
+
+//2018.04.08 叶夷  获得所有话题列表
+function responseTopicDialogList(data){
+	var chatmsgJSONArray=data.chatmsgJSONArray;//这是所有的话题
+	showDialogList(chatmsgJSONArray);
 }

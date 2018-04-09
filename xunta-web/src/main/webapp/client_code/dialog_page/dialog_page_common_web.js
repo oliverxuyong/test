@@ -39,61 +39,99 @@ function closeBtn(){
 }
 //显示历史信息
 function showAllPosters(data) {
-	for(var msg in data){
+	//在显示历史消息的时候判断是否只是收到话题邀请,判断条件为历史消息type为INVITE
+	if(data[0].msg_type=="INVITE"){
+		//显示邀请或拒绝对话框
 		var name=data[msg].from_user_name;
-		var content=data[msg].msg;
-		var userImage=data[msg].from_user_imgUrl;
-		var msgId=data[msg].msg_id;
-		var respondeUserId=data[msg].from_user_id;
-		if (userId === respondeUserId) {
-    		showSelfPoster(name, content,userImage,msgId,"my",true);
-        } else {
-        	showSelfPoster(name, content,userImage,msgId,"other",true);
-        }
 		
-		//发言时间
-		var postTimeStr=data[msg].create_time;
-    	var postTimeLong =  new Date(postTimeStr.replace(new RegExp("-","gm"),"/").replace(/\"/g,"")).getTime();
-		markSendPosterSuccess(msgId, postTimeLong, postTimeStr);
-	}
-	if(sort == 'asc'){
-		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
-		sort =undefined;
-	}
-	//加上历史消息为null的判断
-	if(data.length>0){
-		firstMsgId=data[data.length-1].msg_id;
+	}else{
+		for(var msg in data){
+			var name=data[msg].from_user_name;
+			var content=data[msg].msg;
+			var userImage=data[msg].from_user_imgUrl;
+			var msgId=data[msg].msg_id;
+			var respondeUserId=data[msg].from_user_id;
+			var msg_type=data[msg].msg_type;
+			if (userId === respondeUserId) {
+	    		showSelfPoster(name, content,userImage,msgId,"my",true,msg_type);
+	        } else {
+	        	showSelfPoster(name, content,userImage,msgId,"other",true,msg_type);
+	        }
+			
+			//发言时间
+			var postTimeStr=data[msg].create_time;
+	    	var postTimeLong =  new Date(postTimeStr.replace(new RegExp("-","gm"),"/").replace(/\"/g,"")).getTime();
+			markSendPosterSuccess(msgId, postTimeLong, postTimeStr);
+			
+			if(topic==true || topic=="true"){
+				//将create_datetime_long参数的时间设置为最后一条的时间
+				if(msg==data.length-1){
+					create_time_long=data[msg].create_time_long;
+				}
+			}
+		}
+		if(sort == 'asc'){
+			document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
+			sort =undefined;
+		}
+		//加上历史消息为null的判断
+		if(data.length>0){
+			firstMsgId=data[data.length-1].msg_id;
+		}
 	}
 }
 
-function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态
-	console.log(" showSelfPoster 发言上屏了.");
-	var senderName, senderName_P, content_P, senderImg, senderImg_Div, senderDiv;
-	senderName = name;
-	senderName = cutStringIfTooLong(senderName,10);
-	senderName = " [" + senderName  +"]";//发言上屏也加上标题.	
+//2018.04.09 叶夷  接受邀请或拒绝对话框 
+function entrantOrRejectTopic() {
+	api.prompt({
+		buttons : ['接受', '拒绝'],
+		title : name+'邀请你加入话题'+toUserName
+	}, function(ret, err) {
+		var paraStr;
+		if (ret.buttonIndex == 1) {//接受
+			paraStr =toUserId+ "','"+userId+"','ENTRANT";
+		}else if(ret.buttonIndex == 2){//拒绝
+			paraStr =toUserId+ "','"+userId+"','REJECT";
+		}
+		execRoot("entrantOrRejectTopic('" + paraStr + "')");
+		backBtn();//关闭聊天页
+	});
+}
 
-	senderImage = userImage;
-	content_P = $("<div class='detail'></div>").text(content);
-	
-	if(myOrOther=="my"){
-		var postsending = $("<img class='postsending' src='../image/jumpingbean.gif' onerror=javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg' >");
-		content_P.append(postsending);
-	}
-	
-	senderName_P = $("<div class='nc'></div>").text(senderName);
-	senderImg = $("<img onerror=javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'>").attr("src", senderImage);
-	////上面一句简化为这一句.那些属性目前没有用处.
-	senderImg_Div = $("<div class='user-pic'></div>").append(senderImg);
-	senderDiv = $("<div class='user "+myOrOther+"'></div>").attr("id", msgId);
-	senderDiv.append(senderName_P).append(content_P).append(senderImg_Div);
-	if(isHistory==true){
+function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory,msg_type) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态
+	//在这里判断话题列表页的历史消息显示形式,普通消息一样显示但是会有系统消息
+	if (msg_type == "SYSTEM") {// 系统消息
+		var content = data[msg].msg;
+		var postSYSTEMHtml = $("<time class='send-time'></time>").text(content);// 系统消息和时间样式一样
 		$("#msg_list").prepend(senderDiv);
 	}else{
-		$("#msg_list").append(senderDiv);
-		document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
+		console.log(" showSelfPoster 发言上屏了.");
+		var senderName, senderName_P, content_P, senderImg, senderImg_Div, senderDiv;
+		senderName = name;
+		senderName = cutStringIfTooLong(senderName,10);
+		senderName = " [" + senderName  +"]";//发言上屏也加上标题.	
+
+		senderImage = userImage;
+		content_P = $("<div class='detail'></div>").text(content);
+		
+		if(myOrOther=="my"){
+			var postsending = $("<img class='postsending' src='../image/jumpingbean.gif' onerror=javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg' >");
+			content_P.append(postsending);
+		}
+		
+		senderName_P = $("<div class='nc'></div>").text(senderName);
+		senderImg = $("<img onerror=javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'>").attr("src", senderImage);
+		////上面一句简化为这一句.那些属性目前没有用处.
+		senderImg_Div = $("<div class='user-pic'></div>").append(senderImg);
+		senderDiv = $("<div class='user "+myOrOther+"'></div>").attr("id", msgId);
+		senderDiv.append(senderName_P).append(content_P).append(senderImg_Div);
+		if(isHistory==true){
+			$("#msg_list").prepend(senderDiv);
+		}else{
+			$("#msg_list").append(senderDiv);
+			document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
+		}
 	}
-	
 }
 
 function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直接将消息上屏的方法??? //显示聊天历史记录.

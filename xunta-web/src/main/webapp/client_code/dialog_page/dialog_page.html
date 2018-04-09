@@ -158,6 +158,8 @@
 		var replySenderNameWithTopic = "";
 		var replyOppuid =  "";
 		var replyOpptid = "";
+		var isTopic;//判断打开的是话题的聊天页还是还是普通的聊天页
+		var create_datetime_long;//这是为了标记每一批历史消息最后一条消息的时间,一开始的时候时间为当前时间
 		
         function start(Parameter){//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
         	domain = Parameter.server_domain;
@@ -176,6 +178,8 @@
 
 			_topicPageSign = Parameter.topicPageSign;
 			
+			isTopic=Parameter.isTopic;
+			
 			//2017.09.04 叶夷  万一出现和我聊天的人没有共同选择过的标签的情况,共同选择过的标签框去除
 			adjustWidthsHeights();
 			
@@ -185,7 +189,12 @@
 			//这里没几句,暂时移到了上面.方法暂时注销.prepareDialogPage();//
             execRoot("setCurrentPageId('"+toUserId+"')");
             //console.log("preparePageVars userImage="+userImage);
-            getHistoryMsg(userId,toUserId,firstMsgId);
+            if(topic==true || topic=="true"){//话题聊天页发送消息是不同的方法
+            	create_datetime_long=new Date().getTime();
+            	requestHistoryMsg();
+            }else{
+            	getHistoryMsg(userId,toUserId,firstMsgId);
+            }
             //execRoot("initToLoadPostHist('"+userId+"','"+toUserId+"','"+firstMsgId+"','"+requestMsgCounts+"','"+sort+"')");
             //chat.init(userId,recevier);//注册用户，及用记接收消息的函数
             
