@@ -30,7 +30,7 @@ public class TopicUserMappingDaoImpl implements TopicUserMappingDao {
 	@Override
 	public List<TopicUserMapping> findTopicUserMappingByTopicId(String topicId) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from TopicUserMapping where topic_id = :topic_id";
+		String hql = "from tbl_topic_user_mapping where topic_id = :topic_id";
 		Query query = session.createQuery(hql).setParameter("topic_id", topicId);
 		return query.list();
 	}
@@ -39,7 +39,7 @@ public class TopicUserMappingDaoImpl implements TopicUserMappingDao {
 	@Override
 	public List<TopicUserMapping> findTopicUserMappingByTopicIdAndUserType(String topic_id, String user_type) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from TopicUserMapping where topic_id = :topic_id and user_type= :user_type";
+		String hql = "from tbl_topic_user_mapping where topic_id = :topic_id and user_type= :user_type";
 		Query query = session.createQuery(hql).setParameter("topic_id", topic_id).setParameter("user_type", user_type);
 		return query.list();
 	}
@@ -54,7 +54,7 @@ public class TopicUserMappingDaoImpl implements TopicUserMappingDao {
 	@Override
 	public TopicUserMapping findTopicUserMappingByTopicIdAndUserId(String topic_id, String user_id) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from TopicUserMapping where topic_id = :topic_id and user_id= :user_id";
+		String hql = "from tbl_topic_user_mapping where topic_id = :topic_id and user_id= :user_id";
 		Query query = session.createQuery(hql).setParameter("topic_id", topic_id).setParameter("user_id", user_id);
 		return (TopicUserMapping) query.uniqueResult();
 	}

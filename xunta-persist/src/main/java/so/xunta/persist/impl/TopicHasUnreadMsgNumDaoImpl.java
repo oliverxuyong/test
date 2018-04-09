@@ -27,28 +27,28 @@ public class TopicHasUnreadMsgNumDaoImpl implements TopicHasUnreadMsgNumDao {
 	@Override
 	public List<TopicHasUnreadMsgNum> findUserHasUnreadMsgTopicByUserid(Long userid) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from TopicHasUnreadMsgNum as um where um.userid = :userid";
+		String hql = "from tbl_topic_unreadnum as um where um.userid = :userid";
 		return session.createQuery(hql).setParameter("userid", userid).list();
 	}
 
 	@Override
 	public void deleteUserHasUnreadMsgTopicByUserId(Long userid) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "delete from TopicHasUnreadMsgNum as um where um.userid = :userid";
+		String hql = "delete from tbl_topic_unreadnum as um where um.userid = :userid";
 		session.createQuery(hql).setParameter("userid", userid).executeUpdate();
 	}
 	
 	@Override
 	public void deleteUserHasUnreadMsgTopicByTopicid(Long topicid) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "delete from TopicHasUnreadMsgNum as um where um.topicid = :topicid";
+		String hql = "delete from tbl_topic_unreadnum as um where um.topicid = :topicid";
 		session.createQuery(hql).setParameter("topicid", topicid).executeUpdate();
 	}
 	
 	@Override
 	public void increaseUnreadMsgNumbyOne(Long userid,Long topicid) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from TopicHasUnreadMsgNum as um where um.topicid = :topicid";
+		String hql = "from tbl_topic_unreadnum as um where um.topicid = :topicid";
 		TopicHasUnreadMsgNum u = null;
 		try {
 			u = (TopicHasUnreadMsgNum) session.createQuery(hql).setParameter("topicid", topicid).uniqueResult();
@@ -68,14 +68,14 @@ public class TopicHasUnreadMsgNumDaoImpl implements TopicHasUnreadMsgNumDao {
 	@Override
 	public TopicHasUnreadMsgNum findUserHasUnreadMsgTopicByTopicid(Long topicid) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from TopicHasUnreadMsgNum as um where um.topicid = :topicid";
+		String hql = "from tbl_topic_unreadnum as um where um.topicid = :topicid";
 		return (TopicHasUnreadMsgNum) session.createQuery(hql).setParameter("topicid", topicid).uniqueResult();
 	}
 
 	@Override
 	public void recordUnReadMsgDecreaseOne(Long userid, Long topicid) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from TopicHasUnreadMsgNum as um where um.topicid = :topicid";
+		String hql = "from tbl_topic_unreadnum as um where um.topicid = :topicid";
 		TopicHasUnreadMsgNum u = null;
 		try {
 			u = (TopicHasUnreadMsgNum) session.createQuery(hql).setParameter("topicid", topicid).uniqueResult();
