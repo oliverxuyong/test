@@ -402,8 +402,8 @@ function sendShowGuidePageFirst(){
 }
 
 //2018.04.02  叶夷    创建群聊话题
-function requestCreateTopic(topic_name,creator_uid,userImage,user_ids){
-	console.log("创建群聊话题:topic_name="+topic_name+" creator_uid="+creator_uid+" userImage="+userImage+" user_ids="+user_ids);
+function requestCreateTopic(topic_name,creator_uid,user_ids){
+	console.log("创建群聊话题:topic_name="+topic_name+" creator_uid="+creator_uid+" user_ids="+user_ids);
 	var json_obj = {
 			_interface : "1116-1",
 			topic_name : topic_name.toString(),

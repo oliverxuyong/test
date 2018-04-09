@@ -103,9 +103,9 @@ public class TopicController {
 		topicDao.addTopic(topic);
 		
 		//topic_user_mapping表存储
-		JSONArray userIdArray=new JSONArray(user_ids);
-		for(int i=0;i<userIdArray.length();i++){
-			String user_id=userIdArray.get(i).toString();
+		String []userIdArray=user_ids.split(",");
+		for(int i=0;i<userIdArray.length;i++){
+			String user_id=userIdArray[i].toString();
 			logger.debug("user_id="+user_id);
 			TopicUserMapping topicUserMapping=new TopicUserMapping();
 			topicUserMapping.setTopic_id(topic_id);

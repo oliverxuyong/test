@@ -393,14 +393,16 @@ function sendShowGuidePageFirst() {
 //刚打开页面时获得消息未读数
 function responseUnreadMsgCount(data){
 	var allUnreadNum=data.allUnreadNum;
-	var unreadParent=$("#enterdialogList");
-	//有未读消息过来则显示
-	unreadParent.show();
-	if (unreadParent.find('.unread').length==0) {// 如果没有未读消息,则加上一个1;
-		var unreadNum = $("<div></div>").attr("class", "unread").text(allUnreadNum);
-		unreadParent.append(unreadNum);
-	} else {// 如果已有未读消息,则加上1:
-		var num = parseInt(unreadParent.find('.unread').text())+allUnreadNum;
-		unreadParent.find('.unread').text(num);
+	if(allUnreadNum>0){
+		var unreadParent=$("#enterdialogList");
+		//有未读消息过来则显示
+		unreadParent.show();
+		if (unreadParent.find('.unread').length==0) {// 如果没有未读消息,则加上一个1;
+			var unreadNum = $("<div></div>").attr("class", "unread").text(allUnreadNum);
+			unreadParent.append(unreadNum);
+		} else {// 如果已有未读消息,则加上1:
+			var num = parseInt(unreadParent.find('.unread').text())+allUnreadNum;
+			unreadParent.find('.unread').text(num);
+		}
 	}
 }
