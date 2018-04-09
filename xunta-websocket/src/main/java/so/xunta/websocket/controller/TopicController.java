@@ -496,7 +496,10 @@ public class TopicController {
 	
 	//保存未读消息
 	private void saveUnreadMsgs(Long msg_id, Long topicid,Long userid) {
-		TopicUnreadMsg um = new TopicUnreadMsg(msg_id, topicid, userid);
+		TopicUnreadMsg um = new TopicUnreadMsg();
+		um.setMsgid(msg_id);
+		um.setTopicid(topicid);
+		um.setUserid(userid);
 		userUnreadMsgService.addUnreadMsg(um);
 	}
 }

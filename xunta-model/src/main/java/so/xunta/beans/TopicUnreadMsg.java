@@ -15,7 +15,7 @@ import org.springframework.data.annotation.Id;
  */
 @Entity
 @Table(name="tbl_topic_unreadmsg")
-public class TopicUnreadMsg {
+public class TopicUnreadMsg extends IdEntity{
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -50,14 +50,6 @@ public class TopicUnreadMsg {
 		this.userid = userid;
 	}
 	public TopicUnreadMsg() {
-		super();
-	}
-	
-	public TopicUnreadMsg(Long msgid, Long topicid, Long userid) {
-		super();
-		this.msgid = msgid;
-		this.topicid = topicid;
-		this.userid = userid;
 	}
 }
 
