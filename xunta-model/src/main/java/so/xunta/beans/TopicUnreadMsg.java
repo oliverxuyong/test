@@ -1,9 +1,11 @@
 package so.xunta.beans;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
+
 import org.springframework.data.annotation.Id;
 
 /**
@@ -18,6 +20,7 @@ public class TopicUnreadMsg {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
+	@Column(unique=true)
 	private Long msgid;
 	private Long topicid;//消息所来自的话题id
 	private Long userid;
