@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
-
 import org.springframework.data.annotation.Id;
 
 /**
@@ -24,7 +23,8 @@ public class TopicUnreadMsg extends IdEntity{
 	private Long msgid;
 	private Long topicid;//消息所来自的话题id
 	private Long userid;
-	
+	public TopicUnreadMsg() {
+	}
 	public int getId() {
 		return id;
 	}
@@ -48,8 +48,6 @@ public class TopicUnreadMsg extends IdEntity{
 	}
 	public void setUserid(Long userid) {
 		this.userid = userid;
-	}
-	public TopicUnreadMsg() {
 	}
 }
 

@@ -14,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="tbl_topic_unreadnum")
-public class TopicHasUnreadMsgNum {
+public class TopicHasUnreadMsgNum extends IdEntity{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
@@ -48,10 +48,8 @@ public class TopicHasUnreadMsgNum {
 		this.unreadNum = unreadNum;
 	}
 	public TopicHasUnreadMsgNum() {
-		super();
 	}
 	public TopicHasUnreadMsgNum(Long userid, Long topicid, int unreadNum) {
-		super();
 		this.userid = userid;
 		this.topicid = topicid;
 		this.unreadNum = unreadNum;
