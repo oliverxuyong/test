@@ -295,10 +295,11 @@ public class TopicController {
 		logger.debug("获得所有的话题:"+obj.toString());
 		String userid=obj.getString("userid");
 		String normalDialogList="";
+		JSONArray normalDialogJSONArray=new JSONArray();
 		if(obj.has("normalDialogList")){
 			normalDialogList=obj.getString("normalDialogList");
+			normalDialogJSONArray=new JSONArray(normalDialogList);
 		}
-		JSONArray normalDialogJSONArray=new JSONArray(normalDialogList);
 		logger.info("normalDialogList="+normalDialogList+" normalDialogJSONArray="+normalDialogJSONArray.toString());
 		List<Topic> topicList=topicDao.findUserByCreatorUid(userid);
 		JSONArray chatmsgJSONArray=new JSONArray();
