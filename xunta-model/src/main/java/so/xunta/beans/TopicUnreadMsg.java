@@ -15,17 +15,16 @@ import org.springframework.data.annotation.Id;
 @Entity
 @Table(name="tbl_topic_unreadmsg")
 public class TopicUnreadMsg extends IdEntity{
-	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private long id;
 	@Column(unique=true)
 	private Long msgid;
 	private Long topicid;//消息所来自的话题id
 	private Long userid;
 	public TopicUnreadMsg() {
 	}
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	public void setId(int id) {
