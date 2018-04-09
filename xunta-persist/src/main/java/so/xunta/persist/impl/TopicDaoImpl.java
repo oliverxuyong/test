@@ -29,7 +29,7 @@ public class TopicDaoImpl implements TopicDao {
 	@Override
 	public Topic findUserByTopicId(String topicId) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from tbl_topic where topicId = :topicId";
+		String hql = "from Topic where topicId = :topicId";
 		Query query = session.createQuery(hql).setParameter("topicId",topicId);
 		return (Topic) query.uniqueResult();
 	}
@@ -38,7 +38,7 @@ public class TopicDaoImpl implements TopicDao {
 	@Override
 	public List<Topic> findUserByCreatorUid(String creator_uid) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from tbl_topic where creator_uid in (:creator_uid)";
+		String hql = "from Topic where creator_uid in (:creator_uid)";
 		Query query = session.createQuery(hql).setParameter("creator_uid", creator_uid);
 		return query.list();
 	}
