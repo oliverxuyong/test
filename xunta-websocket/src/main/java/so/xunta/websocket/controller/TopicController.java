@@ -386,10 +386,11 @@ public class TopicController {
 			}
 		});
 		
+		logger.info("allDialogJSONArray="+allDialogJSONArray.toString());
 		JSONObject chatmsgAllJSON = new JSONObject();
 		chatmsgAllJSON.put("_interface", "1120-2");
 		//chatmsgAllJSON.put("userid", userid);
-		chatmsgAllJSON.put("chatmsgJSONArray", new JSONArray(allDialogJSONArray));
+		chatmsgAllJSON.put("chatmsgJSONArray", allDialogJSONArray.toString());
 		socketService.chat2one(session, chatmsgAllJSON);
 		
 		/**
