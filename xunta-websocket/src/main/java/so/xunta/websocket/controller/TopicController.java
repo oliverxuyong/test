@@ -104,6 +104,7 @@ public class TopicController {
 		topic.setCreate_datetime(create_datetime);
 		topic.setEnd_datetime(end_datetime);
 		topicDao.addTopic(topic);
+		logger.debug("topic表存储");
 		
 		//这是创建人的信息，也要被存进去
 		TopicUserMapping topicCreatorUserMapping=new TopicUserMapping();
@@ -111,6 +112,7 @@ public class TopicController {
 		topicCreatorUserMapping.setUser_id(creator_uid);
 		topicCreatorUserMapping.setUser_type("ENTRANT");
 		topicUserMappingDao.addTopicUserMapping(topicCreatorUserMapping);
+		logger.debug("这是创建人的信息，也要被存进去topicUserMapping");
 		
 		//topic_user_mapping表存储
 		String []userIdArray=user_ids.split(",");
@@ -123,6 +125,7 @@ public class TopicController {
 			topicUserMapping.setUser_type("INVITING");
 			topicUserMappingDao.addTopicUserMapping(topicUserMapping);
 		}
+		logger.debug("topic_user_mapping表存储");
 		
 		//2018.04.02  将创建话题时的邀请消息存储为系统消息,内容是"你创建了群聊话题[topic_name]"
 		TopicChatmsg topicChatmsg=new TopicChatmsg();
@@ -136,9 +139,11 @@ public class TopicController {
 		topicChatmsg.setCreate_datetime(create_datetime);
 		topicChatmsg.setCreate_datetime_long(create_datetime_long);
 		topicChatMsgDao.addTopicChatmsg(topicChatmsg);
+		logger.debug("将创建话题时的邀请消息存储为系统消息,内容是'你创建了群聊话题["+topic_name+"]'");
 		
 		//返回表示发起群聊话题成功
 		JSONObject returnJson = new JSONObject();
+		logger.debug("返回表示发起群聊话题"+returnJson);
 		returnJson.put("_interface", "1116-2");
 		returnJson.put("topic_name", topic_name);
 		returnJson.put("topic_id", topic_id);
