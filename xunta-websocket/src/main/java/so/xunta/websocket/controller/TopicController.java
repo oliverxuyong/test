@@ -172,7 +172,7 @@ public class TopicController {
 		//根据type来区分发送给哪些userid
 		List<TopicUserMapping> topicUserMappingList;
 		if(type.equals("INVITE")){//表示创建群聊话题的第一句话
-			topicUserMappingList=topicUserMappingDao.findTopicUserMappingByTopicIdAndUserType(topic_id,"INVITE");
+			topicUserMappingList=topicUserMappingDao.findTopicUserMappingByTopicIdAndUserType(topic_id,"INVITING");
 		}else{
 			topicUserMappingList=topicUserMappingDao.findTopicUserMappingByTopicIdAndUserType(topic_id, "ENTRANT");
 		}
