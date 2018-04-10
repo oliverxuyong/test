@@ -374,7 +374,7 @@ public class TopicController {
 			allDialogJSONArray.add(normalDialogJSONArray.getJSONObject(i));
 		}
 		for(int i=0;i<chatmsgJSONArray.length();i++){
-			allDialogJSONArray.add(normalDialogJSONArray.getJSONObject(i));
+			allDialogJSONArray.add(chatmsgJSONArray.getJSONObject(i));
 		}
 		//将话题列表通过时间排序
 		Collections.sort(allDialogJSONArray, new Comparator<JSONObject>() {
