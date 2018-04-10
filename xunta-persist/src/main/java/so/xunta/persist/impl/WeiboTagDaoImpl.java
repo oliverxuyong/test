@@ -58,14 +58,13 @@ public class WeiboTagDaoImpl implements WeiboTagDao {
 	@Override
 	public Map<String, Double> getRelateTags(String tag, int magnitude,List<String> meanlessTags) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT ts.tag AS r_tag, ts.score/tc.choice AS rank_score"
-					+"FROM "
-					+"(SELECT w1.tag, COUNT(w1.name) AS score "
-					+ "FROM weiboTag w1,(SELECT DISTINCT w.name AS pp FROM weiboTag w WHERE w.tag=:tag1) n "
-					+ "WHERE w1.tag!=:tag2 AND w1.name = n.pp GROUP BY w1.tag) ts,"
-					+"tag_choice tc "
-					+"WHERE ts.tag = tc.tag AND tc.choice>:magnitude "
-					+"ORDER BY rank_score DESC; ";
+		String sql = "SELECT ts.tag AS r_tag, ts.score/tc.choice AS rank_score FROM "+
+					  "(SELECT w1.tag, COUNT(w1.name) AS score FROM "
+					  + 	"weiboTag w1,(SELECT DISTINCT w.name AS pp FROM weiboTag w WHERE w.tag = :tag1) n "
+					  + 	"WHERE w1.tag != :tag2 AND w1.name = n.pp GROUP BY w1.tag) ts,"
+					  + "tag_choice tc "
+					  + "WHERE ts.tag = tc.tag AND tc.choice>:magnitude "
+					  + "ORDER BY rank_score DESC ";
 		List<Map<String,Object>> result = session.createSQLQuery(sql).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).
 				setString("tag1", tag).setString("tag2", tag).setInteger("magnitude", magnitude).list();
 		
