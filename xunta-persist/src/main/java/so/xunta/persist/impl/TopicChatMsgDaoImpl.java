@@ -26,13 +26,14 @@ public class TopicChatMsgDaoImpl implements TopicChatMsgDao {
 		return topicChatmsg;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public TopicChatmsg findNewTopicChatmsgByTopicId(String topic_id) {
+	public List<TopicChatmsg> findNewTopicChatmsgByTopicId(String topic_id) {
 		Session session = sessionFactory.getCurrentSession();
 		//String hql = "from TopicChatmsg where topic_id = :topic_id ORDER BY create_datetime_long DESC LIMIT 1";//limit在hql中不能使用，并设置查询出来集合的数目，我们应该使用setMaxResults(e)方法来解决
 		String hql = "from TopicChatmsg where topic_id = :topic_id ORDER BY create_datetime_long DESC";
 		Query query = session.createQuery(hql).setParameter("topic_id", topic_id).setMaxResults(1);
-		return (TopicChatmsg) query.list();
+		return query.list();
 	}
 
 	@SuppressWarnings("unchecked")

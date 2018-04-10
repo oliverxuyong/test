@@ -332,7 +332,7 @@ public class TopicController {
 			if(!userType.equals("REJECT")){
 				String topic_name=topic.getTopic_name();
 				//String topic_img=userService.findUser(Long.valueOf(userid)).getImgUrl();
-				TopicChatmsg newTopicChatmsg=topicChatMsgDao.findNewTopicChatmsgByTopicId(topic_id);//获得话题最新的一条信息
+				TopicChatmsg newTopicChatmsg=topicChatMsgDao.findNewTopicChatmsgByTopicId(topic_id).get(0);//获得话题最新的一条信息
 				//String chatmsg_id=newTopicChatmsg.getChatmsg_id();
 				String chatmsg_content=newTopicChatmsg.getChatmsg_content();
 				//String send_username=userService.findUser(Long.valueOf(newTopicChatmsg.getSend_uid())).getName();
