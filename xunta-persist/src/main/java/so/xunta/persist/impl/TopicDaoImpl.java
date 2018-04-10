@@ -29,8 +29,8 @@ public class TopicDaoImpl implements TopicDao {
 	@Override
 	public Topic findUserByTopicId(String topicId) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "from Topic where topicId = :topicId";
-		Query query = session.createQuery(hql).setParameter("topicId",topicId);
+		String hql = "from Topic where topic_id = :topic_id";
+		Query query = session.createQuery(hql).setParameter("topic_id",topicId);
 		return (Topic) query.uniqueResult();
 	}
 

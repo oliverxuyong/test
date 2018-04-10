@@ -422,11 +422,14 @@ public class TopicController {
 	private void getOnLineReceivers(List<WebSocketSession> receivers, List<Long> offlineUserids,List<String> userIdList) {
 		for (String userid : userIdList) {
 			Long useridLong=Long.valueOf(userid);
+			logger.debug("判断是离线还是在线 ：useridLong=" + useridLong);
 			WebSocketSession user = EchoWebSocketHandler.getUserById(useridLong);
 			if (user == null) {
+				logger.debug("离线 ：useridLong=" + useridLong);
 				//离线
 				offlineUserids.add(useridLong);
 			} else {
+				logger.debug("在线 ：useridLong=" + useridLong);
 				// 在线
 				receivers.add(user);
 			}
@@ -436,11 +439,12 @@ public class TopicController {
 	
 	private void sendMsgs(List<WebSocketSession> receivers,String topic_id,String send_uid,String send_name,String send_userImage,String chatmsg_content,String chatmsg_id,String create_datetime,String type) {
 		logger.debug("在线普通发言");
-		
+		logger.debug("在线 人数" + receivers.size());
 		//遍历每个receivers
 		for(int i = 0;i<receivers.size();i++){
 			WebSocketSession user = receivers.get(i);
 			JSONObject chatmsgReturnJSON = buildChatmsgReturnJSON(topic_id,send_uid,send_name,send_userImage,chatmsg_content,chatmsg_id,create_datetime,type);
+			logger.debug("在线发送消息的json数据：" + chatmsgReturnJSON.toString());
 			socketService.chat2one(user,chatmsgReturnJSON);
 		}
 	}
