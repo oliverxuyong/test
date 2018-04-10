@@ -58,11 +58,11 @@ public class WeiboTagDaoImpl implements WeiboTagDao {
 	@Override
 	public Map<String, Double> getRelateTags(String tag, int magnitude,List<String> meanlessTags) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT ts.tag r_tag, ts.score/tc.choice rank_score"
+		String sql = "SELECT ts.tag AS r_tag, ts.score/tc.choice AS rank_score"
 					+"FROM "
-					+"(SELECT w1.tag, COUNT(w1.name) score "
-					+ "FROM weiboTag w1,(SELECT DISTINCT w.name a FROM weiboTag w WHERE w.tag=:tag1) n "
-					+ "WHERE w1.tag!=:tag2 AND w1.name = n.a GROUP BY w1.tag) ts,"
+					+"(SELECT w1.tag, COUNT(w1.name) AS score "
+					+ "FROM weiboTag w1,(SELECT DISTINCT w.name AS pp FROM weiboTag w WHERE w.tag=:tag1) n "
+					+ "WHERE w1.tag!=:tag2 AND w1.name = n.pp GROUP BY w1.tag) ts,"
 					+"tag_choice tc "
 					+"WHERE ts.tag = tc.tag AND tc.choice>:magnitude "
 					+"ORDER BY rank_score DESC; ";
