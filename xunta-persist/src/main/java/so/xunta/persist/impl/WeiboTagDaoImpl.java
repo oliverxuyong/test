@@ -60,13 +60,14 @@ public class WeiboTagDaoImpl implements WeiboTagDao {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "SELECT ts.tag r_tag, ts.score/tc.choice rank_score"
 					+"FROM "
-					+	"(SELECT w1.tag, COUNT(w1.name) score FROM weiboTag w1,(SELECT DISTINCT w.name a FROM weiboTag w WHERE w.tag=:tag) n "
-					+	"WHERE w1.tag!=:tag AND w1.name = n.a GROUP BY w1.tag) ts,"
-					+	"tag_choice tc "
+					+"(SELECT w1.tag, COUNT(w1.name) score "
+					+ "FROM weiboTag w1,(SELECT DISTINCT w.name a FROM weiboTag w WHERE w.tag=:tag) n "
+					+ "WHERE w1.tag!=:tag AND w1.name = n.a GROUP BY w1.tag) ts,"
+					+"tag_choice tc "
 					+"WHERE ts.tag = tc.tag AND tc.choice>:magnitude "
-					+"ORDER BY rank_score DESC ";
+					+"ORDER BY rank_score DESC; ";
 		List<Map<String,Object>> result = session.createSQLQuery(sql).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).
-				setString("tag", tag).setInteger("magnitude", magnitude).list();
+				setString("tag", tag).setString("tag", tag).setInteger("magnitude", magnitude).list();
 		
 		int size = result.size();
 		int topN;
