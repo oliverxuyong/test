@@ -277,7 +277,7 @@ function changeUnreadColor(){
 function makeDialogListTop(toUserName,toUserImg,respondeUserId,isTopic){
 	if($(".dialog").eq(0).length<=0){//这里是判断如果聊天列表为空的情况,重新创建
 		var time1 = new Date().format("yyyy-MM-dd hh:mm:ss");
-		appendDialogElement(time1,"","默认",respondeUserId,toUserImg,toUserName);
+		appendDialogElement(time1,"","默认",respondeUserId,toUserImg,toUserName,isTopic);
 	}else{
 		var oneDialogDiv=$("#"+respondeUserId);
 		var copyOneDialogDiv;

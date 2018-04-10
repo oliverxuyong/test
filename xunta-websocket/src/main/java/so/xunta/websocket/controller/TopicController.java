@@ -105,6 +105,13 @@ public class TopicController {
 		topic.setEnd_datetime(end_datetime);
 		topicDao.addTopic(topic);
 		
+		//这是创建人的信息，也要被存进去
+		TopicUserMapping topicCreatorUserMapping=new TopicUserMapping();
+		topicCreatorUserMapping.setTopic_id(topic_id);
+		topicCreatorUserMapping.setUser_id(creator_uid);
+		topicCreatorUserMapping.setUser_type("ENTRANT");
+		topicUserMappingDao.addTopicUserMapping(topicCreatorUserMapping);
+		
 		//topic_user_mapping表存储
 		String []userIdArray=user_ids.split(",");
 		for(int i=0;i<userIdArray.length;i++){
