@@ -42,7 +42,7 @@ import so.xunta.websocket.utils.RecommendTaskPool;
 @Component
 public class CpOperationWSController {
 	
-	private final BigDecimal USER_ADD_CP_WEIGHT=new BigDecimal(5.0);
+	private final BigDecimal USER_ADD_CP_WEIGHT=new BigDecimal(2.0);
 	
 	@Autowired
 	private SocketService socketService;

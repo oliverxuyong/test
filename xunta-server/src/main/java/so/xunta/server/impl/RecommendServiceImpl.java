@@ -20,6 +20,7 @@ import so.xunta.beans.ConcernPointDO;
 import so.xunta.beans.CpChoiceDO;
 import so.xunta.beans.CpChoiceDetailDO;
 import so.xunta.beans.User;
+import so.xunta.persist.C2cDao;
 import so.xunta.persist.C2uDao;
 import so.xunta.persist.ConcernPointDao;
 import so.xunta.persist.CpChoiceDao;
@@ -38,7 +39,7 @@ import so.xunta.server.RecommendService;
 public class RecommendServiceImpl implements RecommendService {
 	private final double NO_CHANGE = 0.0;
 	private final Double INIT_CP_SCORE = 0.1;//CP初始化推荐分数
-	private final double SELF_ADD_CP_SCORE = 0.5;//用户自己添加cp的初始化推荐分数
+	private final double SELF_ADD_CP_SCORE = 0.2;//用户自己添加cp的初始化推荐分数
 	private final int REPLENISH_NUM = 100;//每次补充多少个CP
 	private final double UPDATE_MARK = 0.0; //需要更新但用户关系值没变化
 	private final long MIN_INTERVAL = 1500L; //两次更新任务之间的最短间隔时间
@@ -67,6 +68,8 @@ public class RecommendServiceImpl implements RecommendService {
 	private EventScopeCpTypeMappingDao eventScopeCpTypeMappingDao;
 	@Autowired
 	private U2uCpDetailDao u2uCpDetailDao; 
+	@Autowired
+	private C2cDao c2cDao;
 
 	Logger logger =Logger.getLogger(RecommendServiceImpl.class);
 	
@@ -210,6 +213,28 @@ public class RecommendServiceImpl implements RecommendService {
 			return false;
 		}finally{
 			updateTaskQueue.remove(uid);
+		}
+	}
+	
+	@Override
+	public void updateU2cByC2c(String uid, String cpid, String property, int selectType) {
+		logger.debug("用户:"+uid+" 选择了CP："+cpid+"  更新关联推荐词");
+		if(selectType==RecommendService.SELECT_CP){
+			if(property.equals(RecommendService.POSITIVE_SELECT)){
+				Map<String,String> relateCps = c2cDao.getCpRelateCps(cpid);
+				for(Entry<String,String> relateCp:relateCps.entrySet()){
+					String relateCpId = relateCp.getKey();
+					Double relateCpScore = Double.valueOf(relateCp.getValue());
+					u2cDao.updateUserCpValue(uid, relateCpId, relateCpScore);
+				}
+			}else{
+				Map<String,String> relateCps = c2cDao.getCpRelateCps(cpid);
+				for(Entry<String,String> relateCp:relateCps.entrySet()){
+					String relateCpId = relateCp.getKey();
+					Double relateCpScore = Double.valueOf(relateCp.getValue());
+					u2cDao.updateUserCpValue(uid, relateCpId, -relateCpScore);
+				}
+			}
 		}
 	}
 
@@ -451,4 +476,6 @@ public class RecommendServiceImpl implements RecommendService {
 			}
 		}
 	}
+
+
 }

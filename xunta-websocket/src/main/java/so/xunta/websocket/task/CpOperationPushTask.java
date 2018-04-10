@@ -80,13 +80,16 @@ public class CpOperationPushTask implements Runnable{
 			logger.warn("参数为空！放弃任务");
 			return;
 		}
-		/*Step1：执行记录任务，返回和我相关的用户*/
+		/*Step1: 更新关系词*/
+		recommendService.updateU2cByC2c(userId, cpId, property, selectType);
+		
+		/*Step2：执行记录任务，返回和我相关的用户*/
 		Set<String> pendingPushUids = recommendService.recordU2UChange(userId,cpId,property,selectType);
 		
-		/*Step2: 触发自己的更新任务*/
+		/*Step3: 触发自己的更新任务*/
 		updateAndPush(userId);
 		
-		/*Step3：获得在线的匹配用户列表，触发他们的更新任务*/
+		/*Step4：获得在线的匹配用户列表，触发他们的更新任务*/
 		pendingPushUids.remove(userId);
 		filterOffLineUsers(pendingPushUids);
 		for(String uid:pendingPushUids){

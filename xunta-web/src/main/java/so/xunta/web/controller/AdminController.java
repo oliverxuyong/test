@@ -21,6 +21,7 @@ import so.xunta.beans.User;
 import so.xunta.persist.ScopeMatchedUserDao;
 import so.xunta.persist.U2uCpDetailDao;
 import so.xunta.persist.U2uRelationDao;
+import so.xunta.server.C2CService;
 import so.xunta.server.UserService;
 
 @Controller
@@ -35,6 +36,8 @@ public class AdminController {
 	private SessionFactory sessionFactory;
 	@Autowired
 	private U2uCpDetailDao u2uCpDetailDao; 
+	@Autowired
+	private C2CService c2cService;
 
 	
 	Logger logger = Logger.getLogger(AdminController.class);
@@ -132,6 +135,16 @@ public class AdminController {
 		}
 		try {
 			response.getWriter().write("redisMigration success");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value="/initC2C")
+	public void initC2C(HttpServletResponse response) {
+		c2cService.initC2C();
+		try {
+			response.getWriter().write("initC2C success");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

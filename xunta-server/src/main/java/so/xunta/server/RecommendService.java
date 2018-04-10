@@ -30,6 +30,11 @@ public interface RecommendService {
 	 * @return：更新是否成功执行，是为true，否为false
 	 * */
 	public Boolean updateU2C(String uid);
+	
+	/**
+	 * 通过词关系更新推荐标签
+	 * */
+	public void updateU2cByC2c(String uid,String cpid,String property, int selectType);
 
 	/**
 	 * 用户每次上线的初始化任务，包括

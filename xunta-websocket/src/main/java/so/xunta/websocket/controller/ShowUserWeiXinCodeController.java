@@ -15,7 +15,6 @@ import so.xunta.beans.WeChatProperties;
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.persist.TokenDao;
-import so.xunta.persist.UserDao;
 import so.xunta.server.SocketService;
 import so.xunta.server.UserService;
 import so.xunta.server.WeChatPropertiesService;
