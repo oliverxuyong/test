@@ -50,7 +50,7 @@ public class TopicChatMsgDaoImpl implements TopicChatMsgDao {
 	public List<TopicChatmsg> findTopicChatmsgByHistory(String topicId, long create_datetime_long, int msgCount) {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = "from TopicChatmsg where topic_id = :topic_id and create_datetime_long<:create_datetime_long ORDER BY create_datetime_long DESC";
-		Query query = session.createQuery(hql).setParameter("topic_id", topicId).setParameter("create_datetime_long", create_datetime_long).setParameter("msgCount", msgCount).setMaxResults(msgCount);
+		Query query = session.createQuery(hql).setParameter("topic_id", topicId).setParameter("create_datetime_long", create_datetime_long).setMaxResults(msgCount);
 		return query.list();
 	}
 }

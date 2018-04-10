@@ -447,7 +447,7 @@ function requestHistoryMsg(userId,topicId,conncount,create_datetime_long){
 	console.log("发请求群聊话题历史消息:userid="+userId+" topicId="+topicId+" conncount="+conncount+" create_datetime_long="+create_datetime_long);
 	var json_obj = {
 			_interface : "1119-1",
-			userid:topicId.toString(),
+			userid:userId.toString(),
 			topic_id:topicId.toString(),
 			create_datetime_long:create_datetime_long,
 			msgCount:conncount,

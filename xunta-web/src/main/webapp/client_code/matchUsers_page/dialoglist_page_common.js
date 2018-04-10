@@ -57,6 +57,6 @@ function requestTopicDialogList(data){
 
 //2018.04.08 叶夷  获得所有话题列表
 function responseTopicDialogList(data){
-	var chatmsgJSONArray=data.chatmsgJSONArray;//这是所有的话题
+	var chatmsgJSONArray=JSON.parse(data.chatmsgJSONArray);//这是所有的话题
 	showDialogList(chatmsgJSONArray);
 }
