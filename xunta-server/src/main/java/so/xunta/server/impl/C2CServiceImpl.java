@@ -70,6 +70,7 @@ public class C2CServiceImpl implements C2CService {
 	private ConcernPointDO insertCp(String cpText){
 		ConcernPointDO cp = new ConcernPointDO();
 		cp.setCreator_uid(new Long(1));
+		cp.setType("general");
 		cp.setText(cpText);
 		Timestamp current = new Timestamp(System.currentTimeMillis());
 		cp.setCreate_time(current);
