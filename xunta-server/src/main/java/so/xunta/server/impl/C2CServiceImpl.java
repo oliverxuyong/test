@@ -1,5 +1,6 @@
 package so.xunta.server.impl;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ public class C2CServiceImpl implements C2CService {
 		logger.info("获取到"+tags.size()+"个Tag，开始遍历");
 		int loop =1;
 		for(String tag:tags){
+			if(meanlessTags.contains(tag)){continue;}
 			long choiceNum=tagChoiceDao.getTagChoice(tag).getChoice();
 			int magnitude = 0;
 			
@@ -48,6 +50,7 @@ public class C2CServiceImpl implements C2CService {
 				magnitude = 1;
 			}
 			Map<String,Double> relateTags= weiboTagDao.getRelateTags(tag, magnitude,meanlessTags);
+			logger.info(tag+"查询完毕");
 			Map<String,String> relateTagIds = new HashMap<String,String>();
 			for(Entry<String,Double> relateTag:relateTags.entrySet()){
 				String tagText = relateTag.getKey();
@@ -71,6 +74,7 @@ public class C2CServiceImpl implements C2CService {
 		ConcernPointDO cp = new ConcernPointDO();
 		cp.setCreator_uid(new Long(1));
 		cp.setType("general");
+		cp.setWeight(new BigDecimal(1.0));
 		cp.setText(cpText);
 		Timestamp current = new Timestamp(System.currentTimeMillis());
 		cp.setCreate_time(current);
