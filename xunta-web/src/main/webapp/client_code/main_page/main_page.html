@@ -370,9 +370,16 @@
             		window_id=respondeUserId;
             		//showSelfPoster(user, data,imgUrl,msgId,"other",false);
             		
+            		//如果是群聊话题的消息的话user变成topic_name
+            		var topic_name=obj.topic_name;
+        			if(topic_name=="undefined" || topic_name==undefined){
+        				user=topic_name;
+        			}
+            		
             		//聊天列表未读消息提示
             		if(window.parent.document.getElementById("matchUsers_page")!=null ){//聊天列表打开过
-            			exec("matchUsers_page", "unreadMsg('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"')");
+            			//在topic模式下unread不光需要topic_name，也需要username
+            			exec("matchUsers_page", "unreadMsg('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"','"+obj.user.name+"')");
             			exec("matchUsers_page", "makeDialogListTop('"+user+"','"+imgUrl+"','"+respondeUserId+"','"+obj.isTopic+"')");
             		}else{//聊天页表没有打开才将未读信息保存好
             			//2017.08.16   装所有的未读信息，为了将数组传给聊天列表
@@ -383,16 +390,16 @@
                 				var unReadObj=unreadObjList[j];
                 				if(unReadObj.getTouserId()==respondeUserId){//这个用户已经存在，未读数加1
                 					unReadObj.unreadNum++;
-                					unreadObjList[j]=new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unReadObj.unreadNum);
+                					unreadObjList[j]=new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unReadObj.unreadNum,obj.user.name);
                 					isExit=true;
                 					break;
                 				}
                 			}
                 			if(isExit=false){
-                				unreadObjList.push(new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unreadNum));
+                				unreadObjList.push(new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unreadNum,obj.user.name));
                 			}
                 		}else{
-                			unreadObjList.push(new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unreadNum));
+                			unreadObjList.push(new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unreadNum,obj.user.name));
                 		}
             		}
             		
@@ -657,8 +664,8 @@
 			//topicList = Parameter.topiclist;
 		}
 		
-		//2017.08.16 叶夷   创建跟我聊天的人的id和未读消息数一一对应的对象，为了保存数组
-		function unreadObj(user,imgUrl,data,postTimeStr,touserId,unreadNum){
+		//2017.08.16 叶夷   创建跟我聊天的人的id和未读消息数一一对应的对象，为了保存数组,userNameForTopic是为了群聊消息保存发送者的username
+		function unreadObj(user,imgUrl,data,postTimeStr,touserId,unreadNum,userNameForTopic){
 			var obj = new Object();
 			obj.user=user;
 			obj.imgUrl=imgUrl;
@@ -666,6 +673,7 @@
 			obj.postTimeStr=postTimeStr;
 			obj.touserId=touserId;
 			obj.unreadNum=unreadNum;
+			obj.userNameForTopic=userNameForTopic;
 			obj.getUser = function() {
 				return this.touserId;
 			};

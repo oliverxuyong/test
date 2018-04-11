@@ -204,13 +204,13 @@ function setUnreadObjList(){
 	//从首页传过来的聊天列表的未读信息
 	if(unreadObjList.length>0){
 		for(var i in unreadObjList){
-			unreadMsg(unreadObjList[i].user,unreadObjList[i].imgUrl,unreadObjList[i].data,unreadObjList[i].postTimeStr,unreadObjList[i].touserId,unreadObjList[i].unreadNum);
+			unreadMsg(unreadObjList[i].user,unreadObjList[i].imgUrl,unreadObjList[i].data,unreadObjList[i].postTimeStr,unreadObjList[i].touserId,unreadObjList[i].unreadNum,unreadObjList[i].userNameForTopic);
 		}
 	}
 }
 
 //未读消息数提示，最新消息内容和最新时间更新
-function unreadMsg(toUserName,toUserImg,data,postTimeStr,respondeUserId,unreadNum){
+function unreadMsg(toUserName,toUserImg,data,postTimeStr,respondeUserId,unreadNum,username){
 	var unreadParent=$("#"+respondeUserId);
 	if(unreadParent.length==0){//未读消息更改的同时判断聊天列表中是否有这个人的存在，如果不存在则将它加上且置顶
 		unreadParent=makeDialogListTop(toUserName,toUserImg,respondeUserId);
@@ -245,7 +245,7 @@ function unreadMsg(toUserName,toUserImg,data,postTimeStr,respondeUserId,unreadNu
 		dialogListPage.find('.unread').text(unreadNum);
 	}
 	
-	updateDialogContentAndTime(toUserName,toUserImg,data,postTimeStr,respondeUserId);
+	updateDialogContentAndTime(username,toUserImg,data,postTimeStr,respondeUserId);
 }
 
 //把聊天列表的内容和时间更新

@@ -201,11 +201,12 @@ public class TopicController {
 		String send_name=obj.getString("send_name");
 		String send_userImage=obj.getString("send_userImage");
 		String handle=obj.getString("handle");//这里为了和发宝哥的接口同步，将发送给前端的msg_id变为前端传过来的msgid
+		String topic_name=obj.getString("topic_name");
 		/**
 		 * 发送消息
 		 */
-		sendMsgs(receivers,topic_id,send_uid,send_name,send_userImage,chatmsg_content,chatmsg_id,handle,create_datetime,type);//给话题中的在线用户发消息
-		String topic_name=obj.getString("topic_name");
+		sendMsgs(receivers,topic_id,topic_name,send_uid,send_name,send_userImage,chatmsg_content,chatmsg_id,handle,create_datetime,type);//给话题中的在线用户发消息
+		
 		/**
 		 * 在普通发言中发送给离线人员模版消息
 		 * @author 叶夷
@@ -456,19 +457,19 @@ public class TopicController {
 		logger.debug("off line user size: " + offlineUserids.size());
 	}
 	
-	private void sendMsgs(List<WebSocketSession> receivers,String topic_id,String send_uid,String send_name,String send_userImage,String chatmsg_content,String chatmsg_id,String handle,String create_datetime,String type) {
+	private void sendMsgs(List<WebSocketSession> receivers,String topic_id,String topic_name,String send_uid,String send_name,String send_userImage,String chatmsg_content,String chatmsg_id,String handle,String create_datetime,String type) {
 		logger.debug("在线普通发言");
 		logger.debug("在线 人数" + receivers.size());
 		//遍历每个receivers
 		for(int i = 0;i<receivers.size();i++){
 			WebSocketSession user = receivers.get(i);
-			JSONObject chatmsgReturnJSON = buildChatmsgReturnJSON(topic_id,send_uid,send_name,send_userImage,chatmsg_content,chatmsg_id,handle,create_datetime,type);
+			JSONObject chatmsgReturnJSON = buildChatmsgReturnJSON(topic_id,topic_name,send_uid,send_name,send_userImage,chatmsg_content,chatmsg_id,handle,create_datetime,type);
 			logger.debug("在线发送消息的json数据：" + chatmsgReturnJSON.toString());
 			socketService.chat2one(user,chatmsgReturnJSON);
 		}
 	}
 	
-	private JSONObject buildChatmsgReturnJSON(String topic_id,String send_uid,String send_name,String send_userImage,String chatmsg_content,String chatmsg_id,String handle,String create_datetime,String type) {
+	private JSONObject buildChatmsgReturnJSON(String topic_id,String topic_name,String send_uid,String send_name,String send_userImage,String chatmsg_content,String chatmsg_id,String handle,String create_datetime,String type) {
 		JSONObject chatmsgReturnJSON = new JSONObject();
 		chatmsgReturnJSON.put("_interface", "1117-2");
 		JSONObject userObject=new JSONObject();
@@ -477,6 +478,7 @@ public class TopicController {
 		userObject.put("imgUrl", send_userImage);
 		chatmsgReturnJSON.put("user", userObject);
 		chatmsgReturnJSON.put("window_id", topic_id);
+		chatmsgReturnJSON.put("topic_name", topic_name);
 		chatmsgReturnJSON.put("chatmsg_id", chatmsg_id);
 		chatmsgReturnJSON.put("handler", handle);
 		chatmsgReturnJSON.put("data", chatmsg_content);
