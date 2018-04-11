@@ -301,6 +301,6 @@ function responseCreateTopic(data){
 }
 //2018.04.03 叶夷  发送群聊话题消息
 function requestSendTopicMsg(chatmsg_content,type,send_id,send_name,send_img,topic_id,topic_name){
-	var paraStr =chatmsg_content+ "','"+type+"','" + send_id+ "','" + send_name+ "','" + send_img+ "','" + topic_id+ "','" + topic_name;
+	var paraStr =chatmsg_content+ "','"+type+"','" + send_id+ "','" + send_name+ "','" + send_img+ "','" + topic_id+ "','" + topic_name+ "','" +"handle";
 	execRoot("requestSendTopicMsg('" + paraStr + "')");
 }

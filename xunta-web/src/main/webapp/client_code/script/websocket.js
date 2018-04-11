@@ -426,7 +426,7 @@ function requestSendTopicMsg(chatmsg_content,type,send_uid,send_name,send_img,to
 			send_name : send_name,
 			send_userImage : send_img,
 			topic_name : topic_name,
-			handle:tmpPid,
+			handle:tmpPid.toString(),
 			timestamp:""
 		};
 	WS_Send(json_obj);

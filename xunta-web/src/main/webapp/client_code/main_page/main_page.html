@@ -317,7 +317,7 @@
         	showMsg(data);
         	
         	//在这里发送收到消息接口
-        	var msg_id=data.handler;
+        	var msg_id=data.chatmsg_id;
         	var target_topicid=data.window_id;
         	var paraStr =msg_id+ "','"+target_topicid;
 			execRoot("sendmsg_received_confirm('" + paraStr + "')");
