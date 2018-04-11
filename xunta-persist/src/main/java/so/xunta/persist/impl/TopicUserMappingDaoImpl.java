@@ -58,4 +58,13 @@ public class TopicUserMappingDaoImpl implements TopicUserMappingDao {
 		Query query = session.createQuery(hql).setParameter("topic_id", topic_id).setParameter("user_id", user_id);
 		return (TopicUserMapping) query.uniqueResult();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TopicUserMapping> findTopicUserMappingByUserId(String user_id) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "from TopicUserMapping where user_id= :user_id and user_type!='REJECT'";
+		Query query = session.createQuery(hql).setParameter("user_id", user_id);
+		return query.list();
+	}
 }

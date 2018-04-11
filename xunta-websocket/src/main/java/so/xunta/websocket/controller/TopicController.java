@@ -320,7 +320,11 @@ public class TopicController {
 			normalDialogJSONArray=new JSONArray(normalDialogList);
 		}
 		logger.info("normalDialogList="+normalDialogList+" normalDialogJSONArray="+normalDialogJSONArray.toString());
-		List<Topic> topicList=topicDao.findUserByCreatorUid(userid);
+		List<TopicUserMapping> topicUserMappingList=topicUserMappingDao.findTopicUserMappingByUserId(userid);
+		List<Topic> topicList=new ArrayList<Topic>();
+		for(TopicUserMapping topicUserMapping:topicUserMappingList){
+			topicList.add(topicDao.findUserByTopicId(topicUserMapping.getTopic_id()));
+		}
 		JSONArray chatmsgJSONArray=new JSONArray();
 		for(Topic topic:topicList){
 			JSONObject chatmsgReturnJSON = new JSONObject();
@@ -420,6 +424,7 @@ public class TopicController {
 	private void msg_received_confirm(WebSocketSession session, TextMessage message){
 		// 获取数据
 		org.json.JSONObject params = new org.json.JSONObject(message.getPayload());
+		logger.debug("确认收到消息:"+params.toString());
 		Long msgid = Long.valueOf(params.getString("msg_id"));
 		Long target_topicid = params.getLong("target_topicid");
 		Long userid = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());

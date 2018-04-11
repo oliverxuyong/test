@@ -87,6 +87,7 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 	dialog.click(function() {//绑定点击事件.
 		enterDialogPage(toUserId,toUserName,toUserImgUrl,isTopic);
 	});
+	return dialog;
 }
 
 //聊天列表动态布局
@@ -277,7 +278,7 @@ function changeUnreadColor(){
 function makeDialogListTop(toUserName,toUserImg,respondeUserId,isTopic){
 	if($(".dialog").eq(0).length<=0){//这里是判断如果聊天列表为空的情况,重新创建
 		var time1 = new Date().format("yyyy-MM-dd hh:mm:ss");
-		appendDialogElement(time1,"","默认",respondeUserId,toUserImg,toUserName,isTopic);
+		return appendDialogElement(time1,"","默认",respondeUserId,toUserImg,toUserName,isTopic);
 	}else{
 		var oneDialogDiv=$("#"+respondeUserId);
 		var copyOneDialogDiv;

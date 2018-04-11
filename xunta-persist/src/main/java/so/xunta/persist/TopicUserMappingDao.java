@@ -16,4 +16,5 @@ public interface TopicUserMappingDao {
 	public List<TopicUserMapping> findTopicUserMappingByTopicIdAndUserType(String topic_id,String user_type);//通过topic_id和user_type来查找TopicUserMapping数据，这是为了发送普通消息
 	public TopicUserMapping updateTopicUserMapping(TopicUserMapping topicUserMapping);//更新话题关系
 	public TopicUserMapping findTopicUserMappingByTopicIdAndUserId(String topic_id,String user_id);
+	public List<TopicUserMapping> findTopicUserMappingByUserId(String user_id);//通过userid获得没有拒绝的话题，为了1120-1接口
 }
