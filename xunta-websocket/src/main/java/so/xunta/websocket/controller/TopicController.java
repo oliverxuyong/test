@@ -200,10 +200,11 @@ public class TopicController {
 		
 		String send_name=obj.getString("send_name");
 		String send_userImage=obj.getString("send_userImage");
+		String handle=obj.getString("handle");//这里为了和发宝哥的接口同步，将发送给前端的msg_id变为前端传过来的msgid
 		/**
 		 * 发送消息
 		 */
-		sendMsgs(receivers,topic_id,send_uid,send_name,send_userImage,chatmsg_content,chatmsg_id,create_datetime,type);//给话题中的在线用户发消息
+		sendMsgs(receivers,topic_id,send_uid,send_name,send_userImage,chatmsg_content,handle,create_datetime,type);//给话题中的在线用户发消息
 		String topic_name=obj.getString("topic_name");
 		/**
 		 * 在普通发言中发送给离线人员模版消息

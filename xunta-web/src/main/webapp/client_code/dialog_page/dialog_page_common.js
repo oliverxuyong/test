@@ -22,14 +22,13 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
 	//chat.sendPrivateMsg(toUserId,inputValue);
 	//execRoot("sendmsg('"+toUserId+"','"+inputValue+"')");//给单独的人发消息
 	if(isTopic==true || isTopic=="true"){//话题聊天页发送消息是不同的方法
-		requestSendTopicMsg(inputValue,"NORMAL",userId,userName,userImage,toUserId,toUserName);
+		requestSendTopicMsg(inputValue,"NORMAL",userId,userName,userImage,toUserId,toUserName,tmpPid);
 	}else{
 		exec("main_page","sendmsg('"+toUserId+"','"+inputValue+"','"+tmpPid+"')");
 	}
-	
 	//装入任务框且判断是否发送成功
-	var str = "sendPoster('" + toUserId + "','" + inputValue + "','" + tmpPid + "')";
-    execRoot(str);
+	var str = "sendPoster('" + toUserId + "','" + inputValue + "','" + tmpPid + "')";//这是普通发言，因为msg没有msgid所以将前端的传过去识别
+	execRoot(str);
 	
     document.getElementById("inputbox").value="";
 	
@@ -275,14 +274,14 @@ function responseTwoBarCode(data){
 }
 
 //2018.04.08 叶夷  发送话题页的消息
-function requestSendTopicMsg(chatmsg_content,type,send_id,send_name,send_img,topic_id,topic_name){
-	var paraStr =chatmsg_content+ "','"+type+"','" + send_id+ "','" + send_name+ "','" + send_img+ "','" + topic_id+ "','" + topic_name;
+function requestSendTopicMsg(chatmsg_content,type,send_id,send_name,send_img,topic_id,topic_name,tmpPid){
+	var paraStr =chatmsg_content+ "','"+type+"','" + send_id+ "','" + send_name+ "','" + send_img+ "','" + topic_id+ "','" + topic_name+ "','" + tmpPid;
 	execRoot("requestSendTopicMsg('" + paraStr + "')");
 }
 
 //2018.04.08 叶夷  请求话题页的历史消息
 function requestHistoryMsg(){
-	var paraStr =userId+ "','"+toUserId+"','"+conncount+"','"+create_datetime_long;
+	var paraStr =userId+ "','"+toUserId+"','"+requestMsgCounts+"','"+create_datetime_long;
 	execRoot("requestHistoryMsg('" + paraStr + "')");
 }
 //2018.04.08 叶夷  获取话题页的历史消息

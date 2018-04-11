@@ -103,7 +103,7 @@ function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory,msg_ty
 	if (msg_type == "SYSTEM") {// 系统消息
 		//var content = data[msg].msg;
 		var postSYSTEMHtml = $("<time class='send-time'></time>").text(content);// 系统消息和时间样式一样
-		$("#msg_list").prepend(senderDiv);
+		$("#msg_list").prepend(postSYSTEMHtml);
 	}else{
 		console.log(" showSelfPoster 发言上屏了.");
 		var senderName, senderName_P, content_P, senderImg, senderImg_Div, senderDiv;
