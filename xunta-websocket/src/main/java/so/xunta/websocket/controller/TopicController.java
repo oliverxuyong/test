@@ -259,6 +259,7 @@ public class TopicController {
 		String creator_uid=topic.getCreator_uid();//创建人的id
 		TopicUserMapping topicUserMapping=topicUserMappingDao.findTopicUserMappingByTopicIdAndUserId(topic_id, requestUserid);
 		String userType=topicUserMapping.getUser_type();
+		logger.debug("userType="+userType);
 		if(creator_uid.equals(requestUserid) || userType.equals("ENTRANT")){
 			topicChatmsgList=topicChatMsgDao.findTopicChatmsgByHistory(topic_id,create_datetime_long,msgCount);
 		}else if(userType.equals("INVITING")){

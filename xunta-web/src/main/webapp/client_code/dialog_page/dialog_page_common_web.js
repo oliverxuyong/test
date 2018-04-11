@@ -40,9 +40,9 @@ function closeBtn(){
 //显示历史信息
 function showAllPosters(data) {
 	//在显示历史消息的时候判断是否只是收到话题邀请,判断条件为历史消息type为INVITE
-	if(data[0].msg_type=="INVITE"){
+	if(data.leng==0 && data[0].msg_type=="INVITE"){
 		//显示邀请或拒绝对话框
-		var name=data[msg].from_user_name;
+		var name=data[0].from_user_name;
 		entrantOrRejectTopic(name);
 	}else{
 		for(var msg in data){
@@ -101,7 +101,7 @@ function entrantOrRejectTopic(name) {
 function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory,msg_type) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态
 	//在这里判断话题列表页的历史消息显示形式,普通消息一样显示但是会有系统消息
 	if (msg_type == "SYSTEM") {// 系统消息
-		var content = data[msg].msg;
+		//var content = data[msg].msg;
 		var postSYSTEMHtml = $("<time class='send-time'></time>").text(content);// 系统消息和时间样式一样
 		$("#msg_list").prepend(senderDiv);
 	}else{
