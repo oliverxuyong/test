@@ -3,6 +3,7 @@ package so.xunta.web.controller;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +18,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import redis.clients.jedis.Tuple;
+import so.xunta.beans.ConcernPointDO;
 import so.xunta.beans.User;
+import so.xunta.persist.ConcernPointDao;
 import so.xunta.persist.ScopeMatchedUserDao;
+import so.xunta.persist.TagChoiceDao;
 import so.xunta.persist.U2uCpDetailDao;
 import so.xunta.persist.U2uRelationDao;
+import so.xunta.persist.WeiboTagDao;
 import so.xunta.server.C2CService;
+import so.xunta.server.EventScopeCpTypeMappingService;
+import so.xunta.server.RecommendService;
 import so.xunta.server.UserService;
 
 @Controller
@@ -38,7 +45,16 @@ public class AdminController {
 	private U2uCpDetailDao u2uCpDetailDao; 
 	@Autowired
 	private C2CService c2cService;
-
+	@Autowired
+	private RecommendService recommendService;
+	@Autowired
+	private ConcernPointDao concernPointDao;
+	@Autowired
+	private EventScopeCpTypeMappingService eventScopeCpTypeMappingService;
+	@Autowired
+	private TagChoiceDao tagChoiceDao;
+	@Autowired
+	private WeiboTagDao weiboTagDao;
 	
 	Logger logger = Logger.getLogger(AdminController.class);
 	
@@ -145,6 +161,77 @@ public class AdminController {
 		c2cService.initC2C();
 		try {
 			response.getWriter().write("initC2C success");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value="/initRedis")
+	public void initRedis(HttpServletResponse response) {
+		recommendService.init();
+		try {
+			response.getWriter().write("initRedis success");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value="/setEventScope")
+	public void setEventScope(HttpServletRequest request,HttpServletResponse response) {
+		String eventScope = request.getParameter("eventScope");
+		String keyword = request.getParameter("keyword");
+		String[]keywords =keyword.split("_");
+		
+		Map<String,Double> initTags = null;
+		for(int i=0;i<keywords.length;i++){
+			String k = keywords[i];
+			long choiceNum=tagChoiceDao.getTagChoice(k).getChoice();
+			int magnitude = 0;
+			
+			if(choiceNum >= 500){
+				magnitude = 3;
+			}else if(choiceNum >= 50){
+				magnitude = 2;
+			}else if(choiceNum >= 10){
+				magnitude = 1;
+			}
+			if(initTags==null){
+				initTags = weiboTagDao.getRelateTags(k, magnitude);
+			}else{
+				initTags.putAll(weiboTagDao.getRelateTags(k, magnitude));
+			}
+		}
+		
+		if(initTags==null){
+			return;
+		}
+		
+		List<String> userCpTypes = eventScopeCpTypeMappingService.getCpType(eventScope);
+		
+		for(Entry<String,Double> initTag:initTags.entrySet()){
+			ConcernPointDO concernPointDO = concernPointDao.getConcernPointByText(initTag.getKey());
+			String oldType = concernPointDO.getType();
+			
+			List<String> otherImpactScopes = eventScopeCpTypeMappingService.getEventScope(oldType);
+			otherImpactScopes.remove(eventScope);
+			
+			if(!userCpTypes.contains(oldType)){
+				String newType = oldType+"_"+eventScope ;
+				concernPointDO.setType(newType);
+				concernPointDao.updateConcernPoint(concernPointDO);
+				if(!userCpTypes.contains(newType)){
+					eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(eventScope, newType);
+					for(String otherImpactScope:otherImpactScopes){
+						eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(otherImpactScope, newType);
+					}
+				}
+			}
+		}
+		
+		recommendService.init();
+		
+		try {
+			response.getWriter().write("setEventScope success");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -49,7 +49,7 @@ public class C2CServiceImpl implements C2CService {
 			}else if(choiceNum >= 10){
 				magnitude = 1;
 			}
-			Map<String,Double> relateTags= weiboTagDao.getRelateTags(tag, magnitude,meanlessTags);
+			Map<String,Double> relateTags= weiboTagDao.getRelateTags(tag, magnitude);
 			logger.info(tag+"查询完毕");
 			Map<String,String> relateTagIds = new HashMap<String,String>();
 			for(Entry<String,Double> relateTag:relateTags.entrySet()){
@@ -67,6 +67,7 @@ public class C2CServiceImpl implements C2CService {
 			}
 			c2cDao.setCpRelateCps(tagCP.getId().toString(), relateTagIds);
 			logger.info("第"+loop+"个Tag初始化完成");
+			loop++;
 		}
 	}
 	

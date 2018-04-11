@@ -56,14 +56,14 @@ public class WeiboTagDaoImpl implements WeiboTagDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Double> getRelateTags(String tag, int magnitude,List<String> meanlessTags) {
+	public Map<String, Double> getRelateTags(String tag, int magnitude) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "SELECT ts.tag AS r_tag, ts.score/tc.choice AS rank_score FROM "+
 					  "(SELECT w1.tag, COUNT(w1.name) AS score FROM "
 					  + 	"weiboTag w1,(SELECT DISTINCT w.name AS pp FROM weiboTag w WHERE w.tag = :tag1) n "
 					  + 	"WHERE w1.tag != :tag2 AND w1.name = n.pp GROUP BY w1.tag) ts,"
 					  + "tag_choice tc "
-					  + "WHERE ts.tag = tc.tag AND tc.choice>:magnitude "
+					  + "WHERE ts.tag = tc.tag AND tc.choice>:magnitude AND tc.choice<1000 "
 					  + "ORDER BY rank_score DESC ";
 		List<Map<String,Object>> result = session.createSQLQuery(sql).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).
 				setString("tag1", tag).setString("tag2", tag).setInteger("magnitude", magnitude).list();
@@ -91,9 +91,7 @@ public class WeiboTagDaoImpl implements WeiboTagDao {
 		for(int i = 0;i< topN ;i++){
 			Map<String,Object> line = result.get(i);
 			String rTag = line.get("r_tag").toString();
-			if(!meanlessTags.contains(rTag)){
-				returnMap.put(rTag,Double.valueOf(line.get("rank_score").toString()));
-			}
+			returnMap.put(rTag,Double.valueOf(line.get("rank_score").toString()));	
 		}
 		return returnMap;
 	}

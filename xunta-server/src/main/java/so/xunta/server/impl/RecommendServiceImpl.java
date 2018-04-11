@@ -235,6 +235,15 @@ public class RecommendServiceImpl implements RecommendService {
 					u2cDao.updateUserCpValue(uid, relateCpId, -relateCpScore);
 				}
 			}
+		}else{
+			if(property.equals(RecommendService.POSITIVE_SELECT)){
+				Map<String,String> relateCps = c2cDao.getCpRelateCps(cpid);
+				for(Entry<String,String> relateCp:relateCps.entrySet()){
+					String relateCpId = relateCp.getKey();
+					Double relateCpScore = Double.valueOf(relateCp.getValue());
+					u2cDao.updateUserCpValue(uid, relateCpId, -relateCpScore);
+				}
+			}
 		}
 	}
 
