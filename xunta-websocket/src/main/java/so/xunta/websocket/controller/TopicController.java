@@ -420,7 +420,7 @@ public class TopicController {
 	private void msg_received_confirm(WebSocketSession session, TextMessage message){
 		// 获取数据
 		org.json.JSONObject params = new org.json.JSONObject(message.getPayload());
-		Long msgid = params.getLong("msg_id");
+		Long msgid = Long.valueOf(params.getString("msg_id"));
 		Long target_topicid = params.getLong("target_topicid");
 		Long userid = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 		
