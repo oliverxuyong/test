@@ -80,17 +80,17 @@ function showAllPosters(data) {
 	// 在显示历史消息的时候判断是否只是收到话题邀请,判断条件为历史消息type为INVITE
 	if (data.length == 1 && data[0].msg_type == "INVITE") {
 		// 显示邀请或拒绝两个按钮
-		var name = data[0].from_user_name;
-		entrantOrRejectTopic(name);
+		//var name = data[0].from_user_name;
+		entrantOrRejectTopic();
 	}
 }
 
 //2018.04.09 叶夷  接受邀请或拒绝对话框 
-function entrantOrRejectTopic(name) {
-	var entrantTopicBtnDiv=$('<div class="entrantTopicBtnDiv" style="left:98px;" onclick="requestEntrantOrRejectTopic(\''+"ENTRANT"+'\')">√</div>');
-	var RejectTopicBtnDiv=$('<div class="entrantTopicBtnDiv" onclick="requestEntrantOrRejectTopic(\''+"REJECT"+'\')">×</div>');
+function entrantOrRejectTopic() {
+	var entrantTopicBtnDiv=$('<div class="entrantTopicBtnDiv" id="entrantTopicBtnDiv" style="left:98px;" onclick="entrantTopic()">√</div>');
+	var rejectTopicBtnDiv=$('<div class="entrantTopicBtnDiv" id="rejectTopicBtnDiv" onclick="rejectTopic()">×</div>');
 	var parentDiv=$("#dialog_box");
-	parentDiv.append(entrantTopicBtnDiv).append(RejectTopicBtnDiv);
+	parentDiv.append(entrantTopicBtnDiv).append(rejectTopicBtnDiv);
 	addCover(parentDiv,0.2);
 }
 
@@ -105,6 +105,28 @@ function addCover(parentDiv,opacity){
 		coverDiv.css("opacity",opacity);
 	}
 	return coverDiv;
+}
+
+//接受:接收了之后，按钮和邀请话消失，并且重新请求历史消息
+function entrantTopic(){
+	requestEntrantOrRejectTopic("ENTRANT");
+	requestSendTopicMsg(userName+"加入了群聊","SYSTEM",userId,userName,userImage,toUserId,toUserName,"handle");
+	//按钮和邀请话消失
+	$("#entrantTopicBtnDiv").remove();
+	$("#rejectTopicBtnDiv").remove();
+	$(".cover").remove();
+	$("#msg_list").children().remove();
+	
+	//重新请求历史消息
+	requestHistoryMsg();
+}
+//拒绝:本话题关闭，话题列表中的此话题也去除
+function rejectTopic(){
+	requestEntrantOrRejectTopic("REJECT");
+	exec("matchUsers_page", "removeDialog('"+toUserId+"')");//话题列表中的此话题也去除
+	exec('matchUsers_page',"reduceUnread('"+toUserId+"')");
+	exec('matchUsers_page',"removeUnreadNum('"+toUserId+"')");
+	closeWin(toUserId);//本话题关闭
 }
 
 function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory,msg_type) {//用户发言后先直接上屏并添加发送状态，然后等待服务器返回确认后修改其消息状态

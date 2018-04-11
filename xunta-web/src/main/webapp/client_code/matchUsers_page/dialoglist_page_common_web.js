@@ -348,3 +348,8 @@ function reduceUnread(toUserId){
 		}
 	}
 }
+
+//删除列表中某个对话框
+function removeDialog(dialogId){
+	$("#"+dialogId).remove();
+}
