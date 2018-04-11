@@ -1,0 +1,19 @@
+*.class
+*.jar
+*.war
+*.ear
+# Package Files #
+/target
+.settings/
+.classpath
+.project
+.metadata/
+RemoteSystemsTempFiles/
+Servers/
+target/
+zoie-config.properties
+qqconnectconfig.properties
+redis.properties
+jdbc.properties
+log4j.xml
+wechat.properties
