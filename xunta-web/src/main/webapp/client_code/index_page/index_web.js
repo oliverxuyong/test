@@ -167,7 +167,7 @@ function setPageTitle(){
 }
 
 function setPageICO(){
-	$("#favicon_ico").attr("href","http://"+domain+"/xunta-web/client_code/icon/"+faviconUrl);
+	$("#favicon_ico").attr("href",window.location.protocol+"//"+domain+"/xunta-web/client_code/icon/"+faviconUrl);
 } 
 
 function setSpecialGroupReq(){
@@ -183,11 +183,13 @@ function setSpecialGroupReq(){
 function removeIframe(P_winName){
     if($("#"+P_winName) != null){
         $("#"+P_winName).remove();
+        //removeDiv($("#"+P_winName),userAgent[1]);
     }
 }
 
 function removeAllIframes(){
    $("iframe").remove();
+   //removeDiv($("iframe"),userAgent[1]);
 }
 
 function hideAllIframes(){
@@ -247,6 +249,7 @@ function openNewWin(winName, winUrl, data){
     var iframeObj = $('<iframe id="' + winName + '"' + ' src="' + winUrl + '"' + ' class="iframe_windows"/>');
     iframeObj.css("zIndex",zIndex);
     iframeObj.load(function() {
+    	//console.log("main_page加载好的时间："+new Date());
         console.log('创建页面:' + winName);
         log2root('创建页面:' + winName);
         if (data != "") {
@@ -257,6 +260,62 @@ function openNewWin(winName, winUrl, data){
         }
     });
     window.parent.$('body').append(iframeObj);
+    //console.log("main_page的iframe开始导入的时间："+new Date());
+    
+//    //2018.02.07  叶夷     在创建页面之前将css和js文件创建
+//    if(winName=="main_page"){
+//    	//将需要的css文件变成js代码生成
+//		loadCss(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/main_page/topics_page.css");
+//   		loadCss(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/main_page/topics_page_web.css");
+//    	loadCss(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/css/common_web.css");
+//    	loadCss(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/main_page/alter_userimage.css");
+//    	loadCss(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/css/popup.css");
+//    	loadCss(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/css/popcontext.css");
+//    	//将需要的js文件变成js代码生成
+//		loadJs(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+//		loadJs(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/script/jquery.nicescroll.min.js");
+//		loadJs(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/script/common-xunta.js");
+//		loadJs(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+//		loadJs(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/script/popup.js");
+//		loadJs(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/main_page/topics_page.js");
+//		loadJs(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/main_page/topics_page_web.js");
+//		loadJs(window.parent.document.getElementById(winName),preUrl+"/xunta-web/client_code/script/popcontext.js");
+//		loadJs(window.parent.document.getElementById(winName),window.location.protocol+"//xunta.so:3000/javascripts/websocket.io.js");
+//    }else if(winName=="matchUsers_page"){
+//    	//将需要的css文件变成js代码生成
+//		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page.css");
+//		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page_web.css");
+//		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page.css");
+//		loadCss(preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page_web.css");
+//		//将需要的js文件变成js代码生成
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/script/common-xunta.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page_common_web.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/matchUsers_page/matchUsers_page_common.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page_common_web.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/matchUsers_page/dialoglist_page_common.js");
+//    }else if(winName=="profile_page"){
+//    	loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+//    }else{
+//    	//将需要的css文件变成js代码生成
+//		loadCss(document.getElementById(winName),preUrl+"/xunta-web/client_code/dialog_page/dialog_page.css");
+//		loadCss(document.getElementById(winName),preUrl+"/xunta-web/client_code/dialog_page/dialog_page_web.css");
+//		loadCss(document.getElementById(winName),preUrl+"/xunta-web/client_code/dialog_page/inputframe.css");
+//		loadCss(document.getElementById(winName),preUrl+"/xunta-web/client_code/css/common_web.css");
+//		loadCss(document.getElementById(winName),preUrl+"/xunta-web/client_code/css/popup.css");
+//		loadCss(document.getElementById(winName),preUrl+"/xunta-web/client_code/css/popcontext.css");
+//		//将需要的js文件变成js代码生成
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/dialog_page/dialog_page_common.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/dialog_page/dialog_page_common_web.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/script/common-xunta.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/script/popup.js");
+//		loadJs(document.getElementById(winName),preUrl+"/xunta-web/client_code/script/popcontext.js");
+//    }
+    
     setIframeCSS();
 }
 

@@ -1,14 +1,20 @@
 package so.xunta.web.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -19,21 +25,16 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import so.xunta.beans.User;
-import so.xunta.persist.UserDao;
-import so.xunta.server.LoggerService;
-import so.xunta.utils.IdWorker;
-import so.xunta.websocket.config.Constants;
-import so.xunta.websocket.utils.WeChatShareLinksUtils;
-import weibo4j.Account;
-import weibo4j.Users;
-import weibo4j.model.WeiboException;
 
 import com.qq.connect.QQConnectException;
 import com.qq.connect.api.OpenID;
@@ -41,6 +42,21 @@ import com.qq.connect.api.qzone.UserInfo;
 import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.oauth.Oauth;
+
+import so.xunta.beans.Token;
+import so.xunta.beans.User;
+import so.xunta.persist.TokenDao;
+import so.xunta.persist.UserDao;
+import so.xunta.server.LoggerService;
+import so.xunta.server.OpenId2EventScopeService;
+import so.xunta.server.WeChatService;
+import so.xunta.utils.HttpRequestUtil;
+import so.xunta.utils.IdWorker;
+import so.xunta.utils.WeChatServerConfiCheckUtils;
+import so.xunta.websocket.config.Constants;
+import weibo4j.Account;
+import weibo4j.Users;
+import weibo4j.model.WeiboException;
 
 @Controller
 public class LoginController {
@@ -51,9 +67,33 @@ public class LoginController {
 	@Autowired
 	LoggerService loggerService;
 
-	static Logger logger = Logger.getRootLogger();
+	@Autowired
+	private WeChatService weChatService;
+	
+	@Autowired
+	private OpenId2EventScopeService openId2EventScopeService;
+	
+	@Autowired
+	private TokenDao tokenDao;
+
+	static Logger logger = Logger.getLogger(LoginController.class);
 
 	IdWorker idWorker = new IdWorker(1L, 1L);
+
+	@Value("${appid}")
+	private String appid;
+	@Value("${appsecret}")
+	private String appsecret;
+	@Value("${templateid}")
+	private String templateid;
+	@Value("${templateurl}")
+	private String templateurl;
+	@Value("${serverToken}")
+	private String serverToken;
+	@Value("${towCode_templateContent}")
+	private String towCode_templateContent;
+	@Value("${key}")
+	private String key;
 
 	// 登录验证
 	public boolean checkLogin() {
@@ -207,13 +247,25 @@ public class LoginController {
 	public void wxpnCallback(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException,
 			WeiboException, IllegalArgumentException, IllegalAccessException, JSONException,
 			weibo4j.org.json.JSONException, UnsupportedEncodingException {
-		logger.info("微信从公众号登录");
+		logger.info("微信从公众号登录:"+request.getQueryString());
 		response.setContentType("text/html; charset=utf-8");
 		String code = request.getParameter("code");
 		logger.debug("code:" + code);
-		String appid = "wxdac88d71df6be268";
-		String secret = "753b50cf29b6b08e733e357cc0ed348c";
-		String codeToToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + secret
+
+		// 获得登录的url
+		String loginUrl = request.getRequestURL().toString();
+		logger.info("从微信公众号进来的url:" + loginUrl);
+
+		/*// 判断从哪个网址进来的公众号之后匹配其相应的公众号参数
+		if (loginUrl.contains("www.ainiweddingcloud.com")) {
+			appid = aini_appid;
+			secret = aini_appsecret;
+		} else {
+			appid = xunta_appid;
+			secret = xunta_appsecret;
+		}*/
+
+		String codeToToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + appsecret
 				+ "&code=" + code + "&grant_type=authorization_code";
 		String weiXinInfo = httpclientReq(codeToToken);
 		logger.debug("weiXinInfo: " + weiXinInfo);
@@ -254,6 +306,55 @@ public class LoginController {
 
 		// 更新已关注的用户openid
 		// TempInsertOpenidUtils.updateOpenid();
+		User user=null;
+		//2018.03.22  叶夷    通过openid查找用户是否存在然后更新用户信息
+		user=userDao.findUserByOpenId(openid);
+		logger.debug("findUserByOpenId ====>  " + (user!=null));
+		if(user!=null){
+			logger.debug("findUserByOpenId ====>  unionid=" +unionid);
+			user.setName(name);
+			user.setImgUrl(image);
+			user.setThird_party_id(unionid);
+			user.setType("WX");//这里更改type应该会将扫码用户和微信登录用户当成同一个用户
+			userDao.updateUser(user);
+		}
+
+		// 如果有些用户的openid没有保存，则登录时保存更新
+		user = userDao.findUserByThirdPartyId(unionid);
+		logger.debug("findUserByThirdPartyId ====>  " + (user!=null));
+		if (user != null /*&& user.getOpenid() == null*/) {//2018.03.22 叶夷    这里不能用getOpenid判断是否为null,放在这里是为什么我也不记得
+			logger.debug("user openid: " + openid);
+			user.setOpenid(openid);
+			userDao.updateUser(user);
+		}
+		responseCookieAndHtml(request, response, uid, unionid, image, name, type, openid);
+	}
+	
+	/*
+	 * 2018.02.02  叶夷   微信小程序登录
+	*/
+	@RequestMapping("/wxAppletLogin")
+	public void wxMiniAppsLogin(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException,
+			WeiboException, IllegalArgumentException, IllegalAccessException, JSONException,
+			weibo4j.org.json.JSONException, UnsupportedEncodingException {
+		logger.info("微信从小程序登录url:"+request.getRequestURL());
+		logger.info("微信从小程序登录:"+request.getQueryString());
+		response.setContentType("text/html; charset=utf-8");
+		
+		String[] paremetersArray=request.getQueryString().split("&");
+		String uid,unionid,image,name,type,openid;
+		unionid=paremetersArray[0].split("=")[1];
+		uid=unionid;	
+		image=paremetersArray[1].split("=")[1];
+		name=paremetersArray[2].split("=")[1];
+		type="WX";
+		openid=paremetersArray[3].split("=")[1];
+		
+		/*so.xunta.beans.User finduser = userDao.findUserByThirdPartyIdAndType(uid, type);
+		if (finduser != null) {
+			image = finduser.getImgUrl();
+			name = finduser.getName();
+		}
 
 		// 如果有些用户的openid没有保存，则登录时保存更新
 		User user = userDao.findUserByThirdPartyId(unionid);
@@ -261,7 +362,8 @@ public class LoginController {
 			logger.debug("user openid: " + openid);
 			user.setOpenid(openid);
 			userDao.updateUser(user);
-		}
+		}*/
+		
 		responseCookieAndHtml(request, response, uid, unionid, image, name, type, openid);
 	}
 
@@ -269,7 +371,7 @@ public class LoginController {
 	public void wx_callback(String code, HttpServletRequest request, HttpServletResponse response)
 			throws ClassNotFoundException, WeiboException, IllegalArgumentException, IllegalAccessException,
 			JSONException, weibo4j.org.json.JSONException, UnsupportedEncodingException {
-		//logger.info("微信登录");
+		// logger.info("微信登录");
 		response.setContentType("text/html; charset=utf-8");
 		// 获取code
 		String weixin_code = request.getParameter("code");
@@ -330,7 +432,7 @@ public class LoginController {
 		if (finduser != null) {
 			image = finduser.getImgUrl();
 			name = finduser.getName();
-			logger.info(name+"微信登录");
+			logger.info(name + "微信登录");
 		}
 
 		responseCookieAndHtml(request, response, uid, unionid, image, name, type, null);
@@ -340,7 +442,7 @@ public class LoginController {
 	private void responseCookieAndHtml(HttpServletRequest request, HttpServletResponse response, String uid,
 			String unionid, String image, String name, String type, String openid) {
 		try {
-
+			
 			Cookie cookie_name = new Cookie("name", URLEncoder.encode(name, "UTF-8"));
 			Cookie cookie_userid = new Cookie("uid", uid);
 			Cookie cookie_unionid = new Cookie("unionid", unionid);
@@ -356,10 +458,17 @@ public class LoginController {
 			Cookie cookie_type = new Cookie("type", type);
 			List<Cookie> cookies = new ArrayList<Cookie>();
 
+			//2018.02.08  叶夷   获取请求路径的协议
+			String protocal="https：";
+			logger.info("登录时获取路径的协议:" + protocal);
+			
 			String domain = getDomainWithOutContext(request);
+			logger.debug("domain:" + domain);
 			if (domain.contains("www")) {
 			} else {
-				domain = "http://www." + domain.substring(domain.indexOf("http://") + 7);
+				//domain = "http://www." + domain.substring(domain.indexOf("http://") + 7);
+				//2018.02.08  叶夷   将协议变成请求的协议
+				domain = protocal+"://www." + domain.substring(domain.indexOf(protocal+"://") + 7);
 			}
 			logger.debug("set cookie on domain:" + domain);
 
@@ -380,13 +489,16 @@ public class LoginController {
 			// request.getRequestDispatcher("/client_code/index.html").forward(request,
 			// response);
 			String domainWithContext = getDomainWithContext(request);
+			logger.debug("domainWithContext:" + domainWithContext);
 			/**
 			 * check if has 'www' in url
 			 */
 			if (domainWithContext.contains("www")) {
 			} else {
-				domainWithContext = "http://www."
-						+ domainWithContext.substring(domainWithContext.indexOf("http://") + 7);
+				//domainWithContext = "http://www."
+				//2018.02.08  叶夷   将协议变成请求的协议
+				domainWithContext = protocal+"://www."
+						+ domainWithContext.substring(domainWithContext.indexOf(protocal+"://") + 7);
 				request.getSession().setAttribute("indexpageurl", domainWithContext + "client_code/index.html");
 				logger.debug("==> redirect to url :" + domainWithContext + "showindexpage?indexpageurl="
 						+ domainWithContext + "client_code/index.html&name=" + name + "&uid=" + uid + "&unionid="
@@ -397,6 +509,7 @@ public class LoginController {
 				response.sendRedirect(recirectUrl);
 				return;
 			}
+			domainWithContext=domainWithContext.replace("http:", "https:");
 			logger.debug("==>redirect to url :" + domainWithContext);
 			response.sendRedirect(domainWithContext + "client_code/index.html");
 		} catch (IOException e) {
@@ -527,10 +640,10 @@ public class LoginController {
 					if (finduser != null) {
 						name = finduser.getName();
 						image = finduser.getImgUrl();
-						logger.info(name+"QQ登录");
+						logger.info(name + "QQ登录");
 					}
 					responseCookieAndHtml(request, response, uid, uid, image, name, type, null);
-				} else if(out!=null){
+				} else if (out != null) {
 					out.println("很抱歉，我们没能正确获取到您的信息，原因是： " + userInfoBean.getMsg());
 				}
 			}
@@ -548,7 +661,7 @@ public class LoginController {
 			logger.debug("statusCode  :  " + statusCode);
 			response = getMethod.getResponseBodyAsString(); // 读取服务器返回的页面代码，这里用的是字符读法
 		} catch (HttpException e) {
-			logger.error("Please check your provided http address!  发生致命的异常，可能是协议不对或者返回的内容有问题"+e.getMessage(), e);
+			logger.error("Please check your provided http address!  发生致命的异常，可能是协议不对或者返回的内容有问题" + e.getMessage(), e);
 		} catch (IOException e) { // 发生网络异常
 			logger.error(e.getMessage(), e);
 		} finally { // 释放连接
@@ -571,14 +684,21 @@ public class LoginController {
 		}
 	}
 
-	/** 生成微信权限验证的参数，传到前端去验证,为了自定义微信分享链接*/
+	/** 生成微信权限验证的参数，传到前端去验证,为了自定义微信分享链接 */
 	@RequestMapping("/sendShareLinksMsg")
 	public void sendWeChatShareLinkMsg(HttpServletRequest request, HttpServletResponse response)
 			throws UnsupportedEncodingException {
 		String url = request.getParameter("url");
-		
-		WeChatShareLinksUtils weChatShareLinksUtils=new WeChatShareLinksUtils();
-		JSONObject ret=weChatShareLinksUtils.makeWXTicket(url);
+		// 判断从哪个网址进来的公众号之后匹配其相应的公众号参数
+		/*if (url.contains(aini_templateurl)) {
+			appid = aini_appid;
+			secret = aini_appsecret;
+		} else {
+			appid = xunta_appid;
+			secret = xunta_appsecret;
+		}*/
+
+		JSONObject ret = weChatService.makeWXTicket(url, appid, appsecret);
 		try {
 			logger.debug("执行sendWeChatShareLinkMsg...");
 			response.setCharacterEncoding("utf-8");
@@ -587,36 +707,310 @@ public class LoginController {
 			logger.error(e.getMessage(), e);
 		}
 	}
+
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
 			throws IOException {
 		logger.debug("执行responseBack...");
 		boolean jsonP = false;
 		String cb = request.getParameter("callback");
 		if (cb != null) {
-		    jsonP = true;
-		    response.setContentType("text/javascript");
+			jsonP = true;
+			response.setContentType("text/javascript");
 		} else {
-		    response.setContentType("application/x-json");
+			response.setContentType("application/x-json");
 		}
 		Writer out = response.getWriter();
 		if (jsonP) {
-		    out.write(cb + "(");
+			out.write(cb + "(");
 		}
 		out.write(obj.toString(2));
-		
+
 		if (jsonP) {
-		    out.write(");");
-		    logger.debug("返回成功。。。");
+			out.write(");");
+			logger.debug("返回成功。。。");
 		}
 	}
-	
-	/**2017.11.17  叶夷  从微信分享链接进入这里，然后访问微信自动登录的链接*/
+
+	/** 2017.11.17 叶夷 从微信分享链接进入这里，然后访问微信自动登录的链接 */
 	@RequestMapping("/wxShareLinksLogin")
-	public void sendWeChatShareLinkLogin(HttpServletRequest request, HttpServletResponse response){
+	public void sendWeChatShareLinkLogin(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.xunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");//跳转到微信自动登录页面
+			response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxdac88d71df6be268&redirect_uri=http%3a%2f%2fwww.xunta.so%2fwxpnCallback&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect");// 跳转到微信自动登录页面
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 		}
 	}
+
+	/**
+	 * 2017.12.04 叶夷 微信带参数的二维码扫描之后到这里的路径
+	 */
+	@RequestMapping("/wxTwoBarCodeLogin")
+	public void sendWeChatTwoBarCodeLogin(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("执行wxTwoBarCodeLogin..."+request.getQueryString());
+		// start:2017.12.04 叶夷 这里只是为了微信服务器配置验证
+		// 微信加密签名
+		String signature = request.getParameter("signature");
+		String timestamp = request.getParameter("timestamp");
+		// 随机数
+		String nonce = request.getParameter("nonce");
+		// 随机字符串
+		//String echostr = request.getParameter("echostr");
+		WeChatServerConfiCheckUtils wcscs = new WeChatServerConfiCheckUtils();
+		logger.info("验证结果:" + wcscs.checkSignature(serverToken, signature, timestamp, nonce));
+		if (wcscs.checkSignature(serverToken, signature, timestamp, nonce)) {
+			logger.info("扫描关注之后发送模版消息...");
+			processRequest(request);
+			
+			//这里只是为了服务器配置验证
+			
+			/*PrintWriter out;
+			try {
+				out = response.getWriter();
+				out.print(echostr);
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}*/
+		}
+		// end:2017.12.04 叶夷 这里只是为了微信服务器配置验证
+		
+	}
+	
+	/**
+     * 处理微信发来的请求
+     * 
+     * @param request
+     * @return xml
+     */
+    private void processRequest(HttpServletRequest request) {
+    	Map<String, String> map = new HashMap<String, String>();
+		SAXReader reader = new SAXReader();
+		InputStream ins = null;
+		Document doc = null;
+		try {
+			ins = request.getInputStream();
+			doc = reader.read(ins);
+
+			Element root = doc.getRootElement();
+			@SuppressWarnings("unchecked")
+			List<Element> list = root.elements();
+			for (Element e : list) {
+				map.put(e.getName(), e.getText());
+				logger.info("解析扫码之后的事件推送数据:" + e.getName() + "->" + e.getText());
+			}
+			ins.close();
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		} catch (DocumentException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		// 开发者微信号
+//		String toUserName = map.get("ToUserName");
+		// 发送方帐号（一个OpenID）
+		String fromUserName = map.get("FromUserName");
+		// 消息创建时间(整型)
+//		String createTime = map.get("CreateTime");
+//		// 消息类型 event
+//		String msgType = map.get("MsgType");
+//		// 事件类型（subscribe）
+		String event=map.get("Event");
+//		// 用户未关注：事件KEY值，qrscene_为前缀，后面为二维码参数值；用户已关注：事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
+		String eventKey=map.get("EventKey");
+//		// 二维码的ticke，可以用来换取二维码图片
+		String ticket=map.get("Ticket");
+//
+//		StringBuffer str = new StringBuffer();
+//		str.append("<xml>");
+//		str.append("<ToUserName><![CDATA[" + toUserName + "]]></ToUserName>");
+//		str.append("<FromUserName><![CDATA[" + fromUserName + "]]></FromUserName>");
+//		str.append("<CreateTime>" + createTime+ "</CreateTime>");
+//		str.append("<MsgType><![CDATA[" + msgType + "]]></MsgType>");
+//		str.append("<Event><![CDATA[" + event + "]]></Event>");
+//		str.append("<EventKey><![CDATA[" + eventKey +"]]></EventKey>");
+//		str.append("<Ticket><![CDATA[" + ticket +"]]></Ticket>");
+//		str.append("</xml>");
+//		System.out.println(str.toString());
+//		return str.toString();
+		logger.info("ticket="+ticket);
+		if(!ticket.equals("") || ticket!=null){
+			String accessToken=null;
+			//2017.12.08 叶夷 如果是刚关注，二维码参数是qrscene_general
+			//	未关注时：event=subscribe   已关注时：event=SCAN
+			if(event.equals("subscribe")){
+			
+				/**
+				 * start:2017.12.07 叶夷 删除自定义菜单
+				 */
+				/*logger.info("开始删除自定义菜单");
+				String menu_delete_url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
+				String deleteAccessToken = weChatService.getToken(appid, appsecret);
+				logger.info("accessToken=" + deleteAccessToken);
+				String deleteUrl = menu_delete_url.replace("ACCESS_TOKEN", deleteAccessToken);
+				JSONObject deleteJsonObject = HttpRequestUtil.httpRequest(deleteUrl, "GET", null);
+				logger.info("删除菜单结果:" + deleteJsonObject);*/
+				/**
+				 * end:2017.12.07 叶夷 删除自定义菜单
+				 */
+
+				/**
+				 * start:2017.12.07 叶夷 创建自定义菜单
+				 */
+				accessToken=createMenu();
+				/**
+				 * end:2017.12.07 叶夷 创建自定义菜单
+				 */
+
+				logger.info("fromUserName=" + fromUserName + " templateid=" + templateid + " templateurl="
+						+ templateurl + " templateContent=" + towCode_templateContent + " appid=" + appid
+						+ " appsecret=" + appsecret);
+				
+				/**
+				 * start: 2018.03.22  叶夷    发送客服消息
+				 */
+				String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
+				String sendMessageUrl1=sendMessageUrl.replace("ACCESS_TOKEN", accessToken);
+				String content="在xunta中可按照你设置的任意“关注点”将与你最适合互动的人匹配在一起.从此你的关系触角可按照你自己设定的方向任意延伸, 所有人都被你“点兵点将”.";
+				String sendMessageString =  "{\"touser\": \""+fromUserName+"\",\"msgtype\": \"text\", \"text\": {\"content\": \""+content+"\"}}";
+				logger.info("sendMessageString=" + sendMessageString);
+				JSONObject sendMessagejsonObject = HttpRequestUtil.httpRequest(sendMessageUrl1, "POST", sendMessageString);
+				logger.info("创建菜单结果:" + sendMessagejsonObject);
+				/**
+				 * end: 2018.03.22  叶夷    发送客服消息
+				 */
+				
+				/**
+				 * start: 2018.03.26  叶夷    存储openid
+				 */
+				logger.info("eventKey=" + eventKey);
+				eventKey = eventKey.substring(eventKey.indexOf("_") + 1);
+				logger.info("转换后的eventKey=" + eventKey);
+				JSONObject eventKeyJson = new JSONObject(eventKey);
+				logger.info("eventKeyJson=" + eventKeyJson.toString()+" "+(eventKeyJson.has("userId")));
+				if (eventKeyJson.has("userId")) {
+					logger.info("获得微信二维码参数中的userId");
+					Long userId = eventKeyJson.getLong("userId");
+					logger.info("eventKey->userId=" + userId);
+					// 通过userid查找用户，然后存储openid
+					User user = userDao.findUserByUserid(userId);
+					if (user != null) {
+						User userFromOpenid=userDao.findUserByOpenId(fromUserName);//在这里判断两个网页用户被一个微信用户扫二维码的情况，如果一个微信用户已经扫描一个网页用户的二维码，那扫描别的网页用户的二维码则不做操作
+						if(userFromOpenid==null){
+							user.setOpenid(fromUserName);
+							userDao.updateUser(user);
+						}
+					}
+				}
+				/**
+				 * start: 2018.03.26  叶夷    存储openid
+				 */
+				
+				/**
+				 * start: 2018.03.26  叶夷    存储二维码参数
+				 */
+				logger.info("eventKeyJson.has('eventScope')=" + eventKeyJson.has("eventScope"));
+				if (eventKeyJson.has("eventScope")) {
+					logger.info("获得微信二维码参数中的eventScope");
+					String eventScope = eventKeyJson.getString("eventScope");
+					logger.debug("eventKey->eventScope=" + eventScope);
+					// 2017.12.07 叶夷 将openid和二维码参数存储
+					openId2EventScopeService.setOpenId(fromUserName, eventScope);
+				}
+				/**
+				 * start: 2018.03.26  叶夷    存储二维码参数
+				 */
+			}
+			/**
+			 * start: 2018.03.26  叶夷    通过openid获取用户信息
+			 */
+			getUserInfoFromOpenid(fromUserName,accessToken);
+			/**
+			 * start: 2018.03.26  叶夷   通过openid获取用户信息
+			 */
+		}
+    } 
+    
+    /**
+	 * start: 2018.03.26  叶夷    通过openid获取用户信息
+	 */
+	private void getUserInfoFromOpenid(String openid, String accessToken) {
+		logger.info("获取用户信息1   openid=" + openid+" accessToken="+accessToken);
+		if(accessToken==null || accessToken.equals("")){
+			String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+			String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+			// 发起GET请求获取凭证
+			JSONObject jsonObject1 = HttpRequestUtil.httpRequest(requestUrl, "GET", null);
+			Token tokenObject=weChatService.getTokenForMysql(appid);
+			if (null != jsonObject1) {
+				String newAccessToken = jsonObject1.getString("access_token");
+				accessToken=newAccessToken;
+				int expires_in = jsonObject1.getInt("expires_in");// 失效时间，以秒为单位
+				Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
+				Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
+				Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
+				tokenObject.setAccessToken(newAccessToken);
+				tokenObject.setCreateTime(newcreateTime);
+				tokenObject.setFailureTime(newfailureTime);
+				tokenDao.updateToken(tokenObject);// 存在但是失效则更新
+			}
+		}
+		logger.info("获取用户信息2   openid=" + openid+" accessToken="+accessToken);
+		User userFromOpenid=userDao.findUserByOpenId(openid);//在这里判断两个网页用户被一个微信用户扫二维码的情况，如果一个微信用户已经扫描一个网页用户的二维码，那扫描别的网页用户的二维码则不做操作
+		if(userFromOpenid!=null){
+			String remark=userFromOpenid.getRemark();
+			logger.info("remark=" + remark);
+			if(remark==null || remark.equals("")){
+				String getInfoTempUrl="https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+				String getInfoUrl=getInfoTempUrl.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openid);
+				JSONObject jsonObject = HttpRequestUtil.httpRequest(getInfoUrl, "GET", null);
+				logger.info("获取用户信息结果:" + jsonObject);
+				userFromOpenid.setRemark(jsonObject.toString());;
+				userDao.updateUser(userFromOpenid);
+			}
+		}
+	}
+
+	//微信公众号创建自定义菜单
+    private String createMenu(){
+    	logger.info("开始创建自定义菜单");
+		String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+		String accessToken = weChatService.getToken(appid, appsecret);
+		logger.info("accessToken=" + accessToken);
+		String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
+		String menuString = "{\"button\":" + "[" + "{" + "\"type\":\"view\"," + "\"name\":\"请点我\","
+				+ "\"key\":\"" + key + "\"," + "\"url\":\"" + templateurl + "\"" + "}" + "]" + "}";
+		logger.info("menuString=" + menuString);
+		JSONObject jsonObject = HttpRequestUtil.httpRequest(url, "POST", menuString);
+		logger.info("创建菜单结果:" + jsonObject);
+		
+		//如果请求微信的接口AccessToken失效，则重新获得且存储
+		if(jsonObject.has("errmsg")){
+			String errmsg = jsonObject.getString("errmsg");
+			if (!"ok".equals(errmsg)) { // 如果为errmsg为ok，则代表发送成功，公众号推送信息给用户了。
+				String errcode=jsonObject.get("errcode").toString();
+				logger.debug("errcode="+errcode);
+				if(errcode.equals("40001")){//如果模版消息token错误则重新获取token，重新发送
+					String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+					String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+					// 发起GET请求获取凭证
+					JSONObject jsonObject1 = HttpRequestUtil.httpRequest(requestUrl, "GET", null);
+					Token tokenObject=weChatService.getTokenForMysql(appid);
+					if (null != jsonObject1) {
+						String newAccessToken = jsonObject1.getString("access_token");
+						accessToken=newAccessToken;
+						int expires_in = jsonObject1.getInt("expires_in");// 失效时间，以秒为单位
+						Long newfailureTimeLong = System.currentTimeMillis() + expires_in * 1000;// 失效时间毫秒数
+						Timestamp newfailureTime = new Timestamp(newfailureTimeLong);
+						Timestamp newcreateTime = new Timestamp(System.currentTimeMillis());
+						tokenObject.setAccessToken(newAccessToken);
+						tokenObject.setCreateTime(newcreateTime);
+						tokenObject.setFailureTime(newfailureTime);
+						tokenDao.updateToken(tokenObject);// 存在但是失效则更新
+						createMenu();
+					}
+				}
+			}
+		}
+		return accessToken;
+    }
 }

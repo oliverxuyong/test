@@ -52,6 +52,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	IdWorker idWorker = new IdWorker(1L, 1L);
 
 	private static final Logger logger;
+	private Logger logger1 = Logger.getLogger(EchoWebSocketHandler.class);
 
 	private static List<WebSocketSession> users;
 
@@ -90,7 +91,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String userid = session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString();
 		String clientIP = session.getRemoteAddress().toString().substring(1);
-		logger.debug("客户端"+userid+"请求：" + message.getPayload());
+		logger1.debug("客户端"+userid+"请求：" + message.getPayload());
 	
 	
 		org.json.JSONObject obj = null;
@@ -104,7 +105,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 				addition_type = "isPushCP";
 			}
 			loggerService.log(userid, user.getName(),clientIP,obj.toString(),_interface,addition_type,user.getUserGroup());
-			logger.info(user.getName()+"请求接口"+_interface);
+			logger1.info(user.getName()+"请求接口"+_interface);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			session.sendMessage(new TextMessage("json数据格式错误"));
@@ -148,7 +149,28 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask(recommendService,userid+"");
 			recommendTaskPool.execute(recommendUpdateTask);
 			
+			//2018.03.30   叶夷    用户上线时接收消息
+			re_sendMsg(userid, 5);
 		}
+	}
+	//2018.03.30   叶夷    用户上线时接收消息
+	private void re_sendMsg(Long userid, int i) {
+
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println("补发");
+				WebSocketSession socketSession = getUserById(userid);
+				if (socketSession != null) {
+					websocketContext.executeMethod("submit_client_new_msg_id", socketSession, null);
+				} else {
+					System.out.println("opps ! session is null");
+				}
+
+			}
+		}).start();
+
 	}
 
 	/**
@@ -297,6 +319,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@PostConstruct
 	public void init() {
 		logger.info("websocketcontext init .....");
+		recommendTaskPool.setRejectedHandler();
 		try {
 			if (websocketContext.getwebsocketContext().size() == 0) {
 				websocketContext.scanPackage("so.xunta.websocket");

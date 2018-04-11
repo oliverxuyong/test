@@ -42,7 +42,7 @@ public class CpChoiceDaoImpl implements CpChoiceDao {
 	@Override
 	public CpChoiceDO getCpChoice(Long userid, BigInteger cpId) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql="SELECT cp.* FROM cp_choice cp WHERE user_id=:userId AND cp_id =:cpId";
+		String sql="SELECT cp.* FROM cp_choice cp WHERE cp.user_id=:userId AND cp.cp_id =:cpId";
 		Object obj = session.createSQLQuery(sql).addEntity(CpChoiceDO.class).setLong("userId", userid).setBigInteger("cpId", cpId).uniqueResult();
 		if(obj != null){
 			return (CpChoiceDO)obj;

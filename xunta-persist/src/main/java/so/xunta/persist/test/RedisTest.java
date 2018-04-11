@@ -2,6 +2,7 @@ package so.xunta.persist.test;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
@@ -10,6 +11,13 @@ public class RedisTest {
 
 	public static void main(String[] args) {
 		//连接本地的 Redis 服务
+		String pattern = "^\\d+";
+		String a1 = "C2U:1234";
+		String b = "1:234";
+		String c = "1234";
+		System.out.println(Pattern.matches(pattern, a1));
+		System.out.println(Pattern.matches(pattern, b));
+		System.out.println(Pattern.matches(pattern, c));
 	      Jedis jedis = new Jedis("127.0.0.1");
 	      jedis.auth("660419");
 	      System.out.println("Connection to server sucessfully");

@@ -5,10 +5,10 @@
 		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
 		<title></title>
 		<link rel="shortcut icon" id="favicon_ico" type="image/x-icon" href="" media="screen" />
-		<link rel="stylesheet" type="text/css" href="index_page/index.css"/>
+		<!-- <link rel="stylesheet" type="text/css" href="index_page/index.css"/>
 		<link rel="stylesheet" type="text/css" href="login/login.css"/>
         <link rel="stylesheet" type="text/css" href="css/common_web.css"/>
-        <link rel="stylesheet" type="text/css" href="css/popup.css"/>
+        <link rel="stylesheet" type="text/css" href="css/popup.css"/> -->
         <link rel="prefetch" href="image/tractor.jpg" />
         <link rel="prefetch" id="prefetch_adminimage" href="" />
 		<link rel="prefetch" id="prefetch_userimage" href="" />
@@ -24,18 +24,22 @@
 
 	</head>
 	<body>
-		<div id="loadinganimation">
+		<div id="loadinganimation" style="text-align:center">
             <img src="image/tractor-short.gif" alt="Oops,进度条因网络不畅无法显示"/>
 			<div id="loadingtext">
 				正在登录...
 			</div>
 		</div>
 		
-		<div id="welcomepicture_container">
-            <img id="welcome2" src="image/welcome2.png" />
+		<div id="welcomepicture_container" style="display:none">
+            <img id="welcome2" src="image/welcome2.png">
+			<img id="welcome2" src="image/welcome_salsa1.png">
+			<img id="welcome2" src="image/welcome_salsa2.png" style="
+    			margin-top: 10%;
+			">
 		</div>
 		
-        <div id="mobilephone-login-container" >
+        <div id="mobilephone-login-container" style="display:none;">
         <div id="cancel_mobilelogin"><img src="image/goback5.png" style="height: 20px;width: 20px;float:left;margin: 5px;"				onclick="showLogin()"></div>
 	        	<div id="countrycode">+86</div><input id="inputbox_mobileno"  value="请输入手机号" onfocus="if(this.value=='请输入手机号') {this.value=''}" onblur="if(this.value=='') {this.value='请输入手机号'}" onkeypress="inputMobile()" autofocus="autofocus"/> 
 	        	<div id="button_checkonmobileno" onclick="checkonmobileno()"><div id="button_font">下一步</div></div>
@@ -60,7 +64,7 @@
         		<div id="button_loginbymobilephone" onclick="loginbymobilephone()"><div id="button_font">登录</div></div>
         </div>
         
-        <div id="login">
+        <div id="login" style="display:none;">
             <div>
                     <div title="微信" id="weixin_login" class="cursor" onclick="wx_login()"><img src="image/weixin-logo-gray2.png"/></div>
                 </div>
@@ -90,10 +94,14 @@
 		</div>
 		
 		
-		
+		<div class="footer" style="position: absolute;top: 97%;color:#999;font-size: 12px;text-align: center;width: 100%;">
+			<a style="margin-right: 10px;text-decoration: underline;cursor: pointer;" onclick="enterProfilePage()">关于我们</a>
+			<a style="margin-right: 10px;text-decoration: underline;cursor: pointer;" onclick="enterProductPage()">产品介绍</a>
+			沪ICP备13012815号-1
+		</div>
 		
 	</body>
-	<script type="text/javascript" src="script/jquery-1.11.3.min.js"></script>
+	<!--<script type="text/javascript" src="script/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="script/sockjs-0.3.min.js"></script>
 	<script type="text/javascript" src="script/websocket.js"></script>
 	<script type="text/javascript" src="script/websocket_web.js"></script>
@@ -104,12 +112,97 @@
 	<script type="text/javascript" src="script/version_update.js"></script>
     <script type="text/javascript" src="index_page/index_web.js"></script>
      <script type="text/javascript" src="index_page/index.js"></script>
-     <script type="text/javascript" src="script/popup.js"></script>
+     <script type="text/javascript" src="script/popup.js"></script> -->
      <!--2017.11.14 叶夷  微信JS-SDK是微信公众平台面向网页开发者提供的基于微信内的网页开发工具包。在需要调用JS接口的页面引入如下JS文件 -->
-    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <!-- <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script> -->
      
 <!--body以上完全相同-->
 	<script type="text/javascript">
+		//2018.02.01 叶夷   window.location.protocal  获取用户请求所用的协议，然后判断如果是http 就跳转到https 如果是https 就啥都不用做
+		var tmpTag = 'https:' == document.location.protocol ? false : true;
+		var tmpUrl='www.xunta.so' == document.domain ? true : false;
+		if(tmpTag && tmpUrl){//说明这次域名是http且是xunta.so的域名，进行重定向跳转
+			window.location.href="https://www.xunta.so";
+		}
+
+		//2018.02.07 叶夷     静态资源的路径动态的创建
+		var preUrl=window.location.protocol+"//"+document.domain;//获得静态资源路径的协议+域名
+		//console.log("测试1："+window.location.protocol);
+		//console.log("测试4："+document.domain);
+		//将需要的css文件变成js代码生成
+		/* <link rel="stylesheet" type="text/css" href="index_page/index.css"/>
+		<link rel="stylesheet" type="text/css" href="login/login.css"/>
+        <link rel="stylesheet" type="text/css" href="css/common_web.css"/>
+        <link rel="stylesheet" type="text/css" href="css/popup.css"/> */
+		loadCss(document,preUrl+"/xunta-web/client_code/index_page/index.css");
+        loadCss(document,preUrl+"/xunta-web/client_code/login/login.css");
+        loadCss(document,preUrl+"/xunta-web/client_code/css/common_web.css");
+        loadCss(document,preUrl+"/xunta-web/client_code/css/popup.css");
+        //将需要的js文件变成js代码生成
+        /* src="script/jquery-1.11.3.min.js">
+		src="script/sockjs-0.3.min.js">
+		src="script/websocket.js">
+		src="script/websocket_web.js">
+   		src="login/login.js">
+    	src="login/login_web.js">
+		src="script/common-xunta.js">
+		src="script/common-xunta_web.js">
+		src="script/version_update.js">
+    	src="index_page/index_web.js">
+     	src="index_page/index.js">
+    	src="script/popup.js"> */
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/sockjs-0.3.min.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/websocket.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/websocket_web.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/login/login.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/login/login_web.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/common-xunta.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/version_update.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/index_page/index_web.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/index_page/index.js");
+    	loadJs(document,preUrl+"/xunta-web/client_code/script/popup.js");
+    	loadJs(document,window.location.protocol+"//res.wx.qq.com/open/js/jweixin-1.2.0.js");
+    	
+    	//2018.02.07  叶夷    动态加载js和 css文件的方法
+    	function loadJs(atDocument,src) {
+    	    var script = document.createElement('script');
+    	    script.type="text/javascript";
+    	    script.language = 'javascript';
+    	    script.src= src;
+    	    //var done = false;
+    	    /*script.onload =script.onreadystatechange = function() {//js和css文件加载后再进行start中的方法
+    	             if (!done &&(!script.readyState ||  script.readyState == 'loaded' || script.readyState == 'complete')) {
+    	                    done = true;
+    	            }
+    	            script.onload = script.onreadystatechange = null;
+    	            if (callback) {
+    	                    callback.call(script);
+    	            } 
+    	            //jsAfterStart();
+    	    }*/
+    	    atDocument.getElementsByTagName('head')[0].appendChild(script);
+    	    /* var temp=atDocument.getElementsByTagName('head')[0];
+    	    document.getElementsByTagName('head')[0].append(script); */
+    	}
+
+    	function loadCss(atDocument,url) {
+    	    var link = document.createElement('link');
+    	    link.type="text/css";
+    	    link.rel = "stylesheet";
+    	    link.href = url;
+    	    link.media = 'screen';
+    	    atDocument.getElementsByTagName('head')[0].appendChild(link);
+    	   /*  var temp=atDocument.getElementsByTagName('head')[0];
+    	    document.getElementsByTagName('head')[0].append(link); */
+    	    //document.childNodes[1].childNodes[1].append(link);
+    	    /* if (callback) {
+    	            callback.call(link);
+    	    } */
+    	}
+        
+	
         var userId;
         var userName;
         var userImage;
@@ -201,11 +294,12 @@
 			//pageparam = JSON.stringify(pageparam);
 			//pageparam = JSON.parse(pageparam);
 			//pageparam = JSON.parse(pageparam);
-			openNewWin('main_page', 'main_page/main_page.html', JSON.stringify(pageparam));//index.html暂时没移动
+			openNewWin('main_page', preUrl+'/xunta-web/client_code/main_page/main_page.html', JSON.stringify(pageparam));//index.html暂时没移动
 			//openWin('topics_page', 'topics_page/topics_page.html', pageparam);//index.html暂时没移动
 				//1.11 新增 F
 				//hideIndexLogInfo();
 				$("#loadinganimation").hide();
+				//console.log("小车图片隐藏的时间："+new Date());
 				//?0110 这句移到调用处.
 			browserOnlineOfflineEvent();
       }
@@ -255,11 +349,19 @@
 	/**2017.11.15 发送微信分享链接自定义消息给后台*/
 	function sendWeChatShareLinkMsg(){
 		var url= location.href.split('#').toString();
-		console.log("发送微信分享链接自定义消息给后台");
-		log2root("发送微信分享链接自定义消息给后台");
+		console.log("发送微信分享链接自定义消息给后台 : "+url);
+		log2root("发送微信分享链接自定义消息给后台  :"+url);
+		var requestUrl,link;
+		if(url.indexOf("www.xunta.so")>=0){
+			requestUrl=window.location.protocol+"//www.xunta.so/xunta-web/sendShareLinksMsg";
+			link = window.location.protocol+"//www.xunta.so/wxShareLinksLogin"
+		}else if(url.indexOf("www.ainiweddingcloud.com")>=0){
+			requestUrl=window.location.protocol+"//www.ainiweddingcloud.com/xunta-web/sendShareLinksMsg";
+			link = window.location.protocol+"//www.ainiweddingcloud.com/wxShareLinksLogin"
+		}
 		
 		$.ajax({
-	        url : "http://www.xunta.so/xunta-web/sendShareLinksMsg",
+	        url : requestUrl,
 	        action : "post",
 	        contentType : "application/x-www-form-urlencoded; charset=utf-8",
 	        dataType : "jsonp",
@@ -268,9 +370,12 @@
 	        data : {url:url },
 	        async : false,
 	        success : function(data, textStatus) {
+	        	/* link=data.url+"wxShareLinksLogin";
+	        	console.log("发送微信分享链接 : "+link);
+	    		log2root("发送微信分享链接  :"+link); */
 	        	wx.config({
 	                debug: false,////生产环境需要关闭debug模式
-	                appId: "wxdac88d71df6be268",//appId通过微信服务号后台查看
+	                appId: data.appid,//appId通过微信服务号后台查看
 	                timestamp: data.timestamp,//生成签名的时间戳
 	                nonceStr: data.nonceStr,//生成签名的随机字符串
 	                signature: data.signature,//签名
@@ -285,13 +390,13 @@
 	        		log2root("微信JS-SDK成功");
                 	console.log("微信JS-SDK连接成功");
 	        		
-	                var link = "http://www.xunta.so/wxShareLinksLogin";
+	                //var link = "http://www.xunta.so/wxShareLinksLogin";
 	                var imgUrl = getLacalUrl()+"/../image/xun.jpg";
 	                var protocol = window.location.protocol;
 	                var host = window.location.host;
 	                //分享朋友圈
 	                wx.onMenuShareTimeline({
-	                    title: '寻Ta-发出"心语", 找到心灵相通的Ta',
+	                    title: '寻Ta-发出"关键词", 找到心灵相通的Ta',
 	                    link: link,
 	                    imgUrl: imgUrl,// 自定义图标
 	                    trigger: function (res) {
@@ -313,7 +418,7 @@
 	    			//分享给好友
 	              	wx.onMenuShareAppMessage({
             			title: '寻Ta', // 分享标题
-            			desc: '发出"心语", 找到心灵相通的Ta', // 分享描述
+            			desc: '发出"关键词", 找到心灵相通的Ta', // 分享描述
            				link: link,
             			imgUrl:imgUrl, // 自定义图标
             			type: 'link', // 分享类型,music、video或link，不填默认为link

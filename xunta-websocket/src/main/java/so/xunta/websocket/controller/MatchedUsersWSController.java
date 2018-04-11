@@ -61,9 +61,72 @@ public class MatchedUsersWSController {
 		socketService.chat2one(session, returnJson);
 	}
 	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1111-1")
+	public void responseDetialMatchedUsers(WebSocketSession session, TextMessage message){
+		JSONObject params = new JSONObject(message.getPayload());
+		String userId = params.getString("uid");
+		int requsetCounts = params.getInt("request_counts");
+		String timestamp = params.getString("timestamp");
+
+		if(userId==null || requsetCounts == 0){
+			return;
+		}
+		JSONArray matchedUsersWithCp = responseMatchedUsersService.getMatchedUsersWithCPJSONArr(userId, requsetCounts);
+	    
+		JSONObject returnJson = new JSONObject();
+		returnJson.put("_interface", "1111-2");
+		returnJson.put("interface_name", "response_detail_matched_users");
+		returnJson.put("timestamp", timestamp);
+		returnJson.put("matched_user_arr",matchedUsersWithCp);
+		socketService.chat2one(session, returnJson);
+	}
+	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1112-1")
+	public void responseMatchedUserCps(WebSocketSession session, TextMessage message){
+		JSONObject params = new JSONObject(message.getPayload());
+		String myUserId = params.getString("my_user_id");
+		String matchedUserId = params.getString("matched_user_id");
+		String timestamp = params.getString("timestamp");
+		
+		JSONArray matechedUserWithCps= responseMatchedUsersService.getMatchedUserWithCPJSONArr(myUserId, matchedUserId);
+		
+		JSONObject returnJson = new JSONObject();
+		returnJson.put("_interface", "1112-2");
+		returnJson.put("interface_name", "response_matched_user_cps");
+		returnJson.put("my_user_id", myUserId);
+		returnJson.put("matched_user_id",matchedUserId);
+		returnJson.put("timestamp", timestamp);
+		returnJson.put("msg",matechedUserWithCps);
+		socketService.chat2one(session, returnJson);
+	}
+	
+	
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1113-1")
+	public void responseCpsMatchedUsers(WebSocketSession session, TextMessage message){
+		JSONObject params = new JSONObject(message.getPayload());
+		String userId = params.getString("uid");
+		JSONArray cpIds = params.getJSONArray("cp_ids");
+		int requsetCounts = params.getInt("request_counts");
+		String timestamp = params.getString("timestamp");
+		
+		if(userId ==null || cpIds == null){
+			return;
+		}
+		
+		JSONArray cpsMatchedUsersJSONArr = responseMatchedUsersService.getCpsMatchedUsersJSONArr(userId, cpIds, requsetCounts);
+		
+		JSONObject returnJson = new JSONObject();
+		returnJson.put("_interface", "1113-2");
+		returnJson.put("interface_name", "response_user_cp_match_users");
+		returnJson.put("timestamp", timestamp);
+		returnJson.put("cp_matched_user_arr",cpsMatchedUsersJSONArr);
+		socketService.chat2one(session, returnJson);
+	}
+	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "1110-1")
 	public void wantTalk(WebSocketSession session, TextMessage message){
 		Long userId = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
 		logger.info("用户"+userService.findUser(userId).getName()+"点击了某匹配人头像");
 	}
+	
 }

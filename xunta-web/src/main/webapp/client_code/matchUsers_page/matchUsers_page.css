@@ -1,12 +1,42 @@
 
-body{position:relative}
+body{position:relative;
+	/* background:url('../image/dialoglist-background1.jpg') 100% 100% no-repeat;
+	background-size:100% 100%; */}
 
-#header {float:left;
-	width:100%; height: 32px; background:url('../image/titbg.gif') center top repeat-x;background-size:8px;
-	border-bottom:1px solid #d0d0d0; z-index:12;}
+#header {
+    width: 100%;
+    //height: 11%;
+    background-size: 8px;
+    //border-bottom: 1px solid #5d5d5d;
+    margin-bottom: 1.2%;
+    z-index: 12;
+    //background-color: rgb(250, 250, 250);
+    overflow-x:hidden;
+    //padding-top: 5%;
+}
 
-#goback{font-size:22px;float:left;}
-#goback img{height:18px; width:24px; margin-top:7px;margin-left:10px;margin-right:10px;}
+#goback{/* height:43px;width:60px;font-size:22px;float:left;cursor:pointer;z-index:14 */
+	/* float: left; */
+	/* position:fixed;
+    padding:1px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top:1.2%;
+    margin-right:6px;
+    width:37px;
+    cursor:pointer; */
+    
+    position:fixed;
+	padding-left: 3%;
+	width:37px;
+	cursor:pointer;
+	height:41px;
+	line-height:55px;
+}
+#goback img{//height: 16px;
+    width: 20px;
+    //margin-top: 12px;
+    //margin-left: 21px;}
 
 ._closeBtn{
 	float:right;
@@ -18,15 +48,197 @@ body{position:relative}
 	padding-left: 10px;
 }
 
-#title{color:#800000;float:left;height:32px; line-height:32px;border-left:1px solid #d8d8d8; padding-left:10px; z-index:13;}
+#title{
+	text-align: left;
+	color: #686868;
+	height: 40px;
+	//line-height: 48px;
+	font-size: 15px;
+}
 
 .sendMsg{
-	margin-right:10px;
-	width: 15%;
-	text-align:center;
-	background-color:#708090;
-	border-radius: 10px;
-	float:right;
-	height:25px;
-	line-height:25px;
+    margin-right: 10px;
+    /* width: 12%; 杩欐槸鍦ㄦ墜鏈轰笂涓嶅鐢�*/
+    width:52px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+    float: right;
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+    color: #494949;
+    border: 1px solid rgba(175, 172, 172, 0.28);
+    font-size: 12px;
 }
+
+/**start:鍙跺し  2017.11.28 tab鏉ュ洖鍒囨崲闇�瑕佺殑css鏍峰紡*/
+.wrap{
+	overflow:hidden;
+	width:100%;
+}
+
+ul,li{
+	list-style: none
+}
+    
+.tabClick{ 
+	/* background: #f3f3f3;  */
+	background:#fff;
+	overflow: hidden;
+	width:100%;
+	//margin-bottom:20px;
+	border-bottom:1px solid #f7f7f7;
+	color:rgb(191, 188, 188);
+}
+   
+.tabClick li{ 
+	height:40px; 
+	line-height: 50px; 
+	//width: 45%; 
+	float: left; 
+	//text-align: center;
+	cursor:pointer;
+}
+    
+.tabClick li.active{ 
+	color: #f6b881; 
+	transition: 0.1s; 
+	font-weight: bold
+}
+    
+.tabBox{ 
+	position: relative;
+	overflow: hidden
+}
+   
+.tabList{
+	word-break: break-all; 
+	width:100%;
+	height:100%;
+	float:left; 
+	line-height:100%; 
+	text-align:center; 
+	color:#686868; 
+	font-size:15px; 
+	//font-family: "Arial Black"
+}
+ul{
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0em;
+    -webkit-padding-start: 0px;
+    /*2018.01.24 叶夷   IE浏览器的ul自带margin和padding，在这里把它去除*/
+    margin:0px;
+    padding:0px;
+}
+
+.lineBorder{ 
+	//height: 2px; 
+	overflow: hidden; 
+	//border-bottom:1px solid #099; 
+	background: #f7f7f7;
+	}
+	
+.lineDiv{ 
+	background: #f6b881; 
+	height: 1px; 
+	width: 10%;
+	}
+/**end:鍙跺し  2017.11.28*/
+
+.loading{
+	height:20px;
+}
+
+.groupChat{
+	float: right;
+	background-color: #f6f6f6;
+	font-size: 0.9em;
+	height: 30px;
+	margin-top: 7px;
+	//line-height: 36px;
+	width: 38%;
+	border-radius:5px;
+	box-shadow:rgba(102, 102, 102, 0.57) 2px 1px 1px;
+	margin-right:10px;
+}
+
+.groupChatAdd{
+	height: 17px;
+	width: 17px;
+	margin-top: 8px;
+	margin-left: 6px;
+}
+
+.groupChatAdd2{
+	height: 22px;
+	width: 22px;
+	margin-top: 3px;
+	margin-right: 10px;
+	float: right;
+	z-index:100;
+}
+
+.inputGroupChat{
+	height: 28px;
+	border: none;
+	background-color: transparent;
+	//color: #9ca5b6;
+	color:#494949;
+	float:right;
+	width: 61%;
+	//margin-top:3px;
+	outline:none;
+	font-size:16px;
+}
+.inputGroupChat2{
+	outline:none;
+	height: 28px;
+	border: none;
+	background-color: transparent;
+	color: #9ca5b6;
+	width: 106px;
+	//margin-top:3px;
+	margin-left: 10px;
+	font-size:16px;
+}
+
+/**2018.03.12 叶夷  点击群聊之后显示的复选框的样式*/
+/* .guideChatCheckBox{
+	width: 20px;
+    height: 20px;
+    border: 2px solid #dedede;
+    //background: white;
+    background:#fff url(../image/checkbox.jpg);
+    float: right;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+input[type="checkbox"]:checked {
+  background-position: -48px 0;
+} */
+.guideChatCheckBox {
+	//position: absolute;
+	visibility: hidden;
+}
+.guideChatCheckBox+label {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border: 2px solid #dedede;
+	background: white;
+	float:right;
+} 
+.guideChatCheckBox:checked+label:after {
+	content: "";
+	float:right;
+	top: 1px;
+	width: 11px;
+	height: 5px; 
+	border: 2px solid #dedede;
+	border-top-color: transparent;
+	border-right-color: transparent;
+	 -ms-transform: rotate(-60deg);
+	  -moz-transform: rotate(-60deg);
+	   -webkit-transform: rotate(-60deg);
+	    transform: rotate(-45deg);}

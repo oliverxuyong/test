@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService{
 			throw new RuntimeException("用户类型未指定\n");
 		}
 		
-		if(!user.getType().equals("QQ")&&!user.getType().equals("WX")&&!user.getType().equals("Phone")&&!user.getType().equals("sys"))
+		if(!user.getType().equals("QQ")&&!user.getType().equals("WX")&&!user.getType().equals("Phone")&&!user.getType().equals("sys")&&!user.getType().equals("Tmp"))
 		{
 			throw new RuntimeException("用户类型不在QQ WX Phone类别中");
 		}
@@ -187,8 +187,24 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<User> findUserByGroup(Long userid) {
+	public List<User> findUserSameGroup(Long userid) {
 		// zheng
-		return userDao.findUserByGroup(userid);
+		return userDao.findUserSameGroup(userid);
 	}
+
+	@Override
+	public List<User> findUserByGroup(String userGroup) {
+		return userDao.findUserByGroup(userGroup);
+	}
+
+	@Override
+	public List<User> findUsersByScope(String eventScope) {
+		return userDao.findUsersByScope(eventScope);
+	}
+
+	@Override
+	public User findUserByOpenId(String openid) {
+		return userDao.findUserByOpenId(openid);
+	}
+	
 }

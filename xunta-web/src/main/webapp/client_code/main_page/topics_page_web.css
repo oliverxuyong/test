@@ -26,7 +26,7 @@ width:100%;
 	//overflow-y:scroll;
 	-webkit-overflow-scrolling: touch;
 	overflow:hidden;
-	background: url(../image/background2-lessblue.jpg) no-repeat;
+	background: url(../image/backgroundstar.jpg) no-repeat;
 	background-size:100% 100%;
 	
 }
@@ -208,7 +208,7 @@ width:100%;
 .tag-container{
 	position:relative;
 	width:100%;
-	height:65%;
+	height:55%;
 	z-index:102;
 	//margin-left:6px;
 	top:0%;	
@@ -286,6 +286,30 @@ height:0px;
     position:relative;/*设为relative,下级的absolute才能生效*/
 }
 
+.cloneMyTag{
+	float: left;
+    text-align: center;
+    border-radius: 25px;
+    padding:1px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top:1.2%;//这里必须是百分数,计划我的标签框高度时要用到.
+    //margin-bottom:5px;
+    margin-right:6px;
+    font-size:.8em;
+    letter-spacing:1px;
+    //border:1px solid;
+    //width:37px;
+    height:20px;
+    line-height:20px;
+    cursor:pointer;
+    color:white;
+    //background-color:rgba(66,66,66,0.9);
+    //text-shadow:1px 1px 0.3em black; 
+    //box-shadow:1px 1px 1px black;
+    //position:relative;/*设为relative,下级的absolute才能生效*/
+}
+
 #addtag{
 	color:#cccccc;
 	border:1px solid #a5a5a5;
@@ -296,6 +320,9 @@ height:0px;
 	//line-height:25px;
 	background:url('../image/plus3.jpg') center center no-repeat;
 	background-size:100% 100%;
+	position:fixed;
+	opacity:0.5;
+	z-index:100;
 }
 
 #samplemytag {display:none}
@@ -308,16 +335,16 @@ height:0px;
 .mytag-selectednumber{
 	position:absolute;
 	//position:relative;
-	top:-6px;
+	top:-10px;
 	//right:2px;
-	height:10px;
-	padding-left:2px;
-	padding-right:2px;
-	line-height:10px;
+	//height:10px;
+	//padding-left:2px;
+	//padding-right:2px;
+	//line-height:10px;
 	color:#b48f4c;
-	font-size:10px;
-	background-color:#505050;
-	border-radius:40%;
+	font-size:12px;
+	background-color:#0c0e1a;
+	//border-radius:40%;
 	//border:1px solid #757575;
 }
 
@@ -499,7 +526,7 @@ height:0px;
 	left:0px;
 	border-radius:50%; 
 	//border:1px solid #e5efff;
-	cursor:pointer;
+	//cursor:pointer;
 	//opacity:0.3;
 	//background-color:#fffff0;
 		//filter:Alpha(opacity=50);
@@ -518,8 +545,8 @@ height:0px;
 	//background-size:100% auto;
 	font-family:'微软雅黑';
 	border-radius:50%; 
-	background-color:rgba(255,255,255,0.3);
-	box-shadow:1px 1px 1px #777777;
+	//background-color:rgba(255,255,255,0.3);
+	//box-shadow:1px 1px 1px #777777;
 	//border:1px solid #e5efff;
 	//FILTER:DropShadow(Color=#808080, OffX=5, OffY=5, Positive=1);
 	}
@@ -531,7 +558,11 @@ height:0px;
 .incp div{
 	position:absolute;
 	text-align:center;
-		//text-shadow:blue;
+	border: 1px solid rgba(255, 255, 255, 0.4);
+	padding: 4px 4px 2px 4px;
+	border-radius: 15%;
+	cursor:pointer;
+	//text-shadow:blue;
 	//text-shadow:{0 0 0.3em #87F,0 0 0.3em #87F,0 0 0.3em #87F};
 }
 
@@ -666,15 +697,20 @@ height:0px;
 .yesItem,.noItem{
     position: absolute;
     display: none;
-    padding: 2px;
+    /* padding: 2px; */
     color: #e4e4e4;
     font-size: 14px;
-    border: 1px solid #959595;
-    border-radius: 50%;
-    height: 30%;
-    width: 30%;
-    line-height: 257%;
+    /* border: 1px solid #959595; */
+    /* border-radius: 50%; */
+    height: 50px;
+    width: 40%;
+    line-height: 50px;
     text-align: center;
+    top: 92%;
+    margin-left: 5%;
+    margin-right: 5%;
+    background-color: rgba(255,255,255,0.3);
+    cursor:pointer;
 }
 
 .yesItem{
@@ -718,4 +754,15 @@ height:0px;
 }
 .mytagclick{
 	border:1px solid red;
+}
+
+.matchUsers{
+	margin-left: 183px;
+	background-color: #8889A4;
+	position: absolute;
+	z-index: 100;
+	cursor:pointer;
+	box-shadow: 2px 2px 10px black;
+	border-radius: 15%;
+	opacity: 0.1;
 }

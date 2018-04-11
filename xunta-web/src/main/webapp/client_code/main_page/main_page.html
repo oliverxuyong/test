@@ -6,12 +6,12 @@
 		<meta name="apple-mobile-web-app-capable" content="yes"/>
 		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 		<title>话题列表页</title>
-		<link rel="stylesheet" type="text/css" href="topics_page.css"/>
+		<!-- <link rel="stylesheet" type="text/css" href="topics_page.css"/>
 		<link rel="stylesheet" type="text/css" href="topics_page_web.css"/>
 		<link rel="stylesheet" type="text/css" href="../css/common_web.css"/>
 		<link rel="stylesheet" type="text/css" href="alter_userimage.css"/>
 		<link rel="stylesheet" type="text/css" href="../css/popup.css"/>
-        <link rel="stylesheet" type="text/css" href="../css/popcontext.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/popcontext.css"/> -->
 
 		<!--让输入框的提示字颜色变淡-->
 		<style>
@@ -39,7 +39,7 @@
 				<div id="userinfo">
 					<div id="userimg">
 						<!-- 信号 -->
-						<div id="showonlineoffline">
+						<div id="showonlineoffline" style="display:none;">
 							<img src="../image/dot-gray.png" onclick="wsConnect()" />
 						</div>
 						<img onclick="updUserImg()" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'"/>
@@ -49,6 +49,9 @@
 					
 				</div>
 				
+				<!-- 2017.12.14  叶夷  装匹配人列表的容器-->
+				<div id="matchUsers" class="matchUsers" onclick="enterMatchUsersPage()">
+				</div>
 				<!--2017.07.04  叶夷   匹配人列表 -->
 				<!-- <div class="mu" id="mutemp1" style="/* left: 145px; */width: 48px;height: 48px;/* top: 80px; */"></div>
     			<div class="mu" id="mutemp2" style="/* left: 193px; */width: 45px;height: 45px;/* top: 83px; */"></div>
@@ -79,6 +82,13 @@
 				<!-- <div class="mytag" id="addtag2" onclick="addTag()" style="width:86px;"> 万有引力 					
 					<div class="mytag-selectednumber">123</div>
 				</div> -->
+				<!-- 引导页：这是我的标签加号上的圆圈 -->
+				<img src="../image/guideAddtagCircle.png" id="guideAddtagCircle" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" 
+					style="top: 187px;position: absolute;left: 0px;display:none; width: 65px;">
+					
+				<!-- 引导页：这是我的标签指向加号的箭头-->
+				<img src="../image/guideAddtagArrow.png" id="guideAddtagArrow" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" 
+					style="top: 187px;position: absolute;left: 0px;display:none;width: 65px;">
 				
 			</div>
 
@@ -111,7 +121,7 @@
 		
 				<div style="width:100%;height:23%;"></div>
 				<!-- start: 叶夷  2017.06.15  添加一个按钮，点击后通过已定义的接口向后台请求一组标签，后台返回后将标签显示出来。点击后继续请求下一页。-->
-				<div class="getmoretopics cursor" id="request_cp" onclick="requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)))">
+				<div class="getmoretopics cursor" id="request_cp" onclick="requestCP(userId,requestCPNum,(requestCPNum*(currentRequestedCPPage++)))" style="display:none;">
 					<div>更多</div>
 				</div>
 				
@@ -122,7 +132,7 @@
 		</div>
 		
 		<!-- "进入聊天列表按钮"用fixed后,不论放在哪里,都只看屏幕的长宽.-->
-		<div class="enterdialogList" id="enterdialogList" onclick="EnterdialogList()">
+		<div class="enterdialogList" id="enterdialogList" onclick="enterMatchUsersPage()" style="display:none;">
 			<img src="../image/new-msg-3.png" />
 		</div>
 
@@ -134,11 +144,15 @@
 		<div onclick="cleartimeout()" style="position: absolute;top: 52px;left: 100px;background: #f1f1f1;">
 			选中标签测试停止
 		</div>-->
+		<!-- 进入匹配人详情页按钮
+		<div onclick="enterMatchUsersPage()" style="position: absolute;top: 52px;left: 100px;background: #f1f1f1;z-index:999;">
+			进入匹配人详情页按钮
+		</div>-->
 		
 	</div> <!--End of <div id="showatloaded" class="showatloaded"> -->
 	
 	<!-- 2017.11.15 叶夷 将修改头像方法模块加入 -->
-	<div class="ImageBox" style="left: 48px;top: 48px;" id="ImageBox">
+	<div class="ImageBox" style="left: 48px;top: 48px;display:none;" id="ImageBox">
         <table border="0" cellpadding="0" cellspacing="0">
             <tr>
                 <td class="box"><h3 class="tit"><a class="cls" href="javascript:;" onclick="closeImageBox()" title="关闭">关闭</a></h3>
@@ -156,8 +170,16 @@
             </tr>
         </table>
     </div>
+    <!-- 引导页：这是匹配人头像引导话 -->
+    <img src="../image/guideMUBubble.png" id="guideMUBubble" onerror="javascript:this.src='http://42.121.136.225:8888/user-pic2.jpg'" style="z-index:202;width: 60%;display: inline-block;position: absolute;right:0px;display:none;">
+    <!-- 关于公司信息 -->
+    <div class="footer" style="position: absolute;top: 97%;color:#666666;font-size: 12px;text-align: center;width: 100%;">
+			<a style="margin-right: 10px;text-decoration: underline;cursor: pointer;" onclick="enterProfilePage()">关于我们</a>
+			<a style="margin-right: 10px;text-decoration: underline;cursor: pointer;" onclick="enterProductPage()">产品介绍</a>
+			沪ICP备13012815号-1
+		</div>
 </body>
-	<script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
+	<!-- <script type="text/javascript" src="../script/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="../script/jquery.nicescroll.min.js"></script>
 	<script type="text/javascript" src="../script/common-xunta.js"></script>
 	<script type="text/javascript" src="../script/common-xunta_web.js"></script>
@@ -166,11 +188,51 @@
 	<script type="text/javascript" src="topics_page_web.js"></script>
 	<script type="text/javascript" src="../script/popup.js"></script>
 	<script type="text/javascript" src="../script/popcontext.js"></script>
-	<script type="text/javascript" src="http://xunta.so:3000/javascripts/websocket.io.js"></script>
+	<script type="text/javascript" src="http://xunta.so:3000/javascripts/websocket.io.js"></script> -->
 	<!-- 这是为了移动端web的调试 
 	<script src="../script/debuggap.js" type="text/javascript"></script>-->
 	
 	<script type="text/javascript">
+		console.log("加载main_page前的时间："+new Date());
+		//2018.02.07 叶夷     静态资源的路径动态的创建
+		var preUrl=window.location.protocol+"//"+document.domain;//获得静态资源路径的协议+域名
+		//将需要的css文件变成js代码生成
+		loadCss(preUrl+"/xunta-web/client_code/main_page/topics_page.css");
+   		loadCss(preUrl+"/xunta-web/client_code/main_page/topics_page_web.css");
+    	loadCss(preUrl+"/xunta-web/client_code/css/common_web.css");
+    	loadCss(preUrl+"/xunta-web/client_code/main_page/alter_userimage.css");
+    	loadCss(preUrl+"/xunta-web/client_code/css/popup.css");
+    	loadCss(preUrl+"/xunta-web/client_code/css/popcontext.css");
+    	//将需要的js文件变成js代码生成
+		loadJs(preUrl+"/xunta-web/client_code/script/jquery-1.11.3.min.js");
+		//loadJs(preUrl+"/xunta-web/client_code/script/jquery.nicescroll.min.js");
+		loadJs(preUrl+"/xunta-web/client_code/script/common-xunta.js");
+		loadJs(preUrl+"/xunta-web/client_code/script/common-xunta_web.js");
+		loadJs(preUrl+"/xunta-web/client_code/script/popup.js");
+		loadJs(preUrl+"/xunta-web/client_code/main_page/topics_page.js");
+		loadJs(preUrl+"/xunta-web/client_code/main_page/topics_page_web.js");
+		loadJs(preUrl+"/xunta-web/client_code/script/popcontext.js");
+		loadJs(window.location.protocol+"//xunta.so:3000/javascripts/websocket.io.js");
+	
+		//2018.02.07  叶夷    动态加载js和 css文件的方法
+		function loadJs(src) {
+	    	var script = document.createElement('script');
+	    	script.type="text/javascript";
+	   		script.language = 'javascript';
+	    	script.src= src;
+	    	document.getElementsByTagName('head')[0].appendChild(script);
+		}
+
+		function loadCss(url) {
+	   		var link = document.createElement('link');
+	    	link.type="text/css";
+	    	link.rel = "stylesheet";
+	    	link.href = url;
+	    	link.media = 'screen';
+	    	document.getElementsByTagName('head')[0].appendChild(link);
+		}
+	
+		
 		var userId;
 		//var unionid;//第三方原生ID
 		var userName;
@@ -189,16 +251,27 @@
 		var unreadObjList=new Array();//2017.08.16 为了装所有的未读信息，然后将数组传给聊天列表
 		var firstRequestTopMatchedUsers=true;//2017.09.04  叶夷      判断是否是第一次请求匹配列表
 		var firstRequestMyCp=true;//2017.11.13  叶夷      判断是否是第一次请求我的标签
-
+		
+		var arrowAnimateStop=false;//判断箭头来回动画是否停止,false是不停止，true是停止
+		var isGuideMatchUser=true;//表示这是引导时显示的匹配头像，为了位置固定不变
+		console.log("main_page导入文件的时间："+new Date());
 		function start(pageParamsStr) {//web:在openWin时通过ready后回调,再跨页执行方式来启动的第一个方法.
+			console.log("加载main_page后的时间："+new Date());
+			//2018.02.07 判断是否引入jquery文件
+			if(typeof jQuery == 'undefined'){
+			    window.alert("没有jquery");
+			}
+			
 			//1。11 新增，   显示Log日志后点击return事件返回到话题列表页时是没有参数的，data为''，所以下面加个判断条件，为''就结束该方法  FANG
 			retrievePageParams(pageParamsStr); 
 			prepareTopicsPage();
 			setRootVars();
 			
-			//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
-			//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
-			requestCP(userId,requestCPNum,++currentRequestedCPPage);
+			//匹配人容器的大小设置,为了引导页的显示，先将匹配人容器的大小计算出来
+			setMatchUsersContainerSize();
+			
+			//2018.03.08  叶夷    通过请求请求服务器判断是否出现引导页
+			ifUserInited(userId);
 			
 			//2017.08.23 叶夷   各个控件根据屏幕调整
 			showMatchedUsers();
@@ -230,6 +303,28 @@
 		
 		//发送消息之后服务器返回的消息
         function recevier(obj) {
+        	showMsg(obj);
+        };
+        
+        function sendmsg(toUserId,inputValue,handler){
+        	console.log("发送消息 - toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
+        	log2root("发送消息- toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
+        	chat.sendPrivateMsg(toUserId,inputValue,handler);
+        }
+        
+        //这是话题消息的返回操作
+        function responseTopicMsg(data){
+        	showMsg(data);
+        	
+        	//在这里发送收到消息接口
+        	var msg_id=data.chatmsg_id;
+        	var target_topicid=data.window_id;
+        	var paraStr =msg_id+ "','"+target_topicid;
+			execRoot("sendmsg_received_confirm('" + paraStr + "')");
+        }
+        
+        //接收到服务器返回的消息之后的操作，不管是单聊还是话题群聊
+        function showMsg(obj){
         	console.log("测试发送消息后台返回结果："+JSON.stringify(obj));
         	log2root("测试发送消息后台返回结果："+JSON.stringify(obj));
 			
@@ -266,19 +361,28 @@
         				}
         			}
         		    
-        		    if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过,实现置顶
-        		    	exec("dialoglist_page", "updateDialogContentAndTime('"+toUserName+"','"+toImgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
-            			exec("dialoglist_page", "makeDialogListTop('" + toUserName+"','"+toImgUrl+"','"+window_id +"')");
+        		    if(window.parent.document.getElementById("matchUsers_page")!=null ){//聊天列表打开过,实现置顶
+        		    	exec("matchUsers_page", "makeDialogListTop('" + toUserName+"','"+toImgUrl+"','"+window_id +"','"+obj.isTopic+"')");
+        		    	exec("matchUsers_page", "updateDialogContentAndTime('','"+toImgUrl+"','"+data+"','"+postTimeStr+"','"+window_id+"')");//更新聊天列表内容和时间
             		}
             	} else { 
             		myOrOther="other";
             		window_id=respondeUserId;
             		//showSelfPoster(user, data,imgUrl,msgId,"other",false);
             		
+            		//如果是群聊话题的消息的话user变成topic_name
+            		var topic_name=obj.topic_name;
+        			if(topic_name!="undefined" || topic_name!=undefined){
+        				user=topic_name;
+        				window_id=obj.window_id;
+        				respondeUserId=window_id;
+        			}
+            		
             		//聊天列表未读消息提示
-            		if(window.parent.document.getElementById("dialoglist_page")!=null ){//聊天列表打开过
-            			exec("dialoglist_page", "unreadMsg('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"')");
-            			exec("dialoglist_page", "makeDialogListTop('"+user+"','"+imgUrl+"','"+respondeUserId+"')");
+            		if(window.parent.document.getElementById("matchUsers_page")!=null ){//聊天列表打开过
+            			//在topic模式下unread不光需要topic_name，也需要username
+            			exec("matchUsers_page", "unreadMsg('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"','"+obj.user.name+"')");
+            			exec("matchUsers_page", "makeDialogListTop('"+user+"','"+imgUrl+"','"+respondeUserId+"','"+obj.isTopic+"')");
             		}else{//聊天页表没有打开才将未读信息保存好
             			//2017.08.16   装所有的未读信息，为了将数组传给聊天列表
                 		var unreadNum=1;
@@ -288,16 +392,16 @@
                 				var unReadObj=unreadObjList[j];
                 				if(unReadObj.getTouserId()==respondeUserId){//这个用户已经存在，未读数加1
                 					unReadObj.unreadNum++;
-                					unreadObjList[j]=new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unReadObj.unreadNum);
+                					unreadObjList[j]=new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unReadObj.unreadNum,obj.user.name);
                 					isExit=true;
                 					break;
                 				}
                 			}
                 			if(isExit=false){
-                				unreadObjList.push(new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unreadNum));
+                				unreadObjList.push(new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unreadNum,obj.user.name));
                 			}
                 		}else{
-                			unreadObjList.push(new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unreadNum));
+                			unreadObjList.push(new unreadObj(user,imgUrl,data,postTimeStr,respondeUserId,unreadNum,obj.user.name));
                 		}
             		}
             		
@@ -309,17 +413,11 @@
             		execRoot("notifyNewMessage('"+pageTitle+"')");
             		
             		if(window.parent.document.getElementById(window_id)!=null ){//聊天列表打开过
-            			exec(window_id, "showSelfPoster('" + user + "','" + data +"','" +imgUrl+"','" + msgId+"','" + myOrOther+ "','" + false+"')");
+            			exec(window_id, "showSelfPoster('" + user + "','" + data +"','" +imgUrl+"','" + msgId+"','" + myOrOther+ "','" + false+"','" +obj.msg_type+"')");
             			//加上时间 
                 		exec(window_id, "markSendPosterSuccess('" + msgId + "','" + postTimeLong +"','" +postTimeStr+"')");
             		} 
             	}
-        };
-        
-        function sendmsg(toUserId,inputValue,handler){
-        	console.log("发送消息 - toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
-        	log2root("发送消息- toUserId:"+toUserId+"-inputValue:"+inputValue+"-handler:"+handler);
-        	chat.sendPrivateMsg(toUserId,inputValue,handler);
         }
 		
 		function setRootVars(){
@@ -568,8 +666,8 @@
 			//topicList = Parameter.topiclist;
 		}
 		
-		//2017.08.16 叶夷   创建跟我聊天的人的id和未读消息数一一对应的对象，为了保存数组
-		function unreadObj(user,imgUrl,data,postTimeStr,touserId,unreadNum){
+		//2017.08.16 叶夷   创建跟我聊天的人的id和未读消息数一一对应的对象，为了保存数组,userNameForTopic是为了群聊消息保存发送者的username
+		function unreadObj(user,imgUrl,data,postTimeStr,touserId,unreadNum,userNameForTopic){
 			var obj = new Object();
 			obj.user=user;
 			obj.imgUrl=imgUrl;
@@ -577,6 +675,7 @@
 			obj.postTimeStr=postTimeStr;
 			obj.touserId=touserId;
 			obj.unreadNum=unreadNum;
+			obj.userNameForTopic=userNameForTopic;
 			obj.getUser = function() {
 				return this.touserId;
 			};
@@ -594,18 +693,6 @@
 			};
 			return obj;
 		}
-		
-		//解决滚动条隐藏在火狐浏览器不兼容的问题
-		/* $("#cp-show").niceScroll({ 
-			cursorwidth:"0px",
-			//cursorborder:"none",
-			horizrailenabled: true
-		})
-		$("#mytag-container").niceScroll({ 
-			cursorwidth:"0px"
-			//cursorborder:"none",
-		}) */
-		
 		
 	</script>
 </html>

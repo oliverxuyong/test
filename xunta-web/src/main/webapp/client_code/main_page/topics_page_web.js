@@ -6,6 +6,11 @@ function wsConnect() {
 var intersetCPArray=new Array();
 // 2017.10.17 叶夷  用一个变量表示标签是否请求成功,true为成功，false为不成功
 var requestCPSuccese=false;
+//特殊提示‘点加号’大标签的内容
+//var bigCPText="点加号，为自己定义更多关键词";
+var bigCPText="试试自己添加一个关键词吧  可以是任何你想、你有、你关注、你喜欢的喔~";
+//特殊大圆的动画秒数
+var bigCPAnimateSecond=1000;
 
 // 叶夷 2017.06.15 将从服务端的标签显示出来
 function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列表: 这段代码出现在旧版本，因版本错乱出现在这里
@@ -21,51 +26,75 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	var notRepeatCpCount=0;// 不重复的可以上升的cp个数
 	
 	// 2017.09.13 叶夷 判断每一批请求相交的次数和哪几个圆相交
-	var intersetCount=parseInt(Math.random()*2+1);// 相交次数随机为1，2,3
+	/*var intersetCount=parseInt(Math.random()*2+1);// 相交次数随机为1，2,3
 	for(var count=1;count<=intersetCount;count++){
 		intersetCPArray.push(parseInt(Math.random()*cpList.length));
-	}
+	}*/
 	
-	for (var i = 0; i < cpList.length; i++) {
-		var cp = cpList[i];// 每个推荐标签
-		var cpid=cp.cpid;// 每个推荐标签id
+	/*if(currentRequestedCPPage>=2){//请求一批之后测试大标签
+		cpList = new Array();//测试推荐标签特殊大气泡
+	}*/
+	
+	if(cpList.length<=0){
+		notRepeatCpCount=1;
+		appendElement("bigCP",bigCPText,0);// 叶夷 2017.06.16
+		$("#request_cp").hide();
+	}else{
 		
-		// 加上一个过滤，前端出现过的cp不应该再出现
-		var isRepeat=false;
-		for(var j in cpValue){
-			if(cpValue[j].getCpNode()==("outcpid"+cpid)){// 出现过
-				console.log("cpid->"+cpid+" 标签重复出现")
-				isRepeat=true;
-				break;
+		//2017.12.26  叶夷   如果这时界面的大特殊标签圆存在，则先让其消失再进行别的圆的计算
+		var bigCp=$("#outcpidbigCP");
+		if(bigCp.length>0){
+			bigCPAnimate(bigCp);
+			deleteBigCp();//点击了大圆标签则先将其把在数组中删除
+			setTimeout(function() {
+				addTag();
+			},bigCPAnimateSecond);
+		}
+		
+		for (var i = 0; i < cpList.length; i++) {
+			var cp = cpList[i];// 每个推荐标签
+			var cpid=cp.cpid;// 每个推荐标签id
+			var text=cp.cptext;
+			//var text="Last古董";//测试
+			var selectTagNum =cp.howmanypeople_selected;
+			
+			// 加上一个过滤，前端出现过的cp不应该再出现
+			var isRepeat=false;
+			for(var j in cpValue){
+				if(cpValue[j].getCpNode()==("outcpid"+cpid)){// 出现过
+					console.log("cpid->"+cpid+" 标签重复出现")
+					isRepeat=true;
+					break;
+				}
+			}
+			if(isRepeat==true){// cp重复出现则下一个
+				continue;
+			}else{// 不是重复的cp则下一步
+				notRepeatCpCount++;
+				appendElement(/*i,*/cpid,text,selectTagNum);// 叶夷 2017.06.16
+				// 如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
 			}
 		}
-		if(isRepeat==true){// cp重复出现则下一个
-			continue;
-		}else{// 不是重复的cp则下一步
-			notRepeatCpCount++;
-			appendElement(i,cpid,cp);// 叶夷 2017.06.16
-			// 如果直接将此方法中的代码放在此循环中，click()方法只会作用在循环最后的标签上，目前不知道原因？
-		}
+		requestCPSuccese=true;//表示标签请求成功，下面的滑倒底部的方法才可以执行请求下一批标签
+		// 推荐标签动画开始之后再将"请求下一批"的按钮显现
+		$("#request_cp").show();
 	}
 	
-	requestCPSuccese=true;//表示标签请求成功，下面的滑倒底部的方法才可以执行请求下一批标签
-
+	$("#request_cp").html("<div>更多标签</div>");
+	
 	// 判断是否测试
-	if(startTest){
+	/*if(startTest){
 		testSelectTag();
-	}
+	}*/
 	
 	// 一批标签个别相交之后数据清空
 	//intersetCPArray.splice(0,intersetCPArray.length);  
 	
 	// 定义好位置之后开始动画,参数是需要动画的不重复的可以上升的cp个数
 	startAnimate(notRepeatCpCount);
-	// 推荐标签动画开始之后再将"请求下一批"的按钮显现
-	$("#request_cp").show();
-	$("#request_cp").html("<div>+</div><div>更多标签</div>");
 	
 	//进入聊天列表显示
-	$("#enterdialogList").show();
+	//$("#enterdialogList").show();
 	//推荐标签遮住滑动条显示
 	/*$("#background-rightbar").show();
 	//调整滚动条宽度
@@ -80,9 +109,12 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	setTimeout(function() {
 		cpsStartAnimate=false;
 		// 叶夷 2017.07.11 等请求cp动画完成之后再请求用户匹配缩略表
-		if(firstRequestTopMatchedUsers==true){
+		if(firstRequestTopMatchedUsers==true && isShowGuide==1){
 			requestTopMatchedUsers(userId,requestTopMUNum); 
 			//addMPData();
+			//匹配人容器的大小设置
+			//setMatchUsersContainerSize();
+			isShowGuide=1;
 		}
 	},2000);
 }
@@ -92,17 +124,28 @@ var fullTextArray=new Array();
 
 // 叶夷 2017.06.16 通过服务器返回的标签添加到页面的方法
 // i表示一批推荐标签的第几个标签
-function appendElement(i, cpid,cp) {
+function appendElement(/*i, */cpid,text,selectTagNum) {
 	var cp_container = $("#cp-container");// 装推荐标签的容器
+	minCPSize = $("body").width()/8;
 	
 	// 这是cp的选择人数
-	var selectTagNum =cp.howmanypeople_selected;
+	//var selectTagNum =cp.howmanypeople_selected;
 	//var selectTagNum =parseInt(Math.random()*10);
 	
 	// 先随机推荐标签字体的大小，在这里留一个可以控制字体大小的入口
 	/*var cpTextSize = Math.random() * 8 + 12;
 	cpTextSize = parseInt(cpTextSize);*/
-	var cpTextSize =controlSize(selectTagNum,maxCPTextSize,minCPTextSize);
+	// 先随机内圆 div的大小,在这里留一个可以控制内圆div大小的入口
+	//var cpInNodeWidth = Math.random() * 40 + 40;
+	//cpInNodeWidth = parseInt(cpInNodeWidth);
+	var cpTextSize,cpInNodeWidth;
+	if(cpid=="bigCP"){//特殊的标签
+		cpTextSize =minCPTextSize;
+		cpInNodeWidth =$("body").width()*4/7;
+	}else{
+		cpTextSize =controlSize(selectTagNum,maxCPTextSize,minCPTextSize);
+		cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
+	}
 	
 	var cp_node = $("<div></div>").attr("class", "cp").attr("id",
 			"cpid" + cpid);// 外圆div
@@ -124,16 +167,13 @@ function appendElement(i, cpid,cp) {
 	var cpNodeByDistance=$("<div></div>").attr("class", "outcp").attr("id","outcpid" + cpid);
 	cpNodeByDistance.append(cp_node);
 	
-	
-	// 先随机内圆 div的大小,在这里留一个可以控制内圆div大小的入口
-	//var cpInNodeWidth = Math.random() * 40 + 40;
-	//cpInNodeWidth = parseInt(cpInNodeWidth);
-	var cpInNodeWidth =controlSize(selectTagNum,maxCPSize,minCPSize);
-	cp_innode.css("height", cpInNodeWidth);
-	cp_innode.css("width", cpInNodeWidth);
+	//cp_innode.css("height", cpInNodeWidth);
+	//cp_innode.css("width", cpInNodeWidth);
+	// 先将标签放在标签容器中之后确定标签圆大小
+	cp_container.append(cpNodeByDistance);
 	
 	//判断是否需要相交
-	var isInterset=false;;
+	/*var isInterset=false;;
 	for(var count=0;count<=intersetCPArray.length;count++){
 		var intersetCP=intersetCPArray[count];
 		if(i==intersetCP){
@@ -141,31 +181,84 @@ function appendElement(i, cpid,cp) {
 			intersetCPArray[count]=cpid;
 			break;
 		}
-	}
+	}*/
 	//标签文字完整内容保存
-	fullTextArray[cpid]=cp.cptext;
+	fullTextArray[cpid]=text;
 	// 测试字数超过九个字的显示
 	//calCircle(cp_text, cpTextSize, "今天上海很冷要多穿衣服", cp_node, cp_innode,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
 	// 调用字体大小匹配圆大小的方法
-	calCircle(cp_text, cpTextSize, cp.cptext, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,isInterset);
+	calCircle(cp_text, cpTextSize, text, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode/*,isInterset*/);
 	
-	cpTestArray.push(CPTestObj(cpid, cp.cptext));// 2017.09.14 叶夷
+	cpTestArray.push(CPTestObj(cpid, text));// 2017.09.14 叶夷
 													// 用来装页面存在过的cpid,为了性能测试
-	
-	cp_innode.click(function() {
-		// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
-		chooseOneCP(cp_node,cp);
-	});
-	
-	// 标签圆大小确定之后将标签放在标签容器中
-	cp_container.append(cpNodeByDistance);
+	if(cpid!="bigCP"){
+		cp_innode.click(function() {
+			// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
+			chooseOneCP(cp_node,cpid,text,selectTagNumText);
+			
+			insertMyTagArrayNoRepeat(cpid,text);
+			
+		});
+	}else{//特殊的标签,过5秒之后消失之后动画飞到加号位置
+		cp_innode.click(function() {
+			bigCPAnimate(cpNodeByDistance);
+			deleteBigCp();//点击了大圆标签则先将其把在数组中删除
+			setTimeout(function() {
+				addTag();
+			},bigCPAnimateSecond);
+		});
+	}
 	
 	// 标签大小设置之后将设置标签动画的轨迹且将前端出现过的标签位置全部保存下来
 	// cpAnimationLocation(cp_container,cp_node);
 	cpAnimationLocation(cp_container,cpNodeByDistance,cpValue);
 }
+/**
+ * 2017.12.01 叶夷 特殊标签几秒之后飞到添加标签中且消失
+ */
+function bigCPAnimate(cpNodeByDistance){
+	//获得添加标签的位置
+	var addTag=$("#addtag")
+	var inCPNode=cpNodeByDistance.find(".incp");
+	var inCPTextNode=inCPNode.find("div");
+	var animateCpEndTop=addTag.offset().top-(cpNodeByDistance.width()-inCPNode.width())/2+addTag.height()/2;
+	var animateCpEndLeft=addTag.offset().left-(cpNodeByDistance.width()-inCPNode.width())/2+addTag.width()/2;
+	$("#showatloaded").append(cpNodeByDistance);
+	var animateCpStartTop=parseInt($("#top-container").height())+cpNodeByDistance.offset().top-$("#cp-show").scrollTop();
+	//获取div相对屏幕于左上角的绝对位置,返回值是一个包含width height top right bottom left的对象
+	//var animateCpStartTop=cpNodeByDistance.offset().top-$("#top-container").offset().top+$("#cp-show").scrollTop();
+	//console.log("特殊大圆top= "+animateCpStartTop);
+	//log2root("特殊大圆top= "+animateCpStartTop);
+	cpNodeByDistance.css("top",animateCpStartTop);
+	
+	cpNodeByDistance.animate({
+		left:animateCpEndLeft+"px",
+		top:animateCpEndTop+"px",
+	}, bigCPAnimateSecond);
+	//慢慢变小
+	inCPTextNode.animate({
+		opacity:0
+	}, bigCPAnimateSecond);
+	
+	setTimeout(function() {
+		cpNodeByDistance.remove();
+		//removeDiv(cpNodeByDistance,userAgent[1]);
+		//cpValue.splice(cpValue.length-1,cpValue.length-1);
+		//$("#cp-container").height(cpValue[cpValue.length-1].cpBottom);
+		requestCPSuccese=true;
+		$("#request_cp").show();
+	},bigCPAnimateSecond);
+}
+//2017.12.26 叶夷  将数组中存在的所有大标签全部删除
+function deleteBigCp(){
+	for(var i=0;i<=cpValue.length-1;i++){
+	    if(cpValue[i].cpNode=="outcpidbigCP"){
+	    	cpValue.splice(i,1);
+	    }
+	}
+}
 
-var minCPSize = $("body").width()/8;// 最小内圆的大小
+var minCPSize;// 最小内圆的大小
 var maxCPSize = 100;// 最大内圆的大小
 var minCPTextSize = 13;// cp文字大小的最小值
 var maxCPTextSize = 20;// cp文字大小的最大值
@@ -205,7 +298,7 @@ function calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth
 	var cpTextLength = length(cpText);
 
 	// 控制cp文字显示的个数,超过最大个数则截断且加上"..."
-	if (cpTextLength > maxCPTextNumber) {
+	if (cpTextLength > maxCPTextNumber && cpText!=bigCPText) {
 		// cpText = subString(cpText, maxCPTextNumber, true);//
 		// 为true就是字符截断之后加上"..."
 		cpText = cpText.substring(0,maxCPTextNumber)+"...";// 字符截断之后加上"..."
@@ -243,8 +336,8 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	}
 	
 	// 将cp文字div的大小设置
-	cp_text.css("height", cpTextHeight + "px");
-	cp_text.css("width", cpTextWidth + "px");
+	//cp_text.css("height", cpTextHeight + "px");
+	//cp_text.css("width", cpTextWidth + "px");
 	cp_text.css("font-size", cpTextSize);
 	cp_text.text(cpText);
 	
@@ -256,8 +349,8 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	
 	//2017.08.14 叶夷 加上标签的选择人数 
 	selectTagNumNode.css("font-size",cpTextSize+"px");
-	selectTagNumNode.css("height", (cpTextSize+5) + "px");
-	selectTagNumNode.css("line-height", (cpTextSize+5) + "px");
+	//selectTagNumNode.css("height", (cpTextSize+5) + "px");
+	//selectTagNumNode.css("line-height", (cpTextSize+5) + "px");
 	//加上了标签的选择人数外圆的大小增大,标签选择人数已经放在右上角，所以内圆大小不用增加选择人数的空间
 	/*if (cpInNodeWidth > hypotenuse){
 		cpInNodeWidth=parseInt(cpInNodeWidth)+parseInt(cpTextSize)+2; 
@@ -280,26 +373,26 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	if (cpInNodeWidth > hypotenuse) {// 内圆能装下cp div则外圆和内圆差不多大
 		cp_node.css("height", cpInNodeWidth + "px");
 		cp_node.css("width", cpInNodeWidth + "px");
-		cp_innode.css("top", 0);
-		cp_innode.css("left", 0);
+		/*cp_innode.css("top", 0);
+		cp_innode.css("left", 0);*/
 	} else {// 如果装不下则外圆扩大,内圆也需要调整位置
 		cp_node.css("height", hypotenuse + "px");
 		cp_node.css("width", hypotenuse + "px");
 
 		// 内圆位置调整
-		var cpInNodeTop = (hypotenuse - cpInNodeWidth) / 2-1;
+		/*var cpInNodeTop = (hypotenuse - cpInNodeWidth) / 2-1;
 		cp_innode.css("top", cpInNodeTop);
-		cp_innode.css("left", cpInNodeTop);
+		cp_innode.css("left", cpInNodeTop);*/
 		
-		//外圆比内圆大的时候top值需要改变
+		/*//外圆比内圆大的时候top值需要改变
 		var selectTagNumNodeTop=((hypotenuse - cpInNodeWidth)-(cpTextSize+5))/2;
-		selectTagNumNode.css("top", selectTagNumNodeTop + "px");
+		selectTagNumNode.css("top", selectTagNumNodeTop + "px");*/
 	}
 	// 文字位置调整
-	cpTextTop = (cpInNodeWidth - cpTextHeight) / 2;
+	/*cpTextTop = (cpInNodeWidth - cpTextHeight) / 2;
 	cpTextLeft = (cpInNodeWidth - cpTextWidth) / 2;
 	cp_text.css("top", cpTextTop);
-	cp_text.css("left", cpTextLeft);
+	cp_text.css("left", cpTextLeft);*/
 	
 	// 2017.09.13 叶夷 判断标签之前的距离，需要获得cp_node的大小，然后再加上一个随即距离则是最外面圆的大小
 	var randowDistance=cpInNodeWidth*0.45;// 先按内圆计算,这是标签之间的随机距离,根据自身的大小判断，再加上个别相交
@@ -313,7 +406,10 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 	cpNodeByDistance.css("height",cpNodeByDistanceWidth+"px");
 	
 	//选择标签的位置也要改变
-	selectTagNumNode.css("left", (cpNodeWidth/5*3) + "px");
+	//selectTagNumNode.css("left", (cpNodeWidth/5*2) + "px");
+	var selectTagNumNodeLeft=(cp_text.width()+parseInt(cp_text.css("padding-left")))/2
+	//console.log("测试:selectTagNumNodeLeft="+selectTagNumNodeLeft+" "+cp_text.width()+" "+cp_text.css("padding-left"));
+	selectTagNumNode.css("left", selectTagNumNodeLeft+ "px");
 	
 	// 2017.09.13 叶夷 标签再加上一个圆之后居中
 	if(cpNodeByDistanceWidth>cpNodeWidth){
@@ -322,13 +418,13 @@ function calCircle1(cp_text, cpTextLength,cpTextSize, cpText, cp_node, cp_innode
 		cp_node.css("left", cpNodeTop+"px");
 	}
 	
-	var yesItem=cp_node.find(".yesItem");
+	/*var yesItem=cp_node.find(".yesItem");
 	var noItem=cp_node.find(".noItem");
 	if(yesItem.length<=0 || noItem.length<=0){
 		yesItem=$("<div></div>").attr("class","yesItem").text("收了");//收下按钮
-		noItem=$("<div></div>").attr("class","noItem").text("消失");//消失按钮
+		noItem=$("<div></div>").attr("class","noItem").text("反感");//消失按钮
 		cp_node.append(yesItem).append(noItem);
-	}
+	}*/
 	
 	return cpInNodeWidth;//这里返回是为了得到标签选择人数变化时的内圆大小
 }
@@ -473,16 +569,11 @@ function startPushSelectCpPresent(data){
 		//通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
 		for (var index= 0; index < cpValue.length; index++) {
 			var cpObj = cpValue[index];// 存在的cp
+			console.log("选择人数变化时标签掉落测试: 第"+(index+1)+"个标签圆="+cpObj.cpNode);
 			var cpNodeID =cpObj.cpNode;// 存在的cpid
 			var cpLeft = cpObj.cpLeft;// 获得已有cp的最左边边界值
 			var cpRight = cpObj.cpRight;
 			var cpTop,cpBottom;
-		
-			//判断放大之后是否会超过边界
-			var right=cpLeft+cpRadius*2;
-			if(right>cp_container.width()){
-				cpLeft=cpLeft-changeWidth;
-			}
 		
 			var cpRadius;
 			var cpid1=cpNodeID.replace(/[^0-9]/ig,"");
@@ -491,6 +582,13 @@ function startPushSelectCpPresent(data){
 			}else{
 				cpRadius=(cpRight-cpLeft)/2;
 			}
+			
+			//判断放大之后是否会超过边界
+			var right=cpLeft+cpRadius*2;
+			if(right>cp_container.width()){
+				cpLeft=cpLeft-changeWidth;
+			}
+			
 			var cpX = cpLeft + cpRadius;// 一开始圆心的x为start+cpRadius
 			var cpY = cp_container.height();//从下往上单轨迹扫描
 			// 1.遍历装cp容器的宽度,每次+1px
@@ -530,6 +628,7 @@ function startPushSelectCpPresent(data){
 			cpTop=cpY-cpRadius;
 			bottom = cpTop +cpRadius*2;
 			right=cpLeft+cpRadius*2;
+			console.log("选择人数变化时标签掉落测试: 此标签圆存入的数值="+cpNodeID+" "+cpLeft+" "+right+" "+cpTop+" "+bottom);
 			cpValueForSelectNum.push(new CP(cpNodeID, cpLeft, right, cpTop, bottom));
 			// cp容器的高度调整
 			cp_container.height(bottom+maxCPSize);
@@ -655,8 +754,8 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 
 	//将cpValueArray排序，取最下面的10个标签
 	var cpValueSortArray;
-	if(cpValueArray.length>=20){
-		cpValueSortArray=cpValueArray.slice((cpValueArray.length-20),cpValueArray.length);
+	if(cpValueArray.length>=10){
+		cpValueSortArray=cpValueArray.slice((cpValueArray.length-10),cpValueArray.length);
 	}else{
 		cpValueSortArray=cpValueArray.slice(0,cpValueArray.length);
 	}
@@ -719,6 +818,8 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 			var cpFirstObj = cpTwo[0];
 			// 6.计算与cpFirstObj能够相切时的位置,cpRadius是上升的cp半径，cpX是上升的cp圆心的x值
 			maxTop = calCPTangencyTop(cpFirstObj, cpRadius, cpX);// 在不和轨迹中最低点重合的情况下可以上升的Top值
+			
+			
 			// 遍历轨迹中所有的圆，一旦会跟标的圆重合，则这条轨迹放弃
 			for (var k = 0; k < cpTwo.length; k++) {
 				var cpSecondObj = cpTwo[k];
@@ -730,18 +831,35 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 				var nowCpRadius = (cpRightValue - cpLeftValue) / 2;// 第二个最低点半径
 				var nowCpX = cpLeftValue + nowCpRadius;// 第二个最低点的圆心x轴
 				var nowCpY = cpTopValue + nowCpRadius;// 第二个最低点的圆心y轴
+				
+				
 
 				if (Math.sqrt(Math.pow((cpX - nowCpX), 2)
-						+ Math.pow((cpY - nowCpY), 2)) < (cpRadius + nowCpRadius)) {// 如果与第一个最低点相切的时候与第二个最低点重合
-					isOverLay = true;
-					break;
+						+ Math.pow((cpY - nowCpY), 2)) < (cpRadius + nowCpRadius)) {// 相交且要判断内切
+					//maxTop = calCPTangencyTop(cpSecondObj, cpRadius, nowCpX);// 在不和轨迹中最低点重合的情况下可以上升的Top值
+					
+					if(cp_node.attr("id")=="outcpidbigCP"){//特殊圆
+						//在这条轨迹上遇到相交的推荐标签圆之后，上浮圆的top值-1，直到和相交圆不相交为止
+						while(true){
+							++maxTop;
+							cpY = maxTop + cpRadius;
+							if (Math.sqrt(Math.pow((cpX - nowCpX), 2)
+									+ Math.pow((cpY - nowCpY), 2)) >= (cpRadius + nowCpRadius)) {
+								break;
+							}
+						}
+					}else{
+						isOverLay = true;
+						break;
+					}
 				}
 			}
 		} else {
 			maxTop = 0;
 		}
 
-		if (isOverLay) {
+		if (isOverLay && cp_node.attr("id")!="outcpidbigCP") {
+			//console.log(start+"->判断和轨迹中别的圆相切")
 			continue;
 		}
 		if (top == -1) {// 如果一开始=-1，则top直接赋值
@@ -759,8 +877,9 @@ function cpAnimationLocation(cp_container,cp_node,cpValueArray) {
 	right = left + cpWidth;
 	bottom = top + cpHeight;
 	cpValueArray.push(new CP(cp_node.attr("id"), left, right, top, bottom));
-	
+	//console.log(":"+left+" "+right+" "+top+" "+bottom);
 	// cp容器的高度调整
+	//console.log("cp容器的高度:"+bottom);
 	cp_container.height(bottom);
 }
 
@@ -792,7 +911,7 @@ function startAnimate(length) {
 function calCPTangencyTop(cpObj, cpRadius, cpX) {
 	// 6.计算与cpFirstObj能够相切时的位置
 	var cpObjNode = cpObj.getCpNode();
-	// console.log("测试4："+cpObjNode);
+// console.log("测试4："+cpObjNode); 
 	var cpObjRadius = $("#" + cpObjNode).width() / 2;// 已有cp的半径
 	var cpObjLeftValue = cpObj.getCpLeft();// 获得已有cp的最左边边界值
 	var cpObjTopValue = cpObj.getCpTop();
@@ -814,9 +933,9 @@ function calCPTangencyTop(cpObj, cpRadius, cpX) {
 var chooseOneCpStart=false;
 
 // 叶夷 2017.06.16 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
-function chooseOneCP(cp_node,cp) {
-	var cpid = cp.cpid;
-	var text=cp.cptext;
+function chooseOneCP(cp_node,cpid,text,selectTagNumText) {
+	//var cpid = cp.cpid;
+	//var text=cp.cptext;
 	
 	//cp选择之前先放大实现“收了”和“消失”的功能，再进行选择
 	//1.先将需要的div放入
@@ -826,6 +945,7 @@ function chooseOneCP(cp_node,cp) {
 	//2017.11.16 叶夷 将变大的标签克隆且获得之前标签相对于页面的位置
 	var cpNodeByDistance=$("#outcpid"+cpid).clone();
 	cp_node=cpNodeByDistance.find(".cp");
+	var cp_text=cp_node.find("div");
 	cpNodeByDistance.attr("id","copycp");
 	$("body").append(cpNodeByDistance);
 	var cpNodeByDistanceOffsetLeft=$("#outcpid"+cpid).offset().left;
@@ -833,9 +953,15 @@ function chooseOneCP(cp_node,cp) {
 	cpNodeByDistance.css("top",cpNodeByDistanceOffsetTop);
 	cpNodeByDistance.css("left",cpNodeByDistanceOffsetLeft);
 	
-	var yesItem=cp_node.find(".yesItem");
-	var noItem=cp_node.find(".noItem");
-	if(yesItem.css("display")=='none' && noItem.css("display")=='none'){
+	
+	var yesItem=$("body").find(".yesItem");
+	var noItem=$("body").find(".noItem");
+	if(yesItem.length<=0 || noItem.length<=0){
+		yesItem=$("<div></div>").attr("class","yesItem").text("关注");//收下按钮
+		noItem=$("<div></div>").attr("class","noItem").text("厌恶");//消失按钮
+		$("body").append(yesItem).append(noItem);
+	/*}
+	if(yesItem.css("display")=='none' && noItem.css("display")=='none'){*/
 		/*yesItem=$("<div></div>").attr("class","yesItem").text("收了");//收下按钮
 		noItem=$("<div></div>").attr("class","noItem").text("消失");//消失按钮
 		cp_node.append(yesItem).append(noItem);*/
@@ -854,14 +980,14 @@ function chooseOneCP(cp_node,cp) {
 		var cpTextLength=cpText.length;
 		var selectTagNumNode=cp_node.find("mytag-selectednumber");
 		var selectTagNum=selectTagNumNode.text();
-		yesItem.css("font-size",cpTextSize+"px");
-		noItem.css("font-size",cpTextSize+"px");
+		/*yesItem.css("font-size",cpTextSize+"px");
+		noItem.css("font-size",cpTextSize+"px");*/
 		//3.改变整个标签的大小
 		//cp文字div, cp文字长度,cp文字大小，cp文字，外圆div，内圆div,内圆div大小,选择的人数，再加上一个圆div（用来判断标签之前的距离）,选择人数div,判断是否相交
-		//2017.11.14 叶夷  (cpTextSize+2)标签放大之后字体放大两号
-		calCircle1(cp_text, cpTextLength,(parseInt(cpTextSize)+2), cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
-		cp_innode.css("background-color","rgba(247,247,247,0.4)");
-		cp_innode.css("z-index","104");
+		//2017.11.14 叶夷  (cpTextSize+2)标签放大之后字体放大三号
+		calCircle1(cp_text, cpTextLength,(parseInt(cpTextSize)+3), cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
+		cp_text.css("background-color","rgba(255,255,255,0.3)");
+		cp_text.css("z-index","104");
 		
 		//变大之后的标签如果超过边宽则left改变
 		var cp_container = $("#cp-container");// 装推荐标签的容器
@@ -901,10 +1027,12 @@ function chooseOneCP(cp_node,cp) {
 			enterdialogList.css("z-index","102");
 			
 			//cp_innode.css("z-index","");
-			yesItem.hide();
-			noItem.hide();
-			yesItem.unbind();
-			noItem.unbind();
+			yesItem.remove();
+			//removeDiv(yesItem,userAgent[1]);
+			noItem.remove();
+			//removeDiv(noItem,userAgent[1]);
+			/*yesItem.unbind();
+			noItem.unbind();*/
 			//cp_node.unbind();
 			//cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			//cpNodeByDistance.css("top",cpNodeByDistanceOldTop+"px");
@@ -917,7 +1045,9 @@ function chooseOneCP(cp_node,cp) {
 			//calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
 			$(".cover").unbind();
 			$(".cover").remove();
+			//removeDiv($(".cover"),userAgent[1]);
 			cpNodeByDistance.remove();
+			//removeDiv(cpNodeByDistance,userAgent[1]);
 			
 			//event.stopPropagation();阻止事件冒泡。
 			//这是为了防止选中标签之后取消再次点击时，点击cover，cover删除之后cp_node的点击事件又再次触发
@@ -928,8 +1058,11 @@ function chooseOneCP(cp_node,cp) {
 		
 		//绑定点击事件
 		yesItem.click(function() {
+			insertMyTagArrayNoRepeat(cpid,text);
+			
 			autoOverflow();
 			cpNodeByDistance.remove();
+			//removeDiv(cpNodeByDistance,userAgent[1]);
 			
 			//2017.11.15 叶夷  选择标签之后进入聊天列表的按钮必须浮现
 			enterdialogList.css("z-index","102");
@@ -945,12 +1078,16 @@ function chooseOneCP(cp_node,cp) {
 			$(".cover").unbind();
 			yesItem.unbind();
 			noItem.unbind();
-			cp_node.unbind();
 			
 			//cp_innode.css("z-index","");
 			$(".cover").remove();
-			yesItem.hide();
-			noItem.hide();
+			//removeDiv($(".cover"),userAgent[1]);
+			/*yesItem.hide();
+			noItem.hide();*/
+			yesItem.remove();
+			//removeDiv(yesItem,userAgent[1]);
+			noItem.remove();
+			//removeDiv(noItem,userAgent[1]);
 			
 			//cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			//恢复成原来大小再选择
@@ -961,12 +1098,13 @@ function chooseOneCP(cp_node,cp) {
 			//cp_innode.css("opacity","0.3");
 			//calCircle(cp_text, cpTextSize, cpText, cp_node, cp_innode,cpInNodeWidth,selectTagNum,cpNodeByDistance,selectTagNumNode,"");
 			chooseOneCpStart=true;
-			chooseCP($("#outcpid"+cpid).find(".incp"),cpid,text,"P");
+			chooseCP($("#outcpid"+cpid).find(".incp"),cpid,text,"P",selectTagNumText);
 		});
 		
 		noItem.click(function() {
 			autoOverflow();
 			cpNodeByDistance.remove();
+			//removeDiv(cpNodeByDistance,userAgent[1]);
 			
 			//2017.11.15 叶夷  标签消失之后进入聊天列表的按钮必须浮现
 			enterdialogList.css("z-index","102");
@@ -974,15 +1112,20 @@ function chooseOneCP(cp_node,cp) {
 			//cp_innode.css("z-index","");
 			$(".cover").unbind();
 			$(".cover").remove();
+			//removeDiv($(".cover"),userAgent[1]);
+			yesItem.remove();
+			//removeDiv(yesItem,userAgent[1]);
+			noItem.remove();
+			//removeDiv(noItem,userAgent[1]);
 			//cpNodeByDistance.css("left",cpNodeByDistanceOldLeft+"px");
 			//现变小
-			$("#outcpid"+cpid).find(".incp").animate({
-				width : 0,
-				height : 0
+			$("#outcpid"+cpid).find(".incp").find("div").animate({
+				opacity:0
 			}, 1000,function() {
 				$("#outcpid"+cpid).remove();
+				//removeDiv($("#outcpid"+cpid),userAgent[1]);
 		    });
-			
+			/*$("#outcpid"+cpid).remove();*/
 			//位置重新计算,left值不改变，然后通过中心点进行排序，通过中心点最高的标签开始，如果相切只会往下移动，left值不改变
 			
 			//先删除要消失的div
@@ -1086,7 +1229,7 @@ function chooseOneCP(cp_node,cp) {
 	}
 }
 
-function chooseCP(cp_innode,cpid,text,property){
+function chooseCP(cp_innode,cpid,text,property,selectTagNumText){
 	console.log(cpid +":"+text+ "-> 选中状态");
 	
 	if(property=="N"){
@@ -1095,7 +1238,7 @@ function chooseCP(cp_innode,cpid,text,property){
 			if(cp_innode!=null){
 				cp_innode.unbind();// 不可点击
 			}
-			showSelectTag(cpid,text);
+			showSelectTag(cpid,text,selectTagNumText);
 			//等选择动画完成之后再将选择标签发送到后台
 			timeOutSuccess = setTimeout(function() {
 				sendSelectCP(userId, cpid,text, property);
@@ -1104,11 +1247,14 @@ function chooseCP(cp_innode,cpid,text,property){
 }
 
 // 叶夷 2017.08.08 选中的标签添加到我的标签框中
-function showSelectTag(cpid,text){
+function showSelectTag(cpid,text,selectTagNumText){
 	// var cpid=data.cpid;
 	// var text=data.cptext;
 	
-	addMyCp(cpid,text);
+	//2017.12.14  叶夷  在选择标签的时候，取消选择，避免再次选择的时候出现绑定了两次点击事件的情况
+	$("#outcpid"+cpid).find(".cp").unbind();
+	
+	addMyCp(cpid,text,selectTagNumText);
 	// 2017.08.29 叶夷 选择标签加上动画效果，标签上升到“我的标签”容器中
 	var myTag=$("#mytag"+cpid);
 	var animateCp=$("#outcpid"+cpid).clone();
@@ -1128,6 +1274,7 @@ function showSelectTag(cpid,text){
 		
 		timeOutSuccess = setTimeout(function() {
 			animateCp.remove();
+			//removeDiv(animateCp,userAgent[1]);
 			myTag.show();
 			$("#cpid"+cpid).css("opacity", "0.2");// 推荐标签变暗
 			$("#cpid"+cpid).css("cursor", "auto");// 点击小手不见
@@ -1142,22 +1289,37 @@ function showSelectTag(cpid,text){
 function addMyCp(cpid,text,selected_user_num){
 	// 2017.09.14 叶夷 为了性能测试将选择标签的显示控制在3行以内
 		var myTagContainer=$("#mytag-container");
+		
+		//2017.12.22  叶夷  加号保持不动
+		// 随时在我的标签后面加上“+”
+		//$("#addtag").remove();
+		//var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+(myTagHeight-5)+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
+		var addTag=$("#addtag");
+		if(addTag.length<0){
+			addTag=$("<div onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag");
+			myTagContainer.prepend(addTag);
+		}
+		
 		var myTag = $("<div></div>").attr("class", "mytag").attr("id", "mytag"+cpid).text(text);
 		var sampleMyTagFontSize = $("#samplemytag").css("font-size");
 		myTag.css("font-size",sampleMyTagFontSize);
 		myTagContainer.append(myTag);
+		
+		//添加标签的height调整
+		addTag.css("height", $("#samplemytag").css("height"));
+		
+		//有一个克隆的div放在最前面，可以使第一个我的标签产生出空位
+		var cloneMyTag=$("#cloneMyTag");
+		if(cloneMyTag.length<=0){
+			cloneMyTag=$("<div></div>").attr("class","cloneMyTag").attr("id", "cloneMyTag");
+			myTagContainer.prepend(cloneMyTag);
+			cloneMyTag.css("width",addTag.width()+"px");
+		}
 	
 		myTag.click(function(){
 			unSelectCP(cpid);
 		});
 		
-		// 随时在我的标签后面加上“+”
-		$("#addtag").remove();
-		//var addTag=$("<div style='width:"+(myTagTextSize+20)+"px;height:"+myTagHeight+"px;line-height:"+(myTagHeight-5)+"px;' onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag").text("+");
-		var addTag=$("<div onclick='addTag()'></div>").attr("class","mytag add").attr("id","addtag");
-		addTag.css("height", $("#samplemytag").css("height"));
-		myTagContainer.append(addTag);
-	
 		// 装我选择的标签的容器高度适配，一开是只需要能显示两行我选择的标签的高度,并且不同屏幕的大小随着我的标签框的高度的变化其他框的高度也要发生变化
 		//var myTagMarginTop=parseInt(myTag.css("margin-top"));
 		/*var myTagContainerHeight=myTagHeight*3+myTagMarginTop*7;
@@ -1279,11 +1441,22 @@ function unSelectCP(cpid){
 		deleteButton.click(function() {
 			autoOverflow();
 			deleteButton.remove();
+			//removeDiv(deleteButton,userAgent[1]);
 			cancelButton.remove();
+			//removeDiv(cancelButton,userAgent[1]);
 			myTag.unbind();
 			sendUnSelectCP(cpid);
 			$(".cover").unbind();
 			$(".cover").remove();
+			//removeDiv($(".cover"),userAgent[1]);
+			
+			//2017.12.27 叶夷  取消选择的标签把数据从数组中删除
+			for(var i in myTagArray){
+				if(myTagArray[i].cpid==cpid){
+					myTagArray.splice($.inArray(myTagArray[i],myTagArray),1);
+				}
+			}
+			
 		});
 		var cancelButton=showButton("buttons cancel","取消");//取消按钮
 		cancelButton.click(function(){
@@ -1320,12 +1493,15 @@ function showButton(className,buttonText){
 /**当点击我的标签，取消选择或者点击黑布的时候*/
 function cancalUnSelectCPNode(deleteButton,cancelButton,myTag,myTagSelectNumberNode,myTagHeight){
 	deleteButton.remove();
+	//removeDiv(deleteButton,userAgent[1]);
 	cancelButton.remove();
+	//removeDiv(cancelButton,userAgent[1]);
 	myTag.css("height",myTagHeight+"px");
 	myTag.css("z-index","");
 	myTagSelectNumberNode.hide();
 	$(".cover").unbind();
 	$(".cover").remove();
+	//removeDiv($(".cover"),userAgent[1]);
 	myTag.attr("class","mytag");
 }
 
@@ -1346,6 +1522,7 @@ function showUnSelectCP(data){
 		cp_node.css("opacity", "1");
 		cp_node.css("cursor", "pointer");
 		myTag.remove();
+		//removeDiv(myTag,userAgent[1]);
 		
 		// 取消的时候将高度还原
 		// 获得点击取消选择标签时位置变化之后的添加标签的top值
@@ -1368,7 +1545,7 @@ function showUnSelectCP(data){
 		// 将取消选择的标签重新绑定点击事件
 		cp_node.click(function() {
 			//chooseCP(cp_node,cpid,text);
-			chooseOneCP(cp_node,{cpid:cpid,cptext:text});
+			chooseOneCP(cp_node,cpid,text);
 		});
 }
 
@@ -1465,6 +1642,8 @@ var muNowData = new Array();
 var muChangeData=new Array();//这是排名改变之后新的muNowData的数据
 // 2017.07.04 叶夷 显示匹配人列表，没有数据的时候先用模拟数据
 function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹配人列表数据(且排好了顺序)
+	
+	
 	if (muNowData.length == 0) {// 如果是用户一开始上线，匹配人列表没有
 		
 		//测试数据，先固定下来
@@ -1582,7 +1761,7 @@ function showMatchPeople(matchedUserArr) {// 传入的参数为：所需的匹�
 			averageForChangeY.splice(0, averageForChangeY.length);
 			log2root("匹配圆变化是否相交 第"+(c+1)+"次");
 			console.log("匹配圆变化是否相交 第"+(c+1)+"次");
-			if(!intersect){//不相交
+			if(!intersect || c==(notIntersectCount-1)){//不相交或者最后一次
 				break;
 			}
 			muNowData.splice(0, muNowData.length);
@@ -1745,7 +1924,7 @@ function getMuChangeData(matchedUserArr){
 						}
 					}*/
 					var muDiv=$("#mu"+muChangeData[muNowPositionNewNotExist].userid);//这是需要去除的匹配人
-					//muDiv.remove();
+					muDiv.remove();
 					//animateForSize(muDiv, 0, aniSecond * 0.4);
 					muAddImg(i,matchedUserArr,false);
 
@@ -1787,6 +1966,15 @@ function getMuChangeData(matchedUserArr){
 		}*/
 	}
 	
+	//循环完了之后将muChangeData多余的删除，因为会出现匹配人减少的情况
+	if(muChangeData.length>matchedUserArr.length){
+		for(var removeIndex=matchedUserArr.length;removeIndex<muChangeData.length;removeIndex++){
+			var removeMuDiv=$("#mu"+muChangeData[removeIndex].userid);
+			//removeMuDiv.remove();
+			animateForSize(removeMuDiv, 0, aniSecond * 0.4);
+		}
+		muChangeData.splice(matchedUserArr.length, muChangeData.length);
+	}
 }
 
 var intersect=true;//判断是否跟所有的圆都不相交，true为相交，false为不相交
@@ -1809,6 +1997,9 @@ function setMUPosition(i,matchedUserArr){
 	
 	//定义radius
 	var radius=setMatchUsersSize(i);
+	if(isGuideMatchUser){//如果是引导时出现的匹配头像,则五个头像放大一点
+		radius=radius+3;
+	}
 	
 	setBorder(headerContainer,radius);
 	// 1.1 在随机中设置几个特殊情况
@@ -1833,6 +2024,30 @@ function setMUPosition(i,matchedUserArr){
 		x=parseInt(Math.random()*10)+(xMiddle-5);
 		y=parseInt(Math.random()*10)+(yMiddle-5);
 	}
+	
+	/*if(isGuideMatchUser){//如果是引导时出现的匹配头像,则五个头像固定位置
+		xMiddle=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
+		yMiddle=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; 
+		if(i==0){ 
+			x=xMiddle+15;
+			y=yMiddle-5;
+		}else if(i==1){
+			x=muNowData[0].x+muNowData[0].radius*2.2;
+			y=muNowData[0].y+muNowData[0].radius;
+		}else if(i==2){ 
+			x=muNowData[0].x-muNowData[0].radius*2.2;
+			y=muNowData[0].y+muNowData[0].radius*0.8;
+		}else if(i==3){
+			x=muNowData[0].x+muNowData[0].radius*1.8;
+			y=muNowData[0].y-muNowData[0].radius*1.5;
+		}else if(i==4){
+			x=muNowData[0].x-muNowData[0].radius*1.5;
+			y=muNowData[0].y-muNowData[0].radius*1.2;
+		}else if(i==5){
+			x=muNowData[0].x;
+			y=muNowData[0].y+muNowData[0].radius*2;
+		}
+	}*/
 	
 	// 3.然后和存在的所有匹配人头像对比是否相交
 	for(var j=matchUserContainerYStart;j<=matchUserContainerYEnd;j++){
@@ -1927,6 +2142,18 @@ function setBorder(headerContainer,radius){
 	matchUserContainerYStart=radius+5;// y轴从5开始，给留出一点空隙
 	matchUserContainerYEnd=headerContainer.height()-radius-5;// y轴结束的范围给留出一点空隙
 }
+
+//设置匹配人容器一整块位置的大小
+function setMatchUsersContainerSize(){
+	var headerContainer=$("#header-container");
+	var matchUserContainer=$("#matchUsers");
+	matchUserContainerXStart=headerContainer.width()/2;
+	matchUserContainer.css("width",(matchUserContainerXStart-5)+"px");
+	matchUserContainer.css("margin-left",matchUserContainerXStart+"px");
+	var headerContainerHeight=headerContainer.height()-5;
+	matchUserContainer.css("height",headerContainerHeight+"px");
+}
+
 /**
  * 叶夷 2017.09.14 判断是否和其他匹配人相交，true相交，false不相交
  * notContrast,不用对比的点位置，没有的话就为空
@@ -1973,7 +2200,11 @@ function muAddImg(i,matchedUserArr,isFirst){
 		var muUserName=matchedUserArr[i].username;
 		
 		var muNode=$("<div></div>").attr("class","mu").attr("id","mu"+muId);
-		var muNodeImg=$("<img src="+muImg+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
+		if(isGuideMatchUser){//引导页的头像不需要border
+			var muNodeImg=$("<img src="+muImg+" style='border:0;' onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
+		}else{
+			var muNodeImg=$("<img src="+muImg+" onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
+		}
 		muNode.append(muNodeImg);
 		$("#header-container").append(muNode);
 		
@@ -2317,6 +2548,7 @@ function animateForSize(muDiv, muSize, second) {// 移动的物体，变化的�
 	}, second * 1000, function() {
 		if(muSize==0){
 			muDiv.remove();
+			//removeDiv(muDiv,userAgent[1]);
 		}
     });
 }
@@ -2350,7 +2582,7 @@ function addTag() {
 	contextresult.push('</div>');
 	contextresult
 			.push('<div class="searchtag_suggest" id="gov_search_suggest"></div>');
-	alertWin(contextresult.join(''), "添加'心语'", _w, _h);
+	alertWin(contextresult.join(''), "添加'关注点'", _w, _h);
 	
 	//将添加标签的确定按钮两个字的字体大小调整
 	var btnIdvWidth=$(".btn-div").width();
@@ -2398,13 +2630,29 @@ function sendKeyWordToBack(input_value,data) {
 		searchTag(suggestWrap,data[i]);
 	}
 	
+	var guideAddTagText=$("#guideAddTagText");
+	
 	// 输入框为空的话，结果不显示
 	if(input_value!="" && data.length!=0){
+		//2018.03.02   叶夷     在这里判断如果是引导页的添加框，一旦有搜索结果的出现，guideAddTagText消失
+		if(guideAddTagText.length>0){
+			guideAddTagText.hide();
+		}
 		
 		$("#htmlObj").css("height","300px");
 		suggestWrap.show();
+		
 	}else{
-		$("#htmlObj").css("height","100px");
+		//2018.03.07  因为存在引导页，添加标签框如果没有搜索结果则变回之前的引导页的添加框的模样
+    	//var guideAddTagText=$("#guideAddTagText");
+    	if(guideAddTagText.length>0){
+    		var _obj = $("#showatloaded");
+    		var _h = _obj.height()/4.5;
+    		$("#htmlObj").css("height",_h);
+    		guideAddTagText.show();
+    	}else{
+    		$("#htmlObj").css("height","100px");
+    	}
 		suggestWrap.hide();
 	}
 }
@@ -2440,8 +2688,10 @@ function response_user_selected_cp(datas){
 	//myTagContainer.css("width",myTagContainerWidth);
 	var cp_arr=datas.cp_arr;
 	for(var i in cp_arr){
+		//myTagArray.push(cp_arr[i]);
 		var cpid=cp_arr[i].cpid;
 		var text=cp_arr[i].cptext;
+		insertMyTagArrayNoRepeat(cpid,text);
 		var selected_user_num =cp_arr[i].selected_user_num
 		addMyCp(cpid,text,selected_user_num);
 	}
@@ -2455,11 +2705,22 @@ function addCpShow(data){
 	if(is_success=="true"){
 		var cpid=data.cpid;
 		var cptext=data.cptext;
+		insertMyTagArrayNoRepeat(cpid,cptext);
 		//chooseCP(null,cpid,text);
-		showSelectTag(cpid,cptext);
+		showSelectTag(cpid,cptext,0);
 		//console.log("添加标签成功");
     	toast_popup("添加标签成功",2500);
     	closePop();// 添加标签框关掉
+    	
+    	
+    	var isGuideToAddTag=data.isGuideToAddTag;
+    	if(isGuideToAddTag==true || isGuideToAddTag=="true"){
+    		//2018.03.12  叶夷   如果引导页点击了选择标签，则后来不需要再请求我的标签
+        	firstRequestMyCp=false;
+        	$("#guideMUBubble").remove();	
+        	//因为是引导页的添加标签，所以添加完标签之后数据开始请求
+        	requestCP(userId,requestCPNum,++currentRequestedCPPage);
+    	}
 	}else{
 		//console.log("标签添加过,请重新添加");
     	toast_popup("标签添加过,请重新添加",2500);
@@ -2471,6 +2732,8 @@ function addCpShow(data){
 
 function unreadMsg(){
 	var unreadParent=$("#enterdialogList");
+	//有未读消息过来则显示
+	unreadParent.show();
 	if (unreadParent.find('.unread').length==0) {// 如果没有未读消息,则加上一个1;
 		var unreadNum = $("<div></div>").attr("class", "unread").text("1");
 		unreadParent.append(unreadNum);
@@ -2534,7 +2797,11 @@ function sendSelectedCPFail(cpid,text){
 	mytag.unbind();
 	var cp_node=$("#cpid"+cpid);
 	mytag.click(function(){
-		chooseCP(cp_node,cpid,text,"P");
+		//现将感叹号去除，再重新选择
+		mytag.find(".myTagFail").remove();
+		//removeDiv(mytag.find(".myTagFail"),userAgent[1]);
+		sendSelectCP(userId, cpid,text, "P");
+		//chooseCP(cp_node,cpid,text,"P");
 	});
 }
 
@@ -2546,6 +2813,7 @@ function myTagAgainBindingClick(cpid){
 	myTagFail=mytag.find(".myTagFail");
 	if(myTagFail.length>0){// 只有选择标签出错时
 		myTagFail.remove();
+		//removeDiv(myTagFail,userAgent[1]);
 		mytag.click(function(){
 			sendUnSelectCP(cpid);
 		});
@@ -2712,6 +2980,7 @@ function closeImageBox() {
 	autoOverflow();
 	$("#ImageBox").hide();
 	$(".cover").remove();
+	//removeDiv($(".cover"),userAgent[1]);
 }
 
 /*
@@ -2853,3 +3122,391 @@ function updateNickname(newNickname){
 /**
  * end:叶夷
  */
+
+/**start:叶夷  2018.02.27   这里是引导页的模块
+ */
+//将匹配人的引导显示
+function showGuideMatchUsers(){
+	var newMatchedUserArr=new Array();// 装后台发来的匹配人
+	var mpId=new Array(1,2,3,4,5,6);// 模拟的匹配人ID
+	var mpImg=new Array("../image/guideMU1.png",
+						"../image/guideMU2.png",
+						"../image/guideMU3.png",
+						"../image/guideMU4.png",
+						"../image/guideMU5.png",
+						"../image/guideMU6.png"
+						/*"http://q.qlogo.cn/qqapp/1104713537/3F9C443766C40F04801FD0FECD24DF07/40",
+							"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_669143375538163712/jpg/image",
+							"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_671612515800715264/jpg/image",
+							"http://q.qlogo.cn/qqapp/1104713537/5610B8A29AD893CB93284098C11549C8/40",
+							"http://42.121.136.225:8888/user-pic2.jpg",
+							"http://q.qlogo.cn/qqapp/1104713537/9DB80ECB26EB4571E6F176543D4DEFD4/40",
+							"http://q.qlogo.cn/qqapp/1104713537/2CD480E191D757CFF15536FC6B655176/40",
+							"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_708988162394951680/jpg/image",
+							"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_670182701776637952/jpg/image",
+							"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_720907019216883712/jpg/image",
+							"http://qzapp.qlogo.cn/qzapp/101100198/B7EFA63630DFBA0132869E384E00D1E3/50",
+							"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_728576337777922048/jpg/image",
+							"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_791931253833207808/jpeg/image",
+							"http://www.xunta.so:80/xunta-web/useravatar/thumb_img_840229151767138304/jpg/image",
+							"http://www.mxunta.so:80/xunta-web/useravatar/thumb_img_767240700042547200/jpg/image"*/);// 模拟的匹配人头像，目前用颜色代替
+		
+	// 判断是实时改变的匹配人头像还是一开始请求的匹配人头像
+	var length=6;
+	for(var j=0;j<length;j++){
+		newMatchedUserArr.push(new MatchPeople(mpId[j],mpImg[j]));
+	}
+	//showMatchPeople(newMatchedUserArr); 
+	setGuideMatchUsersPosition(newMatchedUserArr);
+}
+/**2018.03.14  叶夷   引导页匹配人显示*/
+function setGuideMatchUsersPosition(matchedUserArr){
+	var firstMUX,firstMUY,firstMURadius;
+	for(var i=0;i<matchedUserArr.length;i++){
+		/**start:设置引导匹配头像的位置*/
+		var muId = matchedUserArr[i].userid;// 获得匹配人列表的匹配人id
+		var muImg = matchedUserArr[i].img_src;// 获得匹配人列表的匹配人头像
+		var muUserName= matchedUserArr[i].username;// 获得匹配人列表的匹配人头像
+		
+		// 1.确定装匹配人列表的范围
+		var headerContainer=$("#header-container");
+		//定义radius
+		var radius=setMatchUsersSize(i);
+		if(isGuideMatchUser){//如果是引导时出现的匹配头像,则五个头像放大一点
+			radius=radius+3;
+		}
+		
+		setBorder(headerContainer,radius);
+		// 1.1 在随机中设置几个特殊情况
+		if(i<5 && i>0){
+			var betweenX=(matchUserContainerXEnd-matchUserContainerXStart)/8;// 往中间靠拢的值
+			var betweenY=(matchUserContainerYEnd-matchUserContainerYStart)/8;// 往中间靠拢的值
+			matchUserContainerXStart=headerContainer.width()/2+radius+betweenX;// 开始位置往中间靠拢
+			matchUserContainerXEnd=headerContainer.width()-radius-10-betweenX;
+			matchUserContainerYStart=radius+5+betweenY;
+			matchUserContainerYEnd=headerContainer.height()-radius-5-betweenY;
+		}
+		// 2.在范围内随机取点
+		var x,y;
+		x=parseInt(Math.random()*(matchUserContainerXEnd-matchUserContainerXStart))+matchUserContainerXStart;
+		y=parseInt(Math.random()*(matchUserContainerYEnd-matchUserContainerYStart))+matchUserContainerYStart;
+		
+		var xMiddle,yMiddle;
+		xMiddle=parseInt(matchUserContainerXEnd-matchUserContainerXStart)/2+matchUserContainerXStart;
+		yMiddle=parseInt(matchUserContainerYEnd-matchUserContainerYStart)/2+matchUserContainerYStart; 
+		if(i==0){ 
+			x=xMiddle+15;
+			y=yMiddle-5;
+			firstMUX=x;
+			firstMUY=y;
+			firstMURadius=radius;
+		}else if(i==1){
+			x=firstMUX+firstMURadius*2.2;
+			y=firstMUY+firstMURadius;
+		}else if(i==2){ 
+			x=firstMUX-firstMURadius*2.2;
+			y=firstMUY+firstMURadius*0.8;
+		}else if(i==3){
+			x=firstMUX+firstMURadius*1.8;
+			y=firstMUY-firstMURadius*1.5;
+		}else if(i==4){
+			x=firstMUX-firstMURadius*1.5;
+			y=firstMUY-firstMURadius*1.2;
+		}else if(i==5){
+			x=firstMUX;
+			y=firstMUY+firstMURadius*2;
+		}
+		/**end:设置引导匹配头像的位置*/
+		
+		/**start:将引导匹配头像放入html中*/
+		var muNode=$("<div></div>").attr("class","mu").attr("id","mu"+muId);
+		var muNodeImg=$("<img src="+muImg+" style='border:0;' onerror="+"javascript:this.src='"+"http://42.121.136.225:8888/user-pic2.jpg"+"'>");
+		muNode.append(muNodeImg);
+		$("#header-container").append(muNode);
+		var muNodeTop=y-radius;
+		var muNodeLeft=x-radius;
+		var muWidth=0;
+		muNode.css("top",muNodeTop);
+		muNode.css("left",muNodeLeft);
+		muNode.css("width",muWidth);
+		muNode.css("height",muWidth);
+		var muImgWidth=muWidth-10;
+		var muImgMargin=(muWidth-muImgWidth)/2;
+		muNodeImg.css("margin-top",muImgMargin);
+		muNodeImg.css("margin-left",muImgMargin);
+		muNodeImg.css("width",muImgWidth);
+		muNodeImg.css("height",muImgWidth);
+		/**end:将引导匹配头像放入html中*/
+		//动画开始
+		animateForSize(muNode, radius*2, aniSecond * 0.4);// 扩大
+	}
+}
+/**2018.03.14  叶夷   引导页匹配人消失*/
+function hideGuideMatchUsers(){
+	for(var i=1;i<=6;i++){
+		var matchUser=$("#mu"+i);
+		if(matchUser.length>0){//如果存在
+			animateForSize(matchUser, 0, aniSecond * 0.4);
+		}
+	}
+}
+
+//引导页的动画头像消失
+function guideMuAnimateRemove(tempSecond,matchUser){
+	matchUser.find("img").animate({
+		width : 0,
+		height : 0
+	}, tempSecond, function() {
+		matchUser.remove();
+	});
+}
+
+
+//显示匹配人头像的引导文字
+function showGuideMUBubble(){
+	var guideMUBubble=$("#guideMUBubble");
+	var matchUsersHeight=$("#matchUsers").height();
+	var guideMUBubbleTop=matchUsersHeight*4.2/5;
+	guideMUBubble.css("top",guideMUBubbleTop);
+	guideMUBubble.css("opacity",0);
+	guideMUBubble.show();
+	guideMUBubble.animate({
+		opacity:1
+	}, 1000);
+}
+//将添加标签的圆圈位置固定好且显示
+function showGuideAddtagCircleAndArrow(){
+	var addTag=$("#addtag");
+	//为了让圆圈正好框在加号上，先获取加号的中心点x,y
+	var addTagTop=addTag.offset().top;//这是加号相对于屏幕的top值
+	var addTagLeft=addTag.offset().left;//这是加号相对于屏幕的left值
+	var addTagWidth=addTag.width()+parseInt(addTag.css("padding-left"))+parseInt(addTag.css("padding-right"))+2;
+	var addTagHeight=addTag.height();
+	var addTagX=addTagLeft+addTagWidth/2;//这是加号中心点的x坐标
+	var addTagY=addTagTop+addTagHeight/2;//这是加号中心点y坐标
+	
+	//圆圈的大小设置为加号宽的两倍
+	var guideAddtagCircleWidth=addTagWidth*2;
+	
+	//计算圆圈的top的left值
+	var guideAddtagCircleTop=addTagY-addTagWidth+2;
+	var guideAddtagCircleLeft=addTagX-addTagWidth-1;
+	var guideAddtagCircle=$("#guideAddtagCircle");
+	guideAddtagCircle.css("width",(guideAddtagCircleWidth+1));
+	guideAddtagCircle.css("height",guideAddtagCircleWidth);
+	guideAddtagCircle.css("top",guideAddtagCircleTop);
+	guideAddtagCircle.css("left",guideAddtagCircleLeft);
+	
+	//计算箭头的位置
+	var guideAddtagArrow=$("#guideAddtagArrow");
+	var guideAddtagArrowTop=addTagY+addTagWidth-25;
+	var guideAddtagArrowLeft=addTagX+addTagWidth-25;
+	guideAddtagArrow.css("top",guideAddtagArrowTop);
+	guideAddtagArrow.css("left",guideAddtagArrowLeft);
+	//箭头来回动画
+	arrowAnimateCircle(guideAddtagArrow,guideAddtagArrowTop,guideAddtagArrowLeft);
+	
+	guideAddtagCircle.show();
+	guideAddtagArrow.show();
+}
+var power=1;//幂次方，用来实现动画的来回循环
+//箭头来回循环动画效果
+function arrowAnimateCircle(guideAddtagArrow,guideAddtagArrowTop,guideAddtagArrowLeft){
+	var guideAddtagArrowTopAnimate=guideAddtagArrowTop-Math.pow((-1),power)*3;
+	var guideAddtagArrowLeftAnimate=guideAddtagArrowLeft-Math.pow((-1),power)*3;
+	guideAddtagArrow.animate({
+		top : guideAddtagArrowTopAnimate,
+		left : guideAddtagArrowLeftAnimate
+	}, 500);
+	//递归循环
+	if(!arrowAnimateStop){//循环
+		timeOutSuccess=setTimeout(function(){
+			++power;
+			arrowAnimateCircle(guideAddtagArrow,guideAddtagArrowTop,guideAddtagArrowLeft)
+		},500);
+	}
+}
+//监测在引导页的时候点击屏幕
+function clickMainPage(bgObj){
+	bgObj.parentNode.removeChild(bgObj);  
+	//console.log("点击屏幕");
+	//点击屏幕箭头动画停止
+	arrowAnimateStop=true;
+	//引导页的其它东西隐藏
+	var guideAddtagCircle=$("#guideAddtagCircle");
+	guideAddtagCircle.remove();
+	var guideAddtagArrow=$("#guideAddtagArrow");
+	guideAddtagArrow.remove();
+	
+	//显示添加标签的气泡
+	var guideMUBubble=$("#guideMUBubble");
+	guideMUBubble.attr('src','../image/guideAddtagBubble.png'); 
+	
+	document.getElementById("guideMUBubble").onload = function () {
+		guideMUBubble.css('width','65%'); 
+        console.log("添加标签的气泡加载完毕");
+        //出现引导页的添加标签的样式
+    	guideAddTag();
+    }
+}
+//出现引导页的添加标签的样式
+function guideAddTag() {
+	//execRoot("sendClickAddTagMsg()");
+	
+	var _obj = $("#showatloaded");
+	var _h = _obj.height()/4.5;
+	var _w = _obj.width()*0.80;
+
+	var contextresult = [];
+	contextresult.push('<div id="entrytag" style="margin-top:4%;">');
+	contextresult
+			.push("<p class='addtag-div'><input type='text' class='tag-name' id='pop_tagName' onporpertychange='showSearchTag()' oninput='showSearchTag()' onkeypress='if(event.keyCode==13){Javascript:guideSearchToAddTag();}'></p>");
+	contextresult
+			.push('<div class="btn-div" onclick="guideSearchToAddTag()">确定</div>');
+	contextresult.push('</div>');
+	contextresult
+			.push('<div class="searchtag_suggest" id="gov_search_suggest"></div>');
+	contextresult
+			.push('<div id="guideAddTagText" style="color: #909090;position: absolute;bottom: 2%;width: 100%;text-align: center;">'
+				  +'<div>头脑一片空白?&nbsp;看看这里</div>'
+				  +'<img src="../image/guideAddtagDownArrow.png" style="width: 6%"/></div>');
+	alertWinForGuide(contextresult.join(''), _w, _h);
+	//alertWin(contextresult.join(''),"添加'关键词'", _w, _h);
+	
+	//将添加标签的确定按钮两个字的字体大小调整
+	var btnIdvWidth=$(".btn-div").width();
+	var btnDivFontSize=btnIdvWidth/2;
+	if(btnDivFontSize>17){
+		btnDivFontSize=17;
+	}
+	$(".btn-div").css("font-size",btnDivFontSize+"px");
+	
+	//调整引导页添加标签框的位置,以文字气泡为参照物
+	var guideMUBubble=$("#guideMUBubble");
+	var guideMUBubbleTop=guideMUBubble.offset().top;
+	var guideMUBubbleHeight=guideMUBubble.height();
+	var htmlObj=$("#htmlObj");
+	var htmlObjTop=guideMUBubbleTop+guideMUBubbleHeight/*+guideMUBubbleHeight/10*/;
+	htmlObj.css("top",htmlObjTop);
+	
+	//将guideAddTagText绑定点击事件
+	var guideAddTagText=window.document.getElementById('guideAddTagText');
+	guideAddTagText.addEventListener('click',function(){
+		isGuideMatchUser=false;
+		closePop();//关闭对话框
+
+		//删除对话气泡
+		var guideMUBubble=$("#guideMUBubble");
+		guideMUBubble.remove();
+		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+		
+		//2018.03.08  叶夷      点击向下箭头按钮数据传给后台
+		sendClickGuideAddTagText(userId);
+	});
+}
+//引导页添加标签的功能
+function guideSearchToAddTag(){
+	//2018.03.12  叶夷   如果引导页点击了选择标签，则后来不需要再请求我的标签
+	//firstRequestMyCp=false;
+		
+	//因为是引导页的添加标签，所以添加完标签之后数据开始请求
+	//requestCP(userId,requestCPNum,++currentRequestedCPPage);
+	//2018.03.08  叶夷      在引导页点击添加标签数据传给后台
+	//sendGuidePageAddTag(userId);
+	var isGuideToAddTag=true;
+	searchToAddTag(isGuideToAddTag);
+}
+
+/**
+ * 弹出框
+ * @param _context 弹出内容
+ * @param _w 弹出高度
+ * @param _h 弹出宽度
+ */
+function alertWinForGuide(_context,_w,_h){
+	var iWidth =  $(window).width();
+    var iHeight =  $(window).height();
+    var iTop = $(window).scrollTop();
+    var iLeft = $(window).scrollLeft();
+    bgObj = document.createElement('div');
+    htmlBgObj = document.createElement('div');
+    tipsObj = document.createElement('div');
+    bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background:#000;position:absolute;top:0;left:0;z-index:200;opacity:0.2;filter:alpha(opacity =20);";
+    document.body.appendChild(bgObj);
+    htmlBgObj.style.cssText = "position:absolute;top:" + (iTop + Math.abs((iHeight - _h) / 2.5)) + "px;left:" + (iLeft + Math.abs((iWidth - _w) / 2))  + "px;width:" + _w + "px;height:" + _h + "px;z-index:202;border:1px solid #D3D6DD;border-radius:20px;background-color:#eee;";
+    tipsObj.style.cssText = "top:" + (iTop + Math.abs((iHeight - _h) / 2) - 30) + "px;left:" + (iLeft + Math.abs((iWidth - _w) / 2))  + "px;width:" + _w + "px;z-index:202;";
+    htmlBgObj.id = "htmlObj";
+    tipsObj.id = "tipsObj";
+    var result = [];
+//    result.push('<div id="bodyBgObj">');
+//    result.push('<div class="pop-title">');
+//    result.push('<div class="title-div"><span>'+_title+'</span></div>');
+//    result.push('<div class="close-div" onclick="closePop()"> &times; </div>');
+//    result.push('</div>');
+
+    result.push(_context);
+    result.push('</div>');
+    tipsObj.innerHTML="";
+    htmlBgObj.innerHTML= result.join('');
+    document.body.appendChild(tipsObj);
+    document.body.appendChild(htmlBgObj);
+    
+    /*//绑定点击事件，点击之后引导页的东西全部消失
+	bgObj.addEventListener('click',function(){
+		isGuideMatchUser=false;
+		closePop();//关闭对话框
+
+		//删除对话气泡
+		var guideMUBubble=$("#guideMUBubble");
+		guideMUBubble.remove();
+		
+		//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
+		//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
+		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+	},false);*/
+}
+var isShowGuide=1;//这是由后台传过来的参数决定,0代表需要，1代表不需要，这里用来判断是否出现引导页，如果=0也用来判断出现引导页的登录的那一次不请求匹配头像。
+//2018.03.08  叶夷      服务器回复判断是否出现引导页
+function responseIfUserInited(data){
+	//2018.02.27  叶夷    这里写如果出现引导页的动画
+	//var isShowGuide=0;//测试版本
+	isShowGuide=data.if_user_inited;//是否需要出现引导页，这是由后台传过来的参数决定,0代表需要，1代表不需要
+	if(isShowGuide==0){//需要引导页，在用户浏览完引导内容之后再显示首页内容
+		sendShowGuidePageFirst();
+		//先用一块透明的布覆盖在屏幕上，为了之后的点击屏幕时间
+		var bgObj = document.createElement('div');
+		bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background-color:rgba(0,0,0,0);position:absolute;top:0;left:0;z-index:200;opacity:0.0;filter:alpha(opacity =0);";
+		document.body.appendChild(bgObj);
+		
+		//将匹配人的引导显示出来
+		showGuideMatchUsers();//显示了匹配人头像
+		
+		timeOutSuccess=setTimeout(function(){
+			showGuideMUBubble();//显示匹配人头像的引导文字
+		},aniSecond * 0.4* 1000);
+		
+		//将添加标签的圆圈位置固定好且显示
+		timeOutSuccess=setTimeout(function(){
+			$("#mytag-container").show();
+			showGuideAddtagCircleAndArrow();
+			
+			//透明不绑定点击事件，放在这里是因为需要引导页步骤一完全显示之后才能点击
+			bgObj.addEventListener('click',function(){
+				clickMainPage(bgObj);
+				
+				//2018.03.08  叶夷      点击出现第二步的引导页，数据传给后台
+				sendShowGuidePageSecond();
+			},false);
+			
+		},aniSecond * 0.4* 1000+1000);
+	}else{//不需要引导页则直接显示首页内容
+		//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
+		//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
+		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+	}
+}
+
+/**
+ * end:叶夷
+ */
+

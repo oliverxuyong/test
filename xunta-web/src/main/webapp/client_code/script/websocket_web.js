@@ -83,7 +83,11 @@ function createWebSocket(yesorno) {//刚启动时,为yes.平时断线重连,为n
 	}
 	//alert("发出创建请求...");
 	if ('WebSocket' in window) {
-		ws_obj = new WebSocket("ws://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=" + yesorno);
+		if(window.location.protocol=="https:"){
+			ws_obj = new WebSocket("wss://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=" + yesorno);
+		}else{
+			ws_obj = new WebSocket("ws://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=" + yesorno);
+		}
 		console.log("已发WS连接请求 userId=" + userId);
 		logging('WS连接请求已发出...');
 

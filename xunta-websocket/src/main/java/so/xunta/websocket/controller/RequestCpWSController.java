@@ -14,6 +14,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import so.xunta.beans.ConcernPointDO;
 import so.xunta.beans.RecommendCpBO;
+import so.xunta.beans.User;
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.persist.C2uDao;
@@ -54,7 +55,7 @@ public class RequestCpWSController {
 		
 		List<RecommendCpBO> cps = responseGroupCPsService.getRecommendCPs(uid, startPoint, howMany);
 		
-		JSONArray cpWrap = new JSONArray();
+		JSONArray cpWrap = new JSONArray();;
 		Set<String> cpids = new HashSet<String>();
 		for(RecommendCpBO cp:cps){
 			JSONObject cpjson = new JSONObject();
@@ -66,6 +67,7 @@ public class RequestCpWSController {
 			cpjson.put("howmanypeople_selected", cp.getHowManyPeopleSelected());
 			cpWrap.put(cpjson);
 		}
+		
 		JSONObject returnJson = new JSONObject();
 		returnJson.put("_interface", "1101-2");
 		returnJson.put("uid", uid+"");
@@ -86,6 +88,7 @@ public class RequestCpWSController {
 		String timestamp = params.getString("timestamp"); 
 		
 		List<ConcernPointDO> userSelectedCps=cpChoiceService.getUserSelectedCps(Long.valueOf(userId),property);
+		User u = userService.findUser(Long.valueOf(userId));
 		
 		JSONArray cpArr = new JSONArray();
 		for(ConcernPointDO userSelectedCp:userSelectedCps){
@@ -93,7 +96,7 @@ public class RequestCpWSController {
 			JSONObject cpJson = new JSONObject();
 			cpJson.put("cpid", cpId);
 			cpJson.put("cptext", userSelectedCp.getText());
-			cpJson.put("selected_user_num",c2uDao.getHowManyPeopleSelected(cpId, property).toString());
+			cpJson.put("selected_user_num",c2uDao.getHowManyPeopleSelected(cpId, property,u.getEvent_scope()).toString());
 			cpArr.put(cpJson);
 		}
 		

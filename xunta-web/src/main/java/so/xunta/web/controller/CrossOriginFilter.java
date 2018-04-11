@@ -47,22 +47,35 @@ public class CrossOriginFilter implements Filter {
 		response.setCharacterEncoding(code);
 		HttpServletResponse res = (HttpServletResponse)response;
 		HttpServletRequest req = (HttpServletRequest)request;
-		StringBuffer url = req.getRequestURL();  
+		StringBuffer url = req.getRequestURL();
+		String sourceChannel = req.getParameter("from");
 		logger.debug("请求:"+req.getRequestURL());
 		String urlstr = url.toString();
+		
+		if(urlstr.equals("http://www.xunta.so/xunta-web/")){
+			if(sourceChannel==null){
+				logger.info("有一般用户请求xunta网址");
+			}else{
+				logger.info("有"+sourceChannel+"用户从网页版请求xunta网址");
+			}
+		}
 		if(urlstr.indexOf("www")==-1)
 		{
 			String requestURI = req.getRequestURI();
+			//logger.info("测试Filter requestURI:" + requestURI);
 			if(requestURI.equals("/xunta-web/")||requestURI.equals("/")){
 				String replace = (req.getRequestURL().toString()).replaceAll("http://","http://www.");
+				//logger.info("测试Filter replace:" + replace);
 				res.sendRedirect(replace);
 				return;
 			}else{
+				//logger.info("测试Filter1");
 				chain.doFilter(request, res);
 			}
 			
 			
 		}else{
+			//logger.info("测试Filter2");
 			//logger.debug("域名："+tempContextUrl);
 			//res.addHeader("Access-Control-Allow-Origin", tempContextUrl);
 			chain.doFilter(request, res);

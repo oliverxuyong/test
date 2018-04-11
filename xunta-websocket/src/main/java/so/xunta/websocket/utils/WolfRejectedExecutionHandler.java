@@ -28,10 +28,11 @@ public class WolfRejectedExecutionHandler implements RejectedExecutionHandler {
 			String cpId = recommendPushTask.getCpId();
 			int selectType = recommendPushTask.getSelectType();
 			String property = recommendPushTask.getProperty();
+			Boolean ifSelfAddCp = recommendPushTask.getIfSelfAddCp();
 			if(selectType == RecommendService.SELECT_CP){
-				pendingTaskQueue.addSelectCPTask(uid, cpId, property);
+				pendingTaskQueue.addSelectCPTask(uid, cpId, property,ifSelfAddCp);
 			}else{
-				pendingTaskQueue.addCancelCpTask(uid, cpId, property);
+				pendingTaskQueue.addCancelCpTask(uid, cpId, property,ifSelfAddCp);
 			}		
 		}else if(task instanceof RecommendUpdateTask){
 			logger.debug("将1个RecommendUpdateTask 任务序列化到任务队列，等空闲时再执行");
@@ -42,7 +43,8 @@ public class WolfRejectedExecutionHandler implements RejectedExecutionHandler {
 			logger.debug("将1个SelfAddCpRecommendTask 任务序列化到任务队列，等空闲时再执行");
 			SelfAddCpRecommendTask selfAddCpRecommendTask = (SelfAddCpRecommendTask)task;
 			String cpId = selfAddCpRecommendTask.getCpId();
-			pendingTaskQueue.addSelfAddCPTask(cpId);
+			String userEventScope = selfAddCpRecommendTask.getUserEventScope();
+			pendingTaskQueue.addSelfAddCPTask(cpId,userEventScope);
 		}
 	}
 

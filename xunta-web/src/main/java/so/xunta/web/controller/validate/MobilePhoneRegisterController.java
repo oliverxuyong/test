@@ -29,12 +29,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import so.xunta.beans.User;
 import so.xunta.beans.validate.MobilePhoneValidateCode;
+import so.xunta.persist.TmpUserIdDao;
 import so.xunta.server.LoggerService;
 import so.xunta.server.MobilePhoneCodeService;
 import so.xunta.server.UserService;
 import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
+import so.xunta.utils.MakeUserImgUtil;
 import so.xunta.utils.validate.HttpSender;
+import so.xunta.web.controller.imagepath.ImagePathUtil;
 
 @Controller
 public class MobilePhoneRegisterController {
@@ -46,6 +49,9 @@ public class MobilePhoneRegisterController {
 	
 	@Autowired
 	LoggerService loggerService;
+	
+	@Autowired
+	TmpUserIdDao tmpUserIdDao;
 	
 	Logger logger = Logger.getLogger(MobilePhoneRegisterController.class);
 
@@ -307,7 +313,7 @@ public class MobilePhoneRegisterController {
 	
 		if (session_phone_code.equals(phonevalidatecode)) {
 
-			System.out.println("手机验证码填写正确");
+			logger.debug("手机验证码填写正确");
 
 			System.out.println("nickname:" + nickname);
 			System.out.println("password:" + password);
@@ -323,15 +329,16 @@ public class MobilePhoneRegisterController {
 			new_user.setThird_party_id(idWorker.nextId()+"");
 			new_user.setPassword(password);
 			new_user.setPhonenumber(phonenumber);
+			new_user.setEvent_scope(groupname);
 			User u = userService.addUser(new_user);
 			//初始化话题
-			if(u.getIfInitedTopics()==0){//代表没有初始化话题列表
+			/*if(u.getIfInitedTopics()==0){//代表没有初始化话题列表
 				u.setIfInitedTopics(1);
 				userService.updateUser(u);
-				System.out.println("初始化话题成功");
+				//System.out.println("初始化话题成功");
 			}else{
-				System.out.println("用户已初始化过话题\n");
-			}
+				//System.out.println("用户已初始化过话题\n");
+			}*/
 
 			response.setCharacterEncoding("utf-8");
 
@@ -351,7 +358,7 @@ public class MobilePhoneRegisterController {
 	
 	@RequestMapping("/login_mobilephone")
 	public void userlogin(String phonenumber,String password,HttpServletRequest request,HttpServletResponse response) throws IOException{
-		System.out.println("手机用户登录：phonenumber:"+phonenumber+" password:"+password);
+		logger.debug("手机用户登录：phonenumber:"+phonenumber+" password:"+password);
 		//1.验证是否为空
 		if(StringUtils.isEmpty(phonenumber))
 		{
@@ -389,6 +396,32 @@ public class MobilePhoneRegisterController {
 		}
 	}
 	
+	@RequestMapping("/tmp_login")
+	public void userTmpLogin(String phonenumber,String password,HttpServletRequest request,HttpServletResponse response) throws IOException{
+		Long userid = idWorker.nextId();
+		String username ="Dancer " + tmpUserIdDao.getTmpUserId();
+		String imgLocation = System.getProperty("catalina.home")+"/uploadimages/";
+		String defaultImgSrc = imgLocation + "DefaultImg"+(1+new Random().nextInt(11))+".jpg";
+		String userImgSrc = imgLocation + userid + ".jpg";
+		String userImgUrl = ImagePathUtil.getPath(request, "/useravatar/" + userid + "/jpg/image");
+		
+		MakeUserImgUtil.addTextToImage(defaultImgSrc, userImgSrc, username);
+		
+		User new_user = new User(userid, idWorker.nextId()+"", username, userImgUrl, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
+		new_user.setEvent_scope("xunta_salsa");
+		User u = userService.addUser(new_user);
+		
+		JSONObject ret = new JSONObject();
+		ret.put("userid", userid+"");
+		ret.put("username", username);
+		ret.put("image_url", u.getImgUrl());
+		ret.put("code", "1");
+		ret.put("message", "登录成功");
+		responseBack(request, response, ret);
+		
+		logger.info("用户： "+username+" 登陆");
+	}
+	
 	@RequestMapping("/check_mobilenum_ifexist")
 	public void checkMobileNumIfExist(HttpServletRequest req,HttpServletResponse res){
 		JSONObject ret = new JSONObject();
@@ -403,7 +436,7 @@ public class MobilePhoneRegisterController {
 		ret.put("ifexist", r);
 		res.setContentType("text/json;charset=utf-8");
 		try {
-			System.out.println("验证手机号是否存在:"+r);
+			logger.debug("验证手机号是否存在:"+r);
 			responseBack(req, res, ret);
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
@@ -411,7 +444,7 @@ public class MobilePhoneRegisterController {
 	}
 	private void responseBack(HttpServletRequest request, HttpServletResponse response, JSONObject obj)
 			throws IOException {
-		System.out.println("执行responseBack...");
+		logger.debug("执行responseBack...");
 		boolean jsonP = false;
 		String cb = request.getParameter("callback");
 		if (cb != null) {
@@ -428,7 +461,7 @@ public class MobilePhoneRegisterController {
 		
 		if (jsonP) {
 		    out.write(");");
-		    System.out.println("返回成功。。。");
+		    logger.debug("返回成功。。。");
 		}
 	}
 

@@ -80,7 +80,9 @@ function initToGetCP(userId,requestNum,currentPage) {
 function task_RequestCP() {//检查并执行话题列表请求任务.
 	if (doRequestCP) {//检查并执行 请求话题列表的任务.xu9.9
 		console.log("CP请求任务为true,现在执行请求...");
-		requestCP();
+		//2018.03.08   叶夷   因为存在引导页，所以在websocket刚创建成功的时候，调用请求是否打开引导页的方法
+		//requestCP();
+		ifUserInited(userId);
 	}
 }
 
@@ -178,7 +180,7 @@ function requestMatchedUsers(userId,requestTopMUNum){
 }
 
 //2017.10.13 叶夷  添加标签
-function add_self_cp(uid,cpid,cptext){
+function add_self_cp(uid,cpid,cptext,isGuideToAddTag){
 	var json_obj;
 	if(cpid=="null" || cpid=="undefined"){
 		json_obj = {
@@ -186,6 +188,7 @@ function add_self_cp(uid,cpid,cptext){
 				 interface_name: "add_self_cp",
 				 uid:uid.toString(),
 				 cptext:cptext.toString(),
+				 isGuideToAddTag:isGuideToAddTag,
 				 timestamp:"",
 			};
 	}else{
@@ -195,6 +198,7 @@ function add_self_cp(uid,cpid,cptext){
 				 uid:uid.toString(),
 				 cpid:cpid,
 				 cptext:cptext.toString(),
+				 isGuideToAddTag:isGuideToAddTag,
 				 timestamp:"",
 			};
 	}
@@ -275,6 +279,204 @@ function requestAlterNickname(userinfo) {
 		uid : userinfoJSON.uid,
 		new_name : userinfoJSON.newNickname
 	};
+	WS_Send(json_obj);
+}
+
+//2017.12.13 请求详细匹配人列表
+function requestDetailMatchedUsers(userId , requestCounts) {
+	var json_obj = {
+		_interface : "1111-1",
+		interface_name : "request_detail_matched_users",
+		uid : userId.toString(),
+		request_counts : requestCounts.toString(),
+		timestamp:""
+	};
+	WS_Send(json_obj);
+}
+
+//2017.12.27 叶夷  用户请求指定cp匹配的用户
+function requestUserCpMatchUsers(userId,myTagIds,requestCounts){
+	var a=myTagIds.split('-');//将字符串转化为数组
+	var json_obj = {
+			_interface : "1113-1",
+			interface_name : "request_user_cp_match_users",
+			uid : userId.toString(),
+			cp_ids:a,
+			request_counts : requestCounts.toString(),
+			timestamp:""
+		};
+		WS_Send(json_obj);
+}
+
+//2017.12.23 请求聊天页双方标签的数据
+function requestMutualCP(userId , toUserid) {
+	var json_obj = {
+		_interface : "1112-1",
+		interface_name : "request_detail_matched_users",
+		my_user_id : userId.toString(),
+		matched_user_id : toUserid.toString(),
+		timestamp:""
+	};
+	WS_Send(json_obj);
+}
+
+//2018.03.08  叶夷    通过请求服务器判断是否出现引导页
+function ifUserInited(userId) {
+	doRequestCP = true;	//任务筐中登记.
+	if (checkIfWSOnline4topiclist()) {//如果ws处于连接状态,直接发出请求. 如果没有连接,该方法会发出创建请求.
+		console.log("通过请求服务器判断是否出现引导页");
+		var json_obj = {
+			_interface : "1114-1",
+			interface_name : "if_user_inited",
+			my_user_id : userId.toString(),
+			timestamp:""
+		};
+		WS_Send(json_obj);
+	}
+}
+//2018.03.20  叶夷    获取微信二维码
+function requestTwoBarCode(userId,toUserid){
+	var json_obj = {
+			_interface : "1115-1",
+			interface_name : "request_twoBarCode",
+			uid : userId.toString(),
+			matched_user_id : toUserid.toString(),
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+
+//2018.03.08  叶夷  点击出现引导页步骤二数据传给后台
+function sendShowGuidePageSecond(){
+	console.log("点击出现引导页步骤二数据传给后台");
+	var json_obj = {
+			_interface : "9115-1"
+		};
+		WS_Send(json_obj);
+}
+
+//2018.03.08  叶夷   点击向下箭头按钮数据传给后台
+function sendClickGuideAddTagText(userId){
+	console.log("点击向下箭头按钮数据传给后台");
+	var json_obj = {
+			_interface : "9116-1",
+			my_user_id : userId.toString(),
+			timestamp:""
+		};
+		WS_Send(json_obj);
+}
+//2018.03.08  叶夷    在引导页点击添加标签数据传给后台
+function sendGuidePageAddTag(userId){
+	console.log("在引导页点击添加标签数据传给后台");
+	var json_obj = {
+			_interface : "9117-1",
+			my_user_id : userId.toString(),
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+//2018.03.09  叶夷   有人点击群聊话题回车键数据传给后台
+function sendGroupChatAddInfo(){
+	console.log("有人点击群聊话题回车键数据传给后台");
+	var json_obj = {
+			_interface : "9118-1",
+		};
+		WS_Send(json_obj);
+}
+
+//2018.03.09  叶夷   有人点击群聊话题按钮数据传给后台
+function sendGroupChatInfo(){
+	console.log("有人点击群聊话题按钮数据传给后台");
+	var json_obj = {
+			_interface : "9119-1",
+		};
+		WS_Send(json_obj);
+}
+//2018.03.16  叶夷     引导页出来的时候发送请求给后台
+function sendShowGuidePageFirst(){
+	console.log(" 引导页出来的时候发送请求给后台");
+	var json_obj = {
+			_interface : "9120-1",
+		};
+		WS_Send(json_obj);
+}
+
+//2018.04.02  叶夷    创建群聊话题
+function requestCreateTopic(topic_name,creator_uid,user_ids){
+	console.log("创建群聊话题:topic_name="+topic_name+" creator_uid="+creator_uid+" user_ids="+user_ids);
+	var json_obj = {
+			_interface : "1116-1",
+			topic_name : topic_name.toString(),
+			creator_uid : creator_uid.toString(),
+			user_ids : user_ids.toString(),
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+
+//2018.04.03 叶夷  发送群聊话题消息
+function requestSendTopicMsg(chatmsg_content,type,send_uid,send_name,send_img,topic_id,topic_name,tmpPid ){
+	console.log("发送群聊话题消息:chatmsg_content="+chatmsg_content+" type="+type+" send_uid="+send_uid+" send_name="+send_name+" topic_name="+topic_name);
+	var json_obj = {
+			_interface : "1117-1",
+			chatmsg_content : chatmsg_content,
+			type : type,
+			send_uid : send_uid,
+			topic_id : topic_id,
+			send_name : send_name,
+			send_userImage : send_img,
+			topic_name : topic_name,
+			handle:tmpPid.toString(),
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+
+//2018.04.08 叶夷  发请求群聊话题列表
+function requestTopicDialogList(userid,data){
+	console.log("发请求群聊话题列表:userid="+userid);
+	var json_obj = {
+			_interface : "1120-1",
+			userid:userid.toString(),
+			normalDialogList:data,
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+//2018.04.08 叶夷  发请求群聊话题历史消息
+function requestHistoryMsg(userId,topicId,conncount,create_datetime_long){
+	console.log("发请求群聊话题历史消息:userid="+userId+" topicId="+topicId+" conncount="+conncount+" create_datetime_long="+create_datetime_long);
+	var json_obj = {
+			_interface : "1119-1",
+			userid:userId.toString(),
+			topic_id:topicId.toString(),
+			create_datetime_long:create_datetime_long,
+			msgCount:conncount,
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+//发送收到消息接口
+function sendmsg_received_confirm(msg_id,target_topicid){
+	console.log("发送收到消息接口");
+	var json_obj = {
+			_interface : "1121-1",
+			msg_id:msg_id.toString(),
+			target_topicid:target_topicid.toString(),
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+//接受或拒绝话题邀请
+function requestEntrantOrRejectTopic(topic_id,user_id,user_type){
+	console.log("接受或拒绝话题邀请: topic_id="+topic_id+" user_id="+user_id+" user_type="+user_type);
+	var json_obj = {
+			_interface : "1118-1",
+			topic_id:topic_id.toString(),
+			user_id:user_id.toString(),
+			user_type:user_type.toString(),
+			timestamp:""
+		};
 	WS_Send(json_obj);
 }
 
@@ -437,6 +639,65 @@ function checkMessageInterface(evnt) {
 	//2017.11.23 叶夷 更改昵称
 	if (jsonObj._interface == 'update_nickname') {
 		modifyNickname(jsonObj);
+	}
+	
+	//2017.12.13 叶夷  返回用户请求的详细匹配列表
+	if (jsonObj._interface == '1111-2') {
+		console.log("返回用户请求的详细匹配列表:"+JSON.stringify(jsonObj.matched_user_arr));
+		exec("matchUsers_page","response_detail_matched_users("+evnt.data+")");
+	}
+	//2017.12.23 叶夷  返回用户请求的聊天页的标签数据
+	if (jsonObj._interface == '1112-2') {
+		console.log("返回用户请求的聊天页的标签数据:"+JSON.stringify(jsonObj.msg));
+		exec(jsonObj.matched_user_id,"responseMutualCP("+evnt.data+")");
+	}
+	//2017.12.27 叶夷  返回用户请求指定cp匹配的用户
+	if (jsonObj._interface == '1113-2') {
+		console.log("返回用户请求指定cp匹配的用户:"+JSON.stringify(jsonObj.cp_matched_user_arr));
+		exec("matchUsers_page","responseUserCpMatchUsers("+evnt.data+")");
+	}
+	//2018.03.08  叶夷    通过请求请求服务器回复判断是否出现引导页
+	if (jsonObj._interface == '1114-2') {
+		console.log("返回是否出现引导页:"+JSON.stringify(jsonObj));
+		exec("main_page","responseIfUserInited("+evnt.data+")");
+	}
+	
+	//2018.03.20  叶夷    通过请求服务器返回微信关注二维码
+	if (jsonObj._interface == '1115-2') {
+		console.log("返回微信公众号关注二维码路径:"+JSON.stringify(jsonObj));
+		var matched_user_id=jsonObj.matched_user_id;
+		exec(matched_user_id,"responseTwoBarCode("+evnt.data+")");
+	}
+	
+	//2018.04.02  叶夷    通过请求服务器返回创建群聊话题是否成功
+	if (jsonObj._interface == '1116-2') {
+		console.log("通过请求服务器返回创建群聊话题是否成功:"+JSON.stringify(jsonObj));
+		exec("matchUsers_page","responseCreateTopic("+evnt.data+")");
+	}
+	
+	//2018.04.02  叶夷    接收话题消息
+	if (jsonObj._interface == '1117-2') {
+		console.log("接收话题消息:"+JSON.stringify(jsonObj));
+		exec("main_page","responseTopicMsg("+evnt.data+")");
+	}
+	
+	//2018.04.08  叶夷    接收群聊话题列表
+	if (jsonObj._interface == '1120-2') {
+		console.log("接收群聊话题列表:"+JSON.stringify(jsonObj));
+		exec("matchUsers_page","responseTopicDialogList("+evnt.data+")");
+	}
+	
+	//2018.04.08  叶夷    接收群聊话题历史消息
+	if (jsonObj._interface == '1119-2') {
+		console.log("接收群聊话题历史消息:"+JSON.stringify(jsonObj));
+		var topic_id=jsonObj.topic_id;
+		exec(topic_id,"responseHistoryMsg("+evnt.data+")");
+	}
+	
+	//2018.04.08  叶夷    刚打开页面时收到的未读消息数
+	if (jsonObj._interface == '1122-2') {
+		console.log("刚打开页面时收到的未读消息数:"+JSON.stringify(jsonObj));
+		exec("main_page","responseUnreadMsgCount("+evnt.data+")");
 	}
 }
 

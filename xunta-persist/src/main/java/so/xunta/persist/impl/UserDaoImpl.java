@@ -120,11 +120,37 @@ public class UserDaoImpl implements UserDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<User> findUserByGroup(Long userId) {
+	public List<User> findUserSameGroup(Long userId) {
 		// zheng
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "select u.* from tbl_user as u where u.userGroup='寻TA超级帐号' or u.userGroup = (select u1.userGroup from tbl_user as u1 where u1.userId = :userId)";
 		Query query = session.createSQLQuery(sql).addEntity(User.class).setParameter("userId",userId);
 		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> findUserByGroup(String userGroup) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "select u.* from tbl_user as u where u.userGroup = :userGroup";
+		Query query = session.createSQLQuery(sql).addEntity(User.class).setParameter("userGroup",userGroup);
+		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> findUsersByScope(String eventScope) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "select u.* from tbl_user as u where u.event_scope = :eventScope";
+		Query query = session.createSQLQuery(sql).addEntity(User.class).setParameter("eventScope",eventScope);
+		return query.list();
+	}
+
+	@Override
+	public User findUserByOpenId(String openid) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "from User as u where u.openid = :openid";
+		Query query = session.createQuery(hql).setParameter("openid",openid);
+		return (User) query.uniqueResult();
 	}
 }

@@ -17,8 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
+
 import so.xunta.beans.User;
-import so.xunta.server.RecommendService;
+import so.xunta.server.OpenId2EventScopeService;
 import so.xunta.server.UserService;
 import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
@@ -27,8 +28,9 @@ import so.xunta.utils.IdWorker;
 public class UserController {
 	@Autowired
 	private UserService userService;
+	
 	@Autowired
-	private RecommendService recommendService;
+	private OpenId2EventScopeService openId2EventScopeService;
 	
 	Logger logger =Logger.getLogger(UserController.class);
 	IdWorker idWorder = new IdWorker(1L, 1L);	
@@ -98,6 +100,8 @@ public class UserController {
 			logger.error("UserName URLdecode 出错"+name);
 		}
 		
+
+		
 		User user = new User();
 		Long user_id = idWorder.nextId();
 		user.setUserId(user_id);
@@ -112,7 +116,18 @@ public class UserController {
 		user.setCreate_datetime_long(date.getTime());
 		user.setCreate_datetime_str(DateTimeUtils.getTimeStrFromDate(date));
 		user.setOpenid(openid);
+
 		user.setLast_update_time(new Timestamp(System.currentTimeMillis()));
+		
+		String event_scope = null;
+		if(openid!=null){
+			event_scope=openId2EventScopeService.getEventScope(openid);		
+		}
+		if(event_scope!=null){
+			user.setEvent_scope(event_scope);
+		}else{
+			user.setEvent_scope(groupname);
+		}
 		
 		JSONObject params = new JSONObject();
 		params.put("third_parth_id",third_party_id);
@@ -127,12 +142,12 @@ public class UserController {
 			/*
 			 * 查询用户是否存在初始化话题
 			 * 		如果不存在初始化话题,就初始化话题
-			 */
+			 *
 			if(user.getIfInitedTopics()==0){//代表没有初始化话题列表
-				recommendService.initRecommendParm(user);
+				//recommendService.initRecommendParm(user);
 				user.setIfInitedTopics(1);
 				userService.updateUser(user);		
-			}
+			}*/
 		} catch (Exception e) {
 			logger.error("添加用户失败"+e.getMessage(), e);
 		}

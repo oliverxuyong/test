@@ -21,16 +21,25 @@ function afterInput(inputValue, tmpPid) {//输入框提交到inputSubmit,然后�
 	//chat.sendMsgToAll(inputValue);//发送消息给全部的人
 	//chat.sendPrivateMsg(toUserId,inputValue);
 	//execRoot("sendmsg('"+toUserId+"','"+inputValue+"')");//给单独的人发消息
-	exec("main_page","sendmsg('"+toUserId+"','"+inputValue+"','"+tmpPid+"')");
-	
+	if(isTopic==true || isTopic=="true"){//话题聊天页发送消息是不同的方法
+		requestSendTopicMsg(inputValue,"NORMAL",userId,userName,userImage,toUserId,toUserName,tmpPid);
+	}else{
+		exec("main_page","sendmsg('"+toUserId+"','"+inputValue+"','"+tmpPid+"')");
+	}
 	//装入任务框且判断是否发送成功
-	var str = "sendPoster('" + toUserId + "','" + inputValue + "','" + tmpPid + "')";
-    execRoot(str);
+	var str = "sendPoster('" + toUserId + "','" + inputValue + "','" + tmpPid + "')";//这是普通发言，因为msg没有msgid所以将前端的传过去识别
+	execRoot(str);
 	
     document.getElementById("inputbox").value="";
 	
 	console.log(' ExistedTopic 刚刚的发言已发往服务器:' + inputValue);
 	log2root(' ExistedTopic 刚刚的发言已发往服务器:' + inputValue);
+	
+	//2017.12.13  叶夷  如果第一句话的框存在，则信息发送成功之后将框删除
+	var htmlObj=$("#htmlObj");
+	if(htmlObj.length>0){
+		closePop();
+	}
 }
 
 function afterCheckedSendPosterSuccess(tmpPid, SendPosterSuccess) {//一般发言,新创话题,移动新建的延时检查处理都用这个方法.
@@ -57,12 +66,15 @@ function afterCheckedSendPosterSuccess(tmpPid, SendPosterSuccess) {//一般发�
  *	服务器返回来的消息发送请求成功，替换掉临时的消息ID，并添加时间（并判断是否显示时间），由于是自己的消息则不需要添加事件 //修改发言时间,取消跳豆.
  *  */
 function markSendPosterSuccess(tmpPid, postTimelong, postTimeStr) {//接受服务器收到消息的确认的方法 //msg是作为服务器返回的字符串传过来的,但是js好象是自动识别为json了.
+	noHistoryMsg=false;//有历史消息
 	console.log("afterSendPosterSuccess 消息成功了, 取消跳豆, 修改发言时间,第一条发言开关取消.tmpPid=" + tmpPid);
 	var element = $("#" + tmpPid);
 	//服务端发送消息请求成功状态后，客户端接下来要做的事情  9.15 FANG
 	//取消黑色跳豆
 	//console.log("这里有时候是undefined, 要查一下. element:"+element.html());
 	element.find(".detail .postsending").remove();
+	//removeDiv(element.find(".detail .postsending"),userAgent[1]);
+
 	var postTimeLongMinute = postTimelong / 1000 / 60;
 	var intervalEnough = ((postTimeLongMinute - 2) > (lastPostTimeLongMinute)) || ((postTimeLongMinute + 2) < (lastPostTimeLongMinute))
 	if ((lastPostTimeLongMinute == 0) || intervalEnough) {//彬彬: 时间码是否显示的判断. //不论是滞后2分钟还是超前2分钟,都显示出.针对消息晚到的情况.xu
@@ -81,6 +93,12 @@ function verifyInputText(obj){//对输入框提交的字符串进行合法性预
 //str = str.replace(/'/g,"-thisisdanyinhaozifu-");//同上.
 //str = str.replace(/\"/g,"-thisisshuangyinhaozifu-");//同上.
 	
+	//2017.12.13  叶夷  如果第一句话的框弹出，则发送框里面的文字
+	var pop_tagName=$("#pop_tagName");
+	if(pop_tagName.length>0){
+		inputValue=pop_tagName.val();
+		inputValue_tmp=pop_tagName.val();
+	}
 	
 	if (inputValue_tmp == "") {//如果为空,并且发言长度大于150不作为.
         toast('发言内容不能为空')
@@ -133,7 +151,7 @@ function  getHistoryMsg(userId,toUserId,firstMsgId){
 	}
 	
 	$.ajax({
-        url:"http://xunta.so:3000/v1/history_msg",
+        url:window.location.protocol+"//xunta.so:3000/v1/history_msg",
         type:"POST",
         dataType:"jsonp",
         jsonp:"callback",
@@ -144,6 +162,9 @@ function  getHistoryMsg(userId,toUserId,firstMsgId){
         	console.log("测试聊天记录请求后台返回结果："+JSON.stringify(data));
         	log2root("测试聊天记录请求后台返回结果："+JSON.stringify(data));
         	showDialogHistory(data);
+        	
+        	//2017.08.30 叶夷  请求共同选择的标签
+			requestSelectCP();
         },
         error:function(data, textStatus) {
             console.log("聊天记录请求错误"+data);
@@ -178,7 +199,7 @@ function showTitle() {
 /**
  * 2017.08.30 叶夷  请求共同选择的标签
  */
-function requestSelectCP(){
+/*function requestSelectCP(){
 	$.ajax({
         url:"http://xunta.so:3000/v1/find/users/same/tags/",
         type:"POST",
@@ -197,6 +218,85 @@ function requestSelectCP(){
         	return;
         }
     });
+}*/
+/*function requestSelectCP(){
+	$.ajax({
+        url:"http://xunta.so:3000/v1/find/other/tags",
+        type:"POST",
+        dataType:"jsonp",
+        jsonp:"callback",
+        contentType: "application/json; charset=utf-8",
+        data:{my_user_id:userId,
+        	matched_user_id:toUserId},
+        async:false,
+        success:function(data, textStatus) {
+        	console.log("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
+        	log2root("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
+        	showSameSelectCp(data);
+        	
+        	//这里要做判断，如果没有聊天记录则出现第一句话弹出框
+        	if(noHistoryMsg){
+        		sendFirstTalk(allCommonTags);
+        	}
+        	//sendFirstTalk(allCommonTags);//这是测试效果
+        },
+        error:function(data, textStatus) {
+        	return;
+        }
+    });
+}*/
+
+function requestSelectCP(){
+	var paraStr = userId + "','" + toUserId;
+	execRoot("requestMutualCP('"+ paraStr +"')");
 }
 
+function responseMutualCP(data){
+	console.log("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
+	log2root("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
+	showSameSelectCp(data);
+	
+	//这里要做判断，如果没有聊天记录则出现第一句话弹出框  而且不是话题聊天页
+	if(noHistoryMsg && isTopic!=true && isTopic!="true"){
+		//sendFirstTalk(allCommonTags);
+		requestTwoBarCode();//这里是显示微信扫码关注效果
+	}
+}
+//请求微信关注二维码
+function requestTwoBarCode(){
+	var paraStr = userId + "','" + toUserId; ;
+	execRoot("requestTwoBarCode('"+ paraStr +"')");
+}
 
+function responseTwoBarCode(data){
+	var weChatQRCodeUrl=data.weChatQRCodeUrl;
+	sendFirstTalk(allCommonTags,weChatQRCodeUrl);
+}
+
+//2018.04.08 叶夷  发送话题页的消息
+function requestSendTopicMsg(chatmsg_content,type,send_id,send_name,send_img,topic_id,topic_name,tmpPid){
+	var paraStr =chatmsg_content+ "','"+type+"','" + send_id+ "','" + send_name+ "','" + send_img+ "','" + topic_id+ "','" + topic_name+ "','" + tmpPid;
+	execRoot("requestSendTopicMsg('" + paraStr + "')");
+}
+
+//2018.04.08 叶夷  请求话题页的历史消息
+function requestHistoryMsg(){
+	var paraStr =userId+ "','"+toUserId+"','"+requestMsgCounts+"','"+create_datetime_long;
+	execRoot("requestHistoryMsg('" + paraStr + "')");
+}
+//2018.04.08 叶夷  获取话题页的历史消息
+function responseHistoryMsg(data){
+	console.log("测试聊天记录请求后台返回结果："+JSON.stringify(data));
+	log2root("测试聊天记录请求后台返回结果："+JSON.stringify(data));
+	var chatmsgJSONArray=data.chatmsgJSONArray;
+	showDialogHistory(chatmsgJSONArray);
+	
+	//2017.08.30 叶夷  请求共同选择的标签
+	requestSelectCP();
+}
+
+//接收或拒绝话题邀请
+function requestEntrantOrRejectTopic(type){
+	var paraStr =toUserId+ "','"+userId+"','"+type;
+	execRoot("requestEntrantOrRejectTopic('" + paraStr + "')");
+}

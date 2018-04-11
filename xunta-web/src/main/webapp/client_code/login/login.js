@@ -34,18 +34,19 @@ function syncUser(cookieUserStr){//cookie之后到这里.如果是新用户,服�
    
    //放在这里判断,应该是各种登录最后都汇集到这里:
    if(u.image==null||u.image==""){
-   		u.image="http://42.121.136.225:8888/user-pic2.jpg";
+   		u.image=window.location.protocol+"//42.121.136.225:8888/user-pic2.jpg";
    }
    
    if(u.name==null||u.type==null||u.unionid==null){
         toast("账号信息不全，请重新登录");
-        showLogin();
+        //showLogin();
+        tmpLoginForGetUserInfo();
         return;
    }
    
    
     $.ajax({
-        url : "http://" + domain + "/xunta-web/save_user",
+        url : window.location.protocol+"//" + domain + "/xunta-web/save_user",
         action : "post",
         contentType : "application/x-www-form-urlencoded; charset=utf-8",
         dataType : "jsonp",
@@ -91,7 +92,7 @@ function checkUser(userInfoJsonStr) {//读取localStorage之后到这里.
  
 	    var u = JSON.parse(userInfoJsonStr);
 	    $.ajax({
-	        url : "http://" + domain + "/xunta-web/checkuser",
+	        url : window.location.protocol+"//" + domain + "/xunta-web/checkuser",
         action : "post",
         timeout : 7000,
         dataType : "jsonp",
@@ -113,7 +114,8 @@ function checkUser(userInfoJsonStr) {//读取localStorage之后到这里.
                 userInfoIsReady(JSON.stringify(userInfoJsonObj));
             } else {
                 console.log("checkUser证实localstorage中的用户数据在服务器上不存在,进入登录页面.")
-                showLogin();
+                //showLogin();
+                tmpLoginForGetUserInfo();
             }
         },
         error : function(data, textStatus) {//网线拔了后,浏览器会报jquery无网错误,但不会走到这里.
@@ -146,15 +148,57 @@ function showLogin(){
     //2017.11.17  叶夷  在这里判断如果是PC和ipad,则三个登录方式都显示，如果是移动端，则只有手机登录
     showLoginMode();
 }
+
+/**2018.03.08  叶夷      
+ * 为了测试阶段取消登陆页面，在这里把上面的方法（登录页面出现的方法showLogin()）在这里被替代
+ * 在这里从服务器获取用户信息数据，之后直接调用exitmobilelogin_gobacktoindexpage(receivedData)方法
+ * receivedData数据格式
+ * 	{ "userid", userid,
+	  "username", username,
+	  "image_url", image_url,
+	  "code", "1",
+	  "message", "登录成功"}
+ */
+function tmpLoginForGetUserInfo(){
+	//放一个模拟数据用来测试
+	/*var receivedData = 
+			{ userid:"932909988979019776",
+			  username: "叶汉良",
+			  image_url: "../image/guideMU1.png",
+			  code: "1",
+			  message: "登录成功"};
+	exitmobilelogin_gobacktoindexpage(receivedData);*/
+	
+	$.ajax({
+        url : window.location.protocol+"//" + domain + "/tmp_login",
+        action : "post",
+        contentType : "application/x-www-form-urlencoded; charset=utf-8",
+        dataType : "jsonp",
+        jsonp : 'callback',
+        jsonpCallback : "callback_registerbymobilephone",
+        /*success : function(data, textStatus) {
+        	console.log("tmp_login获得用户信息："+JSON.stringify(data));
+        	exitmobilelogin_gobacktoindexpage(data);
+        },*/
+        error : function(data, textStatus) {//网线拔了后,浏览器会报jquery无网错误,但不会走到这里.
+        	console.log("tmp_login获得用户信息失败,重新请求.")
+        	log2root("tmp_login获得用户信息失败,重新请求.")
+        	//tmpLoginForGetUserInfo();
+        }
+	});
+}
+
+
+
 /**2017.11.17  叶夷  在这里判断如果是PC和ipad,则三个登录方式都显示，如果是移动端，则只有手机登录*/
 function showLoginMode(){
 	console.log("判断终端类型 "+userAgent);
-	if(userAgent[0]=="Mobile"){
+	//if(userAgent[0]=="Mobile"){
 		$("#login").children("div").eq(0).hide();
 		$("#login").children("div").eq(1).hide();
 		$("#login>div").css("width","60%");
 		$("#login>div").css("border-color","#b2b2b2");
-	}
+	//}
 }
 
 function hideLogin(){
@@ -205,7 +249,7 @@ function checkonmobileno(){//输入手机号后执行这个方法,向后台传�
     userMobileNum = input_mobileno;//在本页全局变量中存放用户手机号.
     console.log("checkonmobileno - userMobileNum:"+userMobileNum);
     var data2send = {phonenumber : input_mobileno};
-    url = "http://"+domain+"/xunta-web/check_mobilenum_ifexist";
+    url = window.location.protocol+"//"+domain+"/xunta-web/check_mobilenum_ifexist";
     ajax2server_Jsonp(url,data2send,"callback_checkonmobileno");
 }//上为请求,下为回调.
 function callback_checkonmobileno(receivedData){
@@ -252,7 +296,7 @@ function requestSendSMSCode4Resetpassword(){//在忘记密码并显示图形码�
     var data2send = {	phonenumber : userMobileNum,
         graph_code:input_graphcode   	}
     console.log("图码="+input_graphcode+"|"+userMobileNum);
-    var url = "http://"+domain+"/xunta-web/get_mobilephone_validatecode";
+    var url = window.location.protocol+"//"+domain+"/xunta-web/get_mobilephone_validatecode";
     ajax2server_Jsonp(url,data2send,"callback_requestSendSMSCode4Resetpassword");
     $("#button_requestSendSMSCode4Resetpasswordfont").text("再次发送短信码");
 }//上为请求,下为回调.
@@ -269,7 +313,7 @@ function callback_requestSendSMSCode4Resetpassword(receivedData){//短信码若�
 
 function changGraphCode(){
     var time = new Date();
-    $("#graphcode img").attr("src","http://"+domain+"/xunta-web/get_graph_validatecode?time=new Date()?time="+time);
+    $("#graphcode img").attr("src",window.location.protocol+"//"+domain+"/xunta-web/get_graph_validatecode?time=new Date()?time="+time);
 }
 
 function requestSendSMSCode(){//手机号为新并输入图形码后,按请求短信码按钮则执行这个方法.
@@ -299,7 +343,7 @@ function loginbymobilephone(){//老用户正常登录按钮后执行这个方法
     var data2send = {	password : input_password,
         phonenumber : userMobileNum,
     };
-    url = "http://"+domain+"/xunta-web/login_mobilephone";
+    url = window.location.protocol+"//"+domain+"/xunta-web/login_mobilephone";
     ajax2server_Jsonp(url,data2send,"callback_loginbymobilephone");
 }//上为请求,下为回调.
 function callback_loginbymobilephone(receivedData){
@@ -349,7 +393,7 @@ function registerbymobilephone(){//新用户最后按钮注册并登录按钮执
         password : input_password,
         phonenumber : userMobileNum,
         phonevalidatecode : input_smscode  };
-    url = "http://"+domain+"/xunta-web/register_mobilephone";
+    url = window.location.protocol+"//"+domain+"/xunta-web/register_mobilephone";
     ajax2server_Jsonp(url,data2send,"callback_registerbymobilephone");
 }//上为请求,下为回调.
 function callback_registerbymobilephone(receivedData){
@@ -357,7 +401,7 @@ function callback_registerbymobilephone(receivedData){
         console.log("手机注册成功:"+receivedData.userid+"|"+receivedData.username);
         $("#mobilephone-login-container").hide();
         exitmobilelogin_gobacktoindexpage(receivedData);
-         toast("手机注册成功,进入主页...");
+        //toast("手机注册成功,进入主页...");
     }else{
         console.log("手机注册不成功:"+receivedData.code+"|"+receivedData.message);
         toast(receivedData.message);

@@ -36,8 +36,15 @@ public interface UserDao {
 	//删除用户
 	public void deleteUser(Long userid);
 	
-	/*zheng 通过组找用户
+	/*zheng 
 	 **/ 
-	public List<User> findUserByGroup(Long userid);
+	public List<User> findUserSameGroup(Long userid);
+	
+	public List<User> findUserByGroup(String userGroup);
+	
+	public List<User> findUsersByScope(String eventScope);
+	
+	//2018.03.22   叶夷   通过openid来判断用户是否存在
+	public User findUserByOpenId(String openid);
 	
 }

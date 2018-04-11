@@ -73,11 +73,31 @@ public class U2cDaoImpl implements U2cDao {
 		uid = keyPrefix + uid;
 		try {
 			jedis = redisUtil.getJedis();
-			/*已经存入的不会重复插入
-			 * */
-			jedis.zadd(uid, cps, ZAddParams.zAddParams().nx());
+			if(cps.size()>0){
+				/*已经存入的不会重复插入
+				 * */
+				jedis.zadd(uid, cps, ZAddParams.zAddParams().nx());
+			}
 		} catch (Exception e) {
 			logger.error("updateUserBatchCpValue error:", e);
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}		
+	}
+	
+	@Override
+	public void refreshUserBatchCpValue(String uid, Map<String,Double> cps) {
+		Jedis jedis=null;
+		uid = keyPrefix + uid;
+		try {
+			jedis = redisUtil.getJedis();
+			if(cps.size()>0){
+				jedis.zadd(uid, cps);
+			}
+		} catch (Exception e) {
+			logger.error("refreshUserBatchCpValue error:", e);
 		}finally{
 			if(jedis!=null){
 				jedis.close();
@@ -110,11 +130,11 @@ public class U2cDaoImpl implements U2cDao {
 	public Boolean ifUserCpInited(String uid){
 		Jedis jedis=null;
 		uid = keyPrefix + uid;
-		Boolean ifexist =null;
-
+		Boolean ifInited =true;
+		
 		try {
-			jedis = redisUtil.getJedis();
-			ifexist = jedis.exists(uid);
+			jedis = redisUtil.getJedis();			
+			ifInited = jedis.exists(uid);
 		} catch (Exception e) {
 			logger.error("ifUserCpInited error:", e);
 		}finally{
@@ -122,11 +142,29 @@ public class U2cDaoImpl implements U2cDao {
 				jedis.close();
 			}
 		}
-		return ifexist;
+		return ifInited;
 	}
 	
 	@Override
-	public Boolean ifNeedReplenish(String uid){
+	public int getAvailableNum(String uid){
+		Jedis jedis = null;
+		uid = keyPrefix + uid;
+		int availableNum = 0;
+		
+		try {
+			jedis = redisUtil.getJedis();
+			availableNum = jedis.zcount(uid,0.0,Double.MAX_VALUE).intValue();
+		} catch (Exception e) {
+			logger.error("ifneedReplenish error:", e);
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return availableNum;
+	}
+	
+	/*public Boolean ifNeedReplenish(String uid){
 		Jedis jedis = null;
 		uid = keyPrefix + uid;
 		final int THRESHOLD = 30;//需要补充的阈值
@@ -145,5 +183,5 @@ public class U2cDaoImpl implements U2cDao {
 			}
 		}
 		return false;
-	}
+	}*/
 }

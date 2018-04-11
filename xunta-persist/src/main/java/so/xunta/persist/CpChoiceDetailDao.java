@@ -22,6 +22,6 @@ public interface CpChoiceDetailDao {
 	@Deprecated
 	public List<BigInteger> getSelectedCpBeforeTime(Long userid, Timestamp lastUpdateTime);
 	
-	@Deprecated
-	public CpChoiceDetailDO getCpChoiceDetail(Long userid, BigInteger cpId);
+	
+	public CpChoiceDetailDO getCpChoiceDetailBeforeTime(Long userid, BigInteger cpId, Timestamp myLastUpdateTime);
 }

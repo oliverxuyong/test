@@ -27,10 +27,10 @@ public class C2uDaoIml implements C2uDao {
 	
 
 	@Override
-	public Set<String> getUsersSelectedSameCp(String cpId,String property) {
+	public Set<String> getUsersSelectedSameCp(String cpId,String property,String userEventScope) {
 		Jedis jedis=null;
 		Set<String> uids=null;
-		cpId = keyPrefix + property + cpId;
+		cpId = keyPrefix + property + userEventScope + cpId;
 		try {
 			jedis = redisUtil.getJedis();
 			uids = jedis.smembers(cpId);
@@ -45,10 +45,10 @@ public class C2uDaoIml implements C2uDao {
 	}
 
 	@Override
-	public Long getHowManyPeopleSelected(String cpId,String property) {
+	public Long getHowManyPeopleSelected(String cpId,String property,String userEventScope) {
 		Jedis jedis=null;
 		Long userCounts=null;
-		cpId = keyPrefix + property + cpId;
+		cpId = keyPrefix + property + userEventScope + cpId;
 		try {
 			jedis = redisUtil.getJedis();
 			userCounts = jedis.scard(cpId);
@@ -63,9 +63,9 @@ public class C2uDaoIml implements C2uDao {
 	}
 	
 	@Override
-	public void saveCpOneUser(String cpId, String uid,String property) {
+	public void saveCpOneUser(String cpId, String uid,String property,String userEventScope) {
 		Jedis jedis=null;
-		cpId = keyPrefix + property + cpId;
+		cpId = keyPrefix + property + userEventScope + cpId;
 		try {
 			jedis = redisUtil.getJedis();
 			jedis.sadd(cpId, uid);
@@ -79,9 +79,9 @@ public class C2uDaoIml implements C2uDao {
 	}
 
 	@Override
-	public void deleteUserInCp(String cpId, String uid,String property) {
+	public void deleteUserInCp(String cpId, String uid,String property,String userEventScope) {
 		Jedis jedis=null;
-		cpId = keyPrefix + property + cpId;
+		cpId = keyPrefix + property + userEventScope + cpId;
 		try {
 			jedis = redisUtil.getJedis();
 			jedis.srem(cpId, uid);

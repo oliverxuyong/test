@@ -64,14 +64,14 @@ public class CpChoiceDetailDaoImpl implements CpChoiceDetailDao {
 		return returnCP;
 	}
 
-	@Deprecated
 	@Override
-	public CpChoiceDetailDO getCpChoiceDetail(Long userid, BigInteger cpId) {
+	public CpChoiceDetailDO getCpChoiceDetailBeforeTime(Long userid, BigInteger cpId,Timestamp myLastUpdateTime) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql="SELECT cp.* FROM cp_choice_detail cp WHERE user_id=:userId AND cp_id =:cpId GROUP BY cp_id HAVING MAX(create_time) ";
-		Object obj = session.createSQLQuery(sql).addEntity(CpChoiceDetailDO.class).setLong("userId", userid).setBigInteger("cpId", cpId).uniqueResult();
-		if(obj != null){
-			return (CpChoiceDetailDO)obj;
+		String sql="SELECT * FROM cp_choice_detail WHERE user_id=:userId AND cp_id =:cpId AND create_time<:lastUpdateTime AND is_selected='Y' ORDER BY create_time DESC ";
+		@SuppressWarnings("unchecked")
+		List<CpChoiceDetailDO> result = (List<CpChoiceDetailDO>)session.createSQLQuery(sql).addEntity(CpChoiceDetailDO.class).setLong("userId", userid).setBigInteger("cpId", cpId).setTimestamp("lastUpdateTime", myLastUpdateTime).list();
+		if(result.size()!= 0){
+			return result.get(0);
 		}else{
 			return null;
 		}
