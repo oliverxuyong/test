@@ -300,6 +300,8 @@ function responseCreateTopic(data){
     
     //创建群聊话题之后，发送邀请
     requestSendTopicMsg(send_msg,"INVITE",userId,userName,userImage,topic_id,topicName);
+    //创建话题成功之后打开话题页
+    enterDialogPage(topic_id,topicName,userName,true);
 }
 //2018.04.03 叶夷  发送群聊话题消息
 function requestSendTopicMsg(chatmsg_content,type,send_id,send_name,send_img,topic_id,topic_name){
