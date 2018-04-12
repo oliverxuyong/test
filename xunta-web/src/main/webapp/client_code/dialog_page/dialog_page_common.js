@@ -314,6 +314,9 @@ function responseIfTopicOutTime(data){
 		toast("此话题已失效，请新建话题");
 	}
 	//话题聊天页发送消息是不同的方法
-    create_datetime_long=new Date().getTime();
+	var nowDate=new Date();
+    create_datetime_long=nowDate.getTime();
+    console.log("nowDate="+nowDate+" create_datetime_long="+create_datetime_long);
+    log2root("nowDate="+nowDate+" create_datetime_long="+create_datetime_long);
     requestHistoryMsg();
 }

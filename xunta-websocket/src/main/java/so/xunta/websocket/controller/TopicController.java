@@ -86,7 +86,9 @@ public class TopicController {
 		String creator_uid = obj.getString("creator_uid");
 		String user_ids = obj.getString("user_ids");
 		Date date = new Date();
+		logger.info("发起群聊话题存入的时间:date" + date);
 		String create_datetime = DateTimeUtils.getTimeStrFromDate(date);
+		logger.info("发起群聊话题存入的时间:create_datetime" + create_datetime);
 		long create_datetime_long = date.getTime();
 		long endTimelong = date.getTime() + 2 * 60 * 1000;// 群聊话题失效时间
 		date = new Date(endTimelong);
