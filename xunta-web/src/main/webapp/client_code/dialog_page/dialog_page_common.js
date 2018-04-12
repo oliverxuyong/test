@@ -315,7 +315,7 @@ function responseIfTopicOutTime(data){
 	}
 	//话题聊天页发送消息是不同的方法
 	var nowDate=new Date();
-    create_datetime_long=nowDate.getTime();
+    create_datetime_long=nowDate.getTime()+10*60*1000;//加上10分钟，为了防止手机端时间比创建群聊话题时产生的时间快
     console.log("nowDate="+nowDate+" create_datetime_long="+create_datetime_long);
     log2root("nowDate="+nowDate+" create_datetime_long="+create_datetime_long);
     requestHistoryMsg();
