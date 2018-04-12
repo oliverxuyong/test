@@ -164,66 +164,89 @@ public class TopicController {
 	public void sendTopicMsg(WebSocketSession session, TextMessage message) {
 		org.json.JSONObject obj = new org.json.JSONObject(message.getPayload());
 		logger.debug("发送群聊信息:" + obj.toString());
-		String chatmsg_id = String.valueOf(idWorker.nextId());
-		String chatmsg_content = obj.getString("chatmsg_content");
-		String type = obj.getString("type");
-		String send_uid = obj.getString("send_uid");
 		String topic_id = obj.getString("topic_id");
-		String send_name = obj.getString("send_name");
-		String send_userImage = obj.getString("send_userImage");
-		String handle = obj.getString("handle");// 这里为了和发宝哥的接口同步，将发送给前端的msg_id变为前端传过来的msgid
-		String topic_name = obj.getString("topic_name");
-		Date date = new Date();
-		String create_datetime = DateTimeUtils.getTimeStrFromDate(date);
-		long create_datetime_long = date.getTime();
-
-		// 根据type来区分发送给哪些userid
-		List<TopicUserMapping> topicUserMappingList;
-		if (type.equals("INVITE")) {// 表示创建群聊话题的第一句话
-			topicUserMappingList = topicUserMappingDao.findTopicUserMappingByTopicIdAndUserType(topic_id, "INVITING");
-			chatmsg_content=send_name+"邀请你加入群聊["+topic_name+"]";
-		} else {
-			topicUserMappingList = topicUserMappingDao.findTopicUserMappingByTopicIdAndUserType(topic_id, "ENTRANT");
+		
+		//2018.04.12   叶夷   在发送消息时查看话题是否过期，过期则发送提示消息
+		Topic topic=topicDao.findUserByTopicId(topic_id);
+		String createTime=topic.getCreate_datetime();
+		String endTime=topic.getEnd_datetime();
+		logger.debug("createTime=" + createTime+" endTime="+endTime);
+		long createTimeLong = 0,endTimeLong = 0;
+		try {
+			createTimeLong=DateTimeUtils.getCurrentDateTimeObj(createTime).getTime();
+			endTimeLong=DateTimeUtils.getCurrentDateTimeObj(endTime).getTime();
+		} catch (ParseException e) {
+			logger.error(e);
 		}
+		if(createTimeLong>=endTimeLong){
+			logger.debug("话题失效:createTimeLong=" + createTimeLong+" endTimeLong="+endTimeLong);
+			JSONObject chatmsgReturnJSON = new JSONObject();
+			chatmsgReturnJSON.put("_interface", "1117-2");
+			chatmsgReturnJSON.put("topic_id", topic_id);
+			chatmsgReturnJSON.put("topicOutTime", true);
+			socketService.chat2one(session, chatmsgReturnJSON);
+		}else{
+			logger.debug("话题有效:createTimeLong=" + createTimeLong+" endTimeLong="+endTimeLong);
+			String chatmsg_id = String.valueOf(idWorker.nextId());
+			String chatmsg_content = obj.getString("chatmsg_content");
+			String type = obj.getString("type");
+			String send_uid = obj.getString("send_uid");
+			String send_name = obj.getString("send_name");
+			String send_userImage = obj.getString("send_userImage");
+			String handle = obj.getString("handle");// 这里为了和发宝哥的接口同步，将发送给前端的msg_id变为前端传过来的msgid
+			String topic_name = obj.getString("topic_name");
+			Date date = new Date();
+			String create_datetime = DateTimeUtils.getTimeStrFromDate(date);
+			long create_datetime_long = date.getTime();
 
-		// 存储topic_chatmsg表
-		TopicChatmsg topicChatmsg = new TopicChatmsg();
-		topicChatmsg.setChatmsg_id(chatmsg_id);
-		topicChatmsg.setChatmsg_content(chatmsg_content);
-		topicChatmsg.setType(type);
-		topicChatmsg.setSend_uid(send_uid);
-		topicChatmsg.setTopic_id(topic_id);
-		topicChatmsg.setCreate_datetime(create_datetime);
-		topicChatmsg.setCreate_datetime_long(create_datetime_long);
-		topicChatMsgDao.addTopicChatmsg(topicChatmsg);
+			// 根据type来区分发送给哪些userid
+			List<TopicUserMapping> topicUserMappingList;
+			if (type.equals("INVITE")) {// 表示创建群聊话题的第一句话
+				topicUserMappingList = topicUserMappingDao.findTopicUserMappingByTopicIdAndUserType(topic_id, "INVITING");
+				chatmsg_content=send_name+"邀请你加入群聊["+topic_name+"]";
+			} else {
+				topicUserMappingList = topicUserMappingDao.findTopicUserMappingByTopicIdAndUserType(topic_id, "ENTRANT");
+			}
 
-		List<String> userIdList = new ArrayList<String>();
-		for (TopicUserMapping topicUserMapping : topicUserMappingList) {
-			userIdList.add(topicUserMapping.getUser_id());
-		}
+			// 存储topic_chatmsg表
+			TopicChatmsg topicChatmsg = new TopicChatmsg();
+			topicChatmsg.setChatmsg_id(chatmsg_id);
+			topicChatmsg.setChatmsg_content(chatmsg_content);
+			topicChatmsg.setType(type);
+			topicChatmsg.setSend_uid(send_uid);
+			topicChatmsg.setTopic_id(topic_id);
+			topicChatmsg.setCreate_datetime(create_datetime);
+			topicChatmsg.setCreate_datetime_long(create_datetime_long);
+			topicChatMsgDao.addTopicChatmsg(topicChatmsg);
 
-		List<WebSocketSession> receivers = new ArrayList<WebSocketSession>();// 存储话题中的在线用户
-		List<Long> offlineUserids = new ArrayList<Long>();// 存储话题中的离线用户
-		getOnLineReceivers(receivers, offlineUserids, userIdList);
+			List<String> userIdList = new ArrayList<String>();
+			for (TopicUserMapping topicUserMapping : topicUserMappingList) {
+				userIdList.add(topicUserMapping.getUser_id());
+			}
 
-		/**
-		 * 发送消息
-		 */
-		sendMsgs(receivers, topic_id, topic_name, send_uid, send_name, send_userImage, chatmsg_content, chatmsg_id,
-				handle, create_datetime, type);// 给话题中的在线用户发消息
+			List<WebSocketSession> receivers = new ArrayList<WebSocketSession>();// 存储话题中的在线用户
+			List<Long> offlineUserids = new ArrayList<Long>();// 存储话题中的离线用户
+			getOnLineReceivers(receivers, offlineUserids, userIdList);
 
-		/**
-		 * 在普通发言中发送给离线人员模版消息
-		 * 
-		 * @author 叶夷
-		 */
-		sendofflineMsgs(send_uid, offlineUserids, chatmsg_content, send_name, topic_name);
+			/**
+			 * 发送消息
+			 */
+			sendMsgs(receivers, topic_id, topic_name, send_uid, send_name, send_userImage, chatmsg_content, chatmsg_id,
+					handle, create_datetime, type);// 给话题中的在线用户发消息
 
-		/**
-		 * 保存待确认回复消息到队列中
-		 */
-		for (long userId : offlineUserids) {
-			saveUnreadMsgs(Long.valueOf(chatmsg_id), Long.valueOf(topic_id), userId);
+			/**
+			 * 在普通发言中发送给离线人员模版消息
+			 * 
+			 * @author 叶夷
+			 */
+			sendofflineMsgs(send_uid, offlineUserids, chatmsg_content, send_name, topic_name);
+
+			/**
+			 * 保存待确认回复消息到队列中
+			 */
+			for (long userId : offlineUserids) {
+				saveUnreadMsgs(Long.valueOf(chatmsg_id), Long.valueOf(topic_id), userId);
+			}
 		}
 	}
 

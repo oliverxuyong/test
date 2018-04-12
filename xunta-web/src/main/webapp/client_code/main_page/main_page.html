@@ -314,13 +314,21 @@
         
         //这是话题消息的返回操作
         function responseTopicMsg(data){
-        	showMsg(data);
-        	
-        	//在这里发送收到消息接口
-        	var msg_id=data.chatmsg_id;
-        	var target_topicid=data.window_id;
-        	var paraStr =msg_id+ "','"+target_topicid;
-			execRoot("sendmsg_received_confirm('" + paraStr + "')");
+        	var topicOutTime=data.topicOutTime;
+        	if(topicOutTime==true || topicOutTime=="true"){//话题失效
+        		var topic_id=data.topic_id;
+        		if(window.parent.document.getElementById(topic_id)!=null ){//聊天列表打开过
+        			exec(topic_id, "topicOutTime()");
+        		}
+        	}else{
+        		showMsg(data);
+            	
+            	//在这里发送收到消息接口
+            	var msg_id=data.chatmsg_id;
+            	var target_topicid=data.window_id;
+            	var paraStr =msg_id+ "','"+target_topicid;
+    			execRoot("sendmsg_received_confirm('" + paraStr + "')");
+        	}
         }
         
         //接收到服务器返回的消息之后的操作，不管是单聊还是话题群聊

@@ -427,3 +427,7 @@ function sendFirstTalk(inputValue,weChatQRCodeUrl) {
 		twoBarCodeImg.find("img").css("width",twoBarCodeImgHeight);
 	}
 }
+//话题失效，发送消息时显示提示
+function topicOutTime(){
+	toast("此话题已失效，请新建话题")
+}
