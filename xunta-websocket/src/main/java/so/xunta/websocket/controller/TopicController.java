@@ -296,7 +296,9 @@ public class TopicController {
 		String userType = topicUserMapping.getUser_type();
 		logger.debug("userType=" + userType);
 		if (creator_uid.equals(requestUserid) || userType.equals("ENTRANT")) {
+			logger.debug("topic_id=" + topic_id+" create_datetime_long="+create_datetime_long+" msgCount="+msgCount);
 			topicChatmsgList = topicChatMsgDao.findTopicChatmsgByHistory(topic_id, create_datetime_long, msgCount);
+			logger.debug("topicChatmsgList=" + topicChatmsgList.size());
 		} else if (userType.equals("INVITING")) {
 			topicChatmsgList = topicChatMsgDao.findTopicChatmsgByTopicIdAndMsgType(topic_id, "INVITE");
 		}
@@ -323,7 +325,7 @@ public class TopicController {
 			chatmsgReturnJSON.put("msg_type", msg_type);
 			chatmsgJSONArray.put(chatmsgReturnJSON);
 		}
-
+		logger.debug("chatmsgJSONArray=" + chatmsgJSONArray.toString());
 		JSONObject chatmsgAllJSON = new JSONObject();
 		chatmsgAllJSON.put("_interface", "1119-2");
 		chatmsgAllJSON.put("topic_id", topic_id);

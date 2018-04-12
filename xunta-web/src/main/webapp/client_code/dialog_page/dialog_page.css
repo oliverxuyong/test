@@ -224,7 +224,7 @@ border-bottom:1px solid #d8d8d8;}*/
     text-align: center;
     color: white;
     background-color: #3e4b49;
-    z-index:13;
+    z-index:12;
 }
 .cover{
 	width: 100%; 
@@ -235,7 +235,7 @@ border-bottom:1px solid #d8d8d8;}*/
 	opacity: 0.7;
 	top:0px;
 	left:0px;
-	z-index:12;
+	z-index:11;
 }
 /*end:叶夷     2018.04.11  邀请或拒绝对话框样式*/
 
