@@ -431,14 +431,18 @@ function sendFirstTalk(inputValue,weChatQRCodeUrl) {
 function topicOutTime(msg_id){
 	var msgDiv=$("#"+msg_id);
 	var outTimeTextDiv=$("<div class='topicOutTime'>此话题已失效，请新建群聊话题</div>");
+	msgDiv.append(outTimeTextDiv);
 	var detail=msgDiv.find(".detail");
 	var detailMarginRight=parseInt(detail.css("margin-right"));
+	var detailPaddingRight=parseInt(detail.css("padding-left"));
+	var detailPaddingLeft=parseInt(detail.css("padding-right"));
 	var detailWidth=detail.width();
-	var outTimeTextDivMarginRight=detailMarginRight+detailWidth+4;
-	var detailHeight=detail.height();
+	var outTimeTextDivMarginRight=detailMarginRight+detailWidth+detailPaddingRight+detailPaddingLeft+4;
+	var detailHeight=detail.height()+parseInt(detail.css("padding-top"))+parseInt(detail.css("padding-bottom"));
 	var outTimeTextDivHeight=outTimeTextDiv.height();
 	var outTimeTextDivMarginTop=-(detailHeight-(detailHeight-outTimeTextDivHeight)/2);
 	outTimeTextDiv.css("margin-right",outTimeTextDivMarginRight);
 	outTimeTextDiv.css("margin-top",outTimeTextDivMarginTop);
+	$(".postsending").remove();
 	//toast("此话题已失效，请新建话题")
 }

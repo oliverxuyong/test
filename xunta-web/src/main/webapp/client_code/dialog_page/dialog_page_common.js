@@ -312,9 +312,8 @@ function responseIfTopicOutTime(data){
 	var topicOutTime=data.topicOutTime;
 	if(topicOutTime=="true" || topicOutTime==true){
 		toast("此话题已失效，请新建话题");
-	}else{
-		//话题聊天页发送消息是不同的方法
-    	create_datetime_long=new Date().getTime();
-    	requestHistoryMsg();
 	}
+	//话题聊天页发送消息是不同的方法
+    create_datetime_long=new Date().getTime();
+    requestHistoryMsg();
 }
