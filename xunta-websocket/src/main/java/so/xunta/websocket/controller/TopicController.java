@@ -165,6 +165,7 @@ public class TopicController {
 		org.json.JSONObject obj = new org.json.JSONObject(message.getPayload());
 		logger.debug("发送群聊信息:" + obj.toString());
 		String topic_id = obj.getString("topic_id");
+		String handle = obj.getString("handle");// 这里为了和发宝哥的接口同步，将发送给前端的msg_id变为前端传过来的msgid
 		
 		//2018.04.12   叶夷   在发送消息时查看话题是否过期，过期则发送提示消息
 		Topic topic=topicDao.findUserByTopicId(topic_id);
@@ -182,6 +183,7 @@ public class TopicController {
 			JSONObject chatmsgReturnJSON = new JSONObject();
 			chatmsgReturnJSON.put("_interface", "1117-2");
 			chatmsgReturnJSON.put("topic_id", topic_id);
+			chatmsgReturnJSON.put("handle", handle);
 			chatmsgReturnJSON.put("topicOutTime", true);
 			socketService.chat2one(session, chatmsgReturnJSON);
 		}else{
@@ -192,7 +194,6 @@ public class TopicController {
 			String send_uid = obj.getString("send_uid");
 			String send_name = obj.getString("send_name");
 			String send_userImage = obj.getString("send_userImage");
-			String handle = obj.getString("handle");// 这里为了和发宝哥的接口同步，将发送给前端的msg_id变为前端传过来的msgid
 			String topic_name = obj.getString("topic_name");
 			Date date = new Date();
 			String create_datetime = DateTimeUtils.getTimeStrFromDate(date);
@@ -358,7 +359,20 @@ public class TopicController {
 		List<TopicUserMapping> topicUserMappingList = topicUserMappingDao.findTopicUserMappingByUserId(userid);
 		List<Topic> topicList = new ArrayList<Topic>();
 		for (TopicUserMapping topicUserMapping : topicUserMappingList) {
-			topicList.add(topicDao.findUserByTopicId(topicUserMapping.getTopic_id()));
+			//话题列表中的获取的话题如果是失效的且没有接受的排除
+			Topic topic=topicDao.findUserByTopicId(topicUserMapping.getTopic_id());
+			String endTime=topic.getEnd_datetime();
+			logger.debug(" endTime="+endTime);
+			long nowTimeLong = 0,endTimeLong = 0;
+			try {
+				nowTimeLong=new Date().getTime();
+				endTimeLong=DateTimeUtils.getCurrentDateTimeObj(endTime).getTime();
+			} catch (ParseException e) {
+				logger.error(e);
+			}
+			if(!(nowTimeLong>=endTimeLong && !topicUserMapping.getUser_type().equals("ENTRANT"))){//非(失效且没有接受的话题)
+				topicList.add(topic);
+			}
 		}
 		JSONArray chatmsgJSONArray = new JSONArray();
 		for (Topic topic : topicList) {
@@ -475,6 +489,34 @@ public class TopicController {
 		userUnreadMsgService.deleteOneUnreadMsg(target_topicid, msgid);
 		// 从话题下的总未读消息数下减1
 		topicHasUnreadMsgNumService.recordUnReadMsgDecreaseOne(userid, target_topicid);
+	}
+	
+	// 判断话题是否过期，这个接口是用来打开话题页面的时候请求的接口
+	@WebSocketMethodAnnotation(ws_interface_mapping = "1123-1")
+	private void ifTopicOutTime(WebSocketSession session, TextMessage message) {
+		org.json.JSONObject obj = new org.json.JSONObject(message.getPayload());
+		logger.debug("判断话题是否过期:" + obj.toString());
+		String topic_id = obj.getString("topic_id");
+		
+		//2018.04.12   叶夷   在发送消息时查看话题是否过期，过期则发送提示消息
+		Topic topic=topicDao.findUserByTopicId(topic_id);
+		String endTime=topic.getEnd_datetime();
+		logger.debug(" endTime="+endTime);
+		long nowTimeLong = 0,endTimeLong = 0;
+		try {
+			nowTimeLong=new Date().getTime();
+			endTimeLong=DateTimeUtils.getCurrentDateTimeObj(endTime).getTime();
+		} catch (ParseException e) {
+			logger.error(e);
+		}
+		if(nowTimeLong>=endTimeLong){
+			logger.debug("话题失效:nowTimeLong=" + nowTimeLong+" endTimeLong="+endTimeLong);
+			JSONObject chatmsgReturnJSON = new JSONObject();
+			chatmsgReturnJSON.put("_interface", "1123-2");
+			chatmsgReturnJSON.put("topic_id", topic_id);
+			chatmsgReturnJSON.put("topicOutTime", true);
+			socketService.chat2one(session, chatmsgReturnJSON);
+		}
 	}
 
 	private void getOnLineReceivers(List<WebSocketSession> receivers, List<Long> offlineUserids, List<String> userIdList) {

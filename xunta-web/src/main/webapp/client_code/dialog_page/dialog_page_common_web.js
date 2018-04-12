@@ -428,6 +428,17 @@ function sendFirstTalk(inputValue,weChatQRCodeUrl) {
 	}
 }
 //话题失效，发送消息时显示提示
-function topicOutTime(){
-	toast("此话题已失效，请新建话题")
+function topicOutTime(msg_id){
+	var msgDiv=$("#"+msg_id);
+	var outTimeTextDiv=$("<div class='topicOutTime'>此话题已失效，请新建群聊话题</div>");
+	var detail=msgDiv.find(".detail");
+	var detailMarginRight=parseInt(detail.css("margin-right"));
+	var detailWidth=detail.width();
+	var outTimeTextDivMarginRight=detailMarginRight+detailWidth+4;
+	var detailHeight=detail.height();
+	var outTimeTextDivHeight=outTimeTextDiv.height();
+	var outTimeTextDivMarginTop=-(detailHeight-(detailHeight-outTimeTextDivHeight)/2);
+	outTimeTextDiv.css("margin-right",outTimeTextDivMarginRight);
+	outTimeTextDiv.css("margin-top",outTimeTextDivMarginTop);
+	//toast("此话题已失效，请新建话题")
 }

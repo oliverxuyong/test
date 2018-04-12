@@ -238,3 +238,9 @@ border-bottom:1px solid #d8d8d8;}*/
 	z-index:13;
 }
 /*end:叶夷     2018.04.11  邀请或拒绝对话框样式*/
+
+.topicOutTime{
+	color:red;
+	opacity:0.6;
+	font-size:13px;
+}

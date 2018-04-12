@@ -317,8 +317,9 @@
         	var topicOutTime=data.topicOutTime;
         	if(topicOutTime==true || topicOutTime=="true"){//话题失效
         		var topic_id=data.topic_id;
+        		var handle=data.handle;
         		if(window.parent.document.getElementById(topic_id)!=null ){//聊天列表打开过
-        			exec(topic_id, "topicOutTime()");
+        			exec(topic_id, "topicOutTime('"+handle+"')");
         		}
         	}else{
         		showMsg(data);

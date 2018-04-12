@@ -480,6 +480,17 @@ function requestEntrantOrRejectTopic(topic_id,user_id,user_type){
 	WS_Send(json_obj);
 }
 
+//判断是否话题失效
+function requestIfTopicOutTime(topic_id){
+	console.log("判断是否话题失效: topic_id="+topic_id);
+	var json_obj = {
+			_interface : "1123-1",
+			topic_id:topic_id.toString(),
+			timestamp:""
+		};
+	WS_Send(json_obj);
+}
+
 function tasksOnWired() {//ws连接事件的响应执行方法:
 	console.log("网络通了,现在执行任务筐.");
 	task_RequestCP();
@@ -698,6 +709,13 @@ function checkMessageInterface(evnt) {
 	if (jsonObj._interface == '1122-2') {
 		console.log("刚打开页面时收到的未读消息数:"+JSON.stringify(jsonObj));
 		exec("main_page","responseUnreadMsgCount("+evnt.data+")");
+	}
+	
+	//2018.04.12  叶夷    判断话题是否过期，这个接口是用来打开话题页面的时候请求的接口
+	if (jsonObj._interface == '1123-2') {
+		console.log("判断话题是否过期:"+JSON.stringify(jsonObj));
+		var topic_id=jsonObj.topic_id;
+		exec(topic_id,"responseIfTopicOutTime("+evnt.data+")");
 	}
 }
 
