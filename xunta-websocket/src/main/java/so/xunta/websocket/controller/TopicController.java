@@ -509,14 +509,16 @@ public class TopicController {
 		} catch (ParseException e) {
 			logger.error(e);
 		}
+		logger.debug("话题失效:nowTimeLong=" + nowTimeLong+" endTimeLong="+endTimeLong);
+		JSONObject chatmsgReturnJSON = new JSONObject();
+		chatmsgReturnJSON.put("_interface", "1123-2");
+		chatmsgReturnJSON.put("topic_id", topic_id);
 		if(nowTimeLong>=endTimeLong){
-			logger.debug("话题失效:nowTimeLong=" + nowTimeLong+" endTimeLong="+endTimeLong);
-			JSONObject chatmsgReturnJSON = new JSONObject();
-			chatmsgReturnJSON.put("_interface", "1123-2");
-			chatmsgReturnJSON.put("topic_id", topic_id);
 			chatmsgReturnJSON.put("topicOutTime", true);
-			socketService.chat2one(session, chatmsgReturnJSON);
+		}else{
+			chatmsgReturnJSON.put("topicOutTime", false);
 		}
+		socketService.chat2one(session, chatmsgReturnJSON);
 	}
 
 	private void getOnLineReceivers(List<WebSocketSession> receivers, List<Long> offlineUserids, List<String> userIdList) {
