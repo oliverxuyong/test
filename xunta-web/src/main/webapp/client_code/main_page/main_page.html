@@ -413,7 +413,7 @@
             		execRoot("notifyNewMessage('"+pageTitle+"')");
             		
             		if(window.parent.document.getElementById(window_id)!=null ){//聊天列表打开过
-            			exec(window_id, "showSelfPoster('" + user + "','" + data +"','" +imgUrl+"','" + msgId+"','" + myOrOther+ "','" + false+"','" +obj.msg_type+"')");
+            			exec(window_id, "showSelfPoster('" + user + "','" + data +"','" +imgUrl+"','" + msgId+"','" + myOrOther+ "','" + false+"','" +obj.msgtype+"')");
             			//加上时间 
                 		exec(window_id, "markSendPosterSuccess('" + msgId + "','" + postTimeLong +"','" +postTimeStr+"')");
             		} 

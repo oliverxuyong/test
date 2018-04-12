@@ -81,16 +81,31 @@ function showAllPosters(data) {
 	if (data.length == 1 && data[0].msg_type == "INVITE") {
 		// 显示邀请或拒绝两个按钮
 		//var name = data[0].from_user_name;
-		entrantOrRejectTopic();
+		entrantOrRejectTopic(data[msg].msg_id);
 	}
 }
 
 //2018.04.09 叶夷  接受邀请或拒绝对话框 
-function entrantOrRejectTopic() {
+function entrantOrRejectTopic(msgId) {
 	var entrantTopicBtnDiv=$('<div class="entrantTopicBtnDiv" id="entrantTopicBtnDiv" style="left:98px;" onclick="entrantTopic()">√</div>');
 	var rejectTopicBtnDiv=$('<div class="entrantTopicBtnDiv" id="rejectTopicBtnDiv" onclick="rejectTopic()">×</div>');
 	var parentDiv=$("#dialog_box");
 	parentDiv.append(entrantTopicBtnDiv).append(rejectTopicBtnDiv);
+	
+	//按钮位置设置
+	var msgDiv=$("#"+msgId);
+	var msgDivHeight=msgDiv.height();
+	var msgDivOffSetTop=msgDiv.offset().top;
+	var msgDivWidth=msgDiv.width();
+	var msgDivOffSetLeft=msgDiv.offset().left;
+	var entrantTopicBtnDivTop=msgDivOffSetTop+msgDivHeight+10;
+	var entrantTopicBtnDivLeft=msgDivOffSetLeft+msgDivWidth/2-entrantTopicBtnDiv.width()-10;
+	entrantTopicBtnDiv.css("top",entrantTopicBtnDivTop);
+	entrantTopicBtnDiv.css("left",entrantTopicBtnDivLeft);
+	var rejectTopicBtnDivLeft=msgDivOffSetLeft+msgDivWidth/2+entrantTopicBtnDiv.width()+10;
+	rejectTopicBtnDiv.css("top",entrantTopicBtnDivTop);
+	rejectTopicBtnDiv.css("left",rejectTopicBtnDivLeft);
+	
 	addCover(parentDiv,0.2);
 }
 
