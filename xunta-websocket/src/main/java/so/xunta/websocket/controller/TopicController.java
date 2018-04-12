@@ -168,25 +168,24 @@ public class TopicController {
 		
 		//2018.04.12   叶夷   在发送消息时查看话题是否过期，过期则发送提示消息
 		Topic topic=topicDao.findUserByTopicId(topic_id);
-		String createTime=topic.getCreate_datetime();
 		String endTime=topic.getEnd_datetime();
-		logger.debug("createTime=" + createTime+" endTime="+endTime);
-		long createTimeLong = 0,endTimeLong = 0;
+		logger.debug(" endTime="+endTime);
+		long nowTimeLong = 0,endTimeLong = 0;
 		try {
-			createTimeLong=DateTimeUtils.getCurrentDateTimeObj(createTime).getTime();
+			nowTimeLong=new Date().getTime();
 			endTimeLong=DateTimeUtils.getCurrentDateTimeObj(endTime).getTime();
 		} catch (ParseException e) {
 			logger.error(e);
 		}
-		if(createTimeLong>=endTimeLong){
-			logger.debug("话题失效:createTimeLong=" + createTimeLong+" endTimeLong="+endTimeLong);
+		if(nowTimeLong>=endTimeLong){
+			logger.debug("话题失效:nowTimeLong=" + nowTimeLong+" endTimeLong="+endTimeLong);
 			JSONObject chatmsgReturnJSON = new JSONObject();
 			chatmsgReturnJSON.put("_interface", "1117-2");
 			chatmsgReturnJSON.put("topic_id", topic_id);
 			chatmsgReturnJSON.put("topicOutTime", true);
 			socketService.chat2one(session, chatmsgReturnJSON);
 		}else{
-			logger.debug("话题有效:createTimeLong=" + createTimeLong+" endTimeLong="+endTimeLong);
+			logger.debug("话题有效:nowTimeLong=" + nowTimeLong+" endTimeLong="+endTimeLong);
 			String chatmsg_id = String.valueOf(idWorker.nextId());
 			String chatmsg_content = obj.getString("chatmsg_content");
 			String type = obj.getString("type");
