@@ -373,13 +373,15 @@ public class TopicController {
 			logger.info("userType=" + userType);
 			if (!userType.equals("REJECT")) {
 				String topic_name = topic.getTopic_name();
-				// String
-				// topic_img=userService.findUser(Long.valueOf(userid)).getImgUrl();
-				TopicChatmsg newTopicChatmsg = topicChatMsgDao.findNewTopicChatmsgByTopicId(topic_id).get(0);// 获得话题最新的一条信息
-				// String chatmsg_id=newTopicChatmsg.getChatmsg_id();
+				TopicChatmsg newTopicChatmsg=new TopicChatmsg();
+				//不同的人在话题列表中显示的最新信息不同，被邀请的人最新消息只显示邀请信息，加入的人显示的信息排除邀请信息
+				if(userType.equals("ENTRANT")){//加入的人显示的信息排除邀请信息
+					newTopicChatmsg = topicChatMsgDao.findNewTopicChatmsgByTopicId(topic_id).get(0);// 获得话题排除邀请信息最新的一条信息
+				}else{
+					newTopicChatmsg = topicChatMsgDao.findTopicChatmsgByTopicIdAndMsgType(topic_id, "INVITE").get(0);// 获得话题排除邀请信息最新的一条信息
+				}
+				
 				String chatmsg_content = newTopicChatmsg.getChatmsg_content();
-				// String
-				// send_username=userService.findUser(Long.valueOf(newTopicChatmsg.getSend_uid())).getName();
 				String topic_img = userService.findUser(Long.valueOf(newTopicChatmsg.getSend_uid())).getImgUrl();// 是最新消息的发送者的头像
 				String createTime = newTopicChatmsg.getCreate_datetime();
 
