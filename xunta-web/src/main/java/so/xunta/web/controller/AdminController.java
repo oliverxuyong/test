@@ -1,6 +1,7 @@
 package so.xunta.web.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -172,10 +173,10 @@ public class AdminController {
 	@RequestMapping(value="/initRedis")
 	public void initRedis(HttpServletRequest request, HttpServletResponse response) {
 		String eventScope = request.getParameter("eventScope");
-		String keyword = request.getParameter("keyword");
+	//	String keyword = request.getParameter("keyword");
 		if(eventScope==null){
 			recommendService.init();
-		}else{
+		}else{/*
 			long choiceNum=tagChoiceDao.getTagChoice(keyword).getChoice();
 			int magnitude = 0;
 			
@@ -190,7 +191,7 @@ public class AdminController {
 			Map<String,Double> initTags = weiboTagDao.getRelateTagsForInit(keyword, magnitude);
 			
 			initialCpDao.setCps(initTags, eventScope);
-			
+			*/
 		}
 		
 		
@@ -232,8 +233,9 @@ public class AdminController {
 		}
 		
 		List<String> userCpTypes = eventScopeCpTypeMappingService.getCpType(eventScope);
+		Map<String,Double> initCps = new HashMap<String,Double>();
 		
-		for(Entry<String,Double> initTag:initTags.entrySet()){
+		for(Entry<String,Double> initTag:initTags.entrySet()){	
 			ConcernPointDO concernPointDO = concernPointDao.getConcernPointByText(initTag.getKey());
 			String oldType = concernPointDO.getType();
 			
@@ -252,10 +254,12 @@ public class AdminController {
 					}
 				}
 			}
+			
+			initCps.put(concernPointDO.getId()+"", initTag.getValue());
 		}
 		
 		//recommendService.init();
-		initialCpDao.setCps(initTags, eventScope);
+		initialCpDao.setCps(initCps, eventScope);
 		
 		try {
 			response.getWriter().write("setEventScope success");
