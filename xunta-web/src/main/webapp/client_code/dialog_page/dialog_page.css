@@ -64,7 +64,7 @@ body{position:relative;
 #dialog-bottom-space{
 	height:40px;
 	width:100%;
-	background-color:#f6f6f6;
+	//background-color:#f6f6f6;
 }
 
 #dialog_box .user-pic,.topic-box .right .user-pic {width:32px;height:32px;border-radius:16px;overflow:hidden}
@@ -220,12 +220,19 @@ border-bottom:1px solid #d8d8d8;}*/
     position:absolute;
     right: 189px;
     top: 381px;
-    width: 20px;
+    width: 30px;
+    height: 30px;
     text-align: center;
     color: white;
-    background-color: #3e4b49;
+    //background-color: #3e4b49;
     z-index:12;
+    background-repeat:  no-repeat;
 }
+.entrantTopicBtnDiv img{
+	 width: 30px;
+    height: 30px;
+}
+
 .cover{
 	width: 100%; 
 	height: 100%; 

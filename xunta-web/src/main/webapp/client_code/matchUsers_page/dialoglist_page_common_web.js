@@ -213,10 +213,10 @@ function setUnreadObjList(){
 }
 
 //未读消息数提示，最新消息内容和最新时间更新
-function unreadMsg(toUserName,toUserImg,data,postTimeStr,respondeUserId,unreadNum,username){
+function unreadMsg(toUserName,toUserImg,data,postTimeStr,respondeUserId,unreadNum,username,isTopic){
 	var unreadParent=$("#"+respondeUserId);
 	if(unreadParent.length==0){//未读消息更改的同时判断聊天列表中是否有这个人的存在，如果不存在则将它加上且置顶
-		unreadParent=makeDialogListTop(toUserName,toUserImg,respondeUserId);
+		unreadParent=makeDialogListTop(toUserName,toUserImg,respondeUserId,isTopic);
 	}
 	//2017.12.13  叶夷  对话导航栏
 	var dialogListPage=$("li").eq(1);
@@ -289,6 +289,10 @@ function makeDialogListTop(toUserName,toUserImg,respondeUserId,isTopic){
 			copyOneDialogDiv=$(".dialog").eq(0).clone();
 			copyOneDialogDiv.attr("id",respondeUserId);
 			copyOneDialogDiv.find("img").attr("src",toUserImg);
+			//如果是群聊话题，头像变成方的
+			if(isTopic=="true" || isTopic==true){
+				copyOneDialogDiv.find("img").css("border-radius",0);
+			}
 			copyOneDialogDiv.find(".dialog_content_name").text(toUserName);
 			copyOneDialogDiv.find('.unread').remove();
 		}else{

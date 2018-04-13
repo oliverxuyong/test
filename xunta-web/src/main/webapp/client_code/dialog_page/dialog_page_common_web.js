@@ -87,8 +87,8 @@ function showAllPosters(data) {
 
 //2018.04.09 叶夷  接受邀请或拒绝对话框 
 function entrantOrRejectTopic(msgId) {
-	var entrantTopicBtnDiv=$('<div class="entrantTopicBtnDiv" id="entrantTopicBtnDiv" style="left:98px;" onclick="entrantTopic()">√</div>');
-	var rejectTopicBtnDiv=$('<div class="entrantTopicBtnDiv" id="rejectTopicBtnDiv" onclick="rejectTopic()">×</div>');
+	var entrantTopicBtnDiv=$('<div class="entrantTopicBtnDiv entrant" id="entrantTopicBtnDiv" onclick="entrantTopic()"><img src="../image/agree.png"></div>');
+	var rejectTopicBtnDiv=$('<div class="entrantTopicBtnDiv" id="rejectTopicBtnDiv" onclick="rejectTopic()"><img src="../image/disagree.png"></div>');
 	var parentDiv=$("#dialog_box");
 	parentDiv.append(entrantTopicBtnDiv).append(rejectTopicBtnDiv);
 	
@@ -99,14 +99,15 @@ function entrantOrRejectTopic(msgId) {
 	var msgDivWidth=msgDiv.width();
 	var msgDivOffSetLeft=msgDiv.offset().left;
 	var entrantTopicBtnDivTop=msgDivOffSetTop+msgDivHeight+10;
-	var entrantTopicBtnDivLeft=msgDivOffSetLeft+msgDivWidth/2-entrantTopicBtnDiv.width()-10;
+	var entrantTopicBtnDivLeft=msgDivOffSetLeft+msgDivWidth/2-entrantTopicBtnDiv.width()*2-10;
 	entrantTopicBtnDiv.css("top",entrantTopicBtnDivTop);
 	entrantTopicBtnDiv.css("left",entrantTopicBtnDivLeft);
-	var rejectTopicBtnDivLeft=msgDivOffSetLeft+msgDivWidth/2+entrantTopicBtnDiv.width()+10;
+	var rejectTopicBtnDivLeft=msgDivOffSetLeft+msgDivWidth/2+10;
 	rejectTopicBtnDiv.css("top",entrantTopicBtnDivTop);
 	rejectTopicBtnDiv.css("left",rejectTopicBtnDivLeft);
 	
-	addCover(parentDiv,0.2);
+	parentDiv.css("background-color","#fff");//这是因为按钮没有弄成透明的，所以先将背景改成白色
+	addCover(parentDiv,1);
 }
 
 /**2017.11.15 添加遮盖层的方法,parentDiv是cover的父级，opacity是cover的透明度，目前只有更改头像的时候用到*/
@@ -124,6 +125,7 @@ function addCover(parentDiv,opacity){
 
 //接受:接收了之后，按钮和邀请话消失，并且重新请求历史消息
 function entrantTopic(){
+	$("#dialog_box").css("background-color","#f6f6f6");//聊天页面背景回复成原来的颜色
 	requestEntrantOrRejectTopic("ENTRANT");
 	requestSendTopicMsg(userName+"加入了群聊","SYSTEM",userId,userName,userImage,toUserId,toUserName,"handle");
 	//按钮和邀请话消失

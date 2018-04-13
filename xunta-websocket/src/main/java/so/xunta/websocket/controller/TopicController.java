@@ -86,9 +86,9 @@ public class TopicController {
 		String creator_uid = obj.getString("creator_uid");
 		String user_ids = obj.getString("user_ids");
 		Date date = new Date();
-		logger.info("发起群聊话题存入的时间:date" + date);
+		logger.debug("发起群聊话题存入的时间:date" + date);
 		String create_datetime = DateTimeUtils.getTimeStrFromDate(date);
-		logger.info("发起群聊话题存入的时间:create_datetime" + create_datetime);
+		logger.debug("发起群聊话题存入的时间:create_datetime" + create_datetime);
 		long create_datetime_long = date.getTime();
 		long endTimelong = date.getTime() +  60 * 1000 *60*24*2;// 群聊话题失效时间
 		date = new Date(endTimelong);
@@ -353,12 +353,12 @@ public class TopicController {
 		String normalDialogList = obj.getString("normalDialogList");
 		JSONArray normalDialogJSONArray = new JSONArray();
 		Object json = new JSONTokener(normalDialogList).nextValue();// 这是用来判断传来的字符串是否是jsonarray形式
-		logger.info("json instanceof JSONArray=" + (json instanceof JSONArray));
+		logger.debug("json instanceof JSONArray=" + (json instanceof JSONArray));
 		if (json instanceof JSONArray) {
 			normalDialogList = obj.getString("normalDialogList");
 			normalDialogJSONArray = new JSONArray(normalDialogList);
 		}
-		logger.info("normalDialogList=" + normalDialogList + " normalDialogJSONArray="
+		logger.debug("normalDialogList=" + normalDialogList + " normalDialogJSONArray="
 				+ normalDialogJSONArray.toString());
 		List<TopicUserMapping> topicUserMappingList = topicUserMappingDao.findTopicUserMappingByUserId(userid);
 		List<Topic> topicList = new ArrayList<Topic>();
@@ -383,12 +383,12 @@ public class TopicController {
 			JSONObject chatmsgReturnJSON = new JSONObject();
 
 			String topic_id = topic.getTopic_id();
-			logger.info("topic_id=" + topic_id);
+			logger.debug("topic_id=" + topic_id);
 			// 通过topic和userid判断用户是否已经拒绝，已经拒绝的用户不能获得此话题
 			TopicUserMapping topicUserMapping = topicUserMappingDao.findTopicUserMappingByTopicIdAndUserId(topic_id,
 					userid);
 			String userType = topicUserMapping.getUser_type();
-			logger.info("userType=" + userType);
+			logger.debug("userType=" + userType);
 			if (!userType.equals("REJECT")) {
 				String topic_name = topic.getTopic_name();
 				TopicChatmsg newTopicChatmsg=new TopicChatmsg();
@@ -430,7 +430,7 @@ public class TopicController {
 				chatmsgJSONArray.put(chatmsgReturnJSON);
 			}
 		}
-		logger.info("chatmsgReturnJSON=" + chatmsgJSONArray);
+		logger.debug("chatmsgReturnJSON=" + chatmsgJSONArray);
 
 		List<JSONObject> allDialogJSONArray = new ArrayList<JSONObject>();// 这是话题聊天列表和普通聊天列表放在一起的json数组
 		for (int i = 0; i < normalDialogJSONArray.length(); i++) {
@@ -461,7 +461,7 @@ public class TopicController {
 			}
 		});
 
-		logger.info("allDialogJSONArray=" + allDialogJSONArray.toString());
+		logger.debug("allDialogJSONArray=" + allDialogJSONArray.toString());
 		JSONObject chatmsgAllJSON = new JSONObject();
 		chatmsgAllJSON.put("_interface", "1120-2");
 		// chatmsgAllJSON.put("userid", userid);

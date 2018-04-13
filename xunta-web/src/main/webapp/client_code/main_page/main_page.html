@@ -390,7 +390,7 @@
             		//聊天列表未读消息提示
             		if(window.parent.document.getElementById("matchUsers_page")!=null ){//聊天列表打开过
             			//在topic模式下unread不光需要topic_name，也需要username
-            			exec("matchUsers_page", "unreadMsg('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"','"+obj.user.name+"')");
+            			exec("matchUsers_page", "unreadMsg('"+user+"','"+imgUrl+"','"+data+"','"+postTimeStr+"','"+respondeUserId+"','"+1+"','"+obj.user.name+"','"+obj.isTopic+"')");
             			exec("matchUsers_page", "makeDialogListTop('"+user+"','"+imgUrl+"','"+respondeUserId+"','"+obj.isTopic+"')");
             		}else{//聊天页表没有打开才将未读信息保存好
             			//2017.08.16   装所有的未读信息，为了将数组传给聊天列表
