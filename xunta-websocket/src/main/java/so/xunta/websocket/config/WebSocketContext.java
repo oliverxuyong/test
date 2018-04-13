@@ -118,7 +118,7 @@ public class WebSocketContext {
 
 	@PreDestroy
 	public void destroy() {
-		logger.info("destroy....");
+		logger.debug("destroy....");
 		recommendTaskPool.destroy();
 		sessionFactory.close();
 		try {

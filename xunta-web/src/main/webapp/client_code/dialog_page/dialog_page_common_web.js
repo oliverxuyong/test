@@ -63,7 +63,7 @@ function showAllPosters(data) {
 		if (isTopic == true || isTopic == "true") {
 			// 将create_datetime_long参数的时间设置为最后一条的时间
 			if (msg == data.length - 1) {
-				create_time_long = data[msg].create_time_long;
+				create_datetime_long = data[msg].create_time_long;
 			}
 		}
 	}
@@ -132,8 +132,8 @@ function entrantTopic(){
 	$(".cover").remove();
 	$("#msg_list").children().remove();
 	
-	//重新请求历史消息
-	requestHistoryMsg();
+	//先判断话题是否失效，再请求历史消息
+	requestIfTopicOutTime();
 }
 //拒绝:本话题关闭，话题列表中的此话题也去除
 function rejectTopic(){
@@ -149,7 +149,12 @@ function showSelfPoster(name, content,userImage,msgId,myOrOther,isHistory,msg_ty
 	if (msg_type == "SYSTEM") {// 系统消息
 		//var content = data[msg].msg;
 		var postSYSTEMHtml = $("<time class='send-time'></time>").text(content);// 系统消息和时间样式一样
-		$("#msg_list").prepend(postSYSTEMHtml);
+		if(isHistory==true){
+			$("#msg_list").prepend(postSYSTEMHtml);
+		}else{
+			$("#msg_list").append(postSYSTEMHtml);
+			document.getElementById('dialog_box').scrollTop = document.getElementById('dialog_box').scrollHeight;
+		}
 	}else{
 		console.log(" showSelfPoster 发言上屏了.");
 		var senderName, senderName_P, content_P, senderImg, senderImg_Div, senderDiv;
@@ -184,7 +189,11 @@ function showDialogHistory(msg) {//提供给如系统通知管理员等帐号直
 	var msgJson = msg;
 
 	$("#loadingwrap").click(function(evt) {//填加再次请求的点击事件:
-		getHistoryMsg(userId,toUserId,firstMsgId);
+		if(isTopic==true || isTopic=="true"){//是群聊话题页的话题先判断话题是否失效
+			requestHistoryMsg();
+        }else{
+        	getHistoryMsg(userId,toUserId,firstMsgId);
+        }
 		$("#loadingwrap").unbind('click');	//点击后马上取消这个事件绑定.
 	});
 	var length = msgJson.length;

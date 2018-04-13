@@ -381,7 +381,7 @@
             		
             		//如果是群聊话题的消息的话user变成topic_name
             		var topic_name=obj.topic_name;
-        			if(topic_name!="undefined" || topic_name!=undefined){
+        			if(topic_name!="undefined" && topic_name!=undefined){
         				user=topic_name;
         				window_id=obj.window_id;
         				respondeUserId=window_id;

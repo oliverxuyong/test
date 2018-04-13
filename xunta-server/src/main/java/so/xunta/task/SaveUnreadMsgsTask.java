@@ -30,7 +30,7 @@ public class SaveUnreadMsgsTask extends TimerTask{
 	public void run() {
 		List<TopicUnreadMsg> unreadMsgs = TopicUnreadMsgQueue.popUnreadMsg();
 		if(unreadMsgs.size()>0){
-			logger.info("执行任务保存未读消息数:"+unreadMsgs.size()+"   "+DateTimeUtils.getCurrentTimeStr());
+			logger.debug("执行任务保存未读消息数:"+unreadMsgs.size()+"   "+DateTimeUtils.getCurrentTimeStr());
 			Long startLong = System.currentTimeMillis();
 			unreadMsgDao.addUnreadMsgs(unreadMsgs);
 			for(TopicUnreadMsg um:unreadMsgs)
@@ -38,7 +38,7 @@ public class SaveUnreadMsgsTask extends TimerTask{
 				userHasUnreadMsgTopicDao.increaseUnreadMsgNumbyOne(um.getUserid(), um.getTopicid());
 			}
 			Long endLong = System.currentTimeMillis();
-			System.out.println("耗时:"+(endLong-startLong)+"  ms");
+			logger.debug("耗时:"+(endLong-startLong)+"  ms");
 		}
 	}
 	

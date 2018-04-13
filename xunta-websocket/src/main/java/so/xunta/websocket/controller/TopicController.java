@@ -90,7 +90,7 @@ public class TopicController {
 		String create_datetime = DateTimeUtils.getTimeStrFromDate(date);
 		logger.info("发起群聊话题存入的时间:create_datetime" + create_datetime);
 		long create_datetime_long = date.getTime();
-		long endTimelong = date.getTime() + 2 * 60 * 1000;// 群聊话题失效时间
+		long endTimelong = date.getTime() +  60 * 1000 *60*24*2;// 群聊话题失效时间
 		date = new Date(endTimelong);
 		String end_datetime = DateTimeUtils.getTimeStrFromDate(date);
 		logger.debug("接收发起群聊话题的信息解析:topic_name=" + topic_name + " creator_uid=" + creator_uid + " user_ids=" + user_ids
@@ -400,7 +400,7 @@ public class TopicController {
 				}
 				
 				String chatmsg_content = newTopicChatmsg.getChatmsg_content();
-				String topic_img = userService.findUser(Long.valueOf(newTopicChatmsg.getSend_uid())).getImgUrl();// 是最新消息的发送者的头像
+				String topic_img = userService.findUser(Long.valueOf(topic.getCreator_uid())).getImgUrl();// 就是创建话题者的头像
 				String createTime = newTopicChatmsg.getCreate_datetime();
 
 				// 获得话题的未读消息数

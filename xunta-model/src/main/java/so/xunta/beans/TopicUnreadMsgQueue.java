@@ -60,7 +60,7 @@ public class TopicUnreadMsgQueue {
 			if (msg.getUserid().equals(userid) && msg.getMsgid().equals(msgid) && msg.getTopicid().equals(topicid)
 					&& current_time - next.getValue() <= TIMEOUT) {
 				iterator.remove();
-				logger.info("用户" + userid + "消息确认成功:msgid:" + msgid);
+				logger.debug("用户" + userid + "消息确认成功:msgid:" + msgid);
 				break;
 			}
 		}

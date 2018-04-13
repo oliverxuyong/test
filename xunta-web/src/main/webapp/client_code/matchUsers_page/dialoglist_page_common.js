@@ -13,7 +13,7 @@ function requestDialogList(){
         	console.log("测试聊天列表请求后台返回结果："+JSON.stringify(data));
         	log2root("测试聊天列表请求后台返回结果："+JSON.stringify(data));
         	//showDialogList(data);
-        	requestTopicDialogList(data);
+        	requestTopicDialogList(JSON.stringify(data));
         },
         error:function(data, textStatus) {
             console.log("聊天列表请求错误"+data);

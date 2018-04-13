@@ -82,7 +82,7 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 	dialog.css("height",dialogHeight);*/
 	
 	//聊天列表动态布局
-	setDialogListNode(dialog,dialogContent);
+	setDialogListNode(dialog,dialogContent,isTopic);
 	
 	dialog.click(function() {//绑定点击事件.
 		enterDialogPage(toUserId,toUserName,toUserImgUrl,isTopic);
@@ -91,7 +91,7 @@ function appendDialogElement(createTime,ifread,msg,toUserId,toUserImgUrl,toUserN
 }
 
 //聊天列表动态布局
-function setDialogListNode(dialog,dialogContent){
+function setDialogListNode(dialog,dialogContent,isTopic){
 	//var dialogHeight=dialog.height()/*parseInt(dialog.css("height"))*/;//获得聊天列表单个的高度
 	//var dialogWidth=dialog.width()/*parseInt(dialog.css("width"))*/;//获得聊天列表单个的高度
 	//2018.01.08 叶夷  将高和宽固定好数值，避免百分数而产生的变化
@@ -108,7 +108,10 @@ function setDialogListNode(dialog,dialogContent){
 	toUserImg.css("height",toUserImgHeight);
 	toUserImg.css("width",toUserImgHeight);
 	toUserImg.css("margin-left",toUserImgMargin*2);
-	//toUserImg.css("margin-top",toUserImgMargin);
+	//如果是群聊话题，头像变成方的
+	if(isTopic=="true" || isTopic==true){
+		toUserImg.css("border-radius",0);
+	}
 	
 	//文字css设置
 	var dialogContentWidth=dialogWidth-toUserImgHeight-(toUserImgMargin*5)-2;

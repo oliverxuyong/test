@@ -261,7 +261,7 @@ public class UserController {
 	 */
 	@RequestMapping("/deluser")
 	public void delUser(Long userid,HttpServletRequest request,HttpServletResponse response) throws IOException{
-		logger.info("收到删除用户："+userid+"  请求");
+		logger.debug("收到删除用户："+userid+"  请求");
 		int a = userService.delUser(userid);
 		if(a==0){
 			JSONObject json = new JSONObject( "删除用户成功!");

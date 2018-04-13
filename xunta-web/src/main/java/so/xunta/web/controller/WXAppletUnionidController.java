@@ -30,7 +30,7 @@ public class WXAppletUnionidController {
 	@RequestMapping("/getWXAppletUnionid")
 	public void getWXAppletUnionid(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		logger.info("微信从小程序进入");
+		logger.debug("微信从小程序进入");
 		response.setContentType("text/html; charset=utf-8");
 		/*
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(request.getInputStream()));

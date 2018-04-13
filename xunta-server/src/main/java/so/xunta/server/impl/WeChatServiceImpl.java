@@ -344,7 +344,7 @@ public class WeChatServiceImpl implements WeChatService{
 			JSONObject resultJson = HttpRequestUtil.httpRequest(url, "POST", json.toString());
 			String errmsg = (String) resultJson.get("errmsg");
 
-			logger.info("模版消息发送结果:" + errmsg);
+			logger.debug("模版消息发送结果:" + errmsg);
 
 			logger.debug("============================");
 			logger.debug(resultJson);
