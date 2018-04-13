@@ -80,9 +80,10 @@ function initToGetCP(userId,requestNum,currentPage) {
 function task_RequestCP() {//检查并执行话题列表请求任务.
 	if (doRequestCP) {//检查并执行 请求话题列表的任务.xu9.9
 		console.log("CP请求任务为true,现在执行请求...");
+		//重新变成请求引导页的方法
+		requestCP();
 		//2018.03.08   叶夷   因为存在引导页，所以在websocket刚创建成功的时候，调用请求是否打开引导页的方法
-		//requestCP();
-		ifUserInited(userId);
+		//ifUserInited(userId);
 	}
 }
 

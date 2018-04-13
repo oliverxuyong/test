@@ -110,7 +110,9 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 		cpsStartAnimate=false;
 		// 叶夷 2017.07.11 等请求cp动画完成之后再请求用户匹配缩略表
 		if(firstRequestTopMatchedUsers==true && isShowGuide==1){
-			requestTopMatchedUsers(userId,requestTopMUNum); 
+			//requestTopMatchedUsers(userId,requestTopMUNum); //这里不再是显示匹配人，而是开始判断是否是引导页
+			//2018.03.08  叶夷    通过请求请求服务器判断是否出现引导页
+			ifUserInited(userId);
 			//addMPData();
 			//匹配人容器的大小设置
 			//setMatchUsersContainerSize();
@@ -3328,25 +3330,52 @@ function arrowAnimateCircle(guideAddtagArrow,guideAddtagArrowTop,guideAddtagArro
 }
 //监测在引导页的时候点击屏幕
 function clickMainPage(bgObj){
-	bgObj.parentNode.removeChild(bgObj);  
-	//console.log("点击屏幕");
-	//点击屏幕箭头动画停止
-	arrowAnimateStop=true;
-	//引导页的其它东西隐藏
-	var guideAddtagCircle=$("#guideAddtagCircle");
-	guideAddtagCircle.remove();
-	var guideAddtagArrow=$("#guideAddtagArrow");
-	guideAddtagArrow.remove();
+	//在这里绑定加号点击事件，点击了加号，出现引导页的添加标签的样式,点击屏幕则动画消失
+	var addTag=$("#addtag");
+	var copyAddTag=$("<div class='mytag' id='addtag'></div>");
+	copyAddTag.css("z-index",202);
+	var copyAddTagLeft=addTag.offset().left;
+	var copyAddTagTop=addTag.offset().top-parseInt(addTag.css("margin-top"))-1; 
+	var copyAddHeight=addTag.height();
+	copyAddTag.css("left",copyAddTagLeft);
+	copyAddTag.css("top",copyAddTagTop);
+	copyAddTag.css("height",copyAddHeight);
+	$("body").append(copyAddTag);
+	copyAddTag.click(function(){
+		//点击屏幕箭头动画停止
+		arrowAnimateStop=true;
+		//引导页的其它东西隐藏
+		var guideAddtagCircle=$("#guideAddtagCircle");
+		guideAddtagCircle.remove();
+		var guideAddtagArrow=$("#guideAddtagArrow");
+		guideAddtagArrow.remove();
+		/*var guideMUBubble=$("#guideMUBubble");
+		guideMUBubble.remove();*/
+		bgObj.remove();
+		copyAddTag.remove();
+		//出现引导页的添加标签的样式
+    	guideAddTag();
+	});
+	
+	bgObj.addEventListener('click',function(){
+		//引导页的其它东西隐藏
+		var guideAddtagCircle=$("#guideAddtagCircle");
+		guideAddtagCircle.remove();
+		var guideAddtagArrow=$("#guideAddtagArrow");
+		guideAddtagArrow.remove();
+		var guideMUBubble=$("#guideMUBubble");
+		guideMUBubble.remove();
+		bgObj.remove();
+		copyAddTag.remove();
+	},false);
 	
 	//显示添加标签的气泡
 	var guideMUBubble=$("#guideMUBubble");
 	guideMUBubble.attr('src','../image/guideAddtagBubble.png'); 
 	
 	document.getElementById("guideMUBubble").onload = function () {
-		guideMUBubble.css('width','65%'); 
+		guideMUBubble.css('width','40%'); 
         console.log("添加标签的气泡加载完毕");
-        //出现引导页的添加标签的样式
-    	guideAddTag();
     }
 }
 //出现引导页的添加标签的样式
@@ -3368,7 +3397,7 @@ function guideAddTag() {
 			.push('<div class="searchtag_suggest" id="gov_search_suggest"></div>');
 	contextresult
 			.push('<div id="guideAddTagText" style="color: #909090;position: absolute;bottom: 2%;width: 100%;text-align: center;">'
-				  +'<div>头脑一片空白?&nbsp;看看这里</div>'
+				  +'<div>头脑一片空白?&nbsp;先看看推荐吧</div>'
 				  +'<img src="../image/guideAddtagDownArrow.png" style="width: 6%"/></div>');
 	alertWinForGuide(contextresult.join(''), _w, _h);
 	//alertWin(contextresult.join(''),"添加'关键词'", _w, _h);
@@ -3388,17 +3417,20 @@ function guideAddTag() {
 	var htmlObj=$("#htmlObj");
 	var htmlObjTop=guideMUBubbleTop+guideMUBubbleHeight/*+guideMUBubbleHeight/10*/;
 	htmlObj.css("top",htmlObjTop);
+	//删除对话气泡
+	var guideMUBubble=$("#guideMUBubble");
+	guideMUBubble.remove();
 	
 	//将guideAddTagText绑定点击事件
-	var guideAddTagText=window.document.getElementById('guideAddTagText');
-	guideAddTagText.addEventListener('click',function(){
+	var guideAddTagText=$('#guideAddTagText');
+	guideAddTagText.click(function(){
 		isGuideMatchUser=false;
 		closePop();//关闭对话框
 
 		//删除对话气泡
-		var guideMUBubble=$("#guideMUBubble");
-		guideMUBubble.remove();
-		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+//		var guideMUBubble=$("#guideMUBubble");
+//		guideMUBubble.remove();
+		//requestCP(userId,requestCPNum,++currentRequestedCPPage);
 		
 		//2018.03.08  叶夷      点击向下箭头按钮数据传给后台
 		sendClickGuideAddTagText(userId);
@@ -3477,6 +3509,7 @@ function responseIfUserInited(data){
 		var bgObj = document.createElement('div');
 		bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background-color:rgba(0,0,0,0);position:absolute;top:0;left:0;z-index:200;opacity:0.0;filter:alpha(opacity =0);";
 		document.body.appendChild(bgObj);
+		bgObj.classList.add("bgObj");
 		
 		//将匹配人的引导显示出来
 		showGuideMatchUsers();//显示了匹配人头像
@@ -3485,7 +3518,23 @@ function responseIfUserInited(data){
 			showGuideMUBubble();//显示匹配人头像的引导文字
 		},aniSecond * 0.4* 1000);
 		
-		//将添加标签的圆圈位置固定好且显示
+		//第二步是显示圆圈和箭头还有文字
+		timeOutSuccess=setTimeout(function(){
+			//showGuideAddtagCircleAndArrow();
+			
+			//透明不绑定点击事件，放在这里是因为需要引导页步骤一完全显示之后才能点击
+			bgObj.addEventListener('click',function(){
+				$(".bgObj").unbind();
+				showGuideAddtagCircleAndArrow();
+				clickMainPage(bgObj);//显示加号的文字
+				//2018.03.08  叶夷      点击出现第二步的引导页，数据传给后台
+				sendShowGuidePageSecond();
+			},false);
+			
+			
+		},aniSecond * 0.4* 1000);
+		
+		/*//将添加标签的圆圈位置固定好且显示
 		timeOutSuccess=setTimeout(function(){
 			$("#mytag-container").show();
 			showGuideAddtagCircleAndArrow();
@@ -3498,11 +3547,15 @@ function responseIfUserInited(data){
 				sendShowGuidePageSecond();
 			},false);
 			
-		},aniSecond * 0.4* 1000+1000);
+		},aniSecond * 0.4* 1000+1000);*/
 	}else{//不需要引导页则直接显示首页内容
 		//叶夷 2017.06.15  我觉得这里应该是++才能体现出这个次数的效果
 		//requestCP(userId,requestCPNum,currentRequestedCPPage+1);
-		requestCP(userId,requestCPNum,++currentRequestedCPPage);
+		//requestCP(userId,requestCPNum,++currentRequestedCPPage);
+		requestTopMatchedUsers(userId,requestTopMUNum);
+		/*$("#addtag").click(function(){
+			addTag();
+		});*/
 	}
 }
 

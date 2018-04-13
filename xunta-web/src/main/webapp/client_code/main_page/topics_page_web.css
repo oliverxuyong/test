@@ -6,7 +6,7 @@ position:fixed;
 	height:100%;
 	background-color: #ffffff;
 	cursor:auto;
-	//Verdana 字体 和 Tahoma
+	//Verdana 瀛椾綋 鍜� Tahoma
 	//font-family:Verdana;
 	//font-family:Tahoma;
 	//color:#191970;
@@ -58,7 +58,7 @@ width:100%;
 	margin-top: 120px;
 	margin-right: 10px;
 	margin-left: 8px;
-	font-family: '微软雅黑', Arial;
+	font-family: '寰蒋闆呴粦', Arial;
 	//color: #303030;
 	z-index:100;
 	//padding-top:21px;
@@ -133,7 +133,7 @@ width:100%;
 .createtopiccontent{
 	color:#686868;
 	font-size:8px;
-	font-family:'鐎瑰缍�', Arial;
+	font-family:'閻庣懓顑勭紞锟�', Arial;
 	margin-left:13px;
 	margin-top:31px;
 	opacity:0.5;
@@ -154,10 +154,10 @@ width:100%;
 	//float:clear;
 	color: #686868;
 	font-size: 10px;
-	font-family: '鐎瑰缍�', Arial;
+	font-family: '閻庣懓顑勭紞锟�', Arial;
 	margin-top: 3px;
 	margin-left: 39px;
-	//margin-right:50px;閸ョ姳璐熸稉瀣桨閻ㄥ埇nline鏉╂瑤閲滈惄顔煎閺嗗倹妞傛稉宥堟崳娴ｆ粎鏁�.閸欘垯浜掗幎濡慹cenmsg閺佺繝閲滈悽鈺爄v閸栧懓鎹ｉ弶锟�;
+	//margin-right:50px;闁搞儳濮崇拹鐔哥▔鐎ｎ喗妗ㄩ柣銊ュ焽nline閺夆晜鐟ら柌婊堟儎椤旂厧顤呴柡鍡楀�瑰鍌涚▔瀹ュ牊宕冲ù锝嗙矌閺侊拷.闁告瑯鍨禍鎺楀箮婵℃吂cenmsg闁轰胶绻濋柌婊堟偨閳虹垊v闁告牕鎳撻幑锝夊级閿燂拷;
 	display:inline;
 	background-color:#ffffff;
 	//border-radius: 4px;
@@ -182,7 +182,7 @@ width:100%;
 }
 
 /**
-*  弹框搜索
+*  寮规鎼滅储
 */
 ._searchDiv{
 	position:fixed;
@@ -214,7 +214,7 @@ width:100%;
 	top:0%;	
 }
 
-/*装头像和名字的容器*/
+/*瑁呭ご鍍忓拰鍚嶅瓧鐨勫鍣�*/
 .header-container{
 	width:100%;
 	height:65%;
@@ -237,9 +237,9 @@ width:100%;
 	border-radius:30%; 
 } 
 
-/*我的标签容器*/
+/*鎴戠殑鏍囩瀹瑰櫒*/
 .mytag-container{
-	width: 97%;/*这个百分比与下面两个padding百分比总合为1*/
+	width: 97%;/*杩欎釜鐧惧垎姣斾笌涓嬮潰涓や釜padding鐧惧垎姣旀�诲悎涓�1*/
 	padding-left:3%;
 	padding-right:0%;
 	height: 30%;
@@ -253,7 +253,7 @@ width:100%;
 	padding-bottom:0.7%;
 	padding-top:0.7%;
 	//padding-top:1%;	
-	/*解决滚动条隐藏在IE浏览器不兼容的问题  */
+	/*瑙ｅ喅婊氬姩鏉￠殣钘忓湪IE娴忚鍣ㄤ笉鍏煎鐨勯棶棰�  */
     -ms-overflow-style: none;}
 
 #mytag-container::-webkit-scrollbar {
@@ -269,7 +269,7 @@ height:0px;
     padding:1px;
     padding-left: 8px;
     padding-right: 8px;
-    margin-top:1.2%;//这里必须是百分数,计划我的标签框高度时要用到.
+    margin-top:1.2%;//杩欓噷蹇呴』鏄櫨鍒嗘暟,璁″垝鎴戠殑鏍囩妗嗛珮搴︽椂瑕佺敤鍒�.
     //margin-bottom:5px;
     margin-right:6px;
     font-size:.8em;
@@ -283,7 +283,7 @@ height:0px;
     background-color:rgba(66,66,66,0.9);
     text-shadow:1px 1px 0.3em black; 
     box-shadow:1px 1px 1px black;
-    position:relative;/*设为relative,下级的absolute才能生效*/
+    position:relative;/*璁句负relative,涓嬬骇鐨刟bsolute鎵嶈兘鐢熸晥*/
 }
 
 .cloneMyTag{
@@ -293,7 +293,7 @@ height:0px;
     padding:1px;
     padding-left: 8px;
     padding-right: 8px;
-    margin-top:1.2%;//这里必须是百分数,计划我的标签框高度时要用到.
+    margin-top:1.2%;//杩欓噷蹇呴』鏄櫨鍒嗘暟,璁″垝鎴戠殑鏍囩妗嗛珮搴︽椂瑕佺敤鍒�.
     //margin-bottom:5px;
     margin-right:6px;
     font-size:.8em;
@@ -307,7 +307,7 @@ height:0px;
     //background-color:rgba(66,66,66,0.9);
     //text-shadow:1px 1px 0.3em black; 
     //box-shadow:1px 1px 1px black;
-    //position:relative;/*设为relative,下级的absolute才能生效*/
+    //position:relative;/*璁句负relative,涓嬬骇鐨刟bsolute鎵嶈兘鐢熸晥*/
 }
 
 #addtag{
@@ -320,7 +320,7 @@ height:0px;
 	//line-height:25px;
 	background:url('../image/plus3.jpg') center center no-repeat;
 	background-size:100% 100%;
-	position:fixed;
+	position:absolute;
 	opacity:0.5;
 	z-index:100;
 }
@@ -351,7 +351,7 @@ height:0px;
 
 
 
-/*我的标签最外层容器*/
+/*鎴戠殑鏍囩鏈�澶栧眰瀹瑰櫒*/
 .search-head{
 	border:1px solid #ccc;
 	width:35%;
@@ -472,10 +472,10 @@ height:0px;
 	padding-top: 8px;
 	padding-left: 39px;
 	font-size: 10px;
-	/*start:叶夷
-		解决问题：在相连的人中每个人最后一个相连的话题打开始终遮盖下面的人，加上这个属性的作用是清除浮动*/
+	/*start:鍙跺し
+		瑙ｅ喅闂锛氬湪鐩歌繛鐨勪汉涓瘡涓汉鏈�鍚庝竴涓浉杩炵殑璇濋鎵撳紑濮嬬粓閬洊涓嬮潰鐨勪汉锛屽姞涓婅繖涓睘鎬х殑浣滅敤鏄竻闄ゆ诞鍔�*/
 	overflow-y:hidden;
-	/*end:叶夷*/
+	/*end:鍙跺し*/
 }
 .topicMsgMoreDiv{
 	text-align: right;
@@ -502,10 +502,10 @@ height:0px;
 	font-size: 14px;
 }
 
-/*叶夷  2017.06.19
-	标签的动画实现，是由jq的animate属性完成  */
+/*鍙跺し  2017.06.19
+	鏍囩鐨勫姩鐢诲疄鐜帮紝鏄敱jq鐨刟nimate灞炴�у畬鎴�  */
 .outcp{ 
-	position:absolute; /*标签不用排列的时候不需要这个*/
+	position:absolute; /*鏍囩涓嶇敤鎺掑垪鐨勬椂鍊欎笉闇�瑕佽繖涓�*/
 	top:0px;
 	left:0px;
 	/* 
@@ -521,7 +521,7 @@ height:0px;
 }
 	
 .cp{ 
-	position:absolute; /*标签不用排列的时候不需要这个*/
+	position:absolute; /*鏍囩涓嶇敤鎺掑垪鐨勬椂鍊欎笉闇�瑕佽繖涓�*/
 	top:0px;
 	left:0px;
 	border-radius:50%; 
@@ -543,7 +543,7 @@ height:0px;
 	position:relative;
 	//background:url(../image/cp.png) no-repeat center center;  
 	//background-size:100% auto;
-	font-family:'微软雅黑';
+	font-family:'寰蒋闆呴粦';
 	border-radius:50%; 
 	//background-color:rgba(255,255,255,0.3);
 	//box-shadow:1px 1px 1px #777777;
@@ -579,9 +579,9 @@ height:0px;
 }
 
 
-/*叶夷   2017.07.04
-	匹配人列表*/
-/*进入匹配人列表的按钮*/
+/*鍙跺し   2017.07.04
+	鍖归厤浜哄垪琛�*/
+/*杩涘叆鍖归厤浜哄垪琛ㄧ殑鎸夐挳*/
 .enterMatchUserList{
 	position:absolute;
 	//background-color: #f9f8f9;
@@ -597,7 +597,7 @@ height:0px;
 	
 }
 
-/*各个匹配人头像的大小*/
+/*鍚勪釜鍖归厤浜哄ご鍍忕殑澶у皬*/
 .mu{
 	position:absolute;
 	border-radius:50%;
@@ -613,7 +613,7 @@ height:0px;
 	//rgba(255, 255, 255, 0.7);
 }
 
-/*网站名*/
+/*缃戠珯鍚�*/
 .webname{
 	height:42px;
 	width:30%;
@@ -632,7 +632,7 @@ height:0px;
 	margin-left:1.8%;
 	margin-right:1.8%;
 	//background-color:white;
-	/**解决滚动条隐藏在IE浏览器不兼容的问题*/
+	/**瑙ｅ喅婊氬姩鏉￠殣钘忓湪IE娴忚鍣ㄤ笉鍏煎鐨勯棶棰�*/
     -ms-overflow-style: none;
 }
 
@@ -669,8 +669,8 @@ height:0px;
 	z-index:102;
 	//box-shadow:0 0 50px black;
 	display:none;
-	height:4%;/*这里设一个值,下面的img高度才能起作用.*/
-	width:6%;/*下层图标宽为100%,取定于该百分比.该图片的长宽比将决定于屏幕的长宽比.*/
+	height:4%;/*杩欓噷璁句竴涓��,涓嬮潰鐨刬mg楂樺害鎵嶈兘璧蜂綔鐢�.*/
+	width:6%;/*涓嬪眰鍥炬爣瀹戒负100%,鍙栧畾浜庤鐧惧垎姣�.璇ュ浘鐗囩殑闀垮姣斿皢鍐冲畾浜庡睆骞曠殑闀垮姣�.*/
 }
 
 .enterdialogList>img{
