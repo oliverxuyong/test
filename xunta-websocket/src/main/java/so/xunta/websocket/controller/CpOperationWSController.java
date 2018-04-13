@@ -203,6 +203,7 @@ public class CpOperationWSController {
 				concernPointService.updateConcernPoint(concernPointDO);
 				if(!userCpTypes.contains(newType)){
 					eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(userEventScope, newType);
+					userCpTypes.add(newType);
 					for(String otherImpactScope:otherImpactScopes){
 						eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(otherImpactScope, newType);
 					}

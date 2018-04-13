@@ -61,6 +61,9 @@ public class C2CServiceImpl implements C2CService {
 				relateTagIds.put(relateCP.getId().toString(), relateTag.getValue().toString());
 			}
 			
+			if(relateTagIds.size()==0){
+				continue;
+			}
 			ConcernPointDO tagCP = concernPointDao.getConcernPointByText(tag);
 			if(tagCP == null){
 				tagCP = insertCp(tag);

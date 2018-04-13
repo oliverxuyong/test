@@ -68,11 +68,14 @@ public class ConcernPointDaoImpl implements ConcernPointDao {
 		return query.list();
 	}
 	
+	
 	@Override
 	public ConcernPointDO updateConcernPoint(ConcernPointDO cp) {
 		Session session = sessionFactory.getCurrentSession();
 		session.update(cp);
 		return cp;
 	}
+
+
 
 }

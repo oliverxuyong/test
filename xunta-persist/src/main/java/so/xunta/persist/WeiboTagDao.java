@@ -14,4 +14,6 @@ public interface WeiboTagDao {
 	public List<String> getAllTags();
 	//获得某个标签相关的Tag和推荐分
 	public Map<String,Double> getRelateTags(String tag, int magnitude);
+	
+	public Map<String,Double> getRelateTagsForInit(String tag, int magnitude);
 }

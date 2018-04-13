@@ -335,6 +335,7 @@ public class RecommendServiceImpl implements RecommendService {
 						initialCpDao.removeInitialCps(eventScope);
 					}
 				}
+				
 				List<ConcernPointDO> initCps = concernPointDao.listConcernPointsByCreator();
 			//	Map<String,Double> initCpsMap = new HashMap<String,Double>();
 	
@@ -368,6 +369,8 @@ public class RecommendServiceImpl implements RecommendService {
 			//logger.info("===Redis InitialCP存在===");
 		//}
 	}
+	
+
 
 	/*@Override
 	public void replenish(String uid){
@@ -485,6 +488,5 @@ public class RecommendServiceImpl implements RecommendService {
 			}
 		}
 	}
-
 
 }
