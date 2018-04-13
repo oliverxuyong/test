@@ -327,6 +327,6 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 		} catch (UnsupportedEncodingException e) {
 			logger.error(e.getMessage(), e);
 		}
-		recommendService.init();
+		//recommendService.init();
 	}
 }

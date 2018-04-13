@@ -42,7 +42,7 @@ import so.xunta.websocket.utils.RecommendTaskPool;
 @Component
 public class CpOperationWSController {
 	
-	private final BigDecimal USER_ADD_CP_WEIGHT=new BigDecimal(5.0);
+	private final BigDecimal USER_ADD_CP_WEIGHT=new BigDecimal(2.0);
 	
 	@Autowired
 	private SocketService socketService;
@@ -150,6 +150,11 @@ public class CpOperationWSController {
 		
 		User u = userService.findUser(uid);
 		String userEventScope = u.getEvent_scope();
+		int userIfInited= u.getIfInitedTopics();
+		if(userIfInited == 0){
+			u.setIfInitedTopics(1);
+			userService.updateUser(u);	
+		}
 		//String basicType= userEventScope.split("_")[0];
 		
 		logger.info("用户"+u.getName()+"添加了自己的CP:"+cpText);
@@ -198,6 +203,7 @@ public class CpOperationWSController {
 				concernPointService.updateConcernPoint(concernPointDO);
 				if(!userCpTypes.contains(newType)){
 					eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(userEventScope, newType);
+					userCpTypes.add(newType);
 					for(String otherImpactScope:otherImpactScopes){
 						eventScopeCpTypeMappingService.setEventScopeCpTypeMapping(otherImpactScope, newType);
 					}

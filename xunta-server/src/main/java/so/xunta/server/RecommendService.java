@@ -30,6 +30,11 @@ public interface RecommendService {
 	 * @return：更新是否成功执行，是为true，否为false
 	 * */
 	public Boolean updateU2C(String uid);
+	
+	/**
+	 * 通过词关系更新推荐标签
+	 * */
+	public void updateU2cByC2c(String uid,String cpid,String property, int selectType);
 
 	/**
 	 * 用户每次上线的初始化任务，包括
@@ -38,9 +43,10 @@ public interface RecommendService {
 	public void initRecommendParm(User u);
 	
 	/**
-	 * 服务器启动时运行
+	 * 初始化cp池
 	 * */
 	public void init();
+	
 	
 	/**
 	 * 用户U2C中的推荐CP少于一定值时，从Initial CP中调取一部分进行补充

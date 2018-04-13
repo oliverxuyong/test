@@ -37,6 +37,7 @@ public interface ConcernPointDao {
 	public List<ConcernPointDO> listConcernPointsByCreator(Long uid,int startPoint,int howMany);
 	
 	public List<ConcernPointDO> listConcernPointsByCreator();
+	
 	/**
 	 * @author bright_zheng
 	 * @param ConcernPointDO
