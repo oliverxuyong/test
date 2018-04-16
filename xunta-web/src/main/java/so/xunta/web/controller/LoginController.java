@@ -893,7 +893,9 @@ public class LoginController {
 					User user = userDao.findUserByUserid(userId);
 					if (user != null) {
 						User userFromOpenid=userDao.findUserByOpenId(fromUserName);//在这里判断两个网页用户被一个微信用户扫二维码的情况，如果一个微信用户已经扫描一个网页用户的二维码，那扫描别的网页用户的二维码则不做操作
-						if(userFromOpenid==null){
+						String openid=user.getOpenid();//这是为了防止已经存在openid的用户在重新扫描二维码的时候openid更新
+						logger.debug("openid=" + openid);
+						if(userFromOpenid==null && (openid==null || openid.equals("") || openid.equals("\"\""))){
 							user.setOpenid(fromUserName);
 							userDao.updateUser(user);
 						}
