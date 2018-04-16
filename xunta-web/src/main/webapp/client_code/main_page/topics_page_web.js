@@ -3367,6 +3367,9 @@ function clickMainPage(bgObj){
 		guideMUBubble.remove();
 		bgObj.remove();
 		copyAddTag.remove();
+		
+		//2018.03.08  叶夷      点击向下箭头按钮数据传给后台
+		sendClickGuideAddTagText(userId);
 	},false);
 	
 	//显示添加标签的气泡
