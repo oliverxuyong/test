@@ -240,7 +240,7 @@ function showGroupSearchInput(){
 					}
 				}
 				if(isCheckedUserids.length<=0){
-					toast("请话题组成员");
+					toast("下面勾选邀请他人入群");
 				}else{
 					//console.log("测试"+isCheckedUserids.toString());
 					//和服务端创建群聊话题接口对接
