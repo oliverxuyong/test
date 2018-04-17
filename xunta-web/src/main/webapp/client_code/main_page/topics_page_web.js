@@ -3365,7 +3365,7 @@ function clickMainPage(bgObj){
 		guideAddtagArrow.remove();
 		var guideMUBubble=$("#guideMUBubble");
 		guideMUBubble.remove();
-		bgObj.remove();
+		$(".bgObj").remove();
 		copyAddTag.remove();
 		
 		//2018.03.08  叶夷      点击向下箭头按钮数据传给后台
