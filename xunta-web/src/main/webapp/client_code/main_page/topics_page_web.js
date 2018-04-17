@@ -3351,7 +3351,7 @@ function clickMainPage(bgObj){
 		guideAddtagArrow.remove();
 		/*var guideMUBubble=$("#guideMUBubble");
 		guideMUBubble.remove();*/
-		bgObj.remove();
+		$(".bgObj").remove();
 		copyAddTag.remove();
 		//出现引导页的添加标签的样式
     	guideAddTag();
