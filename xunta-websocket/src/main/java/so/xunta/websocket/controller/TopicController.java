@@ -241,7 +241,7 @@ public class TopicController {
 			 * 
 			 * @author 叶夷
 			 */
-			sendofflineMsgs(send_uid, offlineUserids, chatmsg_content, send_name, topic_name);
+			sendofflineMsgs(send_uid, offlineUserids, chatmsg_content, send_name, topic_name,type);
 
 			/**
 			 * 保存待确认回复消息到队列中
@@ -585,7 +585,7 @@ public class TopicController {
 	 * @author 叶夷
 	 */
 	private void sendofflineMsgs(String userid, List<Long> offlineUserids, String content, String username,
-			String topic_name) {
+			String topic_name,String type) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// 设置日期格式
 		for (Long touserid : offlineUserids) {
 			User touser = userService.findUser(touserid);
@@ -606,15 +606,25 @@ public class TopicController {
 
 				logger.debug("模版消息接口被调用时获取username:username=" + username);
 
-				weChatService.sendWechatmsgToUser(toopenid, templateid, templateurl, "#FF0000", username/*
-																										 * +
-																										 * "["
-																										 * +
-																										 * sameSelectTagList
-																										 * +
-																										 * "]"
-																										 */, "在话题["
-						+ topic_name + "]中给你发了一条消息", df.format(new Date()), content, appid, appsecret);
+				//2018.04.17 叶夷   在模版消息发送的内容中区分
+				String state="";
+				if (type.equals("INVITE")) {// 表示创建群聊话题的第一句话
+					state=content;
+					content="";
+				} else {
+					state="在你加入的话题["+ topic_name + "]中发了消息";
+				}
+				weChatService.sendWechatmsgToUser(
+						toopenid, 
+						templateid, 
+						templateurl, 
+						"#FF0000", 
+						username, 
+						state, 
+						df.format(new Date()), 
+						content, 
+						appid, 
+						appsecret);
 			}
 		}
 	}
