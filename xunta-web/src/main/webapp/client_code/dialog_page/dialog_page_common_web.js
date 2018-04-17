@@ -410,7 +410,7 @@ function sendFirstTalk(inputValue,weChatQRCodeUrl) {
 			.push('<div class="btn-div-dialogPage" onclick="inputSubmit()">发送</div>');
 	if(weChatQRCodeUrl!="" && weChatQRCodeUrl!=undefined && weChatQRCodeUrl!="undefined"){
 		contextresult
-		.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="'+weChatQRCodeUrl+'"></div><span class="twoBarCodeText">感谢你成为我们的vip用户，微信扫一扫，你就能随时收到别人的消息</span></div>');
+		.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="'+weChatQRCodeUrl+'"></div><span class="twoBarCodeText">微信扫一扫，你就能随时收到别人的消息</span></div>');
 	}
 	contextresult.push('</div>')
 	alertWin(contextresult.join(''), "打个招呼吧", _w, _h);
