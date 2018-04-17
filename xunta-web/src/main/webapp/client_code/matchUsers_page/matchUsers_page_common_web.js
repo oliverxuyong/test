@@ -193,7 +193,7 @@ function showGroupSearchInput(){
 	//将输入框更改放在左边,class更改成inputGroupChat2
 	var inputGroupChat=document.getElementById("inputGroupChat");
 	inputGroupChat.setAttribute("class", "inputGroupChat2");
-	$("#inputGroupChat").val("发起限时群话题...");
+	$("#inputGroupChat").val("输入群聊标题...");
 	//输入框拉长动画
 	var titleWidth=document.getElementById("title").offsetWidth-20;//这20是阴影效果
 	$("#groupChat").animate({
