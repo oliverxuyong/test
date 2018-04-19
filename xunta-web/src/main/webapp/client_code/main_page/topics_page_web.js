@@ -3438,6 +3438,13 @@ function guideAddTag() {
 		//2018.03.08  叶夷      点击向下箭头按钮数据传给后台
 		sendClickGuideAddTagText(userId);
 	});
+	
+	$(".guideAddTagCover").click(function(){
+		isGuideMatchUser=false;
+		closePop();//关闭对话框
+		//2018.03.08  叶夷      点击向下箭头按钮数据传给后台
+		sendClickGuideAddTagText(userId);
+	});
 }
 //引导页添加标签的功能
 function guideSearchToAddTag(){
@@ -3464,6 +3471,7 @@ function alertWinForGuide(_context,_w,_h){
     var iTop = $(window).scrollTop();
     var iLeft = $(window).scrollLeft();
     bgObj = document.createElement('div');
+    bgObj.classList.add("guideAddTagCover");//遮挡层添加class
     htmlBgObj = document.createElement('div');
     tipsObj = document.createElement('div');
     bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background:#000;position:absolute;top:0;left:0;z-index:200;opacity:0.2;filter:alpha(opacity =20);";
