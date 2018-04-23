@@ -198,7 +198,7 @@ function appendElement(/*i, */cpid,text,selectTagNum) {
 			// 点击每个显示的标签，标为选中，向后台发送选中请求。已选中的再点一次，标记取消，向后台发送请求
 			chooseOneCP(cp_node,cpid,text,selectTagNumText);
 			
-			insertMyTagArrayNoRepeat(cpid,text);
+			//insertMyTagArrayNoRepeat(cpid,text);//2018.04.23 点击推荐标签的时候不需要将标签内容放入选择标签框中，而是在点击选择之后
 			
 		});
 	}else{//特殊的标签,过5秒之后消失之后动画飞到加号位置
