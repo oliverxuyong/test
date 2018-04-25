@@ -2898,20 +2898,31 @@ var testWSArray=new Array();
 var i=0;
 function testWebSocket(data){
 	var uid_arr=data.uid_arr;
-	createNewWS(uid_arr,i)	
+	//从输入框输入的内容获取选择标签的id和text
+	var testNewWebsocketSelectCpId=$("#testNewWebsocketSelectCpId").val();
+	var testNewWebsocketSelectCpText=$("#testNewWebsocketSelectCpText").val();
+	if(testNewWebsocketSelectCpId=="" || testNewWebsocketSelectCpId=="undefined" ||testNewWebsocketSelectCpId==undefined
+			|| testNewWebsocketSelectCpText=="" || testNewWebsocketSelectCpText=="undefined" ||testNewWebsocketSelectCpText==undefined
+			|| testNewWebsocketSelectCpId=="请输入cpid" || testNewWebsocketSelectCpText=="请输入cptext"){
+		toast("输入框不能为空");
+	}else if(!/^\d+$/.test(testNewWebsocketSelectCpId)){//cpid不是纯数字
+		toast("cpid必须为数字");
+	}else{
+		createNewWS(uid_arr,i,testNewWebsocketSelectCpId,testNewWebsocketSelectCpText);
+	}
 }
 
-function createNewWS(uid_arr,i) {
+function createNewWS(uid_arr,i,cpid,cpText) {
 	var userId=uid_arr[i].userId;
 	console.log('新建第'+(i+1)+"个WS");
 	var testWS = new WebSocket("ws://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=no");
 	testWS.onopen=function(event){
 		console.log('Client received a message:',event); 
-		sendWS(testWS,userId); 
+		sendWS(testWS,userId,cpid,cpText); 
 		++i;
 		if(i<=uid_arr.length){
 			setTimeout(function() {
-				createNewWS(uid_arr,i);
+				createNewWS(uid_arr,i,cpid,cpText);
 			},100);
 		}
 	};
@@ -2920,14 +2931,14 @@ function createNewWS(uid_arr,i) {
 			sendWS(testWS); 
 	},2000);*/
 }
-function sendWS(testWS,userId) {
+function sendWS(testWS,userId,cpid,cpText) {
 	//var testWS=testWSArray[i];
 	var json_obj = {
 			 _interface:"1102-1",
 			 interface_name: "sendSelectedCP",
 			 uid:userId.toString(),
-			 cpid:"60670",
-			 cptext:"英音",
+			 cpid:cpid,
+			 cptext:cpText,
 			 property:  "P",
 			 timestamp:"",
 		};
