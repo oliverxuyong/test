@@ -306,26 +306,28 @@ public class TopicController {
 		}
 
 		JSONArray chatmsgJSONArray = new JSONArray();
-		for (TopicChatmsg topicChatmsg : topicChatmsgList) {
-			JSONObject chatmsgReturnJSON = new JSONObject();
-			String userid = topicChatmsg.getSend_uid();// 发送此条消息的userid
-			User user = userService.findUser(Long.valueOf(userid));
-			String name = user.getName();
-			String chatmsg_content = topicChatmsg.getChatmsg_content();
-			String userImage = user.getImgUrl();
-			String chatmsg_id = topicChatmsg.getChatmsg_id();
-			String create_time = topicChatmsg.getCreate_datetime();
-			long create_time_long = topicChatmsg.getCreate_datetime_long();
-			String msg_type = topicChatmsg.getType();
-			chatmsgReturnJSON.put("from_user_name", name);
-			chatmsgReturnJSON.put("msg", chatmsg_content);
-			chatmsgReturnJSON.put("from_user_imgUrl", userImage);
-			chatmsgReturnJSON.put("msg_id", chatmsg_id);
-			chatmsgReturnJSON.put("from_user_id", userid);
-			chatmsgReturnJSON.put("create_time", create_time);
-			chatmsgReturnJSON.put("create_time_long", create_time_long);
-			chatmsgReturnJSON.put("msg_type", msg_type);
-			chatmsgJSONArray.put(chatmsgReturnJSON);
+		if(topicChatmsgList!=null){
+			for (TopicChatmsg topicChatmsg : topicChatmsgList) {
+				JSONObject chatmsgReturnJSON = new JSONObject();
+				String userid = topicChatmsg.getSend_uid();// 发送此条消息的userid
+				User user = userService.findUser(Long.valueOf(userid));
+				String name = user.getName();
+				String chatmsg_content = topicChatmsg.getChatmsg_content();
+				String userImage = user.getImgUrl();
+				String chatmsg_id = topicChatmsg.getChatmsg_id();
+				String create_time = topicChatmsg.getCreate_datetime();
+				long create_time_long = topicChatmsg.getCreate_datetime_long();
+				String msg_type = topicChatmsg.getType();
+				chatmsgReturnJSON.put("from_user_name", name);
+				chatmsgReturnJSON.put("msg", chatmsg_content);
+				chatmsgReturnJSON.put("from_user_imgUrl", userImage);
+				chatmsgReturnJSON.put("msg_id", chatmsg_id);
+				chatmsgReturnJSON.put("from_user_id", userid);
+				chatmsgReturnJSON.put("create_time", create_time);
+				chatmsgReturnJSON.put("create_time_long", create_time_long);
+				chatmsgReturnJSON.put("msg_type", msg_type);
+				chatmsgJSONArray.put(chatmsgReturnJSON);
+			}
 		}
 		logger.debug("chatmsgJSONArray=" + chatmsgJSONArray.toString());
 		JSONObject chatmsgAllJSON = new JSONObject();
@@ -451,11 +453,15 @@ public class TopicController {
 				} catch (ParseException e) {
 					logger.error("获取所有话题时string转date报错" + e);
 				}
-				if (do1.getTime() > do2.getTime()) {
-					return -1;
-				} else if (do1.getTime() < do2.getTime()) {
-					return 1;
-				} else {
+				if(do1!=null && do2!=null){
+					if (do1.getTime() > do2.getTime()) {
+						return -1;
+					} else if (do1.getTime() < do2.getTime()) {
+						return 1;
+					} else {
+						return 0;
+					} 
+				}else {
 					return 0;
 				}
 			}

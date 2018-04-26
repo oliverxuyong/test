@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import so.xunta.beans.TopicUnreadMsg;
 import so.xunta.beans.TopicUnreadMsgQueue;
-import so.xunta.persist.TopicHasUnreadMsgNumDao;
 import so.xunta.persist.TopicUnreadMsgDao;
 import so.xunta.server.TopicUnreadMsgService;
 
@@ -19,8 +18,8 @@ public class TopicUnreadMsgServiceImpl implements TopicUnreadMsgService {
 	@Autowired
 	private TopicUnreadMsgDao unreadMsgDao;
 	
-	@Autowired
-	private TopicHasUnreadMsgNumDao userHasUnreadMsgTopicDao;
+//	@Autowired
+//	private TopicHasUnreadMsgNumDao userHasUnreadMsgTopicDao;
 
 	@Override
 	public void addUnreadMsg(TopicUnreadMsg unreadMsg) {

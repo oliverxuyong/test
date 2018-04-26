@@ -14,6 +14,7 @@ import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.server.SocketService;
 import so.xunta.server.UserService;
+import so.xunta.utils.NumberSequenceUtil;
 
 /**
  * @author Bright_zheng
@@ -28,7 +29,8 @@ public class RequestUserListWSController {
 	
 	@WebSocketMethodAnnotation(ws_interface_mapping = "9101-1")
 	public void reponseTestUserList(WebSocketSession session, TextMessage message){
-		List<User> users = userService.findAllUsers();
+		int from = NumberSequenceUtil.getIndex();
+		List<User> users = userService.findUsersByScope("xunta_salsa", from, from+200);
 		JSONArray uidArr = new JSONArray();
 		for(User user:users){
 			String uid = user.getUserId().toString();

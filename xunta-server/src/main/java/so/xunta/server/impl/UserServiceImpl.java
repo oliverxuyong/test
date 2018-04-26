@@ -201,6 +201,11 @@ public class UserServiceImpl implements UserService{
 	public List<User> findUsersByScope(String eventScope) {
 		return userDao.findUsersByScope(eventScope);
 	}
+	
+	@Override
+	public List<User> findUsersByScope(String eventScope, int from, int to) {
+		return  userDao.findUsersByScope(eventScope,from,to);
+	}
 
 	@Override
 	public User findUserByOpenId(String openid) {
