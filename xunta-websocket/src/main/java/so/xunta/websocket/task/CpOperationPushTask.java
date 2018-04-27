@@ -80,6 +80,7 @@ public class CpOperationPushTask implements Runnable{
 			logger.warn("参数为空！放弃任务");
 			return;
 		}
+		long startTime = System.currentTimeMillis();
 		/*Step1: 更新关系词*/
 		recommendService.updateU2cByC2c(userId, cpId, property, selectType);
 		
@@ -103,6 +104,8 @@ public class CpOperationPushTask implements Runnable{
 			recommendService.setSelfAddCp(cpId,u.getEvent_scope());
 		}
 		
+		long endTime = System.currentTimeMillis();
+		logger.info("用户:"+userId+"\n 执行时间: "+(endTime-startTime)+"毫秒");
 		logger.debug("==============================CpOperationPushTask 完成！===================================");
 	}
 	
@@ -123,13 +126,13 @@ public class CpOperationPushTask implements Runnable{
 				List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
 				String userName = u.getName();
 				if(pushMatchedUserDTOs!=null){
-					logger.info("用户"+userName+"的匹配用户发生改变");
+					logger.debug("用户"+userName+"的匹配用户发生改变");
 					pushChangedMatchedUsers(pushMatchedUserDTOs,userSession);
 				}
 				
 				List<PushRecommendCpDTO> pushRecommendCpDTOs = recommendPushDTO.getPushMatchedCPs();
 				if(pushRecommendCpDTOs!=null){
-					logger.info("给用户"+userName+"推送了 "+pushRecommendCpDTOs.size()+" 个CP");
+					logger.debug("给用户"+userName+"推送了 "+pushRecommendCpDTOs.size()+" 个CP");
 					pushRecommendCps(pushRecommendCpDTOs,userSession);
 				}
 			}else{

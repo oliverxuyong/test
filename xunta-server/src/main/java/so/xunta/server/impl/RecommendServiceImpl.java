@@ -42,7 +42,7 @@ public class RecommendServiceImpl implements RecommendService {
 	private final double SELF_ADD_CP_SCORE = 0.2;//用户自己添加cp的初始化推荐分数
 	private final int REPLENISH_NUM = 100;//每次补充多少个CP
 	private final double UPDATE_MARK = 0.0; //需要更新但用户关系值没变化
-	private final long MIN_INTERVAL = 1500L; //两次更新任务之间的最短间隔时间
+	private final long MIN_INTERVAL = 5000L; //两次更新任务之间的最短间隔时间
 	
 	@Autowired
 	private C2uDao c2uDao;
@@ -81,8 +81,8 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public Set<String> recordU2UChange(String uid, String cpid, String property, int selectType) {
-		logger.debug("用户:"+uid+" 选择了CP："+cpid+"  的记录线程启动");
-		long startTime = System.currentTimeMillis();
+		//logger.debug("用户:"+uid+" 选择了CP："+cpid+"  的记录线程启动");
+		//long startTime = System.currentTimeMillis();
 		
 		Set<String> pendingPushUids = new HashSet<String>();
 		User u = userDao.findUserByUserid(Long.valueOf(uid));
@@ -144,10 +144,10 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		pendingPushUids.addAll(usersSelectedSameCp);
 		
-		long endTime = System.currentTimeMillis();
+		/*long endTime = System.currentTimeMillis();
 		logger.debug("用户:"+u.getName()+" 选择了CP："+cpid+"  的记录任务完成"+"\t 选中相同CP的用户数: "+ 
 						usersSelectedSameCp.size() +"\t 产生更新用户数："+ pendingPushUids.size()+"\n 执行时间: "+
-						(endTime-startTime)+"毫秒");
+						(endTime-startTime)+"毫秒");*/
 		return pendingPushUids;
 	}
 	
@@ -161,8 +161,8 @@ public class RecommendServiceImpl implements RecommendService {
 			if(!ifUpdateExecutable(uid)){
 				return false;
 			}
-			logger.debug("用户:"+uid+" 的更新任务启动");
-			long startTime = System.currentTimeMillis();
+		//	logger.debug("用户:"+uid+" 的更新任务启动");
+		//	long startTime = System.currentTimeMillis();
 			/*将任务加入任务队列
 			 * */
 			updateTaskQueue.add(uid);
@@ -171,7 +171,7 @@ public class RecommendServiceImpl implements RecommendService {
 			 * step 1：在U2U_Update_Status中获取U所需要更新的状态发生过变化的用户集合{Uj}。
 			 * */
 			Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
-			logger.debug("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
+		//	logger.debug("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
 			
 			
 			/*step 2: 遍历{Uj}
@@ -205,8 +205,8 @@ public class RecommendServiceImpl implements RecommendService {
 			u2uUpdateStatusDao.deleteU2uUpdateStatus(uid);
 			userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Timestamp(System.currentTimeMillis()).toString());
 
-			long endTime = System.currentTimeMillis();
-			logger.debug("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
+		//	long endTime = System.currentTimeMillis();
+		//	logger.debug("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
 			return true;
 		} catch (Exception e) {
 			logger.error("用户:"+uid+"更新任务出错："+e.getMessage(),e);
@@ -218,7 +218,7 @@ public class RecommendServiceImpl implements RecommendService {
 	
 	@Override
 	public void updateU2cByC2c(String uid, String cpid, String property, int selectType) {
-		logger.debug("用户:"+uid+" 选择了CP："+cpid+"  更新关联推荐词");
+	//	logger.debug("用户:"+uid+" 选择了CP："+cpid+"  更新关联推荐词");
 		if(selectType==RecommendService.SELECT_CP){
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
 				Map<String,String> relateCps = c2cDao.getCpRelateCps(cpid);
@@ -253,7 +253,7 @@ public class RecommendServiceImpl implements RecommendService {
 		 * 如果用户的上次更新的任务还在排队，则丢弃此次任务
 		 * */
 		if(updateTaskQueue.contains(uid)){
-			logger.debug("用户:"+uid+" 的上一次更新任务还没结束，本次任务丢弃");
+		//	logger.debug("用户:"+uid+" 的上一次更新任务还没结束，本次任务丢弃");
 			return false;
 		}
 
@@ -263,7 +263,7 @@ public class RecommendServiceImpl implements RecommendService {
 		long startTime = System.currentTimeMillis();
 		long lastUpadteTimeLong = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid)).getTime();
 		if((startTime-lastUpadteTimeLong) < MIN_INTERVAL){
-			logger.debug("离用户："+uid+" 的上一次更新间隔过短，任务放弃");
+		//	logger.debug("离用户："+uid+" 的上一次更新间隔过短，任务放弃");
 			return false;
 		}
 		return true;
@@ -275,7 +275,7 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	@Override
 	public void initRecommendParm(User u) {
-		logger.debug("用户: "+ u.getName()+" 初始化推荐参数任务开始");
+	//	logger.debug("用户: "+ u.getName()+" 初始化推荐参数任务开始");
 		Timestamp lastUpdateTime = u.getLast_update_time();
 		if(lastUpdateTime==null){
 			lastUpdateTime = new Timestamp(System.currentTimeMillis());
@@ -432,7 +432,7 @@ public class RecommendServiceImpl implements RecommendService {
 	 * */
 	private void updateU2CAfterLastUpdated(String uid, String changedUid,Timestamp myLastUpdateTime){
 		List<CpChoiceDetailDO> newCps= cpChoiceDetailDao.getOperatedCpAfterTime(Long.valueOf(changedUid), myLastUpdateTime);
-		logger.debug("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
+		//logger.debug("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
 		
 		for(CpChoiceDetailDO selectedCp:newCps){
 			BigInteger selectedCpid = selectedCp.getCp_id();
@@ -440,7 +440,7 @@ public class RecommendServiceImpl implements RecommendService {
 			String property = selectedCp.getProperty();
 			Double cpWeight = concernPointDao.getConcernPointById(selectedCpid).getWeight().doubleValue();
 			Double relateScore = u2uRelationDao.getRelatedUserScore(uid, changedUid);
-			logger.debug("selectedCp: "+selectedCpid+" ; " + is_selected +" ; "+ property +" ; "+ cpWeight +" ; "+ relateScore);
+		//	logger.debug("selectedCp: "+selectedCpid+" ; " + is_selected +" ; "+ property +" ; "+ cpWeight +" ; "+ relateScore);
 			
 			CpChoiceDetailDO selectedCpBeforeUpdateTime = cpChoiceDetailDao.getCpChoiceDetailBeforeTime(Long.valueOf(changedUid), selectedCpid, myLastUpdateTime);
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
@@ -473,7 +473,7 @@ public class RecommendServiceImpl implements RecommendService {
 	 *	对每个CPj，在U的U2C表中对CPj的推荐分score 加上（ CPi自身的score * U-Uj的∆u_score）
 	 * */
 	private void updateU2CBeforeLastUpdated(String uid,Long changedUid,Timestamp lastUpdateTime,double uDeltaValue){
-		logger.debug("已选CP更新：关联用户 "+changedUid);
+		//logger.debug("已选CP更新：关联用户 "+changedUid);
 		//这样有一个隐患，当改变用户在我的lastUpdateTime前已经选择了某个cp后，取消又选择了该cp，并且还做了其他操作使之和我的关系改变，这时该cp的推荐之就不会更新，因为create_time已经变到lastUpdateTime之后了
 		//当然，也可以看作非隐患，取消选择表示犹豫，推荐分少加一些可以理解
 		List<CpChoiceDO> oldCps = cpChoiceDao.getSelectedCpsBeforeTime(changedUid, lastUpdateTime);
