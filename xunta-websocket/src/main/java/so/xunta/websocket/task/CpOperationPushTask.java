@@ -84,11 +84,20 @@ public class CpOperationPushTask implements Runnable{
 		/*Step1: 更新关系词*/
 		recommendService.updateU2cByC2c(userId, cpId, property, selectType);
 		
+		long endTime1 = System.currentTimeMillis();
+		logger.info("用户:"+userId+"\n 更新关系词执行时间: "+(endTime1-startTime)+"毫秒");
+		
 		/*Step2：执行记录任务，返回和我相关的用户*/
 		Set<String> pendingPushUids = recommendService.recordU2UChange(userId,cpId,property,selectType);
 		
+		long endTime2 = System.currentTimeMillis();
+		logger.info("用户:"+userId+"\n 纪录任务执行时间: "+(endTime2-startTime)+"毫秒");
+		
 		/*Step3: 触发自己的更新任务*/
 		updateAndPush(userId);
+		
+		long endTime3 = System.currentTimeMillis();
+		logger.info("用户:"+userId+"\n 自己的更新任务执行时间: "+(endTime3-startTime)+"毫秒");
 		
 		/*Step4：获得在线的匹配用户列表，触发他们的更新任务*/
 		pendingPushUids.remove(userId);
@@ -96,9 +105,13 @@ public class CpOperationPushTask implements Runnable{
 		for(String uid:pendingPushUids){
 			updateAndPush(uid);
 		}
-	
+		long endTime4 = System.currentTimeMillis();
+		logger.info("用户:"+userId+"\n 更新他人任务执行时间: "+(endTime4-startTime)+"毫秒");
+		
 		/*Step4： 为其他当前正在看这个CP的用户推送数字的变化*/
 		pushCpHeatChange();
+		long endTime5 = System.currentTimeMillis();
+		logger.info("用户:"+userId+"\n 推送数字变化执行时间: "+(endTime5-startTime)+"毫秒");
 		
 		if(ifSelfAddCp){
 			recommendService.setSelfAddCp(cpId,u.getEvent_scope());
