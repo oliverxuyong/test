@@ -232,6 +232,8 @@ public class RecommendServiceImpl implements RecommendService {
 			 * step 1：在U2U_Update_Status中获取U所需要更新的状态发生过变化的用户集合{Uj}。
 			 * */
 			Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
+			Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
+			
 		//	logger.debug("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
 			
 			Set<Tuple> myU2CSet = u2cDao.getUserCpsByRank(uid, 0, -1);
@@ -239,6 +241,7 @@ public class RecommendServiceImpl implements RecommendService {
 			for(Tuple u2C:myU2CSet){
 				myU2C.put(u2C.getElement(), u2C.getScore());
 			}
+			Map<Long,Set<CpChoiceDetailDO>> newCpsMap= cpChoiceDetailDao.getOperatedCpAfterTime(userUpdateStatusMap.keySet(), lastUpdateTime);
 			
 			/*step 2: 遍历{Uj}
 			 * */
@@ -247,12 +250,10 @@ public class RecommendServiceImpl implements RecommendService {
 				double uDeltaValue = Double.valueOf(changedUserEntry.getValue());
 				
 				/*得到Uj在U的update_time后更新的标签列表{CPi}
-				 * */
-				Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
-				
+				 * */			
 				if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
 					/*如∆u_score为0，更新U2C*/
-					updateU2CAfterLastUpdated(uid, changedUid,myU2C,lastUpdateTime);
+					updateU2CAfterLastUpdated(uid, changedUid,myU2C,newCpsMap, lastUpdateTime);
 				}else{
 					/*如∆u_score不为0  
 					 * 更新U2U_Relation， 为U对应的Uj的关系值加上对应在U2U_Update_Status中的∆u_score
@@ -261,7 +262,7 @@ public class RecommendServiceImpl implements RecommendService {
 					
 					/* 更新U2C
 					 * */
-					updateU2CAfterLastUpdated(uid, changedUid,myU2C,lastUpdateTime);
+					updateU2CAfterLastUpdated(uid, changedUid,myU2C,newCpsMap, lastUpdateTime);
 					updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), myU2C,lastUpdateTime, uDeltaValue);
 				}
 			}
@@ -497,8 +498,9 @@ public class RecommendServiceImpl implements RecommendService {
 	/**更新Uj在U的update_time后更新的标签列表{CPi}
 	 *	对每个CPi，在U的U2C表中对CPi的推荐分score 加上（ CPi自身的score * U-Uj的关系值u_score），新增为正，取消为负。
 	 * */
-	private void updateU2CAfterLastUpdated(String uid, String changedUid,Map<String,Double> u2C,Timestamp myLastUpdateTime){
-		List<CpChoiceDetailDO> newCps= cpChoiceDetailDao.getOperatedCpAfterTime(Long.valueOf(changedUid), myLastUpdateTime);
+	private void updateU2CAfterLastUpdated(String uid, String changedUid,Map<String,Double> u2C,Map<Long,Set<CpChoiceDetailDO>> newCpsMap, Timestamp myLastUpdateTime){
+	//	List<CpChoiceDetailDO> newCps= cpChoiceDetailDao.getOperatedCpAfterTime(Long.valueOf(changedUid), myLastUpdateTime);
+		Set<CpChoiceDetailDO> newCps = newCpsMap.get(Long.valueOf(changedUid));
 		//logger.debug("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
 		
 		for(CpChoiceDetailDO selectedCp:newCps){
@@ -551,7 +553,8 @@ public class RecommendServiceImpl implements RecommendService {
 		for(CpChoiceDO oldCp:oldCps){
 			BigInteger oldCpId = oldCp.getCp_id();
 			String property = oldCp.getProperty();
-			Double cpWeight = concernPointDao.getConcernPointById(oldCpId).getWeight().doubleValue();
+		//	Double cpWeight = concernPointDao.getConcernPointById(oldCpId).getWeight().doubleValue();
+			Double cpWeight =1.0;
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
 			//	u2cDao.updateUserCpValue(uid, oldCpId.toString(), cpWeight*uDeltaValue);
 				u2C.merge(oldCpId.toString(), cpWeight*uDeltaValue, (a,b)->a+b);

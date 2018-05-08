@@ -3,8 +3,11 @@ package so.xunta.persist.impl;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -75,6 +78,27 @@ public class CpChoiceDetailDaoImpl implements CpChoiceDetailDao {
 		}else{
 			return null;
 		}
+	}
+
+	@Override
+	public Map<Long, Set<CpChoiceDetailDO>> getOperatedCpAfterTime(Set<String> userid, Timestamp lastUpdateTime) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql="SELECT * FROM cp_choice_detail WHERE user_id in (:userid) AND create_time>= :lastUpdateTime GROUP BY cp_id HAVING MAX(create_time) ";
+		@SuppressWarnings("unchecked")
+		List<CpChoiceDetailDO> result = (List<CpChoiceDetailDO>)session.createSQLQuery(sql).addEntity(CpChoiceDetailDO.class).setParameterList("userid", userid).setTimestamp("lastUpdateTime", lastUpdateTime).list();
+		Map<Long,Set<CpChoiceDetailDO>> returnMap = new HashMap<Long,Set<CpChoiceDetailDO>>();
+		for(CpChoiceDetailDO cpc:result){
+			Long userId = cpc.getUser_id();
+			Set<CpChoiceDetailDO> cpcs=returnMap.get(userId);
+			if(cpcs==null){
+				cpcs=new HashSet<CpChoiceDetailDO>();
+				cpcs.add(cpc);
+				returnMap.put(userId, cpcs);
+			}else{
+				cpcs.add(cpc);
+			}			
+		}
+		return returnMap;
 	}
 
 }
