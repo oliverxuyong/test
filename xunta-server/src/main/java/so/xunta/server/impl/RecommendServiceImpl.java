@@ -3,6 +3,7 @@ package so.xunta.server.impl;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -155,8 +156,7 @@ public class RecommendServiceImpl implements RecommendService {
 	 * @author Bright Zheng
 	 *  
 	 * */
-	@Override
-	public Boolean updateU2C(String uid) {
+	public Boolean updateU2C1(String uid) {
 		try {
 			if(!ifUpdateExecutable(uid)){
 				return false;
@@ -182,11 +182,11 @@ public class RecommendServiceImpl implements RecommendService {
 				
 				/*得到Uj在U的update_time后更新的标签列表{CPi}
 				 * */
-				Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
+			//	Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
 				
 				if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
 					/*如∆u_score为0，更新U2C*/
-					updateU2CAfterLastUpdated(uid, changedUid,lastUpdateTime);
+					//updateU2CAfterLastUpdated(uid, changedUid,lastUpdateTime);
 				}else{
 					/*如∆u_score不为0  
 					 * 更新U2U_Relation， 为U对应的Uj的关系值加上对应在U2U_Update_Status中的∆u_score
@@ -195,10 +195,77 @@ public class RecommendServiceImpl implements RecommendService {
 					
 					/* 更新U2C
 					 * */
-					updateU2CAfterLastUpdated(uid, changedUid,lastUpdateTime);
-					updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), lastUpdateTime, uDeltaValue);
+					//updateU2CAfterLastUpdated(uid, changedUid,lastUpdateTime);
+					//updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), lastUpdateTime, uDeltaValue);
 				}
 			}
+			
+			/*step 3: 将U在U2U_Update_Status中的记录删除，将U的update_time更新为当前时间。
+			 * */
+			u2uUpdateStatusDao.deleteU2uUpdateStatus(uid);
+			userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Timestamp(System.currentTimeMillis()).toString());
+
+		//	long endTime = System.currentTimeMillis();
+		//	logger.debug("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
+			return true;
+		} catch (Exception e) {
+			logger.error("用户:"+uid+"更新任务出错："+e.getMessage(),e);
+			return false;
+		}finally{
+			updateTaskQueue.remove(uid);
+		}
+	}
+	
+	@Override
+	public Boolean updateU2C(String uid) {
+		try {
+			if(!ifUpdateExecutable(uid)){
+				return false;
+			}
+		//	logger.debug("用户:"+uid+" 的更新任务启动");
+		//	long startTime = System.currentTimeMillis();
+			/*将任务加入任务队列
+			 * */
+			updateTaskQueue.add(uid);
+			
+			/*更新开始
+			 * step 1：在U2U_Update_Status中获取U所需要更新的状态发生过变化的用户集合{Uj}。
+			 * */
+			Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
+		//	logger.debug("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
+			
+			Set<Tuple> myU2CSet = u2cDao.getUserCpsByRank(uid, 0, -1);
+			Map<String,Double> myU2C = new HashMap<String,Double>();	
+			for(Tuple u2C:myU2CSet){
+				myU2C.put(u2C.getElement(), u2C.getScore());
+			}
+			
+			/*step 2: 遍历{Uj}
+			 * */
+			for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
+				String changedUid = changedUserEntry.getKey();
+				double uDeltaValue = Double.valueOf(changedUserEntry.getValue());
+				
+				/*得到Uj在U的update_time后更新的标签列表{CPi}
+				 * */
+				Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
+				
+				if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
+					/*如∆u_score为0，更新U2C*/
+					updateU2CAfterLastUpdated(uid, changedUid,myU2C,lastUpdateTime);
+				}else{
+					/*如∆u_score不为0  
+					 * 更新U2U_Relation， 为U对应的Uj的关系值加上对应在U2U_Update_Status中的∆u_score
+					 * */
+					u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
+					
+					/* 更新U2C
+					 * */
+					updateU2CAfterLastUpdated(uid, changedUid,myU2C,lastUpdateTime);
+					updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), myU2C,lastUpdateTime, uDeltaValue);
+				}
+			}
+			u2cDao.refreshUserBatchCpValue(uid, myU2C);
 			
 			/*step 3: 将U在U2U_Update_Status中的记录删除，将U的update_time更新为当前时间。
 			 * */
@@ -430,7 +497,7 @@ public class RecommendServiceImpl implements RecommendService {
 	/**更新Uj在U的update_time后更新的标签列表{CPi}
 	 *	对每个CPi，在U的U2C表中对CPi的推荐分score 加上（ CPi自身的score * U-Uj的关系值u_score），新增为正，取消为负。
 	 * */
-	private void updateU2CAfterLastUpdated(String uid, String changedUid,Timestamp myLastUpdateTime){
+	private void updateU2CAfterLastUpdated(String uid, String changedUid,Map<String,Double> u2C,Timestamp myLastUpdateTime){
 		List<CpChoiceDetailDO> newCps= cpChoiceDetailDao.getOperatedCpAfterTime(Long.valueOf(changedUid), myLastUpdateTime);
 		//logger.debug("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
 		
@@ -447,22 +514,26 @@ public class RecommendServiceImpl implements RecommendService {
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
 					//System.out.println("是否为空"+cpChoiceDao.getCpChoice(Long.valueOf(changedUid), selectedCpid)+" uid:"+changedUid+" cpid:"+selectedCpid);
 					if(selectedCpBeforeUpdateTime==null||selectedCpBeforeUpdateTime.getIs_selected().equals("N")){
-						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+						//u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+						u2C.merge(selectedCpid.toString(), cpWeight*relateScore, (a,b)->a+b);
 					}
 				}else{
 					 //为取消标签时，如果在更新之前并未选中过，说明是选择又取消，应该什么都不做，只有选中过，取消才有意义
 					if(!(selectedCpBeforeUpdateTime==null||selectedCpBeforeUpdateTime.getIs_selected().equals("N"))){
-						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+						//u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+						u2C.merge(selectedCpid.toString(), -cpWeight*relateScore, (a,b)->a+b);
 					}
 				}
 			}else{
 				if(is_selected.equals(CpChoiceDetailDao.SELECTED)){
 					if(selectedCpBeforeUpdateTime==null||selectedCpBeforeUpdateTime.getIs_selected().equals("N")){
-						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+						//u2cDao.updateUserCpValue(uid, selectedCpid.toString(), -cpWeight*relateScore);
+						u2C.merge(selectedCpid.toString(), -cpWeight*relateScore, (a,b)->a+b);
 					}
 				}else{
 					if(!(selectedCpBeforeUpdateTime==null||selectedCpBeforeUpdateTime.getIs_selected().equals("N"))){
-						u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+						//u2cDao.updateUserCpValue(uid, selectedCpid.toString(), cpWeight*relateScore);
+						u2C.merge(selectedCpid.toString(), cpWeight*relateScore, (a,b)->a+b);
 					}
 				}
 			}
@@ -472,7 +543,7 @@ public class RecommendServiceImpl implements RecommendService {
 	/**更新Uj在U的update_time前已选的标签列表{CPj}
 	 *	对每个CPj，在U的U2C表中对CPj的推荐分score 加上（ CPi自身的score * U-Uj的∆u_score）
 	 * */
-	private void updateU2CBeforeLastUpdated(String uid,Long changedUid,Timestamp lastUpdateTime,double uDeltaValue){
+	private void updateU2CBeforeLastUpdated(String uid,Long changedUid,Map<String,Double> u2C,Timestamp lastUpdateTime,double uDeltaValue){
 		//logger.debug("已选CP更新：关联用户 "+changedUid);
 		//这样有一个隐患，当改变用户在我的lastUpdateTime前已经选择了某个cp后，取消又选择了该cp，并且还做了其他操作使之和我的关系改变，这时该cp的推荐之就不会更新，因为create_time已经变到lastUpdateTime之后了
 		//当然，也可以看作非隐患，取消选择表示犹豫，推荐分少加一些可以理解
@@ -482,9 +553,11 @@ public class RecommendServiceImpl implements RecommendService {
 			String property = oldCp.getProperty();
 			Double cpWeight = concernPointDao.getConcernPointById(oldCpId).getWeight().doubleValue();
 			if(property.equals(RecommendService.POSITIVE_SELECT)){
-				u2cDao.updateUserCpValue(uid, oldCpId.toString(), cpWeight*uDeltaValue);
+			//	u2cDao.updateUserCpValue(uid, oldCpId.toString(), cpWeight*uDeltaValue);
+				u2C.merge(oldCpId.toString(), cpWeight*uDeltaValue, (a,b)->a+b);
 			}else{
-				u2cDao.updateUserCpValue(uid, oldCpId.toString(), -cpWeight*uDeltaValue);
+			//	u2cDao.updateUserCpValue(uid, oldCpId.toString(), -cpWeight*uDeltaValue);
+				u2C.merge(oldCpId.toString(), -cpWeight*uDeltaValue, (a,b)->a+b);
 			}
 		}
 	}
