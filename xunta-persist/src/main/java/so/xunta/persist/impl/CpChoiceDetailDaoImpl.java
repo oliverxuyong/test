@@ -83,7 +83,7 @@ public class CpChoiceDetailDaoImpl implements CpChoiceDetailDao {
 	@Override
 	public Map<Long, Set<CpChoiceDetailDO>> getOperatedCpAfterTime(Set<String> userid, Timestamp lastUpdateTime) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql="SELECT * FROM cp_choice_detail WHERE user_id in (:userid) AND create_time>= :lastUpdateTime GROUP BY cp_id HAVING MAX(create_time) ";
+		String sql="SELECT * FROM cp_choice_detail WHERE user_id in (:userid) AND create_time>= :lastUpdateTime GROUP BY cp_id HAVING COUNT(cp_id)%2!=0 AND MAX(create_time) ";
 		@SuppressWarnings("unchecked")
 		List<CpChoiceDetailDO> result = (List<CpChoiceDetailDO>)session.createSQLQuery(sql).addEntity(CpChoiceDetailDO.class).setParameterList("userid", userid).setTimestamp("lastUpdateTime", lastUpdateTime).list();
 		Map<Long,Set<CpChoiceDetailDO>> returnMap = new HashMap<Long,Set<CpChoiceDetailDO>>();

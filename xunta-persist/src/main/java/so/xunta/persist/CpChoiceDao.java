@@ -3,6 +3,8 @@ package so.xunta.persist;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import so.xunta.beans.CpChoiceDO;
 
@@ -18,4 +20,5 @@ public interface CpChoiceDao {
 	public List<CpChoiceDO> getSelectedCps(Long userid, String property);
 	
 	public List<CpChoiceDO> getSelectedCpsBeforeTime(Long userid, Timestamp lastUpdateTime);
+	public Map<Long,Set<CpChoiceDO>> getSelectedCpsBeforeTime(Set<String> userids, Timestamp lastUpdateTime);
 }
