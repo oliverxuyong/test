@@ -501,6 +501,9 @@ public class RecommendServiceImpl implements RecommendService {
 	private void updateU2CAfterLastUpdated(String uid, String changedUid,Map<String,Double> u2C,Map<Long,Set<CpChoiceDetailDO>> newCpsMap, Timestamp myLastUpdateTime){
 	//	List<CpChoiceDetailDO> newCps= cpChoiceDetailDao.getOperatedCpAfterTime(Long.valueOf(changedUid), myLastUpdateTime);
 		Set<CpChoiceDetailDO> newCps = newCpsMap.get(Long.valueOf(changedUid));
+		if(newCps==null){
+			return;
+		}
 		//logger.debug("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
 		
 		for(CpChoiceDetailDO selectedCp:newCps){
