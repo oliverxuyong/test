@@ -10,6 +10,8 @@ public interface RecommendService {
 	public static final int UNSELECT_CP=1;
 	public static final String POSITIVE_SELECT = "P";
 	public static final String NEGATIVE_SELECT = "N";
+	public static final Boolean SELF_TRIGGER = true;
+	public static final Boolean OTHERS_TRIGGER = false;
 	
 	/**
 	 * 记录任务
@@ -29,7 +31,7 @@ public interface RecommendService {
 	 * @param uid：需要更新的用户id
 	 * @return：更新是否成功执行，是为true，否为false
 	 * */
-	public Boolean updateU2C(String uid);
+	public Boolean updateU2C(String uid,Boolean ifSelfUpdate);
 	
 	/**
 	 * 通过词关系更新推荐标签
@@ -63,7 +65,7 @@ public interface RecommendService {
 	/**
 	 * 检查用户的update任务当前是否可执行
 	 * */
-	public Boolean ifUpdateExecutable(String uid);
+	public Boolean ifUpdateExecutable(String uid,Boolean ifSelfUpdate);
 	
 	public void setSelfAddCp(String cpid,String userEventScope);
 }

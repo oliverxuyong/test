@@ -20,7 +20,7 @@ public class RecommendUpdateTask implements Runnable {
 	public void run() {
 		logger.debug("=========================RecommendUpdateTask==============================");
 		if(uid!=null){
-			recommendService.updateU2C(uid);
+			recommendService.updateU2C(uid,RecommendService.SELF_TRIGGER);
 		}else{
 			logger.warn("参数为空！放弃任务");
 		}

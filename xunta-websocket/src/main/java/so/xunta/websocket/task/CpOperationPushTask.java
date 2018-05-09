@@ -94,7 +94,7 @@ public class CpOperationPushTask implements Runnable{
 		logger.info("用户:"+userId+"\n 纪录任务执行时间: "+(endTime2-endTime1)+"毫秒");
 		
 		/*Step3: 触发自己的更新任务*/
-		updateAndPush(userId);
+		updateAndPush(userId,RecommendService.SELF_TRIGGER);
 		
 		long endTime3 = System.currentTimeMillis();
 		logger.info("用户:"+userId+"\n 自己的更新任务执行时间: "+(endTime3-endTime2)+"毫秒");
@@ -103,7 +103,7 @@ public class CpOperationPushTask implements Runnable{
 		pendingPushUids.remove(userId);
 		filterOffLineUsers(pendingPushUids);
 		for(String uid:pendingPushUids){
-			updateAndPush(uid);
+			updateAndPush(uid,RecommendService.OTHERS_TRIGGER);
 		}
 		long endTime4 = System.currentTimeMillis();
 		logger.info("用户:"+userId+"\n 更新他人任务执行时间: "+(endTime4-endTime3)+"毫秒");
@@ -122,7 +122,7 @@ public class CpOperationPushTask implements Runnable{
 		logger.debug("==============================CpOperationPushTask 完成！===================================");
 	}
 	
-	private void updateAndPush(String uid){
+	private void updateAndPush(String uid,Boolean ifSelfUpdate){
 		WebSocketSession userSession = EchoWebSocketHandler.getUserById(Long.valueOf(uid));
 		if(userSession==null){
 			return;
@@ -132,7 +132,7 @@ public class CpOperationPushTask implements Runnable{
 		/*更新前记录一次状态*/
 		Boolean ifLastPushComlepted = recommendPushService.recordStatusBeforeUpdateTask(uid,selectType);
 		if(ifLastPushComlepted){
-			Boolean isExecuted = recommendService.updateU2C(uid);
+			Boolean isExecuted = recommendService.updateU2C(uid,ifSelfUpdate);
 			if(isExecuted){
 				/*更新后执行一次和原先状态比较，有一定变化则产生推送*/
 				RecommendPushDTO recommendPushDTO = recommendPushService.generatePushDataAfterUpdateTask(uid,selectType);

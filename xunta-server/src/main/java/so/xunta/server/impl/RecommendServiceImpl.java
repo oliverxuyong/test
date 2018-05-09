@@ -2,6 +2,7 @@ package so.xunta.server.impl;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,7 +44,7 @@ public class RecommendServiceImpl implements RecommendService {
 	private final double SELF_ADD_CP_SCORE = 0.2;//用户自己添加cp的初始化推荐分数
 	private final int REPLENISH_NUM = 100;//每次补充多少个CP
 	private final double UPDATE_MARK = 0.0; //需要更新但用户关系值没变化
-	private final long MIN_INTERVAL = 5000L; //两次更新任务之间的最短间隔时间
+	private final long MIN_INTERVAL = 2000L; //两次更新任务之间的最短间隔时间
 	
 	@Autowired
 	private C2uDao c2uDao;
@@ -74,7 +75,7 @@ public class RecommendServiceImpl implements RecommendService {
 
 	Logger logger =Logger.getLogger(RecommendServiceImpl.class);
 	
-	private Set<String> updateTaskQueue =Collections.synchronizedSet(new HashSet<String>());
+	private List<String> updateTaskQueue =Collections.synchronizedList(new ArrayList<String>());
 
 	
 	/**
@@ -152,74 +153,74 @@ public class RecommendServiceImpl implements RecommendService {
 		return pendingPushUids;
 	}
 	
-	/**
-	 * @author Bright Zheng
-	 *  
-	 * */
-	public Boolean updateU2C1(String uid) {
-		try {
-			if(!ifUpdateExecutable(uid)){
-				return false;
-			}
-		//	logger.debug("用户:"+uid+" 的更新任务启动");
-		//	long startTime = System.currentTimeMillis();
-			/*将任务加入任务队列
-			 * */
-			updateTaskQueue.add(uid);
-			
-			/*更新开始
-			 * step 1：在U2U_Update_Status中获取U所需要更新的状态发生过变化的用户集合{Uj}。
-			 * */
-			Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
-		//	logger.debug("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
-			
-			
-			/*step 2: 遍历{Uj}
-			 * */
-			for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
-				String changedUid = changedUserEntry.getKey();
-				double uDeltaValue = Double.valueOf(changedUserEntry.getValue());
-				
-				/*得到Uj在U的update_time后更新的标签列表{CPi}
-				 * */
-			//	Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
-				
-				if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
-					/*如∆u_score为0，更新U2C*/
-					//updateU2CAfterLastUpdated(uid, changedUid,lastUpdateTime);
-				}else{
-					/*如∆u_score不为0  
-					 * 更新U2U_Relation， 为U对应的Uj的关系值加上对应在U2U_Update_Status中的∆u_score
-					 * */
-					u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
-					
-					/* 更新U2C
-					 * */
-					//updateU2CAfterLastUpdated(uid, changedUid,lastUpdateTime);
-					//updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), lastUpdateTime, uDeltaValue);
-				}
-			}
-			
-			/*step 3: 将U在U2U_Update_Status中的记录删除，将U的update_time更新为当前时间。
-			 * */
-			u2uUpdateStatusDao.deleteU2uUpdateStatus(uid);
-			userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Timestamp(System.currentTimeMillis()).toString());
-
-		//	long endTime = System.currentTimeMillis();
-		//	logger.debug("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
-			return true;
-		} catch (Exception e) {
-			logger.error("用户:"+uid+"更新任务出错："+e.getMessage(),e);
-			return false;
-		}finally{
-			updateTaskQueue.remove(uid);
-		}
-	}
+//	/**
+//	 * @author Bright Zheng
+//	 *  
+//	 * */
+//	public Boolean updateU2C1(String uid) {
+//		try {
+//			if(!ifUpdateExecutable(uid)){
+//				return false;
+//			}
+//		//	logger.debug("用户:"+uid+" 的更新任务启动");
+//		//	long startTime = System.currentTimeMillis();
+//			/*将任务加入任务队列
+//			 * */
+//			updateTaskQueue.add(uid);
+//			
+//			/*更新开始
+//			 * step 1：在U2U_Update_Status中获取U所需要更新的状态发生过变化的用户集合{Uj}。
+//			 * */
+//			Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
+//		//	logger.debug("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
+//			
+//			
+//			/*step 2: 遍历{Uj}
+//			 * */
+//			for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
+//				String changedUid = changedUserEntry.getKey();
+//				double uDeltaValue = Double.valueOf(changedUserEntry.getValue());
+//				
+//				/*得到Uj在U的update_time后更新的标签列表{CPi}
+//				 * */
+//			//	Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
+//				
+//				if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
+//					/*如∆u_score为0，更新U2C*/
+//					//updateU2CAfterLastUpdated(uid, changedUid,lastUpdateTime);
+//				}else{
+//					/*如∆u_score不为0  
+//					 * 更新U2U_Relation， 为U对应的Uj的关系值加上对应在U2U_Update_Status中的∆u_score
+//					 * */
+//					u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
+//					
+//					/* 更新U2C
+//					 * */
+//					//updateU2CAfterLastUpdated(uid, changedUid,lastUpdateTime);
+//					//updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), lastUpdateTime, uDeltaValue);
+//				}
+//			}
+//			
+//			/*step 3: 将U在U2U_Update_Status中的记录删除，将U的update_time更新为当前时间。
+//			 * */
+//			u2uUpdateStatusDao.deleteU2uUpdateStatus(uid);
+//			userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Timestamp(System.currentTimeMillis()).toString());
+//
+//		//	long endTime = System.currentTimeMillis();
+//		//	logger.debug("用户:"+uid+" 更新完毕\n 执行时间: "+(endTime-startTime)+"毫秒");
+//			return true;
+//		} catch (Exception e) {
+//			logger.error("用户:"+uid+"更新任务出错："+e.getMessage(),e);
+//			return false;
+//		}finally{
+//			updateTaskQueue.remove(uid);
+//		}
+//	}
 	
 	@Override
-	public Boolean updateU2C(String uid) {
+	public Boolean updateU2C(String uid,Boolean ifSelfUpdate) {
 		try {
-			if(!ifUpdateExecutable(uid)){
+			if(!ifUpdateExecutable(uid,ifSelfUpdate)){
 				return false;
 			}
 		//	logger.debug("用户:"+uid+" 的更新任务启动");
@@ -232,46 +233,48 @@ public class RecommendServiceImpl implements RecommendService {
 			 * step 1：在U2U_Update_Status中获取U所需要更新的状态发生过变化的用户集合{Uj}。
 			 * */
 			Map<String,String> userUpdateStatusMap= u2uUpdateStatusDao.getUserUpdateStatus(uid);
-			Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
-			
-		//	logger.debug("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
-			
-			Set<Tuple> myU2CSet = u2cDao.getUserCpsByRank(uid, 0, -1);
-			Map<String,Double> myU2C = new HashMap<String,Double>();	
-			for(Tuple u2C:myU2CSet){
-				myU2C.put(u2C.getElement(), u2C.getScore());
-			}
-			Map<Long,Set<CpChoiceDetailDO>> newCpsMap= cpChoiceDetailDao.getOperatedCpAfterTime(userUpdateStatusMap.keySet(), lastUpdateTime);
-			Map<Long,Set<CpChoiceDO>> oldCpsMap = cpChoiceDao.getSelectedCpsBeforeTime(userUpdateStatusMap.keySet(), lastUpdateTime);
-			
-			/*step 2: 遍历{Uj}
-			 * */
-			for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
-				String changedUid = changedUserEntry.getKey();
-				double uDeltaValue = Double.valueOf(changedUserEntry.getValue());
+			if(userUpdateStatusMap.size()!=0){
+				Timestamp lastUpdateTime = Timestamp.valueOf(userLastUpdateTimeDao.getUserLastUpdateTime(uid));
 				
-				/*得到Uj在U的update_time后更新的标签列表{CPi}
-				 * */			
-				if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
-					/*如∆u_score为0，更新U2C*/
-					updateU2CAfterLastUpdated(uid, changedUid,myU2C,newCpsMap);
-				}else{
-					/*如∆u_score不为0  
-					 * 更新U2U_Relation， 为U对应的Uj的关系值加上对应在U2U_Update_Status中的∆u_score
-					 * */
-					u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
-					
-					/* 更新U2C
-					 * */
-					updateU2CAfterLastUpdated(uid, changedUid,myU2C,newCpsMap);
-					updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), myU2C, uDeltaValue,oldCpsMap);
+			//	logger.debug("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
+				
+				Set<Tuple> myU2CSet = u2cDao.getUserCpsByRank(uid, 0, -1);
+				Map<String,Double> myU2C = new HashMap<String,Double>();	
+				for(Tuple u2C:myU2CSet){
+					myU2C.put(u2C.getElement(), u2C.getScore());
 				}
+				Map<Long,Set<CpChoiceDetailDO>> newCpsMap= cpChoiceDetailDao.getOperatedCpAfterTime(userUpdateStatusMap.keySet(), lastUpdateTime);
+				Map<Long,Set<CpChoiceDO>> oldCpsMap = cpChoiceDao.getSelectedCpsBeforeTime(userUpdateStatusMap.keySet(), lastUpdateTime);
+				
+				/*step 2: 遍历{Uj}
+				 * */
+				for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
+					String changedUid = changedUserEntry.getKey();
+					double uDeltaValue = Double.valueOf(changedUserEntry.getValue());
+					
+					/*得到Uj在U的update_time后更新的标签列表{CPi}
+					 * */			
+					if(Math.abs(uDeltaValue - NO_CHANGE) < 1e-6){
+						/*如∆u_score为0，更新U2C*/
+						updateU2CAfterLastUpdated(uid, changedUid,myU2C,newCpsMap);
+					}else{
+						/*如∆u_score不为0  
+						 * 更新U2U_Relation， 为U对应的Uj的关系值加上对应在U2U_Update_Status中的∆u_score
+						 * */
+						u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
+						
+						/* 更新U2C
+						 * */
+						updateU2CAfterLastUpdated(uid, changedUid,myU2C,newCpsMap);
+						updateU2CBeforeLastUpdated(uid, Long.valueOf(changedUid), myU2C, uDeltaValue,oldCpsMap);
+					}
+				}
+				u2cDao.refreshUserBatchCpValue(uid, myU2C);
+				
+				/*step 3: 将U在U2U_Update_Status中的记录删除，将U的update_time更新为当前时间。
+				 * */
+				u2uUpdateStatusDao.deleteU2uUpdateStatus(uid);
 			}
-			u2cDao.refreshUserBatchCpValue(uid, myU2C);
-			
-			/*step 3: 将U在U2U_Update_Status中的记录删除，将U的update_time更新为当前时间。
-			 * */
-			u2uUpdateStatusDao.deleteU2uUpdateStatus(uid);
 			userLastUpdateTimeDao.setUserLastUpdateTime(uid, new Timestamp(System.currentTimeMillis()).toString());
 
 		//	long endTime = System.currentTimeMillis();
@@ -317,12 +320,17 @@ public class RecommendServiceImpl implements RecommendService {
 	}
 
 	@Override
-	public Boolean ifUpdateExecutable(String uid) {
+	public Boolean ifUpdateExecutable(String uid,Boolean ifSelfUpdate) {
 		/*准备工作: 检查任务队列
 		 * 如果用户的上次更新的任务还在排队，则丢弃此次任务
+		 * 如果是自己触发的更新，放弃后加的，如果是他人触发，放弃靠前的
 		 * */
 		if(updateTaskQueue.contains(uid)){
 		//	logger.debug("用户:"+uid+" 的上一次更新任务还没结束，本次任务丢弃");
+			if(!ifSelfUpdate){
+				updateTaskQueue.remove(uid);
+				updateTaskQueue.add(uid);
+			}
 			return false;
 		}
 
