@@ -515,12 +515,14 @@ public class RecommendServiceImpl implements RecommendService {
 		}
 		//logger.debug("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
 		
+		Double relateScore = u2uRelationDao.getRelatedUserScore(uid, changedUid);
+		
 		for(CpChoiceDetailDO selectedCp:newCps){
 			BigInteger selectedCpid = selectedCp.getCp_id();
 			String is_selected = selectedCp.getIs_selected();
 			String property = selectedCp.getProperty();
-			Double cpWeight = concernPointDao.getConcernPointById(selectedCpid).getWeight().doubleValue();
-			Double relateScore = u2uRelationDao.getRelatedUserScore(uid, changedUid);
+		//	Double cpWeight = concernPointDao.getConcernPointById(selectedCpid).getWeight().doubleValue();
+			Double cpWeight = 1.0;
 		//	logger.debug("selectedCp: "+selectedCpid+" ; " + is_selected +" ; "+ property +" ; "+ cpWeight +" ; "+ relateScore);
 			
 		//	CpChoiceDetailDO selectedCpBeforeUpdateTime = cpChoiceDetailDao.getCpChoiceDetailBeforeTime(Long.valueOf(changedUid), selectedCpid, myLastUpdateTime);
