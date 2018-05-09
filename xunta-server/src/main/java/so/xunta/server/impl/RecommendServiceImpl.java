@@ -555,6 +555,9 @@ public class RecommendServiceImpl implements RecommendService {
 		//当然，也可以看作非隐患，取消选择表示犹豫，推荐分少加一些可以理解
 		//List<CpChoiceDO> oldCps = cpChoiceDao.getSelectedCpsBeforeTime(changedUid, lastUpdateTime);
 		Set<CpChoiceDO> oldCps = oldCpsMap.get(changedUid);
+		if(oldCps==null){
+			return;
+		}
 		for(CpChoiceDO oldCp:oldCps){
 			BigInteger oldCpId = oldCp.getCp_id();
 			String property = oldCp.getProperty();
