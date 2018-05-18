@@ -8,19 +8,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import redis.clients.jedis.Jedis;
-import so.xunta.persist.U2uUpdateStatusDao;
+import so.xunta.persist.U2uUpdateStatusForRecommendCpDao;
 import so.xunta.utils.RedisUtil;
 
 @Repository
-public class U2uUpdateStatusDaoImp implements U2uUpdateStatusDao {
+public class U2uUpdateStatusForRecommendCpDaoImp implements U2uUpdateStatusForRecommendCpDao {
 
 	@Autowired
 	private RedisUtil redisUtil;
 	
-	@Value("${redis.keyPrefixU2UUpdateStatus}")
+	@Value("${redis.keyPrefixU2UUpdateStatusForCP}")
 	private String keyPrefix;
 	
-	Logger logger =Logger.getLogger(U2uUpdateStatusDaoImp.class);
+	Logger logger =Logger.getLogger(U2uUpdateStatusForRecommendCpDaoImp.class);
 	
 	
 	@Override

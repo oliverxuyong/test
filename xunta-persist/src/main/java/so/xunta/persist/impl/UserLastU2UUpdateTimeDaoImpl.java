@@ -6,19 +6,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import redis.clients.jedis.Jedis;
-import so.xunta.persist.UserLastUpdateTimeDao;
+import so.xunta.persist.UserLastU2UUpdateTimeDao;
 import so.xunta.utils.RedisUtil;
 
 @Repository
-public class UserLastUpdateTimeDaoImpl implements UserLastUpdateTimeDao {
+public class UserLastU2UUpdateTimeDaoImpl implements UserLastU2UUpdateTimeDao {
 
 	@Autowired
 	private RedisUtil redisUtil;
 	
-	@Value("${redis.keyPrefixUserUpdateTime}")
+	@Value("${redis.keyPrefixUserUpdateTimeUU}")
 	private String keyPrefix;
 	
-	Logger logger =Logger.getLogger(UserLastUpdateTimeDaoImpl.class);
+	Logger logger =Logger.getLogger(UserLastU2UUpdateTimeDaoImpl.class);
 	
 	@Override
 	public String getUserLastUpdateTime(String uid) {

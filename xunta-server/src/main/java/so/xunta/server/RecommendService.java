@@ -31,7 +31,9 @@ public interface RecommendService {
 	 * @param uid：需要更新的用户id
 	 * @return：更新是否成功执行，是为true，否为false
 	 * */
-	public Boolean updateU2C(String uid,Boolean ifSelfUpdate);
+	public Boolean updateU2C(String uid);
+	
+	public Boolean updateU2U(String uid);
 	
 	/**
 	 * 通过词关系更新推荐标签
@@ -65,7 +67,7 @@ public interface RecommendService {
 	/**
 	 * 检查用户的update任务当前是否可执行
 	 * */
-	public Boolean ifUpdateExecutable(String uid,Boolean ifSelfUpdate);
+	//public Boolean ifU2CUpdateExecutable(String uid);
 	
 	public void setSelfAddCp(String cpid,String userEventScope);
 }

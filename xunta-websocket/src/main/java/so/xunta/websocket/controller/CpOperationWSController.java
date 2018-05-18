@@ -32,8 +32,9 @@ import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.server.UserService;
 import so.xunta.websocket.config.Constants;
-import so.xunta.websocket.task.CpOperationPushTask;
-import so.xunta.websocket.utils.RecommendTaskPool;
+import so.xunta.websocket.task.CpOperationTask;
+import so.xunta.websocket.utils.HighPriorityThreadExecutor;
+import so.xunta.websocket.utils.LowPriorityThreadExecutor;
 
 /**
  * @author Bright_zheng
@@ -49,7 +50,9 @@ public class CpOperationWSController {
 	@Autowired
 	private CpChoiceDetailService cpChoiceDetailService;
 	@Autowired
-	private RecommendTaskPool recommendTaskPool;
+	private HighPriorityThreadExecutor highPriorityThreadExecutor;
+	@Autowired
+	private LowPriorityThreadExecutor lowPriorityThreadExecutor;
 	@Autowired
 	private RecommendService recommendService;
 	@Autowired
@@ -66,6 +69,7 @@ public class CpOperationWSController {
 	private UserService userService;
 	@Autowired
 	private EventScopeCpTypeMappingService eventScopeCpTypeMappingService;
+
 	
 	Logger logger =Logger.getLogger(CpOperationWSController.class);
 	
@@ -281,8 +285,9 @@ public class CpOperationWSController {
 		}else{
 			selectTypeRec = RecommendService.UNSELECT_CP;
 		}
-		CpOperationPushTask cpOperationPushTask = new CpOperationPushTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,ifSelfAddCp,socketService,loggerService,userService);
-		recommendTaskPool.execute(cpOperationPushTask);
+		
+		CpOperationTask cpOperationPushTask = new CpOperationTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,ifSelfAddCp,socketService,loggerService,userService,lowPriorityThreadExecutor);
+		highPriorityThreadExecutor.execute(cpOperationPushTask);
 		return cpChoiceDetailDO;
 	}
 	

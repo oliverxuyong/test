@@ -8,24 +8,56 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		">
-	
-	<bean id="blockingQueue" class="java.util.concurrent.ArrayBlockingQueue">
-	   <!-- 队列最大长度，一般需要设置值>=notifyScheduledMainExecutor.maxNum；默认为Integer.MAX_VALUE -->
-        <constructor-arg index="0" value="500"/>
-    </bean>
+
     
     <!-- 线程池 -->
-    <bean id="threadPoolExecutor" class ="so.xunta.websocket.utils.WolfThreadExecutor">
+    <bean id="hPriorityThreadPoolExecutor" class ="so.xunta.websocket.utils.HighPriorityThreadExecutor">
         <!-- 核心线程数，默认为1 -->
-        <constructor-arg index="0" value="10"/>
+        <constructor-arg index="0" value="8"/>
         <!-- 最大线程数，默认为Integer.MAX_VALUE -->
-        <constructor-arg index="1" value="50"/>
+        <constructor-arg index="1" value="40"/>
         <!-- 线程池维护线程所允许的空闲时间，默认为60s -->
         <constructor-arg index="2" value="300"/>
         <constructor-arg index="3" value="SECONDS" type="java.util.concurrent.TimeUnit"  />
-        <constructor-arg index="4" ref="blockingQueue" type="java.util.concurrent.BlockingQueue"/>
+        <constructor-arg index="4" ref="blockingQueue1" type="java.util.concurrent.BlockingQueue"/>
+        <constructor-arg index="5" ref="highPriorityThreadFactory" type="so.xunta.websocket.utils.HighPriorityThreadFactory"/>
+        <constructor-arg index="6" ref="highPriorityRejectedExecutionHandler" type="so.xunta.websocket.utils.HighPriorityRejectedExecutionHandler"/>
     </bean>
-	
+    
+    <bean id="lProprityThreadPoolExecutor" class ="so.xunta.websocket.utils.LowPriorityThreadExecutor">
+        <!-- 核心线程数，默认为1 -->
+        <constructor-arg index="0" value="2"/>
+        <!-- 最大线程数，默认为Integer.MAX_VALUE -->
+        <constructor-arg index="1" value="10"/>
+        <!-- 线程池维护线程所允许的空闲时间，默认为60s -->
+        <constructor-arg index="2" value="300"/>
+        <constructor-arg index="3" value="SECONDS" type="java.util.concurrent.TimeUnit"  />
+        <constructor-arg index="4" ref="blockingQueue2" type="java.util.concurrent.BlockingQueue"/>
+        <constructor-arg index="5" ref="lowPriorityThreadFactory" type="so.xunta.websocket.utils.LowPriorityThreadFactory"/>
+        <constructor-arg index="6" ref="lowPriorityRejectedExecutionHandler" type="so.xunta.websocket.utils.LowPriorityRejectedExecutionHandler"/>
+    </bean>
+		
+	<bean id="blockingQueue1" class="java.util.concurrent.ArrayBlockingQueue">
+	   <!-- 队列最大长度，一般需要设置值>=notifyScheduledMainExecutor.maxNum；默认为Integer.MAX_VALUE -->
+        <constructor-arg index="0" value="2000"/>
+    </bean>
+    
+    <bean id="highPriorityThreadFactory" class="so.xunta.websocket.utils.HighPriorityThreadFactory">
+    	 <constructor-arg index="0" value="HighPriority"/>
+    </bean>
+    
+    <bean id="highPriorityRejectedExecutionHandler" class="so.xunta.websocket.utils.HighPriorityRejectedExecutionHandler" />
+    
+    <bean id="blockingQueue2" class="java.util.concurrent.ArrayBlockingQueue">
+        <constructor-arg index="0" value="2000"/>
+    </bean>
+    
+    <bean id="lowPriorityThreadFactory" class="so.xunta.websocket.utils.LowPriorityThreadFactory">
+    	 <constructor-arg index="0" value="LowPriority"/>
+    </bean>
+    
+     <bean id="lowPriorityRejectedExecutionHandler" class="so.xunta.websocket.utils.LowPriorityRejectedExecutionHandler" />
+
 </beans>
 
 

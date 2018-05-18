@@ -46,14 +46,22 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 
 	
 	@Override
-	public Boolean recordStatusBeforeUpdateTask(String uid,int updateType) {
+	public Boolean recordCPStatusBeforeUpdateTask(String uid,int updateType) {
 		if(updateType==RecommendService.SELECT_CP){
 			List<String> recommend_cps_previous = getRecommendCPs(uid, CP_LISTEN_NUM);
 			Boolean ifRecordRecommendCpSuccess = RecommendPushUtil.getInstance().recordUserRecommendCps(uid, recommend_cps_previous);
-			if(!ifRecordRecommendCpSuccess){
-				return false;
+			if(ifRecordRecommendCpSuccess){
+				return true;
 			}
 		}
+		
+		return false;
+		
+		
+	}
+	
+	@Override
+	public Boolean recordUserStatusBeforeUpdateTask(String uid) {
 		List<String> matched_uids_previous = getMatchedUsers(uid , U_LISTEN_NUM);
 		Boolean ifRecordMatchedUserSuccess = RecommendPushUtil.getInstance().recordUserMatchedUids(uid, matched_uids_previous);
 		if(ifRecordMatchedUserSuccess){
@@ -81,10 +89,40 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 
 		return recommendPushDTO;
 	}
+	
+	@Override
+	public RecommendPushDTO generatePushUserAfterUpdateTask(String uid) {
+		RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
+		
+		generatePushMatchedUsers(uid, recommendPushDTO);
+		
+		return recommendPushDTO;
+	}
+
+	@Override
+	public RecommendPushDTO generatePushCPAfterUpdateTask(String uid, int updateType) {
+		RecommendPushDTO recommendPushDTO = new RecommendPushDTO();
+		if(updateType == RecommendService.SELECT_CP){	
+			generatePushRecommendCp(uid,recommendPushDTO);
+		}
+
+		return recommendPushDTO;
+	}
+	
 
 	@Override
 	public void clearUserStatus(String uid) {
-		RecommendPushUtil.getInstance().removeUserData(uid);
+		//RecommendPushUtil.getInstance().removeUserData(uid);
+	}
+	
+	@Override
+	public void clearPushUser(String uid) {
+		RecommendPushUtil.getInstance().removeMatchedUids(uid);
+	}
+
+	@Override
+	public void clearPushCp(String uid) {
+		RecommendPushUtil.getInstance().removeCps(uid);
 	}
 	
 	private void generatePushMatchedUsers(String uid, RecommendPushDTO recommendPushDTO){
@@ -170,5 +208,5 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 		}
 		return cpIds;
 	}
-	
+
 }

@@ -2,7 +2,7 @@ package so.xunta.persist;
 
 import java.util.Map;
 
-public interface U2uUpdateStatusDao {
+public interface U2uUpdateStatusForRecommendCpDao {
 
 	/**
 	 * 更新关系值差值，如果dValue为0等同于标记状态发生改变

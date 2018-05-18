@@ -23,8 +23,9 @@ import so.xunta.server.UserService;
 import so.xunta.utils.IdWorker;
 import so.xunta.websocket.config.Constants;
 import so.xunta.websocket.config.WebSocketContext;
-import so.xunta.websocket.task.RecommendUpdateTask;
-import so.xunta.websocket.utils.RecommendTaskPool;
+import so.xunta.websocket.task.UpdateSynchronizeTask;
+
+import so.xunta.websocket.utils.HighPriorityThreadExecutor;
 
 /**
  * Echo messages by implementing a Spring {@link WebSocketHandler} abstraction.
@@ -44,7 +45,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	private LoggerService loggerService;
 	
 	@Autowired
-	private RecommendTaskPool recommendTaskPool;
+	private HighPriorityThreadExecutor highPriorityThreadExecutor;
 	
 	@Autowired
 	private CpShowingService cpShowingService;
@@ -146,8 +147,8 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			recommendService.initRecommendParm(u);
 			cpShowingService.initUserShowingCps(u.getUserId()+"");
 			
-			RecommendUpdateTask recommendUpdateTask = new RecommendUpdateTask(recommendService,userid+"");
-			recommendTaskPool.execute(recommendUpdateTask);
+			UpdateSynchronizeTask updateSyncTask = new UpdateSynchronizeTask(userid.toString(), recommendService);
+			highPriorityThreadExecutor.execute(updateSyncTask);
 			
 			//2018.03.30   叶夷    用户上线时接收消息
 			re_sendMsg(userid, 5);
@@ -319,7 +320,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@PostConstruct
 	public void init() {
 		logger.info("websocketcontext init .....");
-		recommendTaskPool.setRejectedHandler();
+//		recommendTaskPool.setRejectedHandler();
 		try {
 			if (websocketContext.getwebsocketContext().size() == 0) {
 				websocketContext.scanPackage("so.xunta.websocket");

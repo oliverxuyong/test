@@ -45,8 +45,17 @@ public class RecommendPushUtil {
 		return matchedUids;
 	}
 	
+	@Deprecated
 	public void removeUserData(String uid){
 		userPreviousRecommendCpsMap.remove(uid);
 		userPreviousMatchedUidsMap.remove(uid);
+	}
+	
+	public void removeMatchedUids(String uid){
+		userPreviousMatchedUidsMap.remove(uid);
+	}
+	
+	public void removeCps(String uid){
+		userPreviousRecommendCpsMap.remove(uid);
 	}
 }

@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import org.springframework.web.socket.WebSocketSession;
 
 import so.xunta.beans.PushMatchedUserDTO;
-import so.xunta.beans.PushRecommendCpDTO;
 import so.xunta.beans.RecommendPushDTO;
 import so.xunta.beans.User;
 import so.xunta.server.CpShowingService;
@@ -19,29 +18,32 @@ import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.server.UserService;
+import so.xunta.utils.RecommendCPUpdateTaskList;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
+import so.xunta.websocket.utils.LowPriorityThreadExecutor;
 
 
-public class CpOperationPushTask implements Runnable{
+public class CpOperationTask implements Runnable{
 	private SocketService socketService;
 	private RecommendService recommendService;	
 	private RecommendPushService recommendPushService;
 	private CpShowingService cpShowingService;
 	private LoggerService loggerService;
+	private LowPriorityThreadExecutor lowPriorityThreadExecutor;
 	//private UserService userService;
 	
 	private String cpId;
 	private String userId;
 	private int selectType;
 	private String property;
-	private String clientIP;
 	private Boolean ifSelfAddCp;
 	private User u;
 	
-	Logger logger =Logger.getLogger(CpOperationPushTask.class);
+	Logger logger =Logger.getLogger(CpOperationTask.class);
 	
-	public CpOperationPushTask(RecommendService recommendService,RecommendPushService recommendPushService,
-			CpShowingService cpShowingService, String userId,String cpId, int selectType, String property,Boolean ifSelfAddCp, SocketService socketService,LoggerService loggerService,UserService userService) {
+	public CpOperationTask(RecommendService recommendService,RecommendPushService recommendPushService,CpShowingService cpShowingService, 
+			String userId,String cpId, int selectType, String property,Boolean ifSelfAddCp, SocketService socketService,LoggerService loggerService,
+			UserService userService, LowPriorityThreadExecutor lowPriorityThreadExecutor) {
 		this.recommendService = recommendService;
 		this.recommendPushService = recommendPushService;
 		this.userId = userId;
@@ -52,6 +54,7 @@ public class CpOperationPushTask implements Runnable{
 		this.property = property;
 		this.loggerService = loggerService;
 		this.ifSelfAddCp = ifSelfAddCp;
+		this.lowPriorityThreadExecutor = lowPriorityThreadExecutor;
 		
 		this.u = userService.findUser(Long.valueOf(userId));
 	}
@@ -94,7 +97,12 @@ public class CpOperationPushTask implements Runnable{
 		logger.info("用户:"+userId+"\n 纪录任务执行时间: "+(endTime2-endTime1)+"毫秒");
 		
 		/*Step3: 触发自己的更新任务*/
-		updateAndPush(userId,RecommendService.SELF_TRIGGER);
+		updateAndPush(userId);
+		RecommendCPUpdateTask recommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, userId, selectType, socketService, recommendPushService, loggerService);
+		Boolean ifTaskAddSuccess=RecommendCPUpdateTaskList.getInstance().addSelfU2CUpdateTask(userId, recommendCPUpdateTask);
+		if(ifTaskAddSuccess){
+			lowPriorityThreadExecutor.execute(recommendCPUpdateTask);
+		}
 		
 		long endTime3 = System.currentTimeMillis();
 		logger.info("用户:"+userId+"\n 自己的更新任务执行时间: "+(endTime3-endTime2)+"毫秒");
@@ -103,7 +111,13 @@ public class CpOperationPushTask implements Runnable{
 		pendingPushUids.remove(userId);
 		filterOffLineUsers(pendingPushUids);
 		for(String uid:pendingPushUids){
-			updateAndPush(uid,RecommendService.OTHERS_TRIGGER);
+			updateAndPush(uid);
+			RecommendCPUpdateTask otherRecommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, uid, selectType, socketService, recommendPushService, loggerService);
+			Runnable queuingTask= RecommendCPUpdateTaskList.getInstance().addOthersU2CUpdateTask(uid, otherRecommendCPUpdateTask);
+			if(queuingTask!=null){
+				lowPriorityThreadExecutor.getQueue().remove(queuingTask);
+			}
+			lowPriorityThreadExecutor.execute(otherRecommendCPUpdateTask);
 		}
 		long endTime4 = System.currentTimeMillis();
 		logger.info("用户:"+userId+"\n 更新他人任务执行时间: "+(endTime4-endTime3)+"毫秒");
@@ -122,37 +136,30 @@ public class CpOperationPushTask implements Runnable{
 		logger.debug("==============================CpOperationPushTask 完成！===================================");
 	}
 	
-	private void updateAndPush(String uid,Boolean ifSelfUpdate){
+	private void updateAndPush(String uid){
 		WebSocketSession userSession = EchoWebSocketHandler.getUserById(Long.valueOf(uid));
 		if(userSession==null){
 			return;
 		}
-		clientIP = userSession.getRemoteAddress().toString().substring(1);
 		
 		/*更新前记录一次状态*/
-		Boolean ifLastPushComlepted = recommendPushService.recordStatusBeforeUpdateTask(uid,selectType);
+		Boolean ifLastPushComlepted = recommendPushService.recordUserStatusBeforeUpdateTask(uid);
 		if(ifLastPushComlepted){
-			Boolean isExecuted = recommendService.updateU2C(uid,ifSelfUpdate);
+			Boolean isExecuted = recommendService.updateU2C(uid);
 			if(isExecuted){
 				/*更新后执行一次和原先状态比较，有一定变化则产生推送*/
-				RecommendPushDTO recommendPushDTO = recommendPushService.generatePushDataAfterUpdateTask(uid,selectType);
+				RecommendPushDTO recommendPushDTO = recommendPushService.generatePushUserAfterUpdateTask(uid);
 				List<PushMatchedUserDTO> pushMatchedUserDTOs = recommendPushDTO.getPushMatchedUsers();
 				String userName = u.getName();
 				if(pushMatchedUserDTOs!=null){
 					logger.debug("用户"+userName+"的匹配用户发生改变");
 					pushChangedMatchedUsers(pushMatchedUserDTOs,userSession);
 				}
-				
-				List<PushRecommendCpDTO> pushRecommendCpDTOs = recommendPushDTO.getPushMatchedCPs();
-				if(pushRecommendCpDTOs!=null){
-					logger.debug("给用户"+userName+"推送了 "+pushRecommendCpDTOs.size()+" 个CP");
-					pushRecommendCps(pushRecommendCpDTOs,userSession);
-				}
 			}else{
-				recommendPushService.clearUserStatus(uid);
+				recommendPushService.clearPushUser(uid);
 			}
 		}else{
-			logger.debug("用户:"+uid+" 之前的推送任务还未结束，本次任务放弃！");
+			logger.debug("用户:"+uid+" 之前的匹配用户推送任务还未结束，本次任务放弃！");
 		}
 	}
 	
@@ -168,6 +175,7 @@ public class CpOperationPushTask implements Runnable{
 	}
 	
 	private void pushChangedMatchedUsers(List<PushMatchedUserDTO> pushMatchedUserDTOs,WebSocketSession session){
+		String clientIP = session.getRemoteAddress().toString().substring(1);
 		
 		JSONArray newUserArr = new JSONArray();
 		for(PushMatchedUserDTO matchedUserDTO:pushMatchedUserDTOs){
@@ -191,38 +199,12 @@ public class CpOperationPushTask implements Runnable{
 		loggerService.log(userId, userId, clientIP, returnJson.toString(), "2106-1", null, null);
 	}
 	
-	private void pushRecommendCps(List<PushRecommendCpDTO> pushRecommendCpDTOs,WebSocketSession session){
-		if(session == null){
-			logger.info("用户已下线，不再推送");
-			return;
-		}
-		JSONArray cpWrap = new JSONArray();
-	//	List<String> pushedCpIds = new LinkedList<String>();
-		for(PushRecommendCpDTO pushRecommendCp:pushRecommendCpDTOs){
-		//	pushedCpIds.add(pushRecommendCp.getCpId());
-			
-			JSONObject pushMatchedUserJson = new JSONObject();
-			pushMatchedUserJson.put("cpid", pushRecommendCp.getCpId());
-			pushMatchedUserJson.put("cptext", pushRecommendCp.getCpText());
-			pushMatchedUserJson.put("howmanypeople_selected", pushRecommendCp.getSelectPepoleNum());
-			cpWrap.put(pushMatchedUserJson);
-		}
-		// 暂时推送后不将cp置为显示
-		//recommendService.signPushedCps();
-		
-		JSONObject returnJson = new JSONObject();
-		returnJson.put("_interface", "2105-1");
-		returnJson.put("interface_name", "PushCP");
-		returnJson.put("cp_wrap", cpWrap);
-		socketService.chat2one(session, returnJson);
-		loggerService.log(userId, userId, clientIP, returnJson.toString(), "2105-1", null, null);
-	}
-
 	private void pushCpHeatChange(){
 		Set<String> pushUserIds= cpShowingService.getUsersNeedPush(userId, cpId);
 		int cpSelectUserCounts = cpShowingService.getCpSelectedUserCounts(cpId,u.getEvent_scope());
 		for(String pushUserId:pushUserIds){
 			WebSocketSession userSession = EchoWebSocketHandler.getUserById(Long.valueOf(pushUserId));
+			String clientIP = userSession.getRemoteAddress().toString().substring(1);
 			if(userSession!=null){
 				JSONObject returnJson = new JSONObject();
 				returnJson.put("_interface", "2107-1");
