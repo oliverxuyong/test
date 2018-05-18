@@ -172,8 +172,9 @@ public class RecommendServiceImpl implements RecommendService {
 			 * step 1：在U2U_Update_Status中获取U所需要更新的状态发生过变化的用户集合{Uj}。
 			 * */
 			Map<String,String> userUpdateStatusMap= u2uUpdateStatusForRecommendUserDao.getUserUpdateStatus(uid);
-			if(userUpdateStatusMap.size()!=0){			
-		
+			if(userUpdateStatusMap.size()!=0){		
+				
+				logger.debug("上次更新后有"+userUpdateStatusMap.size()+"个相关用户有了操作");
 				/*step 2: 遍历{Uj}
 				 * */
 				for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
@@ -241,7 +242,7 @@ public class RecommendServiceImpl implements RecommendService {
 						/*如∆u_score不为0  
 						 * 更新U2U_Relation， 为U对应的Uj的关系值加上对应在U2U_Update_Status中的∆u_score
 						 * */
-						u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
+						//u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
 						
 						/* 更新U2C
 						 * */
