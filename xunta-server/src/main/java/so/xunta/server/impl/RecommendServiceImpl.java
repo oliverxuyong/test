@@ -178,10 +178,12 @@ public class RecommendServiceImpl implements RecommendService {
 				 * */
 				for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
 					String changedUid = changedUserEntry.getKey();
-					double uDeltaValue = Double.valueOf(changedUserEntry.getValue());			
+					double uDeltaValue = Double.valueOf(changedUserEntry.getValue());	
+					logger.debug(changedUid+"::"+uDeltaValue);
 					u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
 				}
 				
+				logger.debug(u2uRelationDao.getRelatedUsersByRank(uid, 0, 20).toString());
 				/*step 3: 将U在U2U_Update_Status中的记录删除
 				 * */
 				u2uUpdateStatusForRecommendUserDao.deleteU2uUpdateStatus(uid);
