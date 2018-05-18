@@ -43,7 +43,9 @@
     </bean>
     
     <bean id="highPriorityThreadFactory" class="so.xunta.websocket.utils.HighPriorityThreadFactory">
-    	 <constructor-arg index="0" value="HighPriority"/>
+    	 <constructor-arg index="0" type="String">
+    	 	<value>HighPriority</value>
+    	 </constructor-arg>
     </bean>
     
     <bean id="highPriorityRejectedExecutionHandler" class="so.xunta.websocket.utils.HighPriorityRejectedExecutionHandler" />
@@ -53,7 +55,9 @@
     </bean>
     
     <bean id="lowPriorityThreadFactory" class="so.xunta.websocket.utils.LowPriorityThreadFactory">
-    	 <constructor-arg index="0" value="LowPriority"/>
+    	 <constructor-arg index="0" type="String">
+    	 	<value>LowPriority</value>
+    	 </constructor-arg>
     </bean>
     
      <bean id="lowPriorityRejectedExecutionHandler" class="so.xunta.websocket.utils.LowPriorityRejectedExecutionHandler" />
