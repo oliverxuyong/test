@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HighPriorityTaskPool {
 	@Autowired
-	private HighPriorityThreadExecutor hPriorityThreadPoolExecutor;
+	private HighPriorityThreadExecutor highPriorityThreadExecutor;
 //	@Autowired
 //	private HighPriorityRejectedExecutionHandler wolfRejectedExecutionHandler;
 	
@@ -17,7 +17,7 @@ public class HighPriorityTaskPool {
 	
 	public void execute(Runnable task){	
 		try {
-			hPriorityThreadPoolExecutor.execute(task);
+			highPriorityThreadExecutor.execute(task);
 		} catch (RejectedExecutionException e) {
 			logger.error(e.getMessage());
 		} 	
@@ -28,6 +28,6 @@ public class HighPriorityTaskPool {
 //	}
 	
 	public void destroy(){
-		hPriorityThreadPoolExecutor.shutdown();
+		highPriorityThreadExecutor.shutdown();
 	}
 }

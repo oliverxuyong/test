@@ -2,6 +2,9 @@ package so.xunta.websocket.utils;
 
 import java.util.concurrent.ThreadFactory;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class LowPriorityThreadFactory implements ThreadFactory {
 	private int counter;  
     private String name;  

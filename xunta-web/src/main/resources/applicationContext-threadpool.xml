@@ -11,7 +11,7 @@
 
     
     <!-- 线程池 -->
-    <bean id="hPriorityThreadPoolExecutor" class ="so.xunta.websocket.utils.HighPriorityThreadExecutor">
+    <bean id="highPriorityThreadExecutor" class ="so.xunta.websocket.utils.HighPriorityThreadExecutor">
         <!-- 核心线程数，默认为1 -->
         <constructor-arg index="0" value="8"/>
         <!-- 最大线程数，默认为Integer.MAX_VALUE -->
@@ -20,11 +20,11 @@
         <constructor-arg index="2" value="300"/>
         <constructor-arg index="3" value="SECONDS" type="java.util.concurrent.TimeUnit"  />
         <constructor-arg index="4" ref="blockingQueue1" type="java.util.concurrent.BlockingQueue"/>
-        <constructor-arg index="5" ref="highPriorityThreadFactory" type="so.xunta.websocket.utils.HighPriorityThreadFactory"/>
-        <constructor-arg index="6" ref="highPriorityRejectedExecutionHandler" type="so.xunta.websocket.utils.HighPriorityRejectedExecutionHandler"/>
+        <constructor-arg index="5" ref="highPriorityThreadFactory" type="java.util.concurrent.ThreadFactory"/>
+        <constructor-arg index="6" ref="highPriorityRejectedExecutionHandler" type="java.util.concurrent.RejectedExecutionHandler"/>
     </bean>
     
-    <bean id="lProprityThreadPoolExecutor" class ="so.xunta.websocket.utils.LowPriorityThreadExecutor">
+    <bean id="lowPriorityThreadExecutor" class ="so.xunta.websocket.utils.LowPriorityThreadExecutor">
         <!-- 核心线程数，默认为1 -->
         <constructor-arg index="0" value="2"/>
         <!-- 最大线程数，默认为Integer.MAX_VALUE -->
@@ -33,8 +33,8 @@
         <constructor-arg index="2" value="300"/>
         <constructor-arg index="3" value="SECONDS" type="java.util.concurrent.TimeUnit"  />
         <constructor-arg index="4" ref="blockingQueue2" type="java.util.concurrent.BlockingQueue"/>
-        <constructor-arg index="5" ref="lowPriorityThreadFactory" type="so.xunta.websocket.utils.LowPriorityThreadFactory"/>
-        <constructor-arg index="6" ref="lowPriorityRejectedExecutionHandler" type="so.xunta.websocket.utils.LowPriorityRejectedExecutionHandler"/>
+        <constructor-arg index="5" ref="lowPriorityThreadFactory" type="java.util.concurrent.ThreadFactory"/>
+        <constructor-arg index="6" ref="lowPriorityRejectedExecutionHandler" type="java.util.concurrent.RejectedExecutionHandler"/>
     </bean>
 		
 	<bean id="blockingQueue1" class="java.util.concurrent.ArrayBlockingQueue">
