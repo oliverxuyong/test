@@ -63,7 +63,7 @@ public class RecommendCPUpdateTask implements Runnable {
 		}
 		
 		/*更新前记录一次状态*/
-		Boolean ifLastPushComlepted = recommendPushService.recordUserStatusBeforeUpdateTask(uid);
+		Boolean ifLastPushComlepted = recommendPushService.recordCPStatusBeforeUpdateTask(uid, selectType);
 		if(ifLastPushComlepted){
 			Boolean isExecuted = recommendService.updateU2C(uid);
 			if(isExecuted){
