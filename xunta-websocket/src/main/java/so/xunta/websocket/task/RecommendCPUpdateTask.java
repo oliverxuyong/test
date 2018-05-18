@@ -79,7 +79,7 @@ public class RecommendCPUpdateTask implements Runnable {
 				recommendPushService.clearPushCp(uid);
 			}
 		}else{
-			logger.debug("用户:"+uid+" 之前的推送任务还未结束，本次任务放弃！");
+			logger.debug("用户:"+uid+" 之前的CP推送任务还未结束，本次任务放弃！");
 		}
 	}
 	
