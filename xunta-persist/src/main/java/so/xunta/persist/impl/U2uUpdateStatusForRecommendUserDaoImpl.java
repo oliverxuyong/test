@@ -5,11 +5,13 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import redis.clients.jedis.Jedis;
 import so.xunta.persist.U2uUpdateStatusForRecommendUserDao;
 import so.xunta.utils.RedisUtil;
 
+@Repository
 public class U2uUpdateStatusForRecommendUserDaoImpl implements U2uUpdateStatusForRecommendUserDao{
 
 	@Autowired
