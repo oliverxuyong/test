@@ -127,7 +127,9 @@ public class RecommendPushServiceImpl implements RecommendPushService {
 	
 	private void generatePushMatchedUsers(String uid, RecommendPushDTO recommendPushDTO){
 		List<String> matched_uids_previous = RecommendPushUtil.getInstance().getUserMatchedUids(uid);
+		logger.debug(matched_uids_previous.toString());
 		List<String> matched_uids_after = getMatchedUsers(uid , U_LISTEN_NUM);
+		logger.debug(matched_uids_after.toString());
 		if(matched_uids_previous.size() != matched_uids_after.size()){
 			logger.debug("匹配用户数量发生了变化，直接产生推送");
 			appendPushUsers(matched_uids_after,recommendPushDTO);

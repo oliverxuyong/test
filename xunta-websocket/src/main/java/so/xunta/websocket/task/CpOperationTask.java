@@ -146,6 +146,7 @@ public class CpOperationTask implements Runnable{
 		Boolean ifLastPushComlepted = recommendPushService.recordUserStatusBeforeUpdateTask(uid);
 		if(ifLastPushComlepted){
 			Boolean isExecuted = recommendService.updateU2U(uid);
+			logger.info(isExecuted);
 			if(isExecuted){
 				/*更新后执行一次和原先状态比较，有一定变化则产生推送*/
 				RecommendPushDTO recommendPushDTO = recommendPushService.generatePushUserAfterUpdateTask(uid);
