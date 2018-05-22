@@ -25,6 +25,17 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	var cpList = CP_list.cp_wrap;
 	var notRepeatCpCount=0;// 不重复的可以上升的cp个数
 	
+	//2018.05.22    叶夷   这里是进行一个选择标签的测试，每次请求一组标签，则将标签数据保存到测试数组中，且显示测试按钮
+	testUserSelectCpArray=cpList;
+	var startTestSelectCp=$("#startTestSelectCp");
+	if(startTestSelectCp.length>0){
+		startTestSelectCp.show();
+	}
+	var stopTestSelectCp=$("#startTestSelectCp");
+	if(stopTestSelectCp.length>0){
+		stopTestSelectCp.show();
+	}
+	
 	// 2017.09.13 叶夷 判断每一批请求相交的次数和哪几个圆相交
 	/*var intersetCount=parseInt(Math.random()*2+1);// 相交次数随机为1，2,3
 	for(var count=1;count<=intersetCount;count++){
@@ -2893,12 +2904,10 @@ function cleartimeout(){
 function requestUserIds(){
 	execRoot("requestUserIds()");
 }
-var testWSArray=new Array();
-//var testWS;
 var i=0;
 function testWebSocket(data){
 	var uid_arr=data.uid_arr;
-	//从输入框输入的内容获取选择标签的id和text
+	/*//从输入框输入的内容获取选择标签的id和text
 	var testNewWebsocketSelectCpId=$("#testNewWebsocketSelectCpId").val();
 	var testNewWebsocketSelectCpText=$("#testNewWebsocketSelectCpText").val();
 	if(testNewWebsocketSelectCpId=="" || testNewWebsocketSelectCpId=="undefined" ||testNewWebsocketSelectCpId==undefined
@@ -2907,18 +2916,27 @@ function testWebSocket(data){
 		toast("输入框不能为空");
 	}else if(!/^\d+$/.test(testNewWebsocketSelectCpId)){//cpid不是纯数字
 		toast("cpid必须为数字");
-	}else{
-		createNewWS(uid_arr,i,testNewWebsocketSelectCpId,testNewWebsocketSelectCpText);
-	}
+	}else{*/
+	createNewWS(uid_arr,i);
 }
-
-function createNewWS(uid_arr,i,cpid,cpText) {
+var testUserSelectCpArray=new Array();
+//var testWSArray=new Array();//用来装创建的websocket
+function createNewWS(uid_arr,i) {
 	var userId=uid_arr[i].userId;
 	console.log('新建第'+(i+1)+"个WS");
 	var testWS = new WebSocket("ws://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=no");
 	testWS.onopen=function(event){
 		console.log('Client received a message:',event); 
-		sendWS(testWS,userId,cpid,cpText); 
+		//testWSArray.push(testWS);
+		/*sendWS(testWS,userId,cpid,cpText); */
+		
+		// 开始选择
+		for(index in testUserSelectCpArray){
+			var cpid=testUserSelectCpArray[index].cpid;
+			var cpText=testUserSelectCpArray[index].cptext;
+			sendWS(testWS,userId,cpid,cpText);
+		}
+		
 		++i;
 		if(i<=uid_arr.length){
 			setTimeout(function() {
@@ -2926,13 +2944,8 @@ function createNewWS(uid_arr,i,cpid,cpText) {
 			},100);
 		}
 	};
-	/*
-	setTimeout(function() {
-			sendWS(testWS); 
-	},2000);*/
 }
 function sendWS(testWS,userId,cpid,cpText) {
-	//var testWS=testWSArray[i];
 	var json_obj = {
 			 _interface:"1102-1",
 			 interface_name: "sendSelectedCP",
