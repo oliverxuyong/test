@@ -270,6 +270,8 @@ public class AdminController {
 	}
 	@RequestMapping(value="/getConStatistic")
 	public void getConcurrentSituation(HttpServletResponse response) {
+		response.setContentType("text/html;charset = utf-8");
+		
 		Map<String,Integer> recordU2UMap = ConcurrentStatisticUtil.getInstance().getRecordU2UTimesMap();
 		Map<String,Integer> updateU2CMap = ConcurrentStatisticUtil.getInstance().getUpdateU2CTimesMap();
 		int recordTimeSum = 0;
