@@ -18,6 +18,7 @@ import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.server.UserService;
+import so.xunta.utils.ConcurrentStatisticUtil;
 import so.xunta.utils.RecommendCPUpdateTaskList;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
 import so.xunta.websocket.utils.LowPriorityThreadExecutor;
@@ -101,10 +102,10 @@ public class CpOperationTask implements Runnable{
 		RecommendCPUpdateTask recommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, userId, selectType,RecommendCPUpdateTaskList.SELF_UPDATE, socketService, recommendPushService, loggerService);
 		Boolean ifTaskAddSuccess=RecommendCPUpdateTaskList.getInstance().addSelfU2CUpdateTask(userId, recommendCPUpdateTask);
 		if(ifTaskAddSuccess){
-			System.out.println("自己触发的更新任务创建成功");
+			//System.out.println("自己触发的更新任务创建成功");
 			lowPriorityThreadExecutor.execute(recommendCPUpdateTask);
 		}else{
-			System.out.println("队列中已有自己触发的更新任务，本次更新丢弃");
+			//System.out.println("队列中已有自己触发的更新任务，本次更新丢弃");
 		}
 		
 	//	long endTime3 = System.currentTimeMillis();
@@ -118,10 +119,10 @@ public class CpOperationTask implements Runnable{
 			RecommendCPUpdateTask otherRecommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, uid, selectType, RecommendCPUpdateTaskList.OTHERS_UPDATE, socketService, recommendPushService, loggerService);
 			Runnable queuingTask= RecommendCPUpdateTaskList.getInstance().addOthersU2CUpdateTask(uid, otherRecommendCPUpdateTask);
 			if(queuingTask!=null){
-				System.out.println("已有他人触发的更新任务排队，延迟");
+				//System.out.println("已有他人触发的更新任务排队，延迟");
 				lowPriorityThreadExecutor.getQueue().remove(queuingTask);
 			}else{
-				System.out.println("他人触发的更新任务插入成功");
+				//System.out.println("他人触发的更新任务插入成功");
 			}
 			lowPriorityThreadExecutor.execute(otherRecommendCPUpdateTask);
 		}
@@ -138,8 +139,9 @@ public class CpOperationTask implements Runnable{
 		}
 		
 		long endTime = System.currentTimeMillis();
-		logger.info("用户:"+userId+"\n 执行时间: "+(endTime-startTime)+"毫秒");
+		logger.info("用户:"+userId+"\n 记录&更新U2U执行时间: "+(endTime-startTime)+"毫秒");
 		logger.debug("==============================CpOperationPushTask 完成！===================================");
+		ConcurrentStatisticUtil.getInstance().addRecordU2UOneTime(userId);
 	}
 	
 	private void updateAndPush(String uid){
@@ -181,7 +183,7 @@ public class CpOperationTask implements Runnable{
 	}
 	
 	private void pushChangedMatchedUsers(List<PushMatchedUserDTO> pushMatchedUserDTOs,WebSocketSession session){
-		String clientIP = session.getRemoteAddress().toString().substring(1);
+		//String clientIP = session.getRemoteAddress().toString().substring(1);
 		
 		JSONArray newUserArr = new JSONArray();
 		for(PushMatchedUserDTO matchedUserDTO:pushMatchedUserDTOs){
@@ -202,11 +204,11 @@ public class CpOperationTask implements Runnable{
 		returnJson.put("interface_name", "push_matched_user");
 		returnJson.put("new_user_arr", newUserArr);
 		socketService.chat2one(session, returnJson);
-		loggerService.log(userId, userId, clientIP, returnJson.toString(), "2106-1", null, null);
+	//	loggerService.log(userId, userId, clientIP, returnJson.toString(), "2106-1", null, null);
 	}
 	
 	private void pushCpHeatChange(){
-		Set<String> pushUserIds= cpShowingService.getUsersNeedPush(userId, cpId);
+		Set<String> pushUserIds= cpShowingService.getUsersNeedPush(userId, cpId,u.getEvent_scope());
 		int cpSelectUserCounts = cpShowingService.getCpSelectedUserCounts(cpId,u.getEvent_scope());
 		for(String pushUserId:pushUserIds){
 			WebSocketSession userSession = EchoWebSocketHandler.getUserById(Long.valueOf(pushUserId));
@@ -218,7 +220,7 @@ public class CpOperationTask implements Runnable{
 				returnJson.put("cpid",cpId);
 				returnJson.put("howmanypeople_selected", cpSelectUserCounts);
 				socketService.chat2one(userSession,returnJson);
-				loggerService.log(userId, userId, "", returnJson.toString(), "2107-1", null, null);
+				//loggerService.log(userId, userId, "", returnJson.toString(), "2107-1", null, null);
 			}
 		}
 	}

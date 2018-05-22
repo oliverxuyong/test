@@ -4,7 +4,7 @@ import java.util.Set;
 
 public interface CpShowingService {
 	
-	public Set<String> getUsersNeedPush(String uid,String cpid);
+	public Set<String> getUsersNeedPush(String uid,String cpid,String userEventScope);
 	
 	public void initUserShowingCps(String uid);
 	

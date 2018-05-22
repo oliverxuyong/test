@@ -12,6 +12,7 @@ import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
+import so.xunta.utils.ConcurrentStatisticUtil;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
 
 
@@ -51,7 +52,8 @@ public class RecommendCPUpdateTask implements Runnable {
 		}
 		logger.debug("========================= RecommendCPUpdateTask完成！==============================");
 		long endTime = System.currentTimeMillis();
-		logger.info("用户:"+uid+"\n 更新U2C执行时间： "+(endTime-startTime)+"毫秒");
+		logger.info("用户:"+uid+"\n"+ifSelfUpdate+" 更新U2C执行时间： "+(endTime-startTime)+"毫秒");
+		ConcurrentStatisticUtil.getInstance().addUpdateU2COneTime(uid);
 	}
 
 	public String getUid() {
@@ -118,7 +120,7 @@ public class RecommendCPUpdateTask implements Runnable {
 		returnJson.put("interface_name", "PushCP");
 		returnJson.put("cp_wrap", cpWrap);
 		socketService.chat2one(session, returnJson);
-		loggerService.log(uid, uid, "", returnJson.toString(), "2105-1", null, null);
+		//loggerService.log(uid, uid, "", returnJson.toString(), "2105-1", null, null);
 	}
 
 }

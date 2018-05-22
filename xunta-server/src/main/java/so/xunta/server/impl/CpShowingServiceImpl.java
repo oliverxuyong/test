@@ -34,9 +34,8 @@ public class CpShowingServiceImpl implements CpShowingService {
 	Logger logger =Logger.getLogger(CpShowingServiceImpl.class);
 
 	@Override
-	public Set<String> getUsersNeedPush(String uid, String cpid) {
-		User u = userDao.findUserByUserid(Long.valueOf(uid));
-		Set<String> pushUsers = c2uPresentDao.getCpPresentUsers(cpid,u.getEvent_scope());
+	public Set<String> getUsersNeedPush(String uid, String cpid,String eventScope) {
+		Set<String> pushUsers = c2uPresentDao.getCpPresentUsers(cpid,eventScope);
 		pushUsers.remove(uid);
 		return pushUsers;
 	}

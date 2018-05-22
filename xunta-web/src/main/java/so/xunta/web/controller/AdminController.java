@@ -32,6 +32,7 @@ import so.xunta.server.C2CService;
 import so.xunta.server.EventScopeCpTypeMappingService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.UserService;
+import so.xunta.utils.ConcurrentStatisticUtil;
 
 @Controller
 public class AdminController {
@@ -267,4 +268,37 @@ public class AdminController {
 			e.printStackTrace();
 		}
 	}
+	@RequestMapping(value="/getConStatistic")
+	public void getConcurrentSituation(HttpServletResponse response) {
+		Map<String,Integer> recordU2UMap = ConcurrentStatisticUtil.getInstance().getRecordU2UTimesMap();
+		Map<String,Integer> updateU2CMap = ConcurrentStatisticUtil.getInstance().getUpdateU2CTimesMap();
+		int recordTimeSum = 0;
+		int updateTimeSum = 0;
+		
+		for(Entry<String,Integer> recordU2UEntry:recordU2UMap.entrySet()){
+			String uid = recordU2UEntry.getKey();
+			Integer recordTime = recordU2UEntry.getValue();
+			Integer updateTime = updateU2CMap.get(uid);
+			if(updateTime!=null){
+				recordTimeSum = recordTimeSum + recordTime;
+				updateTimeSum = updateTimeSum + updateTime;
+			}else{
+				try {
+					response.getWriter().write(uid+"没有执行过更新！！");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		try {
+			response.getWriter().write(recordU2UMap.size()+"个用户选择了cp<br>");
+			response.getWriter().write("总共执行记录和U2U更新任务"+recordTimeSum+"次<br>");
+			response.getWriter().write("总共执行U2C更新任务"+recordU2UMap.size()+"次<br>");
+			 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
