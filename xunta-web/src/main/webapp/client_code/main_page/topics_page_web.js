@@ -31,7 +31,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	if(startTestSelectCp.length>0){
 		startTestSelectCp.show();
 	}
-	var stopTestSelectCp=$("#startTestSelectCp");
+	var stopTestSelectCp=$("#stopTestSelectCp");
 	if(stopTestSelectCp.length>0){
 		stopTestSelectCp.show();
 	}
