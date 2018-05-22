@@ -1,9 +1,10 @@
 package so.xunta.websocket.utils;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ import so.xunta.websocket.task.RecommendCPUpdateTask;
 
 @Component
 public class LowPriorityPendingTaskQueue {
-	private List<String> taskSerializeList = Collections.synchronizedList(new LinkedList<String>());
+	private Queue<String> taskSerializeList = new ConcurrentLinkedQueue<String>();
 	@Autowired
 	private RecommendService recommendService;
 	@Autowired

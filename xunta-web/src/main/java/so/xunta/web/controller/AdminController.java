@@ -296,11 +296,21 @@ public class AdminController {
 		try {
 			response.getWriter().write(recordU2UMap.size()+"个用户选择了cp<br>");
 			response.getWriter().write("总共执行记录和U2U更新任务"+recordTimeSum+"次<br>");
-			response.getWriter().write("总共执行U2C更新任务"+recordU2UMap.size()+"次<br>");
+			response.getWriter().write("总共执行U2C更新任务"+updateTimeSum+"次<br>");
 			 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	@RequestMapping(value="/clearConStatistic")
+	public void clearConcurrentSituation(HttpServletResponse response) {
+		response.setContentType("text/html;charset = utf-8");
+		ConcurrentStatisticUtil.getInstance().clear();
+		try {
+			response.getWriter().write("clearConStatistic success");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

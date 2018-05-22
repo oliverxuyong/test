@@ -1,9 +1,10 @@
 package so.xunta.websocket.utils;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,7 +38,7 @@ public class HighPriorityPendingTaskQueue {
 	@Autowired
 	private LowPriorityThreadExecutor lowPriorityThreadExecutor; 
 	
-	private List<String> taskSerializeList = Collections.synchronizedList(new LinkedList<String>());
+	private Queue<String> taskSerializeList = new ConcurrentLinkedQueue<String>();
 
 	public void addSelectCPTask(String userId,String cpId,String property,Boolean ifSelfAddCp,int selectType){
 		String taskId = RECOMMEND_SELECTCP+":"+userId+":"+cpId+":"+property+":"+ifSelfAddCp+":"+selectType;
