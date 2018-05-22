@@ -98,7 +98,7 @@ public class CpOperationTask implements Runnable{
 		
 		/*Step3: 触发自己的更新任务*/
 		updateAndPush(userId);
-		RecommendCPUpdateTask recommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, userId, selectType, socketService, recommendPushService, loggerService);
+		RecommendCPUpdateTask recommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, userId, selectType,RecommendCPUpdateTaskList.SELF_UPDATE, socketService, recommendPushService, loggerService);
 		Boolean ifTaskAddSuccess=RecommendCPUpdateTaskList.getInstance().addSelfU2CUpdateTask(userId, recommendCPUpdateTask);
 		if(ifTaskAddSuccess){
 			System.out.println("自己触发的更新任务创建成功");
@@ -115,7 +115,7 @@ public class CpOperationTask implements Runnable{
 		filterOffLineUsers(pendingPushUids);
 		for(String uid:pendingPushUids){
 			updateAndPush(uid);
-			RecommendCPUpdateTask otherRecommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, uid, selectType, socketService, recommendPushService, loggerService);
+			RecommendCPUpdateTask otherRecommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, uid, selectType, RecommendCPUpdateTaskList.OTHERS_UPDATE, socketService, recommendPushService, loggerService);
 			Runnable queuingTask= RecommendCPUpdateTaskList.getInstance().addOthersU2CUpdateTask(uid, otherRecommendCPUpdateTask);
 			if(queuingTask!=null){
 				System.out.println("已有他人触发的更新任务排队，延迟");
@@ -152,7 +152,6 @@ public class CpOperationTask implements Runnable{
 		Boolean ifLastPushComlepted = recommendPushService.recordUserStatusBeforeUpdateTask(uid);
 		if(ifLastPushComlepted){
 			Boolean isExecuted = recommendService.updateU2U(uid);
-			logger.info(isExecuted);
 			if(isExecuted){
 				/*更新后执行一次和原先状态比较，有一定变化则产生推送*/
 				RecommendPushDTO recommendPushDTO = recommendPushService.generatePushUserAfterUpdateTask(uid);

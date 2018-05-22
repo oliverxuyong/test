@@ -23,30 +23,35 @@ public class RecommendCPUpdateTask implements Runnable {
 	private LoggerService loggerService;
 	
 	private int selectType;
+	private Boolean ifSelfUpdate;
 	
 
 	Logger logger =Logger.getLogger(RecommendCPUpdateTask.class);
 	
-	public RecommendCPUpdateTask(RecommendService recommendService,String uid,int selectType,SocketService socketService,
+	public RecommendCPUpdateTask(RecommendService recommendService,String uid,int selectType,Boolean ifSelfUpdate, SocketService socketService,
 			RecommendPushService recommendPushService,LoggerService loggerService) {
 		this.recommendService = recommendService;
 		this.uid = uid;
 		this.selectType = selectType;
+		this.ifSelfUpdate = ifSelfUpdate;
 		this.socketService = socketService;
 		this.recommendPushService = recommendPushService;
 		this.loggerService = loggerService;
 		
 	}
-	
+
 	@Override
 	public void run() {
 		logger.debug("========================= RecommendCPUpdateTask==============================");
+		long startTime = System.currentTimeMillis();
 		if(uid!=null){
 			updateAndPush(uid);
 		}else{
 			logger.warn("参数为空！放弃任务");
 		}
 		logger.debug("========================= RecommendCPUpdateTask完成！==============================");
+		long endTime = System.currentTimeMillis();
+		logger.info("用户:"+uid+"\n 更新U2C执行时间： "+(endTime-startTime)+"毫秒");
 	}
 
 	public String getUid() {
@@ -54,6 +59,9 @@ public class RecommendCPUpdateTask implements Runnable {
 	}
 	public int getSelectType() {
 		return selectType;
+	}
+	public Boolean getIfSelfUpdate() {
+		return ifSelfUpdate;
 	}
 	
 	private void updateAndPush(String uid){

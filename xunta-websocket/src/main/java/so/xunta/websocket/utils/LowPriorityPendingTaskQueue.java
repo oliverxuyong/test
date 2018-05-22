@@ -45,7 +45,8 @@ public class LowPriorityPendingTaskQueue {
 			
 			String userId = parms[0];
 			int selectType = Integer.valueOf(parms[1]);
-			RecommendCPUpdateTask t = new RecommendCPUpdateTask(recommendService,userId,selectType,socketService,recommendPushService,loggerService);
+			Boolean ifSelfUpdate = Boolean.valueOf(parms[2]);
+			RecommendCPUpdateTask t = new RecommendCPUpdateTask(recommendService,userId,selectType,ifSelfUpdate,socketService,recommendPushService,loggerService);
 			returnTasks.add(t);
 			
 			iterator.remove();

@@ -30,7 +30,7 @@ public class LowPriorityThreadExecutor  extends ThreadPoolExecutor{
 		super.afterExecute(r, t);
 		
 		RecommendCPUpdateTask completeTask = (RecommendCPUpdateTask)r;
-		RecommendCPUpdateTaskList.getInstance().removeU2CUpdateTask(completeTask.getUid());
+		RecommendCPUpdateTaskList.getInstance().removeU2CUpdateTask(completeTask.getUid(),completeTask.getIfSelfUpdate());
 		
 		
 		int pendingTaskCount = this.getQueue().size();
