@@ -89,7 +89,7 @@ public class RecommendCPUpdateTask implements Runnable {
 			return;
 		}
 		
-		String clientIP = session.getRemoteAddress().toString().substring(1);
+		//String clientIP = session.getRemoteAddress().toString().substring(1);
 		
 		JSONArray cpWrap = new JSONArray();
 	//	List<String> pushedCpIds = new LinkedList<String>();
@@ -110,7 +110,7 @@ public class RecommendCPUpdateTask implements Runnable {
 		returnJson.put("interface_name", "PushCP");
 		returnJson.put("cp_wrap", cpWrap);
 		socketService.chat2one(session, returnJson);
-		loggerService.log(uid, uid, clientIP, returnJson.toString(), "2105-1", null, null);
+		loggerService.log(uid, uid, "", returnJson.toString(), "2105-1", null, null);
 	}
 
 }

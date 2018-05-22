@@ -180,11 +180,10 @@ public class RecommendServiceImpl implements RecommendService {
 				for(Entry<String,String> changedUserEntry:userUpdateStatusMap.entrySet()){
 					String changedUid = changedUserEntry.getKey();
 					double uDeltaValue = Double.valueOf(changedUserEntry.getValue());	
-					logger.debug(changedUid+"::"+uDeltaValue);
 					u2uRelationDao.updateUserRelationValue(uid, changedUid, uDeltaValue);
 				}
 				
-				logger.debug(u2uRelationDao.getRelatedUsersByRank(uid, 0, 20).toString());
+			//	logger.debug(u2uRelationDao.getRelatedUsersByRank(uid, 0, 20).toString());
 				/*step 3: 将U在U2U_Update_Status中的记录删除
 				 * */
 				u2uUpdateStatusForRecommendUserDao.deleteU2uUpdateStatus(uid);
@@ -444,7 +443,7 @@ public class RecommendServiceImpl implements RecommendService {
 	private Boolean ifU2UUpdateExecutable(String uid) {
 	
 		if(u2UupdateTaskQueue.contains(uid)){
-			logger.debug("用户:"+uid+" 的上一次更新任务还没结束，本次任务丢弃");
+			logger.debug("用户:"+uid+" 的上一次U2U更新任务还没结束，本次任务丢弃");
 			return false;
 		}
 
@@ -454,7 +453,7 @@ public class RecommendServiceImpl implements RecommendService {
 		long startTime = System.currentTimeMillis();
 		long lastUpadteTimeLong = Timestamp.valueOf(userLastU2UUpdateTimeDao.getUserLastUpdateTime(uid)).getTime();
 		if((startTime-lastUpadteTimeLong) < MIN_INTERVAL){
-			logger.debug("离用户："+uid+" 的上一次更新间隔过短，任务放弃");
+			logger.debug("离用户："+uid+" 的上一次U2U更新间隔过短，任务放弃");
 			return false;
 		}
 		return true;
@@ -466,7 +465,7 @@ public class RecommendServiceImpl implements RecommendService {
 		 * 如果是自己触发的更新，放弃后加的，如果是他人触发，放弃靠前的
 		 * */
 		if(u2CupdateTaskQueue.contains(uid)){
-			logger.debug("用户:"+uid+" 的上一次更新任务还没结束，本次任务丢弃");
+			logger.debug("用户:"+uid+" 的上一次U2C更新任务还没结束，本次任务丢弃");
 			return false;
 		}
 
@@ -476,7 +475,7 @@ public class RecommendServiceImpl implements RecommendService {
 		long startTime = System.currentTimeMillis();
 		long lastUpadteTimeLong = Timestamp.valueOf(userLastU2CUpdateTimeDao.getUserLastUpdateTime(uid)).getTime();
 		if((startTime-lastUpadteTimeLong) < MIN_INTERVAL){
-			logger.debug("离用户："+uid+" 的上一次更新间隔过短，任务放弃");
+			logger.debug("离用户："+uid+" 的上一次U2C更新间隔过短，任务放弃");
 			return false;
 		}
 		return true;
@@ -490,7 +489,7 @@ public class RecommendServiceImpl implements RecommendService {
 		if(newCps==null){
 			return;
 		}
-		logger.debug("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
+	//	logger.debug("新选CP更新：关联用户 "+changedUid+" Cp counts:"+newCps.size());
 		
 		Double relateScore = u2uRelationDao.getRelatedUserScore(uid, changedUid);
 		
@@ -523,7 +522,7 @@ public class RecommendServiceImpl implements RecommendService {
 	 *	对每个CPj，在U的U2C表中对CPj的推荐分score 加上（ CPi自身的score * U-Uj的∆u_score）
 	 * */
 	private void updateU2CBeforeLastUpdated(String uid,Long changedUid,Map<String,Double> u2C,double uDeltaValue,Map<Long,Set<CpChoiceDO>> oldCpsMap){
-		logger.debug("已选CP更新：关联用户 "+changedUid);
+	//	logger.debug("已选CP更新：关联用户 "+changedUid);
 		//这样有一个隐患，当改变用户在我的lastUpdateTime前已经选择了某个cp后，取消又选择了该cp，并且还做了其他操作使之和我的关系改变，这时该cp的推荐之就不会更新，因为create_time已经变到lastUpdateTime之后了
 		//当然，也可以看作非隐患，取消选择表示犹豫，推荐分少加一些可以理解
 		Set<CpChoiceDO> oldCps = oldCpsMap.get(changedUid);
