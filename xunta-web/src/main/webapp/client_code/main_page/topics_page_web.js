@@ -26,7 +26,12 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	var notRepeatCpCount=0;// 不重复的可以上升的cp个数
 	
 	//2018.05.22    叶夷   这里是进行一个选择标签的测试，每次请求一组标签，则将标签数据保存到测试数组中，且显示测试按钮
-	testUserSelectCpArray=cpList;
+	testUserSelectCpArray.slice(0, testUserSelectCpArray.length)
+	testUserSelectCpArray.push(cpList[0]);
+	testUserSelectCpArray.push(cpList[1]);
+	testUserSelectCpArray.push(cpList[2]);
+	testUserSelectCpArray.push(cpList[3]);
+	testUserSelectCpArray.push(cpList[4]);
 	var startTestSelectCp=$("#startTestSelectCp");
 	if(startTestSelectCp.length>0){
 		startTestSelectCp.show();
@@ -2920,30 +2925,34 @@ function testWebSocket(data){
 	createNewWS(uid_arr,i);
 }
 var testUserSelectCpArray=new Array();
-//var testWSArray=new Array();//用来装创建的websocket
+var testWSArray=new Array();//用来装创建的websocket
 function createNewWS(uid_arr,i) {
 	var userId=uid_arr[i].userId;
 	console.log('新建第'+(i+1)+"个WS");
 	var testWS = new WebSocket("ws://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=no");
 	testWS.onopen=function(event){
 		console.log('Client received a message:',event); 
-		//testWSArray.push(testWS);
+		testWSArray.push(testWS);
 		/*sendWS(testWS,userId,cpid,cpText); */
 		
-		// 开始选择
-		for(index in testUserSelectCpArray){
-			var cpid=testUserSelectCpArray[index].cpid;
-			var cpText=testUserSelectCpArray[index].cptext;
-			sendWS(testWS,userId,cpid,cpText);
-		}
-		
 		++i;
-		if(i<=uid_arr.length){
+		if(i<250){
 			setTimeout(function() {
 				createNewWS(uid_arr,i,cpid,cpText);
 			},100);
+		}else{
+			// 开始选择
+			for(index in testUserSelectCpArray){
+				var cpid=testUserSelectCpArray[index].cpid;
+				var cpText=testUserSelectCpArray[index].cptext;
+				for(ws in testWSArray){
+					sendWS(testWSArray[ws],userId,cpid,cpText);
+				}
+			}
 		}
 	};
+	
+	
 }
 function sendWS(testWS,userId,cpid,cpText) {
 	var json_obj = {
