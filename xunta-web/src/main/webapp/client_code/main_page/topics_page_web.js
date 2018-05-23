@@ -2860,8 +2860,7 @@ $("#cp-show").scroll(function(){
 /**
  * start 2017.09.14 叶夷 "选中标签"性能测试
  */
-var cpTestArray=new Array();// 用来装页面存在过的cpid
-var startTest=false;
+/*var cpTestArray=new Array();// 用来装页面存在过的cpid
 function testSelectTag(){
 	startTest=true;
 	if(cpTestArray.length>0){
@@ -2897,16 +2896,18 @@ function CPTestObj(cpid, text) {
 	};
 	return obj;
 }
-
-function cleartimeout(){
-	startTest=false;
-}
+*/
 /**end
  */
 
+var startTest=true;
+function cleartimeout(){
+	startTest=false;
+}
 
 /**start 2017.10.18 叶夷  测试websocket并发的问题*/
 function requestUserIds(){
+	startTest=true;
 	execRoot("requestUserIds()");
 }
 var i=0;
@@ -2926,6 +2927,7 @@ function testWebSocket(data){
 }
 var testUserSelectCpArray=new Array();
 var testWSArray=new Array();//用来装创建的websocket
+var testWSArrayUserId=new Array();
 function createNewWS(uid_arr,i) {
 	var userId=uid_arr[i].userId;
 	console.log('新建第'+(i+1)+"个WS");
@@ -2933,10 +2935,11 @@ function createNewWS(uid_arr,i) {
 	testWS.onopen=function(event){
 		console.log('Client received a message:',event); 
 		testWSArray.push(testWS);
+		testWSArrayUserId.push(userId);
 		/*sendWS(testWS,userId,cpid,cpText); */
 		
 		++i;
-		if(i<250){
+		if(i<250 && startTest){
 			setTimeout(function() {
 				createNewWS(uid_arr,i);
 			},100);
@@ -2946,22 +2949,38 @@ function createNewWS(uid_arr,i) {
 				var cpid=testUserSelectCpArray[index].cpid;
 				var cpText=testUserSelectCpArray[index].cptext;
 				for(ws in testWSArray){
-					sendWS(testWSArray[ws],userId,cpid,cpText);
+					var userid=testWSArrayUserId[ws];
+					sendWS(testWSArray[ws],userid,cpid,cpText);
+					if(startTest){
+						break;
+					}
+				}
+				if(startTest){
+					break;
 				}
 			}
 		}
 	};
 	testWS.onerror = function(event){
+		// 开始选择
 		for(index in testUserSelectCpArray){
 			var cpid=testUserSelectCpArray[index].cpid;
 			var cpText=testUserSelectCpArray[index].cptext;
 			for(ws in testWSArray){
-				sendWS(testWSArray[ws],userId,cpid,cpText);
+				var userid=testWSArrayUserId[ws];
+				sendWS(testWSArray[ws],userid,cpid,cpText);
+				if(startTest){
+					break;
+				}
+			}
+			if(startTest){
+				break;
 			}
 		}
 	};
 }
 function sendWS(testWS,userId,cpid,cpText) {
+	console.log("userId=" +userId+" cpid="+cpid+" cpText="+cpText);
 	var json_obj = {
 			 _interface:"1102-1",
 			 interface_name: "sendSelectedCP",
