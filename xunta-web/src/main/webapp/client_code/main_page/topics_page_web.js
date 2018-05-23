@@ -2954,13 +2954,13 @@ function createNewWS(uid_arr,i) {
 					var userid=testWSArrayUserId[ws];
 					sendWS(testWSArray[ws],userid,cpid,cpText);
 					
-					if(startTest){
+					if(!startTest){
 						break;
 					}
 					
 				}
 				
-				if(startTest){
+				if(!startTest){
 					break;
 				}
 				
@@ -2975,11 +2975,11 @@ function createNewWS(uid_arr,i) {
 			for(ws in testWSArray){
 				var userid=testWSArrayUserId[ws];
 				sendWS(testWSArray[ws],userid,cpid,cpText);
-				if(startTest){
+				if(!startTest){
 					break;
 				}
 			}
-			if(startTest){
+			if(!startTest){
 				break;
 			}
 		}
