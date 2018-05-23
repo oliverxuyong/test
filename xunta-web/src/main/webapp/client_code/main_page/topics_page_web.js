@@ -2941,7 +2941,7 @@ function createNewWS(uid_arr,i) {
 		/*sendWS(testWS,userId,cpid,cpText); */
 		
 		++i;
-		if(i<250 && startTest){
+		if(i<250 && startTest && i<uid_arr.length){
 			setTimeout(function() {
 				createNewWS(uid_arr,i);
 			},100);
