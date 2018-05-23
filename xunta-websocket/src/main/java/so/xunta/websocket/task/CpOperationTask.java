@@ -19,7 +19,7 @@ import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.server.UserService;
 import so.xunta.utils.ConcurrentStatisticUtil;
-import so.xunta.utils.RecommendCPUpdateTaskList;
+import so.xunta.utils.RecommendUpdateTaskList;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
 import so.xunta.websocket.utils.LowPriorityThreadExecutor;
 
@@ -99,8 +99,8 @@ public class CpOperationTask implements Runnable{
 		
 		/*Step3: 触发自己的更新任务*/
 		updateAndPush(userId);
-		RecommendCPUpdateTask recommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, userId, selectType,RecommendCPUpdateTaskList.SELF_UPDATE, socketService, recommendPushService, loggerService);
-		Boolean ifTaskAddSuccess=RecommendCPUpdateTaskList.getInstance().addSelfU2CUpdateTask(userId, recommendCPUpdateTask);
+		RecommendCPUpdateTask recommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, userId, selectType,RecommendUpdateTaskList.SELF_UPDATE, socketService, recommendPushService, loggerService);
+		Boolean ifTaskAddSuccess=RecommendUpdateTaskList.getInstance().addSelfU2CUpdateTask(userId, recommendCPUpdateTask);
 		if(ifTaskAddSuccess){
 			//System.out.println("自己触发的更新任务创建成功");
 			lowPriorityThreadExecutor.execute(recommendCPUpdateTask);
@@ -116,15 +116,22 @@ public class CpOperationTask implements Runnable{
 		filterOffLineUsers(pendingPushUids);
 		for(String uid:pendingPushUids){
 			updateAndPush(uid);
-			RecommendCPUpdateTask otherRecommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, uid, selectType, RecommendCPUpdateTaskList.OTHERS_UPDATE, socketService, recommendPushService, loggerService);
-			Runnable queuingTask= RecommendCPUpdateTaskList.getInstance().addOthersU2CUpdateTask(uid, otherRecommendCPUpdateTask);
-			if(queuingTask!=null){
-				//System.out.println("已有他人触发的更新任务排队，延迟");
-				lowPriorityThreadExecutor.getQueue().remove(queuingTask);
-			}else{
-				//System.out.println("他人触发的更新任务插入成功");
+			if(recommendService.ifU2CUpdateExecutable(uid)){
+				RecommendCPUpdateTask otherRecommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, uid, selectType, RecommendUpdateTaskList.OTHERS_UPDATE, socketService, recommendPushService, loggerService);
+				Runnable queuingTask= RecommendUpdateTaskList.getInstance().addOthersU2CUpdateTask(uid, otherRecommendCPUpdateTask);
+				if(queuingTask!=null){
+					//System.out.println("已有他人触发的更新任务排队，延迟");
+					Boolean ifsuccess = lowPriorityThreadExecutor.remove(queuingTask);
+					if(ifsuccess){
+						System.out.println("已有他人触发的更新任务排队，延迟");
+					}else{
+						System.out.println("移除失败");
+					}
+				}else{
+					//System.out.println("他人触发的更新任务插入成功");
+				}
+				lowPriorityThreadExecutor.execute(otherRecommendCPUpdateTask);
 			}
-			lowPriorityThreadExecutor.execute(otherRecommendCPUpdateTask);
 		}
 	//	long endTime4 = System.currentTimeMillis();
 	//	logger.info("用户:"+userId+"\n 更新他人任务执行时间: "+(endTime4-endTime3)+"毫秒");

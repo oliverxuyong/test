@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import so.xunta.utils.RecommendCPUpdateTaskList;
+import so.xunta.utils.RecommendUpdateTaskList;
 import so.xunta.websocket.task.RecommendCPUpdateTask;
 
 public class LowPriorityThreadExecutor  extends ThreadPoolExecutor{
@@ -30,7 +30,7 @@ public class LowPriorityThreadExecutor  extends ThreadPoolExecutor{
 		super.afterExecute(r, t);
 		
 		RecommendCPUpdateTask completeTask = (RecommendCPUpdateTask)r;
-		RecommendCPUpdateTaskList.getInstance().removeU2CUpdateTask(completeTask.getUid(),completeTask.getIfSelfUpdate());
+		RecommendUpdateTaskList.getInstance().removeU2CUpdateTask(completeTask.getUid(),completeTask.getIfSelfUpdate());
 		
 		
 		int pendingTaskCount = this.getQueue().size();

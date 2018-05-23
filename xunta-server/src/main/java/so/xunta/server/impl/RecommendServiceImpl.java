@@ -2,7 +2,6 @@ package so.xunta.server.impl;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,8 +79,8 @@ public class RecommendServiceImpl implements RecommendService {
 
 	Logger logger =Logger.getLogger(RecommendServiceImpl.class);
 	
-	private List<String> u2CupdateTaskQueue =Collections.synchronizedList(new ArrayList<String>());
-	private List<String> u2UupdateTaskQueue =Collections.synchronizedList(new ArrayList<String>());
+	private Set<String> u2CupdateTaskQueue =Collections.synchronizedSet(new HashSet<String>());
+	private Set<String> u2UupdateTaskQueue =Collections.synchronizedSet(new HashSet<String>());
 	
 	/**
 	 * @author Bright_Zheng
@@ -459,7 +458,8 @@ public class RecommendServiceImpl implements RecommendService {
 		return true;
 	}
 	
-	private Boolean ifU2CUpdateExecutable(String uid) {
+	@Override
+	public Boolean ifU2CUpdateExecutable(String uid) {
 		/*准备工作: 检查任务队列
 		 * 如果用户的上次更新的任务还在排队，则丢弃此次任务
 		 * 如果是自己触发的更新，放弃后加的，如果是他人触发，放弃靠前的
