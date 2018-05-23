@@ -26,7 +26,7 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	var notRepeatCpCount=0;// 不重复的可以上升的cp个数
 	
 	//2018.05.22    叶夷   这里是进行一个选择标签的测试，每次请求一组标签，则将标签数据保存到测试数组中，且显示测试按钮
-	testUserSelectCpArray.slice(0, testUserSelectCpArray.length)
+	testUserSelectCpArray.slice(0, testUserSelectCpArray.length);
 	testUserSelectCpArray.push(cpList[0]);
 	testUserSelectCpArray.push(cpList[1]);
 	testUserSelectCpArray.push(cpList[2]);
@@ -2860,7 +2860,7 @@ $("#cp-show").scroll(function(){
 /**
  * start 2017.09.14 叶夷 "选中标签"性能测试
  */
-/*var cpTestArray=new Array();// 用来装页面存在过的cpid
+var cpTestArray=new Array();// 用来装页面存在过的cpid
 function testSelectTag(){
 	startTest=true;
 	if(cpTestArray.length>0){
@@ -2896,7 +2896,7 @@ function CPTestObj(cpid, text) {
 	};
 	return obj;
 }
-*/
+
 /**end
  */
 
@@ -2907,6 +2907,8 @@ function cleartimeout(){
 
 /**start 2017.10.18 叶夷  测试websocket并发的问题*/
 function requestUserIds(){
+	testWSArray.slice(0, testWSArray.length);//先清空数组，避免数据错乱
+	testWSArrayUserId.slice(0, testWSArrayUserId.length);//先清空数组，避免数据错乱
 	startTest=true;
 	execRoot("requestUserIds()");
 }
@@ -2951,13 +2953,17 @@ function createNewWS(uid_arr,i) {
 				for(ws in testWSArray){
 					var userid=testWSArrayUserId[ws];
 					sendWS(testWSArray[ws],userid,cpid,cpText);
+					
 					if(startTest){
 						break;
 					}
+					
 				}
+				
 				if(startTest){
 					break;
 				}
+				
 			}
 		}
 	};
