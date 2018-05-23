@@ -2938,7 +2938,7 @@ function createNewWS(uid_arr,i) {
 		++i;
 		if(i<250){
 			setTimeout(function() {
-				createNewWS(uid_arr,i,cpid,cpText);
+				createNewWS(uid_arr,i);
 			},100);
 		}else{
 			// 开始选择
@@ -2951,8 +2951,15 @@ function createNewWS(uid_arr,i) {
 			}
 		}
 	};
-	
-	
+	testWS.onerror = function(event){
+		for(index in testUserSelectCpArray){
+			var cpid=testUserSelectCpArray[index].cpid;
+			var cpText=testUserSelectCpArray[index].cptext;
+			for(ws in testWSArray){
+				sendWS(testWSArray[ws],userId,cpid,cpText);
+			}
+		}
+	};
 }
 function sendWS(testWS,userId,cpid,cpText) {
 	var json_obj = {
