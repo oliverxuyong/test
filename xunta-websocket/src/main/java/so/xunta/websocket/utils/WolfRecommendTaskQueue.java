@@ -27,8 +27,8 @@ public class WolfRecommendTaskQueue {
 	
 	private Queue<Runnable> highPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
 	private Queue<Runnable> lowPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
-	private Set<String> selfU2CUpdateTaskSet = new CopyOnWriteArraySet<String>(); 
-	private Map<String,Runnable> othersU2CUpdateTaskMap = new ConcurrentHashMap<String,Runnable>(); 
+	private Set<String> selfU2CUpdateTaskSet = new CopyOnWriteArraySet<String>();
+	private Map<String,Runnable> othersU2CUpdateTaskMap = new ConcurrentHashMap<String,Runnable>();
 
 	
 	Logger logger = Logger.getLogger(WolfRecommendTaskQueue.class);
@@ -46,7 +46,7 @@ public class WolfRecommendTaskQueue {
 				execute();
 			}
 		}else{
-			Runnable previousTask = othersU2CUpdateTaskMap.replace(uid, task);
+			Runnable previousTask = othersU2CUpdateTaskMap.put(uid, task);
 			if(previousTask!=null){
 				Boolean ifremoveSuccess = lowPriorityTaskQueue.remove(previousTask);
 				logger.info("删除"+ifremoveSuccess);
