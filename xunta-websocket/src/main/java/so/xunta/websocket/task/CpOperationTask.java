@@ -19,9 +19,8 @@ import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.server.UserService;
 import so.xunta.utils.ConcurrentStatisticUtil;
-import so.xunta.utils.RecommendUpdateTaskList;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
-import so.xunta.websocket.utils.LowPriorityThreadExecutor;
+import so.xunta.websocket.utils.WolfRecommendTaskQueue;
 
 
 public class CpOperationTask implements Runnable{
@@ -30,7 +29,7 @@ public class CpOperationTask implements Runnable{
 	private RecommendPushService recommendPushService;
 	private CpShowingService cpShowingService;
 	private LoggerService loggerService;
-	private LowPriorityThreadExecutor lowPriorityThreadExecutor;
+	private WolfRecommendTaskQueue wolfRecommendTaskQueue;
 	//private UserService userService;
 	
 	private String cpId;
@@ -44,7 +43,7 @@ public class CpOperationTask implements Runnable{
 	
 	public CpOperationTask(RecommendService recommendService,RecommendPushService recommendPushService,CpShowingService cpShowingService, 
 			String userId,String cpId, int selectType, String property,Boolean ifSelfAddCp, SocketService socketService,LoggerService loggerService,
-			UserService userService, LowPriorityThreadExecutor lowPriorityThreadExecutor) {
+			UserService userService,WolfRecommendTaskQueue wolfRecommendTaskQueue) {
 		this.recommendService = recommendService;
 		this.recommendPushService = recommendPushService;
 		this.userId = userId;
@@ -55,8 +54,7 @@ public class CpOperationTask implements Runnable{
 		this.property = property;
 		this.loggerService = loggerService;
 		this.ifSelfAddCp = ifSelfAddCp;
-		this.lowPriorityThreadExecutor = lowPriorityThreadExecutor;
-		
+		this.wolfRecommendTaskQueue = wolfRecommendTaskQueue;
 		this.u = userService.findUser(Long.valueOf(userId));
 	}
 	
@@ -99,14 +97,8 @@ public class CpOperationTask implements Runnable{
 		
 		/*Step3: 触发自己的更新任务*/
 		updateAndPush(userId);
-		RecommendCPUpdateTask recommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, userId, selectType,RecommendUpdateTaskList.SELF_UPDATE, socketService, recommendPushService, loggerService);
-		Boolean ifTaskAddSuccess=RecommendUpdateTaskList.getInstance().addSelfU2CUpdateTask(userId, recommendCPUpdateTask);
-		if(ifTaskAddSuccess){
-			//System.out.println("自己触发的更新任务创建成功");
-			lowPriorityThreadExecutor.execute(recommendCPUpdateTask);
-		}else{
-			//System.out.println("队列中已有自己触发的更新任务，本次更新丢弃");
-		}
+		RecommendCPUpdateTask recommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, userId, selectType, WolfRecommendTaskQueue.SELF_UPDATE, socketService, recommendPushService, loggerService);
+		wolfRecommendTaskQueue.addLowPriorityTask(userId, recommendCPUpdateTask, WolfRecommendTaskQueue.SELF_UPDATE);
 		
 	//	long endTime3 = System.currentTimeMillis();
 	//	logger.info("用户:"+userId+"\n 自己的更新任务执行时间: "+(endTime3-endTime2)+"毫秒");
@@ -117,20 +109,8 @@ public class CpOperationTask implements Runnable{
 		for(String uid:pendingPushUids){
 			updateAndPush(uid);
 			if(recommendService.ifU2CUpdateExecutable(uid)){
-				RecommendCPUpdateTask otherRecommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, uid, selectType, RecommendUpdateTaskList.OTHERS_UPDATE, socketService, recommendPushService, loggerService);
-				Runnable queuingTask= RecommendUpdateTaskList.getInstance().addOthersU2CUpdateTask(uid, otherRecommendCPUpdateTask);
-				if(queuingTask!=null){
-					//System.out.println("已有他人触发的更新任务排队，延迟");
-					Boolean ifsuccess = lowPriorityThreadExecutor.remove(queuingTask);
-					if(ifsuccess){
-						System.out.println("已有他人触发的更新任务排队，延迟");
-					}else{
-						System.out.println("移除失败");
-					}
-				}else{
-					//System.out.println("他人触发的更新任务插入成功");
-				}
-				lowPriorityThreadExecutor.execute(otherRecommendCPUpdateTask);
+				RecommendCPUpdateTask otherRecommendCPUpdateTask = new RecommendCPUpdateTask(recommendService, uid, selectType,  WolfRecommendTaskQueue.OTHERS_UPDATE, socketService, recommendPushService, loggerService);
+				wolfRecommendTaskQueue.addLowPriorityTask(uid, otherRecommendCPUpdateTask, WolfRecommendTaskQueue.OTHERS_UPDATE);
 			}
 		}
 	//	long endTime4 = System.currentTimeMillis();

@@ -5,11 +5,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import so.xunta.websocket.task.RecommendCPUpdateTask;
 
-@Component
+
 public class LowPriorityRejectedExecutionHandler implements RejectedExecutionHandler{
 	Logger logger =Logger.getLogger(LowPriorityRejectedExecutionHandler.class);
 	@Autowired

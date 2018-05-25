@@ -25,7 +25,7 @@ import so.xunta.websocket.config.Constants;
 import so.xunta.websocket.config.WebSocketContext;
 import so.xunta.websocket.task.UpdateSynchronizeTask;
 
-import so.xunta.websocket.utils.HighPriorityThreadExecutor;
+import so.xunta.websocket.utils.RecommendThreadExecutor;
 
 /**
  * Echo messages by implementing a Spring {@link WebSocketHandler} abstraction.
@@ -45,7 +45,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	private LoggerService loggerService;
 	
 	@Autowired
-	private HighPriorityThreadExecutor highPriorityThreadExecutor;
+	private RecommendThreadExecutor highPriorityThreadExecutor;
 	
 	@Autowired
 	private CpShowingService cpShowingService;
@@ -105,7 +105,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			if(obj.has("isPushCP")&&obj.getString("isPushCP").equals("true")){
 				addition_type = "isPushCP";
 			}
-			loggerService.log(userid, user.getName(),clientIP,obj.toString(),_interface,addition_type,user.getUserGroup());
+			//loggerService.log(userid, user.getName(),clientIP,obj.toString(),_interface,addition_type,user.getUserGroup());
 			logger1.info(user.getName()+"请求接口"+_interface);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
@@ -143,7 +143,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 				//re_sendMsg(userid,5); //zheng 先取消，以后的更新任务还会有类似的功能
 			}*/
 			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  上线");
-			loggerService.log(userid.toString(), u.getName(),clientIP,"用户上线","登录",null,u.getUserGroup());
+			//loggerService.log(userid.toString(), u.getName(),clientIP,"用户上线","登录",null,u.getUserGroup());
 			recommendService.initRecommendParm(u);
 			cpShowingService.initUserShowingCps(u.getUserId()+"");
 			
@@ -190,7 +190,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			recommendService.syncLastUpdateTime(u);
 			cpShowingService.clearUserShowingCps(userid+"");
 			
-			loggerService.log(userid.toString(), u.getName(), clientIP,"用户离线","登出",null,u.getUserGroup());
+			//loggerService.log(userid.toString(), u.getName(), clientIP,"用户离线","登出",null,u.getUserGroup());
 			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason()+";"+status.getCode());
 	}
 

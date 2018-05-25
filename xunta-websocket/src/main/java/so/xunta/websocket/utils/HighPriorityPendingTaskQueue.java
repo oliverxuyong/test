@@ -36,7 +36,7 @@ public class HighPriorityPendingTaskQueue {
 	@Autowired
 	private UserService UserService;
 	@Autowired
-	private LowPriorityThreadExecutor lowPriorityThreadExecutor; 
+	private WolfRecommendTaskQueue wolfRecommendTaskQueue;
 	
 	private Queue<String> taskSerializeList = new ConcurrentLinkedQueue<String>();
 
@@ -69,7 +69,7 @@ public class HighPriorityPendingTaskQueue {
 				Boolean ifSelfAddCp1 = Boolean.valueOf(parms[4]);
 				int selectType1 = Integer.valueOf(parms[5]);
 				CpOperationTask t1= new CpOperationTask(recommendService,recommendPushService,cpShowingService,userId1,cpId1,
-						selectType1,propert1,ifSelfAddCp1,socketService,loggerService,UserService,lowPriorityThreadExecutor);
+						selectType1,propert1,ifSelfAddCp1,socketService,loggerService,UserService,wolfRecommendTaskQueue);
 				returnTasks.add(t1);
 				break;
 			case UPDATE_SYNCHRONIZE:
@@ -82,5 +82,9 @@ public class HighPriorityPendingTaskQueue {
 			loopTimes++;
 		}
 		return returnTasks;
+	}
+	
+	public int getRestTaskNum(){
+		return taskSerializeList.size();
 	}
 }

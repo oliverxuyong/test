@@ -25,6 +25,22 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	var cpList = CP_list.cp_wrap;
 	var notRepeatCpCount=0;// 不重复的可以上升的cp个数
 	
+	//2018.05.22    叶夷   这里是进行一个选择标签的测试，每次请求一组标签，则将标签数据保存到测试数组中，且显示测试按钮
+	testUserSelectCpArray.slice(0, testUserSelectCpArray.length);
+	testUserSelectCpArray.push(cpList[0]);
+	testUserSelectCpArray.push(cpList[1]);
+	testUserSelectCpArray.push(cpList[2]);
+	testUserSelectCpArray.push(cpList[3]);
+	testUserSelectCpArray.push(cpList[4]);
+	var startTestSelectCp=$("#startTestSelectCp");
+	if(startTestSelectCp.length>0){
+		startTestSelectCp.show();
+	}
+	var stopTestSelectCp=$("#stopTestSelectCp");
+	if(stopTestSelectCp.length>0){
+		stopTestSelectCp.show();
+	}
+	
 	// 2017.09.13 叶夷 判断每一批请求相交的次数和哪几个圆相交
 	/*var intersetCount=parseInt(Math.random()*2+1);// 相交次数随机为1，2,3
 	for(var count=1;count<=intersetCount;count++){
@@ -2845,7 +2861,6 @@ $("#cp-show").scroll(function(){
  * start 2017.09.14 叶夷 "选中标签"性能测试
  */
 var cpTestArray=new Array();// 用来装页面存在过的cpid
-var startTest=false;
 function testSelectTag(){
 	startTest=true;
 	if(cpTestArray.length>0){
@@ -2882,52 +2897,102 @@ function CPTestObj(cpid, text) {
 	return obj;
 }
 
-function cleartimeout(){
-	startTest=false;
-}
 /**end
  */
 
+var startTest=true;
+function cleartimeout(){
+	startTest=false;
+}
 
 /**start 2017.10.18 叶夷  测试websocket并发的问题*/
 function requestUserIds(){
+	testWSArray.slice(0, testWSArray.length);//先清空数组，避免数据错乱
+	testWSArrayUserId.slice(0, testWSArrayUserId.length);//先清空数组，避免数据错乱
+	startTest=true;
 	execRoot("requestUserIds()");
 }
-var testWSArray=new Array();
-//var testWS;
 var i=0;
 function testWebSocket(data){
 	var uid_arr=data.uid_arr;
-	createNewWS(uid_arr,i)	
+	/*//从输入框输入的内容获取选择标签的id和text
+	var testNewWebsocketSelectCpId=$("#testNewWebsocketSelectCpId").val();
+	var testNewWebsocketSelectCpText=$("#testNewWebsocketSelectCpText").val();
+	if(testNewWebsocketSelectCpId=="" || testNewWebsocketSelectCpId=="undefined" ||testNewWebsocketSelectCpId==undefined
+			|| testNewWebsocketSelectCpText=="" || testNewWebsocketSelectCpText=="undefined" ||testNewWebsocketSelectCpText==undefined
+			|| testNewWebsocketSelectCpId=="请输入cpid" || testNewWebsocketSelectCpText=="请输入cptext"){
+		toast("输入框不能为空");
+	}else if(!/^\d+$/.test(testNewWebsocketSelectCpId)){//cpid不是纯数字
+		toast("cpid必须为数字");
+	}else{*/
+	createNewWS(uid_arr,i);
 }
-
+var testUserSelectCpArray=new Array();
+var testWSArray=new Array();//用来装创建的websocket
+var testWSArrayUserId=new Array();
 function createNewWS(uid_arr,i) {
 	var userId=uid_arr[i].userId;
 	console.log('新建第'+(i+1)+"个WS");
 	var testWS = new WebSocket("ws://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=no");
 	testWS.onopen=function(event){
 		console.log('Client received a message:',event); 
-		sendWS(testWS,userId); 
+		testWSArray.push(testWS);
+		testWSArrayUserId.push(userId);
+		/*sendWS(testWS,userId,cpid,cpText); */
+		
 		++i;
-		if(i<=uid_arr.length){
+		if(i<250 && startTest && i<uid_arr.length){
 			setTimeout(function() {
 				createNewWS(uid_arr,i);
 			},100);
+		}else{
+			// 开始选择
+			for(index in testUserSelectCpArray){
+				var cpid=testUserSelectCpArray[index].cpid;
+				var cpText=testUserSelectCpArray[index].cptext;
+				for(ws in testWSArray){
+					var userid=testWSArrayUserId[ws];
+					sendWS(testWSArray[ws],userid,cpid,cpText);
+					
+					if(!startTest){
+						break;
+					}
+					
+				}
+				
+				if(!startTest){
+					break;
+				}
+				
+			}
 		}
 	};
-	/*
-	setTimeout(function() {
-			sendWS(testWS); 
-	},2000);*/
+	testWS.onerror = function(event){
+		// 开始选择
+		for(index in testUserSelectCpArray){
+			var cpid=testUserSelectCpArray[index].cpid;
+			var cpText=testUserSelectCpArray[index].cptext;
+			for(ws in testWSArray){
+				var userid=testWSArrayUserId[ws];
+				sendWS(testWSArray[ws],userid,cpid,cpText);
+				if(!startTest){
+					break;
+				}
+			}
+			if(!startTest){
+				break;
+			}
+		}
+	};
 }
-function sendWS(testWS,userId) {
-	//var testWS=testWSArray[i];
+function sendWS(testWS,userId,cpid,cpText) {
+	console.log("userId=" +userId+" cpid="+cpid+" cpText="+cpText);
 	var json_obj = {
 			 _interface:"1102-1",
 			 interface_name: "sendSelectedCP",
 			 uid:userId.toString(),
-			 cpid:"60670",
-			 cptext:"英音",
+			 cpid:cpid,
+			 cptext:cpText,
 			 property:  "P",
 			 timestamp:"",
 		};

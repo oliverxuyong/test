@@ -28,15 +28,12 @@ import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 import so.xunta.beans.annotation.WebSocketMethodAnnotation;
 import so.xunta.beans.annotation.WebSocketTypeAnnotation;
 import so.xunta.utils.FilePathUtil2;
-import so.xunta.websocket.utils.HighPriorityThreadExecutor;
-import so.xunta.websocket.utils.LowPriorityThreadExecutor;
+import so.xunta.websocket.utils.RecommendThreadExecutor;
 
 @Component
 public class WebSocketContext {
 	@Autowired
-	private HighPriorityThreadExecutor highPriorityThreadExecutor;
-	@Autowired
-	private LowPriorityThreadExecutor lowPriorityThreadExecutor;
+	private RecommendThreadExecutor recommendThreadExecutor;
 	@Autowired
 	SessionFactory sessionFactory;
 	private static final Logger logger;
@@ -122,8 +119,7 @@ public class WebSocketContext {
 	@PreDestroy
 	public void destroy() {
 		logger.debug("destroy....");
-		highPriorityThreadExecutor.shutdown();
-		lowPriorityThreadExecutor.shutdown();
+		recommendThreadExecutor.shutdown();
 		sessionFactory.close();
 		try {
 			AbandonedConnectionCleanupThread.shutdown();
