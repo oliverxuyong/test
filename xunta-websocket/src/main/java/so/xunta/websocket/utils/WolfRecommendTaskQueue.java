@@ -48,7 +48,8 @@ public class WolfRecommendTaskQueue {
 		}else{
 			Runnable previousTask = othersU2CUpdateTaskMap.replace(uid, task);
 			if(previousTask!=null){
-				lowPriorityTaskQueue.remove(previousTask);
+				Boolean ifremoveSuccess = lowPriorityTaskQueue.remove(previousTask);
+				logger.info("删除"+ifremoveSuccess);
 				lowPriorityTaskQueue.add(task);
 			}else{
 				lowPriorityTaskQueue.add(task);
@@ -84,6 +85,8 @@ public class WolfRecommendTaskQueue {
 							logger.error("任务对象非RecommendCPUpdateTask，删除失败！");
 						}
 						recommendThreadExecutor.execute(task);
+					}else{
+						break;
 					}
 				}else{
 					activityThreadSize++;
