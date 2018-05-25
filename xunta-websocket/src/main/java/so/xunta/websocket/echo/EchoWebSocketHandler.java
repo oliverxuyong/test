@@ -24,8 +24,7 @@ import so.xunta.utils.IdWorker;
 import so.xunta.websocket.config.Constants;
 import so.xunta.websocket.config.WebSocketContext;
 import so.xunta.websocket.task.UpdateSynchronizeTask;
-
-import so.xunta.websocket.utils.RecommendThreadExecutor;
+import so.xunta.websocket.utils.WolfRecommendTaskQueue;
 
 /**
  * Echo messages by implementing a Spring {@link WebSocketHandler} abstraction.
@@ -45,7 +44,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	private LoggerService loggerService;
 	
 	@Autowired
-	private RecommendThreadExecutor highPriorityThreadExecutor;
+	private WolfRecommendTaskQueue wolfRecommendTaskQueue;
 	
 	@Autowired
 	private CpShowingService cpShowingService;
@@ -148,7 +147,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			cpShowingService.initUserShowingCps(u.getUserId()+"");
 			
 			UpdateSynchronizeTask updateSyncTask = new UpdateSynchronizeTask(userid.toString(), recommendService);
-			highPriorityThreadExecutor.execute(updateSyncTask);
+			wolfRecommendTaskQueue.addHighPriorityTask(updateSyncTask);
 			
 			//2018.03.30   叶夷    用户上线时接收消息
 			re_sendMsg(userid, 5);
