@@ -66,8 +66,8 @@ public class WolfRecommendTaskQueue {
 				if(task==null){
 					task = LowPriorityTaskQueue.poll();
 					if(task!=null){
-						recommendThreadExecutor.execute(task);
 						activityThreadSize++;
+						recommendThreadExecutor.execute(task);
 						if(task instanceof RecommendCPUpdateTask){
 							RecommendCPUpdateTask recommendCPUpdateTask = (RecommendCPUpdateTask)task;
 							String uid = recommendCPUpdateTask.getUid();
@@ -82,8 +82,8 @@ public class WolfRecommendTaskQueue {
 						}
 					}
 				}else{
-					recommendThreadExecutor.execute(task);
 					activityThreadSize++;
+					recommendThreadExecutor.execute(task);
 				}				
 			}
 		}
