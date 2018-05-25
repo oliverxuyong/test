@@ -25,8 +25,8 @@ public class WolfRecommendTaskQueue {
 	private int threadPoolMaxPoolSize;
 	private int activityThreadSize=0;
 	
-	private Queue<Runnable> HighPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
-	private Queue<Runnable> LowPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
+	private Queue<Runnable> highPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
+	private Queue<Runnable> lowPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
 	private Set<String> selfU2CUpdateTaskSet = new CopyOnWriteArraySet<String>(); 
 	private Map<String,Runnable> othersU2CUpdateTaskMap = new ConcurrentHashMap<String,Runnable>(); 
 
@@ -34,7 +34,7 @@ public class WolfRecommendTaskQueue {
 	Logger logger = Logger.getLogger(WolfRecommendTaskQueue.class);
 	
 	public void addHighPriorityTask(Runnable task){
-		HighPriorityTaskQueue.add(task);
+		highPriorityTaskQueue.add(task);
 		execute();
 	}
 	
@@ -42,16 +42,16 @@ public class WolfRecommendTaskQueue {
 		if(ifSelfUpdate){
 			if(!selfU2CUpdateTaskSet.contains(uid)){
 				selfU2CUpdateTaskSet.add(uid);
-				LowPriorityTaskQueue.add(task);
+				lowPriorityTaskQueue.add(task);
 				execute();
 			}
 		}else{
 			Runnable previousTask = othersU2CUpdateTaskMap.replace(uid, task);
 			if(previousTask!=null){
-				LowPriorityTaskQueue.remove(previousTask);
-				LowPriorityTaskQueue.add(task);
+				lowPriorityTaskQueue.remove(previousTask);
+				lowPriorityTaskQueue.add(task);
 			}else{
-				LowPriorityTaskQueue.add(task);
+				lowPriorityTaskQueue.add(task);
 				execute();
 			}
 		}
@@ -59,15 +59,18 @@ public class WolfRecommendTaskQueue {
 	
 	public synchronized void execute(){
 		logger.debug("线程情况："+activityThreadSize+":"+threadPoolMaxPoolSize);
-		if(activityThreadSize < threadPoolMaxPoolSize+1){
+		if(highPriorityTaskQueue.size()==0&&lowPriorityTaskQueue.size()==0){
+			return;
+		}
+		if(activityThreadSize < (threadPoolMaxPoolSize+1)){
 			int pollSize = threadPoolMaxPoolSize +1 - activityThreadSize;
 			for(int i=0;i<pollSize;i++){
-				Runnable task = HighPriorityTaskQueue.poll();
+				Runnable task = highPriorityTaskQueue.poll();
 				if(task==null){
-					task = LowPriorityTaskQueue.poll();
+					task = lowPriorityTaskQueue.poll();
+					logger.info("队列长度"+lowPriorityTaskQueue.size()+"="+othersU2CUpdateTaskMap.size()+"+"+selfU2CUpdateTaskSet.size());
 					if(task!=null){
 						activityThreadSize++;
-						recommendThreadExecutor.execute(task);
 						if(task instanceof RecommendCPUpdateTask){
 							RecommendCPUpdateTask recommendCPUpdateTask = (RecommendCPUpdateTask)task;
 							String uid = recommendCPUpdateTask.getUid();
@@ -80,6 +83,7 @@ public class WolfRecommendTaskQueue {
 						}else{
 							logger.error("任务对象非RecommendCPUpdateTask，删除失败！");
 						}
+						recommendThreadExecutor.execute(task);
 					}
 				}else{
 					activityThreadSize++;
