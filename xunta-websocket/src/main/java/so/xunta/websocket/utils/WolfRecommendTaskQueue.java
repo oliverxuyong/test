@@ -21,7 +21,7 @@ public class WolfRecommendTaskQueue {
 	
 	@Autowired
 	private RecommendThreadExecutor recommendThreadExecutor;
-	@Value("#{'${thread.pool.corePoolSize}'}")
+	@Value("#{'${thread.pool.maxPoolSize}'}")
 	private int threadPoolMaxPoolSize;
 	private int activityThreadSize=0;
 	
@@ -59,8 +59,8 @@ public class WolfRecommendTaskQueue {
 	
 	public synchronized void execute(){
 		logger.debug("线程情况："+activityThreadSize+":"+threadPoolMaxPoolSize);
-		if(activityThreadSize < threadPoolMaxPoolSize){
-			int pollSize = threadPoolMaxPoolSize - activityThreadSize;
+		if(activityThreadSize < threadPoolMaxPoolSize+1){
+			int pollSize = threadPoolMaxPoolSize +1 - activityThreadSize;
 			for(int i=0;i<pollSize;i++){
 				Runnable task = HighPriorityTaskQueue.poll();
 				if(task==null){
