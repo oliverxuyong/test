@@ -136,16 +136,23 @@
 			<img src="../image/new-msg-3.png" />
 		</div>
 
-		<!--  <input type="text" value="请输入cpid" onfocus="if(this.value=='请输入cpid') {this.value=''}" onblur="if(this.value=='') {this.value='请输入cpid'}" id="testNewWebsocketSelectCpId" style="position: absolute;top: 26px;left: 100px;background: #f1f1f1;z-index:999;">
-		<input type="text" value="请输入cptext" onfocus="if(this.value=='请输入cptext') {this.value=''}" onblur="if(this.value=='') {this.value='请输入cptext'}" id="testNewWebsocketSelectCpText" style="position: absolute;top: 26px;left: 300px;background: #f1f1f1;z-index:999;">-->
 		<!-- 选中标签并发websocket测试按钮 -->
-		<div onclick="requestUserIds()" id="startTestSelectCp" style="position: absolute;top: 52px;left: 100px;background: #f1f1f1;z-index:999;display:none;">
+		<div onclick="requestUserIds()" id="startTestSelectCp" style="position: absolute;top: 72px;left: 100px;background: #f1f1f1;z-index:999;display:none;">
 			并发测试按钮 
 		</div> 
 		<!-- 选中标签性能测试停止按钮-->
-		<div onclick="cleartimeout()" id="stopTestSelectCp" style="position: absolute;top: 78px;left: 100px;background: #f1f1f1;z-index:999;display:none;">
+		<div onclick="cleartimeout()" id="stopTestSelectCp" style="position: absolute;top: 98px;left: 100px;background: #f1f1f1;z-index:999;display:none;">
 			选中标签测试停止
 		</div>
+		
+		<input type="text" value="请输入选择cp的时间" onfocus="if(this.value=='请输入选择cp的时间') {this.value=''}" onblur="if(this.value=='') {this.value='请输入选择cp的时间'}" id="testWebsocketSelectTime" 
+			style="position: absolute;top: 6px;left: 100px;background: #f1f1f1;z-index:999;"><span style="position: absolute;top: 6px;left: 273px;background: #f1f1f1;z-index:999;">提示：时间格式为hh:mm:ss(如13:04:06)</span>
+		<div onclick="requestUserIds2()" id="startTestSelectCp2" style="position: absolute;top: 30px;left:100px;background: #f1f1f1;z-index:999;display:none;">
+			开始测试按钮
+		</div> 
+		<!--  <input type="text" value="请输入cptext" onfocus="if(this.value=='请输入cptext') {this.value=''}" onblur="if(this.value=='') {this.value='请输入cptext'}" id="testNewWebsocketSelectCpText" 
+			style="position: absolute;top: 26px;left: 300px;background: #f1f1f1;z-index:999;">-->
+		
 		<!-- 进入匹配人详情页按钮
 		<div onclick="enterMatchUsersPage()" style="position: absolute;top: 52px;left: 100px;background: #f1f1f1;z-index:999;">
 			进入匹配人详情页按钮

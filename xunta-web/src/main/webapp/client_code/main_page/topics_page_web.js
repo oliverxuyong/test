@@ -27,11 +27,13 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	
 	//2018.05.22    叶夷   这里是进行一个选择标签的测试，每次请求一组标签，则将标签数据保存到测试数组中，且显示测试按钮
 	testUserSelectCpArray.slice(0, testUserSelectCpArray.length);
-	testUserSelectCpArray.push(cpList[0]);
-	testUserSelectCpArray.push(cpList[1]);
+	//随机选择一个标签
+	var ramdomIndex=parseInt(Math.random()*cpList.length);
+	testUserSelectCpArray.push(cpList[ramdomIndex]);
+	/*testUserSelectCpArray.push(cpList[1]);
 	testUserSelectCpArray.push(cpList[2]);
 	testUserSelectCpArray.push(cpList[3]);
-	testUserSelectCpArray.push(cpList[4]);
+	testUserSelectCpArray.push(cpList[4]);*/
 	var startTestSelectCp=$("#startTestSelectCp");
 	if(startTestSelectCp.length>0){
 		startTestSelectCp.show();
@@ -39,6 +41,10 @@ function responseToCPRequest(CP_list) {// 显示从服务器获得的话题列�
 	var stopTestSelectCp=$("#stopTestSelectCp");
 	if(stopTestSelectCp.length>0){
 		stopTestSelectCp.show();
+	}
+	var startTestSelectCp2=$("#startTestSelectCp2");
+	if(startTestSelectCp2.length>0){
+		startTestSelectCp2.show();
 	}
 	
 	// 2017.09.13 叶夷 判断每一批请求相交的次数和哪几个圆相交
@@ -2903,10 +2909,16 @@ function CPTestObj(cpid, text) {
 var startTest=true;
 function cleartimeout(){
 	startTest=false;
+	
+	//将websocket断开链接
+	/*for(temp in testWSArray){
+		testWSArray[temp].close();
+	}*/
 }
 
 /**start 2017.10.18 叶夷  测试websocket并发的问题*/
 function requestUserIds(){
+	secondTest=false;
 	testWSArray.slice(0, testWSArray.length);//先清空数组，避免数据错乱
 	testWSArrayUserId.slice(0, testWSArrayUserId.length);//先清空数组，避免数据错乱
 	startTest=true;
@@ -2915,22 +2927,30 @@ function requestUserIds(){
 var i=0;
 function testWebSocket(data){
 	var uid_arr=data.uid_arr;
-	/*//从输入框输入的内容获取选择标签的id和text
-	var testNewWebsocketSelectCpId=$("#testNewWebsocketSelectCpId").val();
-	var testNewWebsocketSelectCpText=$("#testNewWebsocketSelectCpText").val();
-	if(testNewWebsocketSelectCpId=="" || testNewWebsocketSelectCpId=="undefined" ||testNewWebsocketSelectCpId==undefined
-			|| testNewWebsocketSelectCpText=="" || testNewWebsocketSelectCpText=="undefined" ||testNewWebsocketSelectCpText==undefined
-			|| testNewWebsocketSelectCpId=="请输入cpid" || testNewWebsocketSelectCpText=="请输入cptext"){
-		toast("输入框不能为空");
-	}else if(!/^\d+$/.test(testNewWebsocketSelectCpId)){//cpid不是纯数字
-		toast("cpid必须为数字");
-	}else{*/
-	createNewWS(uid_arr,i);
+	var testWebsocketSelectTime=0;
+	//从输入框输入的内容获取选择标签的id和text
+	if(secondTest){
+		testWebsocketSelectTime=$("#testWebsocketSelectTime").val();
+		var nowTime=new Date(); 
+		if(testWebsocketSelectTime=="" || testWebsocketSelectTime=="undefined" ||testWebsocketSelectTime==undefined
+				|| testWebsocketSelectTime=="请输入选择cp的时间"){
+			toast("输入框不能为空");
+		}else if(!isTime(testWebsocketSelectTime)){//cpid不是纯数字
+			toast("输入时间格式错误(应输入如：13:04:06)");
+		}else if(changeDataStr(testWebsocketSelectTime,nowTime)==0){
+			toast("输入时间小于当前时间");
+		}else{
+			testWebsocketSelectTime=changeDataStr(testWebsocketSelectTime,nowTime);
+			createNewWS(uid_arr,i,testWebsocketSelectTime);
+		}
+	}else{
+		createNewWS(uid_arr,i,testWebsocketSelectTime);
+	}
 }
 var testUserSelectCpArray=new Array();
 var testWSArray=new Array();//用来装创建的websocket
 var testWSArrayUserId=new Array();
-function createNewWS(uid_arr,i) {
+function createNewWS(uid_arr,i,testWebsocketSelectTime) {
 	var userId=uid_arr[i].userId;
 	console.log('新建第'+(i+1)+"个WS");
 	var testWS = new WebSocket("ws://" + domain + "/xunta-web/websocket?userid=" + userId + "&boot=no");
@@ -2943,9 +2963,12 @@ function createNewWS(uid_arr,i) {
 		++i;
 		if(i<250 && startTest && i<uid_arr.length){
 			setTimeout(function() {
-				createNewWS(uid_arr,i);
+				createNewWS(uid_arr,i,testWebsocketSelectTime);
 			},100);
 		}else{
+			
+			setTimeout(function() {
+			
 			// 开始选择
 			for(index in testUserSelectCpArray){
 				var cpid=testUserSelectCpArray[index].cpid;
@@ -2963,26 +2986,34 @@ function createNewWS(uid_arr,i) {
 				if(!startTest){
 					break;
 				}
-				
 			}
+			
+			},testWebsocketSelectTime);
 		}
 	};
 	testWS.onerror = function(event){
-		// 开始选择
-		for(index in testUserSelectCpArray){
-			var cpid=testUserSelectCpArray[index].cpid;
-			var cpText=testUserSelectCpArray[index].cptext;
-			for(ws in testWSArray){
-				var userid=testWSArrayUserId[ws];
-				sendWS(testWSArray[ws],userid,cpid,cpText);
+		setTimeout(function() {
+			
+			// 开始选择
+			for(index in testUserSelectCpArray){
+				var cpid=testUserSelectCpArray[index].cpid;
+				var cpText=testUserSelectCpArray[index].cptext;
+				for(ws in testWSArray){
+					var userid=testWSArrayUserId[ws];
+					sendWS(testWSArray[ws],userid,cpid,cpText);
+					
+					if(!startTest){
+						break;
+					}
+					
+				}
+				
 				if(!startTest){
 					break;
 				}
 			}
-			if(!startTest){
-				break;
-			}
-		}
+			
+		},testWebsocketSelectTime);
 	};
 }
 function sendWS(testWS,userId,cpid,cpText) {
@@ -2998,6 +3029,48 @@ function sendWS(testWS,userId,cpid,cpText) {
 		};
 	testWS.send(JSON.stringify(json_obj));
 	console.log("执行WS发送.接口:" + json_obj._interface);
+}
+/**end*/
+
+/**start 2018.05.28 叶夷  第二种测试websocket并发的方法：
+ * 再做一个前端测试版本，同样每个客户端一上来先建立200个左右的websocket，然后在请求的一批cp中随机选择一样选取，要有定时功能，可以由我们设置一个时间然后再开始选择CP（建websocket不用定时）
+ * */
+var secondTest=false;//判断是第二种测试方法
+function requestUserIds2(){
+	secondTest=true;
+	testWSArray.slice(0, testWSArray.length);//先清空数组，避免数据错乱
+	testWSArrayUserId.slice(0, testWSArrayUserId.length);//先清空数组，避免数据错乱
+	startTest=true;
+	execRoot("requestUserIds()");
+}
+
+//短时间，形如 (13:04:06)
+function isTime(str){
+	var a = str.match(/^(\d{1,2})(:)?(\d{1,2})\2(\d{1,2})$/);
+	if (a == null) {alert('输入的参数不是时间格式'); return false;}
+	if (a[1]>24 || a[3]>60 || a[4]>60)
+	{
+		//alert("时间格式不对");
+		return false
+	}
+	return true;
+}
+
+//判断输入时间距离现在时间的毫秒数
+function changeDataStr(inDate,nowTime){
+	/*inDate.getFullYear(); //获取完整的年份(4位,1970-????)  
+	inDate.getMonth(); //获取当前月份(0-11,0代表1月)  
+	inDate.getDate(); //获取当前日(1-31)*/
+	var inFullDateStr=nowTime.getFullYear()+"/"+(nowTime.getMonth()+1)+"/"+nowTime.getDate()+" "+inDate;
+	console.log("输入的时间:"+inFullDateStr);
+	var inFullDateLong = (new Date(inFullDateStr)).getTime(); //得到毫秒数  
+	var nowTimeLong=nowTime.getTime();//现在的时间
+	if(inFullDateLong<=nowTimeLong){
+		return 0;
+	}else{
+		var differTime=inFullDateLong-nowTimeLong;
+		return differTime;
+	}
 }
 /**end*/
 
