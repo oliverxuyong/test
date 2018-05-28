@@ -39,6 +39,7 @@ public class WolfRecommendTaskQueue {
 	}
 	
 	public void addLowPriorityTask(String uid, Runnable task,Boolean ifSelfUpdate){
+		//TODO 加一个想recommendService 的更新可执行判断
 		if(ifSelfUpdate){
 			if(!selfU2CUpdateTaskSet.contains(uid)){
 				selfU2CUpdateTaskSet.add(uid);
@@ -49,8 +50,10 @@ public class WolfRecommendTaskQueue {
 			Runnable previousTask = othersU2CUpdateTaskMap.put(uid, task);
 			if(previousTask!=null){
 				Boolean ifremoveSuccess = lowPriorityTaskQueue.remove(previousTask);
-				logger.info("删除"+ifremoveSuccess);
-				lowPriorityTaskQueue.add(task);
+				//logger.info("删除"+ifremoveSuccess);
+				if(ifremoveSuccess){
+					lowPriorityTaskQueue.add(task);
+				}
 			}else{
 				lowPriorityTaskQueue.add(task);
 				execute();
