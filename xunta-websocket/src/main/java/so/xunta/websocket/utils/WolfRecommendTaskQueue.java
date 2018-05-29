@@ -36,8 +36,6 @@ public class WolfRecommendTaskQueue {
 	@Value("#{'${thread.pool.maxPoolSize}'}")
 	private int threadPoolMaxPoolSize;
 	private int activityThreadSize=0;
-	private int lastHQueueSize=0;
-	private int lastMQueueSize=0;
 	
 	private Queue<Runnable> highPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
 	private Queue<Runnable> mediumPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
@@ -91,26 +89,17 @@ public class WolfRecommendTaskQueue {
 		if(highPriorityTaskQueue.size()==0&&mediumPriorityTaskQueue.size()==0&&lowPriorityTaskQueue.size()==0){
 			return;
 		}
+
 		if(activityThreadSize < threadPoolMaxPoolSize){
 			int pollSize = threadPoolMaxPoolSize - activityThreadSize;
 			for(int i=0;i<pollSize;i++){
 				Runnable task = highPriorityTaskQueue.poll();
 				if(task!=null){
-					if(activityThreadSize==0){
-						logger.info("开始执行记录任务");
-						lastHQueueSize = highPriorityTaskQueue.size()+1;
-					}
 					activityThreadSize++;
 					recommendThreadExecutor.execute(task);
 				}else{
 					task = mediumPriorityTaskQueue.poll();
 					if(task!=null){
-						if(lastHQueueSize==1){
-							lastHQueueSize=0;
-							logger.info("开始执行U2U更新任务");
-							lastMQueueSize = mediumPriorityTaskQueue.size()+1;
-						}
-						
 						RecommendU2uUpdateTask recommendU2uUpdateTask = (RecommendU2uUpdateTask)task;
 						String uid = recommendU2uUpdateTask.getUid();
 						u2UUpdateTaskSet.remove(uid);
@@ -121,11 +110,7 @@ public class WolfRecommendTaskQueue {
 						task = lowPriorityTaskQueue.poll();
 						logger.debug("队列长度"+lowPriorityTaskQueue.size()+"="+othersU2CUpdateTaskMap.size()+"+"+selfU2CUpdateTaskSet.size());
 						if(task!=null){
-							if(lastMQueueSize==1){
-								lastMQueueSize=0;
-								logger.info("开始执行U2C更新任务");	
-							}
-							
+
 							RecommendCPUpdateTask recommendCPUpdateTask = (RecommendCPUpdateTask)task;
 							String uid = recommendCPUpdateTask.getUid();
 							Boolean ifSelfUpdate = recommendCPUpdateTask.getIfSelfUpdate();
@@ -138,7 +123,6 @@ public class WolfRecommendTaskQueue {
 							activityThreadSize++;
 							recommendThreadExecutor.execute(task);
 						}else{
-							logger.info("任务执行执行完毕");
 							break;
 						}
 					}
