@@ -38,10 +38,10 @@ public class RecommendU2uUpdateTask implements Runnable {
 	public void run() {
 		if(uid!=null){
 			if(recommendService.ifU2UUpdateExecutable(uid)){
-				long startTime = System.currentTimeMillis();
+			//	long startTime = System.currentTimeMillis();
 				updateAndPush(uid);
-				long endTime = System.currentTimeMillis();
-				logger.info("用户:"+uid+"\n 更新U2U执行时间： "+(endTime-startTime)+"毫秒");
+			//	long endTime = System.currentTimeMillis();
+			//	logger.info("用户:"+uid+"\n 更新U2U执行时间： "+(endTime-startTime)+"毫秒");
 			}
 		}else{
 			logger.error("参数为空！放弃任务");

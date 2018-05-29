@@ -65,12 +65,12 @@ public class CpOperationTask implements Runnable{
 
 	@Override
 	public void run() {
-		logger.debug("==============================CpOperationPushTask===================================");
+	//	logger.debug("==============================CpOperationPushTask===================================");
 		if(userId==null || cpId==null){
 			logger.warn("参数为空！放弃任务");
 			return;
 		}
-		long startTime = System.currentTimeMillis();
+	//	long startTime = System.currentTimeMillis();
 		/*Step1: 更新关系词*/
 		recommendService.updateU2cByC2c(userId, cpId, property, selectType);
 		
@@ -110,9 +110,9 @@ public class CpOperationTask implements Runnable{
 			recommendService.setSelfAddCp(cpId,u.getEvent_scope());
 		}
 		
-		long endTime = System.currentTimeMillis();
-		logger.info("用户:"+userId+"\n 记录&更新U2U执行时间: "+(endTime-startTime)+"毫秒");
-		logger.debug("==============================CpOperationPushTask 完成！===================================");
+	//	long endTime = System.currentTimeMillis();
+	//	logger.info("用户:"+userId+"\n 记录&更新U2U执行时间: "+(endTime-startTime)+"毫秒");
+	//	logger.debug("==============================CpOperationPushTask 完成！===================================");
 	}
 	
 	private void filterOffLineUsers(Set<String> userids) {
