@@ -20,7 +20,11 @@ public class UpdateSynchronizeTask implements Runnable{
 
 	@Override
 	public void run() {
-		recommendService.updateU2U(uid);
-		recommendService.updateU2C(uid);
+		if(recommendService.ifU2UUpdateExecutable(uid)){
+			recommendService.updateU2U(uid);
+		}
+		if(recommendService.ifU2CUpdateExecutable(uid)){
+			recommendService.updateU2C(uid);
+		}
 	}
 }

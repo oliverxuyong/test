@@ -43,17 +43,19 @@ public class RecommendCPUpdateTask implements Runnable {
 
 	@Override
 	public void run() {
-		logger.debug("========================= RecommendCPUpdateTask==============================");
-		long startTime = System.currentTimeMillis();
+		//logger.debug("========================= RecommendCPUpdateTask==============================");
 		if(uid!=null){
-			updateAndPush(uid);
+			if(recommendService.ifU2CUpdateExecutable(uid)){
+				long startTime = System.currentTimeMillis();
+				updateAndPush(uid);
+				long endTime = System.currentTimeMillis();
+				logger.info("用户:"+uid+"\n"+ifSelfUpdate+" 更新U2C执行时间： "+(endTime-startTime)+"毫秒");
+				ConcurrentStatisticUtil.getInstance().addUpdateU2COneTime(uid);
+			}
 		}else{
-			logger.warn("参数为空！放弃任务");
+			logger.error("参数为空！放弃任务");
 		}
-		logger.debug("========================= RecommendCPUpdateTask完成！==============================");
-		long endTime = System.currentTimeMillis();
-		logger.info("用户:"+uid+"\n"+ifSelfUpdate+" 更新U2C执行时间： "+(endTime-startTime)+"毫秒");
-		ConcurrentStatisticUtil.getInstance().addUpdateU2COneTime(uid);
+		//logger.debug("========================= RecommendCPUpdateTask完成！==============================");
 	}
 
 	public String getUid() {

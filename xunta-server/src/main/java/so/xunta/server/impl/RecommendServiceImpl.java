@@ -160,9 +160,9 @@ public class RecommendServiceImpl implements RecommendService {
 	@Override
 	public Boolean updateU2U(String uid) {
 		try {
-			if(!ifU2UUpdateExecutable(uid)){
-				return false;
-			}
+//			if(!ifU2UUpdateExecutable(uid)){
+//				return false;
+//			}
 			/*将任务加入任务队列
 			 * */
 			u2UupdateTaskQueue.add(uid);
@@ -201,9 +201,9 @@ public class RecommendServiceImpl implements RecommendService {
 	@Override
 	public Boolean updateU2C(String uid) {
 		try {
-			if(!ifU2CUpdateExecutable(uid)){
-				return false;
-			}
+//			if(!ifU2CUpdateExecutable(uid)){
+//				return false;
+//			}
 			/*将任务加入任务队列
 			 * */
 			u2CupdateTaskQueue.add(uid);
@@ -439,7 +439,8 @@ public class RecommendServiceImpl implements RecommendService {
 		}		
 	}
 	
-	private Boolean ifU2UUpdateExecutable(String uid) {
+	@Override
+	public Boolean ifU2UUpdateExecutable(String uid) {
 	
 		if(u2UupdateTaskQueue.contains(uid)){
 			logger.debug("用户:"+uid+" 的上一次U2U更新任务还没结束，本次任务丢弃");

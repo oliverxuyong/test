@@ -12,23 +12,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import so.xunta.server.LoggerService;
+import so.xunta.server.RecommendPushService;
+import so.xunta.server.RecommendService;
+import so.xunta.server.SocketService;
 import so.xunta.websocket.task.RecommendCPUpdateTask;
+import so.xunta.websocket.task.RecommendU2uUpdateTask;
 
 @Component
 public class WolfRecommendTaskQueue {
 	public static final Boolean SELF_UPDATE = true;
 	public static final Boolean OTHERS_UPDATE = false;
-	
+	@Autowired
+	private SocketService socketService;
+	@Autowired
+	private RecommendService recommendService;	
+	@Autowired
+	private RecommendPushService recommendPushService;
 	@Autowired
 	private RecommendThreadExecutor recommendThreadExecutor;
+	@Autowired
+	private LoggerService loggerService;
 	@Value("#{'${thread.pool.maxPoolSize}'}")
 	private int threadPoolMaxPoolSize;
 	private int activityThreadSize=0;
 	
 	private Queue<Runnable> highPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
+	private Queue<Runnable> mediumPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
 	private Queue<Runnable> lowPriorityTaskQueue = new ConcurrentLinkedQueue<Runnable>();
 	private Set<String> selfU2CUpdateTaskSet = new CopyOnWriteArraySet<String>();
 	private Map<String,Runnable> othersU2CUpdateTaskMap = new ConcurrentHashMap<String,Runnable>();
+	private Set<String> u2UUpdateTaskSet = new CopyOnWriteArraySet<String>();
 
 	
 	Logger logger = Logger.getLogger(WolfRecommendTaskQueue.class);
@@ -38,15 +52,24 @@ public class WolfRecommendTaskQueue {
 		execute();
 	}
 	
-	public void addLowPriorityTask(String uid, Runnable task,Boolean ifSelfUpdate){
+	public void addMediumPriorityTask(String uid){
+		if(u2UUpdateTaskSet.add(uid)){
+			RecommendU2uUpdateTask task = new RecommendU2uUpdateTask(uid, recommendService, socketService, recommendPushService);
+			mediumPriorityTaskQueue.add(task);
+			execute();
+		}
+	}
+	
+	public void addLowPriorityTask(String uid,int selectType, Boolean ifSelfUpdate){
 		//TODO 加一个想recommendService 的更新可执行判断
 		if(ifSelfUpdate){
-			if(!selfU2CUpdateTaskSet.contains(uid)){
-				selfU2CUpdateTaskSet.add(uid);
+			if(selfU2CUpdateTaskSet.add(uid)){
+				RecommendCPUpdateTask task = new RecommendCPUpdateTask(recommendService, uid, selectType,ifSelfUpdate, socketService, recommendPushService, loggerService);
 				lowPriorityTaskQueue.add(task);
 				execute();
 			}
 		}else{
+			RecommendCPUpdateTask task = new RecommendCPUpdateTask(recommendService, uid, selectType, ifSelfUpdate, socketService, recommendPushService, loggerService);
 			Runnable previousTask = othersU2CUpdateTaskMap.put(uid, task);
 			if(previousTask!=null){
 				Boolean ifremoveSuccess = lowPriorityTaskQueue.remove(previousTask);
@@ -70,12 +93,23 @@ public class WolfRecommendTaskQueue {
 			int pollSize = threadPoolMaxPoolSize +1 - activityThreadSize;
 			for(int i=0;i<pollSize;i++){
 				Runnable task = highPriorityTaskQueue.poll();
-				if(task==null){
-					task = lowPriorityTaskQueue.poll();
-					logger.info("队列长度"+lowPriorityTaskQueue.size()+"="+othersU2CUpdateTaskMap.size()+"+"+selfU2CUpdateTaskSet.size());
+				if(task!=null){
+					activityThreadSize++;
+					recommendThreadExecutor.execute(task);
+				}else{
+					task = mediumPriorityTaskQueue.poll();
 					if(task!=null){
+						RecommendU2uUpdateTask recommendU2uUpdateTask = (RecommendU2uUpdateTask)task;
+						String uid = recommendU2uUpdateTask.getUid();
+						u2UUpdateTaskSet.remove(uid);
+						
 						activityThreadSize++;
-						if(task instanceof RecommendCPUpdateTask){
+						recommendThreadExecutor.execute(task);
+					}else{
+						task = lowPriorityTaskQueue.poll();
+						logger.debug("队列长度"+lowPriorityTaskQueue.size()+"="+othersU2CUpdateTaskMap.size()+"+"+selfU2CUpdateTaskSet.size());
+						if(task!=null){
+
 							RecommendCPUpdateTask recommendCPUpdateTask = (RecommendCPUpdateTask)task;
 							String uid = recommendCPUpdateTask.getUid();
 							Boolean ifSelfUpdate = recommendCPUpdateTask.getIfSelfUpdate();
@@ -84,16 +118,13 @@ public class WolfRecommendTaskQueue {
 							}else{
 								othersU2CUpdateTaskMap.remove(uid);
 							}
+				
+							activityThreadSize++;
+							recommendThreadExecutor.execute(task);
 						}else{
-							logger.error("任务对象非RecommendCPUpdateTask，删除失败！");
+							break;
 						}
-						recommendThreadExecutor.execute(task);
-					}else{
-						break;
 					}
-				}else{
-					activityThreadSize++;
-					recommendThreadExecutor.execute(task);
 				}				
 			}
 		}

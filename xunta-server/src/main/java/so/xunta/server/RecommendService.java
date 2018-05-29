@@ -69,5 +69,7 @@ public interface RecommendService {
 	 * */
 	public Boolean ifU2CUpdateExecutable(String uid);
 	
+	public Boolean ifU2UUpdateExecutable(String uid);
+	
 	public void setSelfAddCp(String cpid,String userEventScope);
 }

@@ -26,8 +26,6 @@ import so.xunta.server.CpChoiceDetailService;
 import so.xunta.server.CpChoiceService;
 import so.xunta.server.CpShowingService;
 import so.xunta.server.EventScopeCpTypeMappingService;
-import so.xunta.server.LoggerService;
-import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.server.UserService;
@@ -53,15 +51,11 @@ public class CpOperationWSController {
 	@Autowired
 	private RecommendService recommendService;
 	@Autowired
-	private RecommendPushService recommendPushService;
-	@Autowired
 	private CpShowingService cpShowingService;
 	@Autowired
 	private ConcernPointService concernPointService;
 	@Autowired
 	private CpChoiceService cpChoiceService;
-	@Autowired
-	private LoggerService loggerService;
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -283,7 +277,7 @@ public class CpOperationWSController {
 			selectTypeRec = RecommendService.UNSELECT_CP;
 		}
 		
-		CpOperationTask cpOperationPushTask = new CpOperationTask(recommendService,recommendPushService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,ifSelfAddCp,socketService,loggerService,userService,wolfRecommendTaskQueue);
+		CpOperationTask cpOperationPushTask = new CpOperationTask(recommendService,cpShowingService,uid+"",cpid+"",selectTypeRec,property,ifSelfAddCp,socketService,userService,wolfRecommendTaskQueue);
 		
 		wolfRecommendTaskQueue.addHighPriorityTask(cpOperationPushTask);
 		return cpChoiceDetailDO;

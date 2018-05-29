@@ -7,6 +7,7 @@ public class ConcurrentStatisticUtil {
 	private static ConcurrentStatisticUtil concurrentStatisticUtil = new ConcurrentStatisticUtil();
 	private Map<String,Integer> updateU2CTimesMap = new ConcurrentHashMap<String,Integer>();
 	private Map<String,Integer> recordU2UTimesMap = new ConcurrentHashMap<String,Integer>();
+	private Map<String,Integer> updateU2UTimesMap = new ConcurrentHashMap<String,Integer>();
 	
 	private ConcurrentStatisticUtil(){
 	}
@@ -17,6 +18,10 @@ public class ConcurrentStatisticUtil {
 	
 	public Map<String, Integer> getUpdateU2CTimesMap() {
 		return updateU2CTimesMap;
+	}
+
+	public Map<String, Integer> getUpdateU2UTimesMap() {
+		return updateU2UTimesMap;
 	}
 
 	public Map<String, Integer> getRecordU2UTimesMap() {
@@ -45,9 +50,21 @@ public class ConcurrentStatisticUtil {
 		}
 	}
 	
+	public void addUpdateU2UOneTime(String uid){
+		Integer times = updateU2UTimesMap.get(uid);
+		if(times==null||times==0){
+			times =1;
+			updateU2UTimesMap.put(uid, times);
+		}else{
+			times++;
+			updateU2UTimesMap.put(uid, times);
+		}
+	}
+	
 	public void clear(){
 		updateU2CTimesMap.clear();
 		recordU2UTimesMap.clear();
+		updateU2UTimesMap.clear();
 	}
 	
 }
