@@ -11,7 +11,6 @@ import so.xunta.server.CpShowingService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
 import so.xunta.server.UserService;
-import so.xunta.utils.ConcurrentStatisticUtil;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
 import so.xunta.websocket.utils.WolfRecommendTaskQueue;
 
@@ -114,7 +113,6 @@ public class CpOperationTask implements Runnable{
 		long endTime = System.currentTimeMillis();
 		logger.info("用户:"+userId+"\n 记录&更新U2U执行时间: "+(endTime-startTime)+"毫秒");
 		logger.debug("==============================CpOperationPushTask 完成！===================================");
-		ConcurrentStatisticUtil.getInstance().addRecordU2UOneTime(userId);
 	}
 	
 	private void filterOffLineUsers(Set<String> userids) {

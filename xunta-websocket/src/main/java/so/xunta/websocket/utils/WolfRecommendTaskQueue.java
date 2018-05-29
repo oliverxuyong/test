@@ -89,8 +89,8 @@ public class WolfRecommendTaskQueue {
 		if(highPriorityTaskQueue.size()==0&&lowPriorityTaskQueue.size()==0){
 			return;
 		}
-		if(activityThreadSize < (threadPoolMaxPoolSize+1)){
-			int pollSize = threadPoolMaxPoolSize +1 - activityThreadSize;
+		if(activityThreadSize < threadPoolMaxPoolSize){
+			int pollSize = threadPoolMaxPoolSize - activityThreadSize;
 			for(int i=0;i<pollSize;i++){
 				Runnable task = highPriorityTaskQueue.poll();
 				if(task!=null){

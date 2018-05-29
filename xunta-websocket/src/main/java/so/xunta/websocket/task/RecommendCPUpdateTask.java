@@ -12,7 +12,6 @@ import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
-import so.xunta.utils.ConcurrentStatisticUtil;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
 
 
@@ -50,7 +49,6 @@ public class RecommendCPUpdateTask implements Runnable {
 				updateAndPush(uid);
 				long endTime = System.currentTimeMillis();
 				logger.info("用户:"+uid+"\n"+ifSelfUpdate+" 更新U2C执行时间： "+(endTime-startTime)+"毫秒");
-				ConcurrentStatisticUtil.getInstance().addUpdateU2COneTime(uid);
 			}
 		}else{
 			logger.error("参数为空！放弃任务");

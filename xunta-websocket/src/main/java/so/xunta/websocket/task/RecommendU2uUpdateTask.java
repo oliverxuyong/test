@@ -12,7 +12,6 @@ import so.xunta.beans.RecommendPushDTO;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
-import so.xunta.utils.ConcurrentStatisticUtil;
 import so.xunta.websocket.echo.EchoWebSocketHandler;
 
 public class RecommendU2uUpdateTask implements Runnable {
@@ -43,7 +42,6 @@ public class RecommendU2uUpdateTask implements Runnable {
 				updateAndPush(uid);
 				long endTime = System.currentTimeMillis();
 				logger.info("用户:"+uid+"\n 更新U2U执行时间： "+(endTime-startTime)+"毫秒");
-				ConcurrentStatisticUtil.getInstance().addUpdateU2UOneTime(uid);
 			}
 		}else{
 			logger.error("参数为空！放弃任务");
