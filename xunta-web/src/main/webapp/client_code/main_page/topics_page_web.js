@@ -2928,28 +2928,39 @@ var i=0;
 function testWebSocket(data){
 	var uid_arr=data.uid_arr;
 	var testWebsocketSelectTime=0;
-	//从输入框输入的内容获取选择标签的id和text
-	if(secondTest){
-		testWebsocketSelectTime=$("#testWebsocketSelectTime").val();
-		var nowTime=new Date(); 
-		if(testWebsocketSelectTime=="" || testWebsocketSelectTime=="undefined" ||testWebsocketSelectTime==undefined
-				|| testWebsocketSelectTime=="请输入选择cp的时间"){
-			toast("输入框不能为空");
-		}else if(!isTime(testWebsocketSelectTime)){//cpid不是纯数字
-			toast("输入时间格式错误(应输入如：13:04:06)");
-		}else if(changeDataStr(testWebsocketSelectTime,nowTime)==0){
-			toast("输入时间小于当前时间");
+	
+	websocketCount=$("#websoketCount").val();
+	if(websocketCount=="" || websocketCount=="undefined" ||websocketCount==undefined
+			|| websocketCount=="请输入创建的websocket个数最大上限"){
+		toast("请输入创建的websocket个数最大上限");
+	}else if(!/^\d+$/.test(websocketCount)){
+		toast("创建的websocket个数最大上限必须为数字");
+	}else{
+		//从输入框输入的内容获取选择标签的id和text
+		if(secondTest){
+			testWebsocketSelectTime=$("#testWebsocketSelectTime").val();
+			var nowTime=new Date(); 
+			if(testWebsocketSelectTime=="" || testWebsocketSelectTime=="undefined" ||testWebsocketSelectTime==undefined
+					|| testWebsocketSelectTime=="请输入选择cp的时间"){
+				toast("请输入选择cp的时间");
+			}else if(!isTime(testWebsocketSelectTime)){//cpid不是纯数字
+				toast("输入时间格式错误(应输入如：13:04:06)");
+			}else if(changeDataStr(testWebsocketSelectTime,nowTime)==0){
+				toast("输入时间小于当前时间");
+			}else{
+				testWebsocketSelectTime=changeDataStr(testWebsocketSelectTime,nowTime);
+				createNewWS(uid_arr,i,testWebsocketSelectTime);
+			}
 		}else{
-			testWebsocketSelectTime=changeDataStr(testWebsocketSelectTime,nowTime);
 			createNewWS(uid_arr,i,testWebsocketSelectTime);
 		}
-	}else{
-		createNewWS(uid_arr,i,testWebsocketSelectTime);
 	}
 }
 var testUserSelectCpArray=new Array();
 var testWSArray=new Array();//用来装创建的websocket
 var testWSArrayUserId=new Array();
+var websocketCount=250;//可以设置的创建websocket的个数
+
 function createNewWS(uid_arr,i,testWebsocketSelectTime) {
 	var userId=uid_arr[i].userId;
 	console.log('新建第'+(i+1)+"个WS");
@@ -2961,7 +2972,7 @@ function createNewWS(uid_arr,i,testWebsocketSelectTime) {
 		/*sendWS(testWS,userId,cpid,cpText); */
 		
 		++i;
-		if(i<250 && startTest && i<uid_arr.length){
+		if(i<websocketCount && startTest && i<uid_arr.length){
 			setTimeout(function() {
 				createNewWS(uid_arr,i,testWebsocketSelectTime);
 			},100);
@@ -3047,7 +3058,7 @@ function requestUserIds2(){
 //短时间，形如 (13:04:06)
 function isTime(str){
 	var a = str.match(/^(\d{1,2})(:)?(\d{1,2})\2(\d{1,2})$/);
-	if (a == null) {alert('输入的参数不是时间格式'); return false;}
+	if (a == null) {return false;}
 	if (a[1]>24 || a[3]>60 || a[4]>60)
 	{
 		//alert("时间格式不对");
