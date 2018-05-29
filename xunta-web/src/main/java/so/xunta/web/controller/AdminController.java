@@ -274,29 +274,31 @@ public class AdminController {
 		
 		Map<String,Integer> recordU2UMap = ConcurrentStatisticUtil.getInstance().getRecordU2UTimesMap();
 		Map<String,Integer> updateU2CMap = ConcurrentStatisticUtil.getInstance().getUpdateU2CTimesMap();
+		Map<String,Integer> updateU2UMap = ConcurrentStatisticUtil.getInstance().getUpdateU2UTimesMap();
 		int recordTimeSum = 0;
-		int updateTimeSum = 0;
+		int updateU2CTimeSum = 0;
+		int updateU2UTimeSum = 0;
 		
 		for(Entry<String,Integer> recordU2UEntry:recordU2UMap.entrySet()){
 			String uid = recordU2UEntry.getKey();
 			Integer recordTime = recordU2UEntry.getValue();
-			Integer updateTime = updateU2CMap.get(uid);
-			if(updateTime!=null){
-				recordTimeSum = recordTimeSum + recordTime;
-				updateTimeSum = updateTimeSum + updateTime;
-			}else{
-				try {
-					response.getWriter().write(uid+"没有执行过更新！！");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			Integer updateU2CTime = updateU2CMap.get(uid);
+			Integer updateU2UTime = updateU2UMap.get(uid);
+			recordTimeSum = recordTimeSum + recordTime;
+			if(updateU2UTime!=null){
+				updateU2UTimeSum = updateU2UTimeSum + updateU2UTime;
+			}
+			
+			if(updateU2CTime!=null){
+				updateU2CTimeSum = updateU2CTimeSum + updateU2CTime;
 			}
 		}
 		
 		try {
 			response.getWriter().write(recordU2UMap.size()+"个用户选择了cp<br>");
-			response.getWriter().write("总共执行记录和U2U更新任务"+recordTimeSum+"次<br>");
-			response.getWriter().write("总共执行U2C更新任务"+updateTimeSum+"次<br>");
+			response.getWriter().write("总共执行记录任务"+recordTimeSum+"次<br>");
+			response.getWriter().write("总共执行U2U更新任务"+updateU2UTimeSum+"次<br>");
+			response.getWriter().write("总共执行U2C更新任务"+updateU2CTimeSum+"次<br>");
 			 
 		} catch (IOException e) {
 			e.printStackTrace();
