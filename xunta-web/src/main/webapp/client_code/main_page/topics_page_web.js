@@ -2929,6 +2929,15 @@ function testWebSocket(data){
 	var uid_arr=data.uid_arr;
 	var testWebsocketSelectTime=0;
 	
+	//start:20180531  叶夷   这是通过输入的方式输入cpid和cptext
+	var testSelectCpid=$("#testSelectCpid").val();
+	var testSelectCpText=$("#testSelectCpText").val();
+	testUserSelectCpArray.slice(0, testUserSelectCpArray.length);
+	var obj={cpid:testSelectCpid,
+			cptext:testSelectCpText};
+	testUserSelectCpArray[0]=obj;
+	//end:20180531  叶夷   这是通过输入的方式输入cpid和cptext
+	
 	websocketCount=$("#websoketCount").val();
 	if(websocketCount=="" || websocketCount=="undefined" ||websocketCount==undefined
 			|| websocketCount=="请输入创建的websocket个数最大上限"){
@@ -2946,9 +2955,8 @@ function testWebSocket(data){
 			}else if(!isTime(testWebsocketSelectTime)){//cpid不是纯数字
 				toast("输入时间格式错误(应输入如：13:04:06)");
 			}else if(changeDataStr(testWebsocketSelectTime,nowTime)==0){
-				toast("输入时间小于当前时间");
+				toast("输入时间小于当前时间,时间间隔大一些，要留出创建websocket完毕的时间");
 			}else{
-				testWebsocketSelectTime=changeDataStr(testWebsocketSelectTime,nowTime);
 				createNewWS(uid_arr,i,testWebsocketSelectTime);
 			}
 		}else{
@@ -2977,6 +2985,8 @@ function createNewWS(uid_arr,i,testWebsocketSelectTime) {
 				createNewWS(uid_arr,i,testWebsocketSelectTime);
 			},100);
 		}else{
+			var nowTime=new Date(); 
+			testWebsocketSelectTime=changeDataStr(testWebsocketSelectTime,nowTime);
 			
 			setTimeout(function() {
 			
@@ -3003,8 +3013,10 @@ function createNewWS(uid_arr,i,testWebsocketSelectTime) {
 		}
 	};
 	testWS.onerror = function(event){
+		var nowTime=new Date(); 
+		testWebsocketSelectTime=changeDataStr(testWebsocketSelectTime,nowTime);
+		
 		setTimeout(function() {
-			
 			// 开始选择
 			for(index in testUserSelectCpArray){
 				var cpid=testUserSelectCpArray[index].cpid;
