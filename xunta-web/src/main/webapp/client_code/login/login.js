@@ -168,11 +168,13 @@ function tmpLoginForGetUserInfo(){
 			  code: "1",
 			  message: "登录成功"};
 	exitmobilelogin_gobacktoindexpage(receivedData);*/
-	
+	//2018.06.12   叶夷    在tmp_login接口中加上event_scope数据
+	var event_scope=window.location.search.split("=")[1];
 	$.ajax({
         url : window.location.protocol+"//" + domain + "/tmp_login",
         action : "post",
         contentType : "application/x-www-form-urlencoded; charset=utf-8",
+        data:{event_scope:event_scope},
         dataType : "jsonp",
         jsonp : 'callback',
         jsonpCallback : "callback_registerbymobilephone",
