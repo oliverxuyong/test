@@ -85,5 +85,23 @@ public class U2uRelationDaoImp implements U2uRelationDao {
 		}
 		return score;
 	}
+
+	@Override
+	public Set<String> getRelatedUidByRank(String uid) {
+		Jedis jedis=null;
+		Set<String> uids = null;
+		uid = keyPrefix + uid;
+		try {
+			jedis = redisUtil.getJedis();
+			uids = jedis.zrevrangeByScore(uid, Double.MAX_VALUE, 0);
+		} catch (Exception e) {
+			logger.error("getRelatedUsersByRank error:", e);
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return uids;
+	}
 	
 }

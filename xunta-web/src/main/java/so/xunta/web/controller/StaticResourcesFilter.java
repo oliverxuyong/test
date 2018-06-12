@@ -47,6 +47,7 @@ public class StaticResourcesFilter implements Filter {
 		response.setCharacterEncoding(code);
 		HttpServletResponse res = (HttpServletResponse)response;
 		HttpServletRequest req = (HttpServletRequest)request;
+		String eventScope = req.getParameter("event_scope");
 		String url = req.getRequestURL().toString();  
 		logger.debug("请求:"+req.getRequestURL());
 		if(url.indexOf("client_code")!=-1){
@@ -65,6 +66,10 @@ public class StaticResourcesFilter implements Filter {
 			}
 			if(flag){		
 				url = url.replace("xunta-web","xunta-web/client_code");
+				if(eventScope!=null){
+					url = url+"?event_scope="+eventScope;
+					logger.info(url);
+				}
 				res.sendRedirect(url);
 			}else{
 				chain.doFilter(req, res);

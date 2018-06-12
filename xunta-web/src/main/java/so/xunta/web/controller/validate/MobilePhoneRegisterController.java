@@ -399,16 +399,32 @@ public class MobilePhoneRegisterController {
 	@RequestMapping("/tmp_login")
 	public void userTmpLogin(String phonenumber,String password,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		Long userid = idWorker.nextId();
-		String username ="Dancer " + tmpUserIdDao.getTmpUserId();
-		String imgLocation = System.getProperty("catalina.home")+"/uploadimages/";
-		String defaultImgSrc = imgLocation + "DefaultImg"+(1+new Random().nextInt(11))+".jpg";
-		String userImgSrc = imgLocation + userid + ".jpg";
-		String userImgUrl = ImagePathUtil.getPath(request, "/useravatar/" + userid + "/jpg/image");
-		
-		MakeUserImgUtil.addTextToImage(defaultImgSrc, userImgSrc, username);
-		
-		User new_user = new User(userid, idWorker.nextId()+"", username, userImgUrl, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
-		new_user.setEvent_scope("xunta_salsa");
+		String eventScope = request.getParameter("event_scope");
+		String username;
+		User new_user;
+		if(eventScope!=null){
+			username ="Mommy " + tmpUserIdDao.getTmpUserId();
+			String imgLocation = System.getProperty("catalina.home")+"/uploadimages/";
+			String defaultImgSrc = imgLocation + "DefaultImg"+(12+new Random().nextInt(11))+".jpg";
+			String userImgSrc = imgLocation + userid + ".jpg";
+			String userImgUrl = ImagePathUtil.getPath(request, "/useravatar/" + userid + "/jpg/image");
+			
+			MakeUserImgUtil.addTextToImage(defaultImgSrc, userImgSrc, username);
+			
+			new_user = new User(userid, idWorker.nextId()+"", username, userImgUrl, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
+			new_user.setEvent_scope("xunta_mommy");
+		}else{
+			username ="Dancer " + tmpUserIdDao.getTmpUserId();
+			String imgLocation = System.getProperty("catalina.home")+"/uploadimages/";
+			String defaultImgSrc = imgLocation + "DefaultImg"+(1+new Random().nextInt(11))+".jpg";
+			String userImgSrc = imgLocation + userid + ".jpg";
+			String userImgUrl = ImagePathUtil.getPath(request, "/useravatar/" + userid + "/jpg/image");
+			
+			MakeUserImgUtil.addTextToImage(defaultImgSrc, userImgSrc, username);
+			
+			new_user = new User(userid, idWorker.nextId()+"", username, userImgUrl, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
+			new_user.setEvent_scope("xunta_salsa");
+		}
 		User u = userService.addUser(new_user);
 		
 		JSONObject ret = new JSONObject();

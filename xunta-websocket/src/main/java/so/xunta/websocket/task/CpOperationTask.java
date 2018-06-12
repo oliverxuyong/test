@@ -70,7 +70,7 @@ public class CpOperationTask implements Runnable{
 			logger.warn("参数为空！放弃任务");
 			return;
 		}
-		long startTime = System.currentTimeMillis();
+		//long startTime = System.currentTimeMillis();
 		/*Step1: 更新关系词*/
 		recommendService.updateU2cByC2c(userId, cpId, property, selectType);
 		
@@ -102,7 +102,7 @@ public class CpOperationTask implements Runnable{
 	//	logger.info("用户:"+userId+"\n 更新他人任务执行时间: "+(endTime4-endTime3)+"毫秒");
 		
 		/*Step4： 为其他当前正在看这个CP的用户推送数字的变化*/
-	//	pushCpHeatChange();
+		pushCpHeatChange();
 	//	long endTime5 = System.currentTimeMillis();
 		//logger.info("用户:"+userId+"\n 推送数字变化执行时间: "+(endTime5-endTime4)+"毫秒");
 		
@@ -110,8 +110,8 @@ public class CpOperationTask implements Runnable{
 			recommendService.setSelfAddCp(cpId,u.getEvent_scope());
 		}
 		
-		long endTime = System.currentTimeMillis();
-		logger.info("用户:"+userId+"\n 记录&更新U2U执行时间: "+(endTime-startTime)+"毫秒");
+		//long endTime = System.currentTimeMillis();
+		//logger.debug("用户:"+userId+"\n 记录&更新U2U执行时间: "+(endTime-startTime)+"毫秒");
 		logger.debug("==============================CpOperationPushTask 完成！===================================");
 	}
 	

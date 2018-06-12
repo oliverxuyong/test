@@ -96,7 +96,8 @@ public class RecommendServiceImpl implements RecommendService {
 		/* Step 1.得到与用户U相同选择一CP的用户列表：
 		 	*通过C2U表得到选过相同C的用户列表{Ui}，并将U加到C中
 		 * */
-		Set<String> usersSelectedSameCp= c2uDao.getUsersSelectedSameCp(cpid,property,u.getEvent_scope());		
+		Set<String> usersSelectedSameCp = c2uDao.getUsersSelectedSameCp(cpid,property,u.getEvent_scope());		
+		
 		if(selectType == RecommendService.SELECT_CP){
 			c2uDao.saveCpOneUser(cpid, uid, property,u.getEvent_scope());
 		}else{

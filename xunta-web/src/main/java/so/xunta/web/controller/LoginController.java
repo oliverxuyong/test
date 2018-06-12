@@ -101,6 +101,8 @@ public class LoginController {
 	@RequestMapping("/")
 	public void index(HttpServletRequest request, HttpServletResponse response) {
 		response.setContentType("text/html;charset=utf-8");
+		String eventScope = request.getParameter("event_scope");
+		logger.info(eventScope);
 		try {
 			request.getRequestDispatcher("/client_code/index.html").forward(request, response);
 		} catch (ServletException | IOException e) {

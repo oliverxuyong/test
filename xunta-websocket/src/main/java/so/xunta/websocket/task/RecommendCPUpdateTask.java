@@ -45,10 +45,10 @@ public class RecommendCPUpdateTask implements Runnable {
 		//logger.debug("========================= RecommendCPUpdateTask==============================");
 		if(uid!=null){
 			if(recommendService.ifU2CUpdateExecutable(uid)){
-				long startTime = System.currentTimeMillis();
+				//long startTime = System.currentTimeMillis();
 				updateAndPush(uid);
-				long endTime = System.currentTimeMillis();
-				logger.info("用户:"+uid+"\n"+ifSelfUpdate+" 更新U2C执行时间： "+(endTime-startTime)+"毫秒");
+				//long endTime = System.currentTimeMillis();
+			//	logger.info("用户:"+uid+"\n"+ifSelfUpdate+" 更新U2C执行时间： "+(endTime-startTime)+"毫秒");
 			}
 		}else{
 			logger.error("参数为空！放弃任务");
@@ -120,7 +120,7 @@ public class RecommendCPUpdateTask implements Runnable {
 		returnJson.put("interface_name", "PushCP");
 		returnJson.put("cp_wrap", cpWrap);
 		socketService.chat2one(session, returnJson);
-		//loggerService.log(uid, uid, "", returnJson.toString(), "2105-1", null, null);
+		loggerService.log(uid, uid, "", returnJson.toString(), "2105-1", null, null);
 	}
 
 }

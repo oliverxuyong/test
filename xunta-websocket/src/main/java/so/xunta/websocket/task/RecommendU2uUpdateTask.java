@@ -9,6 +9,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import so.xunta.beans.PushMatchedUserDTO;
 import so.xunta.beans.RecommendPushDTO;
+import so.xunta.server.LoggerService;
 import so.xunta.server.RecommendPushService;
 import so.xunta.server.RecommendService;
 import so.xunta.server.SocketService;
@@ -19,15 +20,17 @@ public class RecommendU2uUpdateTask implements Runnable {
 	private String uid;
 	private SocketService socketService;
 	private RecommendPushService recommendPushService;
+	private LoggerService loggerService;
 	
 	Logger logger =Logger.getLogger(RecommendU2uUpdateTask.class);
 	
 	public RecommendU2uUpdateTask(String uid,RecommendService recommendService, SocketService socketService,
-			RecommendPushService recommendPushService){
+			RecommendPushService recommendPushService,LoggerService loggerService){
 		this.uid = uid;
 		this.recommendService = recommendService;
 		this.socketService = socketService;
 		this.recommendPushService = recommendPushService;
+		this.loggerService = loggerService;
 	}
 
 	public String getUid() {
@@ -75,7 +78,7 @@ public class RecommendU2uUpdateTask implements Runnable {
 	}
 	
 	private void pushChangedMatchedUsers(List<PushMatchedUserDTO> pushMatchedUserDTOs,WebSocketSession session){
-		//String clientIP = session.getRemoteAddress().toString().substring(1);
+		String clientIP = session.getRemoteAddress().toString().substring(1);
 		
 		JSONArray newUserArr = new JSONArray();
 		for(PushMatchedUserDTO matchedUserDTO:pushMatchedUserDTOs){
@@ -96,6 +99,6 @@ public class RecommendU2uUpdateTask implements Runnable {
 		returnJson.put("interface_name", "push_matched_user");
 		returnJson.put("new_user_arr", newUserArr);
 		socketService.chat2one(session, returnJson);
-	//	loggerService.log(userId, userId, clientIP, returnJson.toString(), "2106-1", null, null);
+		loggerService.log(uid, uid, clientIP, returnJson.toString(), "2106-1", null, null);
 	}
 }

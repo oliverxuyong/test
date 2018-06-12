@@ -19,4 +19,6 @@ public interface U2uRelationDao {
 	 * 得到相关用户的关系值
 	 * */
 	public Double getRelatedUserScore(String myuid, String relateUid);
+	
+	public Set<String> getRelatedUidByRank(String uid);
 }

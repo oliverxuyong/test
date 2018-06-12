@@ -54,7 +54,7 @@ public class WolfRecommendTaskQueue {
 	
 	public void addMediumPriorityTask(String uid){
 		if(u2UUpdateTaskSet.add(uid)){
-			RecommendU2uUpdateTask task = new RecommendU2uUpdateTask(uid, recommendService, socketService, recommendPushService);
+			RecommendU2uUpdateTask task = new RecommendU2uUpdateTask(uid, recommendService, socketService, recommendPushService,loggerService);
 			mediumPriorityTaskQueue.add(task);
 			execute();
 		}
