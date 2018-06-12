@@ -169,7 +169,7 @@ function tmpLoginForGetUserInfo(){
 			  message: "登录成功"};
 	exitmobilelogin_gobacktoindexpage(receivedData);*/
 	//2018.06.12   叶夷    在tmp_login接口中加上event_scope数据
-	var event_scope=window.location.search.split("=")[1];
+	var event_scope=location.search.split("=")[1];
 	$.ajax({
         url : window.location.protocol+"//" + domain + "/tmp_login",
         action : "post",
