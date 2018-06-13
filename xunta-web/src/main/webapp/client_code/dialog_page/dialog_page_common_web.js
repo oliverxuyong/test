@@ -13,8 +13,8 @@ function backBtn(){
 
 //2018.06.13  叶夷   将二维码的出现改成退出聊天页的时候出现，所以退出按钮外面再加上一层退出判断
 function backBtnIfShowTwoBarCode(){
-	//2018.06.13  叶夷   将二维码的出现改成退出聊天页的时候出现
-	if(noHistoryMsg && isTopic!=true && isTopic!="true"){
+	//2018.06.13  叶夷   将二维码的出现改成退出聊天页的时候出现(那就是有历史消息就显示，没有历史消息自己发了一句话也显示)
+	if(!noHistoryMsg || startSendFirstTalk){
 		//sendFirstTalk(allCommonTags);
 		requestTwoBarCode();//这里是显示微信扫码关注效果
 	}else{
@@ -60,6 +60,7 @@ function showAllPosters(data) {
 		if (userId === respondeUserId) {
 			showSelfPoster(name, content, userImage, msgId, "my", true,
 					msg_type);
+			startSendFirstTalk=true;//表示自己发出了第一句话
 		} else {
 			showSelfPoster(name, content, userImage, msgId, "other", true,
 					msg_type);
@@ -406,6 +407,8 @@ function updateNickname(newNickname){
 var allCommonTags="";
 //2017.12.13 叶夷  判断是否有历史消息，如果没有历史消息则第一条信息框弹出
 var noHistoryMsg;
+//2018.06.13  叶夷    一个变量来判断自己是否发过一句话
+var startSendFirstTalk=false;
 
 //2017.12.13  叶夷  弹出一句话的框
 function sendFirstTalk(inputValue,weChatQRCodeUrl) {
