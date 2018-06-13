@@ -11,6 +11,17 @@ function backBtn(){
 	}
 }
 
+//2018.06.13  叶夷   将二维码的出现改成退出聊天页的时候出现，所以退出按钮外面再加上一层退出判断
+function backBtnIfShowTwoBarCode(){
+	//2018.06.13  叶夷   将二维码的出现改成退出聊天页的时候出现
+	if(noHistoryMsg && isTopic!=true && isTopic!="true"){
+		//sendFirstTalk(allCommonTags);
+		requestTwoBarCode();//这里是显示微信扫码关注效果
+	}else{
+		backBtn();
+	}
+}
+
 /**2017.11.13 叶夷  为了成功记录从不同的入口进入聊天页面
  * 如果在main_page中进入，_topicPageSign=="";
  * 如果在matchUsers_page进入，_topicPageSign=="yes"
@@ -403,17 +414,18 @@ function sendFirstTalk(inputValue,weChatQRCodeUrl) {
 	var _w = _obj.width()-80;
 
 	var contextresult = [];
-	contextresult.push('<div id="entrytag">');
+	////2018.06.13  叶夷   将二维码的出现改成退出聊天页的时候出现,且只出现二维码
+	/*contextresult.push('<div id="entrytag">');
 	contextresult
 			.push("<p class='addtag-div'><textarea type='text' class='tag-name' id='pop_tagName' onkeypress=''>我们都对"+inputValue+"有兴趣，要一起聊聊吗？</textarea></p>");
 	contextresult
-			.push('<div class="btn-div-dialogPage" onclick="inputSubmit()">发送</div>');
+			.push('<div class="btn-div-dialogPage" onclick="inputSubmit()">发送</div>');*/
 	if(weChatQRCodeUrl!="" && weChatQRCodeUrl!=undefined && weChatQRCodeUrl!="undefined"){
 		contextresult
-		.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="'+weChatQRCodeUrl+'"></div><span class="twoBarCodeText">微信扫一扫，你就能随时收到别人的消息</span></div>');
+		.push('<div class="twoBarCode"><div class="twoBarCodeImg"><img src="'+weChatQRCodeUrl+'"></div></div>');
 	}
-	contextresult.push('</div>')
-	alertWin(contextresult.join(''), "打个招呼吧", _w, _h);
+	/*contextresult.push('</div>')*/
+	alertWinForDialog(contextresult.join(''), "微信扫一扫，你就能随时收到别人的消息", _w, _h);
 	
 	//调整entrytag的高度
 	var entrytagHeight=_h-$(".pop-title").height();
@@ -438,6 +450,60 @@ function sendFirstTalk(inputValue,weChatQRCodeUrl) {
 		twoBarCodeImg.find("img").css("width",twoBarCodeImgHeight);
 	}
 }
+
+/**
+ * 弹出框
+ * @param _context 弹出内容
+ * @param _title 弹出标题
+ * @param _w 弹出高度
+ * @param _h 弹出宽度
+ */
+function alertWinForDialog(_context,_title,_w,_h){
+    var iWidth =  $(window).width();
+    var iHeight =  $(window).height();
+    var iTop = $(window).scrollTop();
+    var iLeft = $(window).scrollLeft();
+    bgObj = document.createElement('div');
+    htmlBgObj = document.createElement('div');
+    tipsObj = document.createElement('div');
+    bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background-color:rgba(0,0,0,0);position:absolute;top:0;left:0;z-index:200;opacity:0.0;filter:alpha(opacity =0);";
+    document.body.appendChild(bgObj);
+    htmlBgObj.style.cssText = "position:absolute;top:" + (iTop + Math.abs((iHeight - _h) / 5)) + "px;left:" + (iLeft + Math.abs((iWidth - _w) / 2))  + "px;width:" + _w + "px;height:" + _h + "px;z-index:202;border:1px solid #D3D6DD;border-radius:6px;background-color:rgba(255,255,255,0.93);";
+    tipsObj.style.cssText = "top:" + (iTop + Math.abs((iHeight - _h) / 2) - 30) + "px;left:" + (iLeft + Math.abs((iWidth - _w) / 2))  + "px;width:" + _w + "px;z-index:202;";
+    htmlBgObj.id = "htmlObj";
+    tipsObj.id = "tipsObj";
+    var result = [];
+    result.push('<div class="pop-title">');
+    result.push('<div class="title-div"><span>'+_title+'</span></div>');
+    result.push('<div class="close-div" onclick="closeDialogPop()"><img src="../image/close1.png"></div>');
+    result.push('</div>');
+    
+    result.push(_context);
+    tipsObj.innerHTML="";
+    htmlBgObj.innerHTML= result.join('');
+    document.body.appendChild(tipsObj);
+    document.body.appendChild(htmlBgObj);
+}
+
+/**
+ * 关闭pop弹出框
+ */
+function closeDialogPop(){
+    if(tipsObj!="")
+        document.body.removeChild(tipsObj);
+    if(bgObj!="")
+        document.body.removeChild(bgObj);
+    if(htmlBgObj!="")
+        document.body.removeChild(htmlBgObj);
+    if($("#inputbox").val()){
+        $("#inputbox").val("");
+    }
+    /*if(replyOpptid){
+        replyOpptid = null ;
+    }*/
+    backBtn();
+}
+
 //话题失效，发送消息时显示提示
 function topicOutTime(msg_id){
 	var msgDiv=$("#"+msg_id);

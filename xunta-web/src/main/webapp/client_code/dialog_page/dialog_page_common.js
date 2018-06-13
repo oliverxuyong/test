@@ -256,11 +256,12 @@ function responseMutualCP(data){
 	log2root("测试请求共同选择的标签后台返回结果："+JSON.stringify(data));
 	showSameSelectCp(data);
 	
-	//这里要做判断，如果没有聊天记录则出现第一句话弹出框  而且不是话题聊天页
+	//2018.06.13  叶夷   将二维码的出现改成退出聊天页的时候出现
+	/*//这里要做判断，如果没有聊天记录则出现第一句话弹出框  而且不是话题聊天页
 	if(noHistoryMsg && isTopic!=true && isTopic!="true"){
 		//sendFirstTalk(allCommonTags);
 		requestTwoBarCode();//这里是显示微信扫码关注效果
-	}
+	}*/
 }
 //请求微信关注二维码
 function requestTwoBarCode(){
