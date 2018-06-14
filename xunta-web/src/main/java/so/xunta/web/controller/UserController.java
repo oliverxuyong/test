@@ -6,8 +6,6 @@ import java.io.Writer;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Enumeration;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,12 +37,8 @@ public class UserController {
 	
 	@RequestMapping("/checkuser")
 	public void checkUserExist(String userid,String userimage,HttpServletRequest request,HttpServletResponse response) throws IOException{
-		Enumeration enu=request.getAttributeNames();  
-			while(enu.hasMoreElements()){  
-				String paraName=(String)enu.nextElement();  
-				logger.info(paraName+": "+request.getAttribute(paraName));  
-		}  
-		logger.info("IP地址："+request.getAttribute("X-Forwarded-For"));
+		
+		//logger.info("IP地址："+request.getAttribute("X-Forwarded-For"));
         logger.info("ipFromNginx:" + request.getAttribute("X-Real-IP"));  
         logger.info("getRemoteAddr:" + request.getRemoteAddr());  
 		
