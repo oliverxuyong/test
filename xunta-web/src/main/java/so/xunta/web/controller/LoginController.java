@@ -687,7 +687,6 @@ public class LoginController {
 	public void sendWeChatShareLinkMsg(HttpServletRequest request, HttpServletResponse response)
 			throws UnsupportedEncodingException {
 		String url = request.getParameter("url");
-		logger.info("IP地址："+request.getAttribute("X-Real-IP"));
 		// 判断从哪个网址进来的公众号之后匹配其相应的公众号参数
 		/*if (url.contains(aini_templateurl)) {
 			appid = aini_appid;
