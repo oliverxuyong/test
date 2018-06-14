@@ -38,6 +38,10 @@ public class UserController {
 	@RequestMapping("/checkuser")
 	public void checkUserExist(String userid,String userimage,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		logger.info("IP地址："+request.getAttribute("X-Forwarded-For"));
+		
+        logger.info("ipFromNginx:" + request.getAttribute("X-Real-IP"));  
+        logger.info("getRemoteAddr:" + request.getRemoteAddr());  
+		
 		logger.debug("checkuser userid:"+userid);
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("text/json");
