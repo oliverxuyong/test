@@ -407,8 +407,8 @@ public class MobilePhoneRegisterController {
 		User new_user;
 		if(eventScope!=null){
 			username ="Mommy " + tmpUserIdDao.getTmpUserId();
-			String imgLocation = System.getProperty("catalina.home")+"/uploadimages/";
-			String defaultImgSrc = imgLocation + "DefaultImg"+(12+new Random().nextInt(11))+".jpg";
+			//String imgLocation = System.getProperty("catalina.home")+"/uploadimages/";
+			String defaultImgSrc = ImagePathUtil.getPath(request,"/useravatar/DefaultImg"+(12+new Random().nextInt(11))+"/jpg/image");
 			//String userImgSrc = imgLocation + userid + ".jpg";
 			//String userImgUrl = ImagePathUtil.getPath(request, "/useravatar/" + userid + "/jpg/image");
 			
