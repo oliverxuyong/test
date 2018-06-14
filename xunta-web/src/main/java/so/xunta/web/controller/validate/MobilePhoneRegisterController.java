@@ -35,6 +35,7 @@ import so.xunta.server.MobilePhoneCodeService;
 import so.xunta.server.UserService;
 import so.xunta.utils.DateTimeUtils;
 import so.xunta.utils.IdWorker;
+import so.xunta.utils.IpLocationUtil;
 import so.xunta.utils.MakeUserImgUtil;
 import so.xunta.utils.validate.HttpSender;
 import so.xunta.web.controller.imagepath.ImagePathUtil;
@@ -400,18 +401,20 @@ public class MobilePhoneRegisterController {
 	public void userTmpLogin(String phonenumber,String password,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		Long userid = idWorker.nextId();
 		String eventScope = request.getParameter("event_scope");
+		String ip = request.getHeader("X-Real-IP");
+		String location = IpLocationUtil.getInstance().getUserLocation(ip);
 		String username;
 		User new_user;
 		if(eventScope!=null){
 			username ="Mommy " + tmpUserIdDao.getTmpUserId();
 			String imgLocation = System.getProperty("catalina.home")+"/uploadimages/";
 			String defaultImgSrc = imgLocation + "DefaultImg"+(12+new Random().nextInt(11))+".jpg";
-			String userImgSrc = imgLocation + userid + ".jpg";
-			String userImgUrl = ImagePathUtil.getPath(request, "/useravatar/" + userid + "/jpg/image");
+			//String userImgSrc = imgLocation + userid + ".jpg";
+			//String userImgUrl = ImagePathUtil.getPath(request, "/useravatar/" + userid + "/jpg/image");
 			
-			MakeUserImgUtil.addTextToImage(defaultImgSrc, userImgSrc, username);
+			//MakeUserImgUtil.addTextToImage(defaultImgSrc, userImgSrc, username);
 			
-			new_user = new User(userid, idWorker.nextId()+"", username, userImgUrl, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
+			new_user = new User(userid, idWorker.nextId()+"", username, defaultImgSrc, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
 			new_user.setEvent_scope("xunta_mommy");
 		}else{
 			username ="Dancer " + tmpUserIdDao.getTmpUserId();
@@ -425,6 +428,8 @@ public class MobilePhoneRegisterController {
 			new_user = new User(userid, idWorker.nextId()+"", username, userImgUrl, "Tmp", "xunta_common", new Timestamp(System.currentTimeMillis()));
 			new_user.setEvent_scope("xunta_salsa");
 		}
+		new_user.setIp(ip);
+		new_user.setLocation(location);
 		User u = userService.addUser(new_user);
 		
 		JSONObject ret = new JSONObject();

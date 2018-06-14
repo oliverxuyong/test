@@ -353,6 +353,11 @@ public class TopicController {
 		logger.debug("获得所有的话题:" + obj.toString());
 		String userid = obj.getString("userid");
 		String normalDialogList = obj.getString("normalDialogList");
+		
+		if(userid==null||userid.equals("undefined")||normalDialogList==null){
+			return;
+		}
+		
 		JSONArray normalDialogJSONArray = new JSONArray();
 		Object json = new JSONTokener(normalDialogList).nextValue();// 这是用来判断传来的字符串是否是jsonarray形式
 		logger.debug("json instanceof JSONArray=" + (json instanceof JSONArray));

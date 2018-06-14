@@ -52,19 +52,12 @@ public class CrossOriginFilter implements Filter {
 		logger.debug("请求:"+req.getRequestURL());
 		String urlstr = url.toString();
 		
-		if(urlstr.equals("http://www.xunta.so/xunta-web/")){
-			if(eventScope==null){
-				logger.info("有一般用户请求xunta网址");
-			}else{
-				logger.info("有"+eventScope+"用户从网页版请求xunta网址");
-			}
-		}
 		if(urlstr.indexOf("www")==-1)
 		{
 			String requestURI = req.getRequestURI();
 			if(eventScope!=null){
 				urlstr = urlstr+"?event_scope="+eventScope;
-				logger.info(urlstr);
+				//logger.info(urlstr);
 			}
 			//logger.info("测试Filter requestURI:" + requestURI);
 			if(requestURI.equals("/xunta-web/")||requestURI.equals("/")){

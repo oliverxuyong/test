@@ -68,7 +68,7 @@ public class StaticResourcesFilter implements Filter {
 				url = url.replace("xunta-web","xunta-web/client_code");
 				if(eventScope!=null){
 					url = url+"?event_scope="+eventScope;
-					logger.info(url);
+				//	logger.info(url);
 				}
 				res.sendRedirect(url);
 			}else{

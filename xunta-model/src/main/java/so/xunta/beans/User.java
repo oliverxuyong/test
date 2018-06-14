@@ -45,6 +45,8 @@ public class User extends IdEntity{
 	@ColumnDefault(value="xunta_common")
 	private String event_scope;
 	private String weChatQRCodeUrl;
+	private String ip;
+	private String location;
 	private String remark;//这个字段是用来存储在扫描二维码的时候获取的用户xinxi
 
 	/**
@@ -195,6 +197,18 @@ public class User extends IdEntity{
 	}
 	public void setWeChatQRCodeUrl(String weChatQRCodeUrl) {
 		this.weChatQRCodeUrl = weChatQRCodeUrl;
+	}
+	public String getIp() {
+		return ip;
+	}
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	public String getRemark() {
 		return remark;

@@ -78,7 +78,7 @@ public class RecommendU2uUpdateTask implements Runnable {
 	}
 	
 	private void pushChangedMatchedUsers(List<PushMatchedUserDTO> pushMatchedUserDTOs,WebSocketSession session){
-		String clientIP = session.getRemoteAddress().toString().substring(1);
+		//String clientIP = session.getRemoteAddress().toString().substring(1);
 		
 		JSONArray newUserArr = new JSONArray();
 		for(PushMatchedUserDTO matchedUserDTO:pushMatchedUserDTOs){
@@ -99,6 +99,6 @@ public class RecommendU2uUpdateTask implements Runnable {
 		returnJson.put("interface_name", "push_matched_user");
 		returnJson.put("new_user_arr", newUserArr);
 		socketService.chat2one(session, returnJson);
-		loggerService.log(uid, uid, clientIP, returnJson.toString(), "2106-1", null, null);
+		loggerService.log(uid, uid, "", returnJson.toString(), "2106-1", null, null);
 	}
 }

@@ -90,7 +90,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String userid = session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString();
-		String clientIP = session.getRemoteAddress().toString().substring(1);
+		//String clientIP = session.getRemoteAddress().toString().substring(1);
 		logger1.debug("客户端"+userid+"请求：" + message.getPayload());
 	
 	
@@ -104,7 +104,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			if(obj.has("isPushCP")&&obj.getString("isPushCP").equals("true")){
 				addition_type = "isPushCP";
 			}
-			loggerService.log(userid, user.getName(),clientIP,obj.toString(),_interface,addition_type,user.getUserGroup());
+			loggerService.log(userid, user.getName(),user.getLocation(),obj.toString(),_interface,addition_type,user.getUserGroup());
 			logger1.info(user.getName()+"请求接口"+_interface);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
@@ -127,7 +127,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	
 	private void userOnline(WebSocketSession session) {
 		Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
-		String clientIP = session.getRemoteAddress().toString().substring(1);
+		//String clientIP = session.getRemoteAddress().toString().substring(1);
 		if (!checkExist(session)) {
 			users.add(session);
 			User u = userService.findUser(userid);
@@ -142,7 +142,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 				//re_sendMsg(userid,5); //zheng 先取消，以后的更新任务还会有类似的功能
 			}*/
 			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  上线");
-			loggerService.log(userid.toString(), u.getName(),clientIP,"用户上线","登录",null,u.getUserGroup());
+			loggerService.log(userid.toString(), u.getName(),u.getLocation(),"用户上线","登录",null,u.getUserGroup());
 			recommendService.initRecommendParm(u);
 			cpShowingService.initUserShowingCps(u.getUserId()+"");
 			
@@ -179,7 +179,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
 			Long userid  = Long.valueOf(session.getAttributes().get(Constants.WEBSOCKET_USERNAME).toString());
-			String clientIP = session.getRemoteAddress().toString().substring(1);
+			//String clientIP = session.getRemoteAddress().toString().substring(1);
 			users.remove(session);	
 			if(status.equals(CloseStatus.SERVICE_RESTARTED)){
 				logger.info("用户:"+userid+" WebSocketSession服务重启");
@@ -189,7 +189,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 			recommendService.syncLastUpdateTime(u);
 			cpShowingService.clearUserShowingCps(userid+"");
 			
-			loggerService.log(userid.toString(), u.getName(), clientIP,"用户离线","登出",null,u.getUserGroup());
+			loggerService.log(userid.toString(), u.getName(), u.getLocation(),"用户离线","登出",null,u.getUserGroup());
 			logger.info("用户:"+u.getUserId()+"  "+u.getName() +"  离线:"+status.getReason()+";"+status.getCode());
 	}
 
