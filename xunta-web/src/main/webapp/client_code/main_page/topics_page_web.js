@@ -3408,7 +3408,7 @@ function guideAddTag() {
 			.push('<div class="searchtag_suggest" id="gov_search_suggest"></div>');
 	contextresult
 			.push('<div id="guideAddTagText" style="color: #909090;position: absolute;bottom: 2%;width: 100%;text-align: center;">'
-				  +'<div>头脑一片空白?&nbsp;先看看推荐吧</div>'
+				  +'<div>不知道添加什么?&nbsp;先看看推荐吧</div>'
 				  +'<img src="../image/guideAddtagDownArrow.png" style="width: 6%"/></div>');
 	alertWinForGuide(contextresult.join(''), _w, _h);
 	//alertWin(contextresult.join(''),"添加'关键词'", _w, _h);
