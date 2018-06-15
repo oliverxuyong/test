@@ -3330,6 +3330,14 @@ function arrowAnimateCircle(guideAddtagArrow,guideAddtagArrowTop,guideAddtagArro
 }
 //监测在引导页的时候点击屏幕
 function clickMainPage(bgObj){
+	//第一块布点击之后删除，然后再创造第二块布
+	$(".bgObj").remove();
+	//先用一块透明的布覆盖在屏幕上，为了之后的点击屏幕事件
+	var bgObj = document.createElement('div');
+	bgObj.style.cssText="width:"+$(window).width()+"px;height:"+$(document).height()+"px;background-color:rgba(0,0,0,0);position:absolute;top:0;left:0;z-index:200;opacity:0.0;filter:alpha(opacity =0);";
+	document.body.appendChild(bgObj);
+	bgObj.classList.add("bgObj");
+	
 	//在这里绑定加号点击事件，点击了加号，出现引导页的添加标签的样式,点击屏幕则动画消失
 	var addTag=$("#addtag");
 	var copyAddTag=$("<div class='mytag' id='addtag'></div>");
