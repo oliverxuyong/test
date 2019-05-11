@@ -38,8 +38,8 @@ function checkLocalStorage() {
     }else{ //当前浏览器不支持H5 localStorage，直接跳转登陆页
         console.log("这个浏览器不支持HTML5的localStorage.");
         toast("这个浏览器不支持HTML5的localStorage.每次均需登录进入.");
-        //showLogin();
-        tmpLoginForGetUserInfo();
+        showLogin();
+        //tmpLoginForGetUserInfo();
     }
 }
 
@@ -53,8 +53,8 @@ function handleCookie(){
    }
    if(u.name==null||u.type==null||u.unionid==null){
         toast("由于某种原因,登录信息不完整，请尝试重新登录或与开发者联系.");
-        //showLogin();
-        tmpLoginForGetUserInfo();
+        showLogin();
+        //tmpLoginForGetUserInfo();
         return;
    }
     //向服务器提交用户信息并保存在服务器，同时返回一个服务器生成的用户ID。用来作为用户在应用中的唯一ID

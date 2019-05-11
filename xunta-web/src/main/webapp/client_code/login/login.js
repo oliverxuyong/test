@@ -39,8 +39,8 @@ function syncUser(cookieUserStr){//cookie之后到这里.如果是新用户,服�
    
    if(u.name==null||u.type==null||u.unionid==null){
         toast("账号信息不全，请重新登录");
-        //showLogin();
-        tmpLoginForGetUserInfo();
+        showLogin();
+        //tmpLoginForGetUserInfo();
         return;
    }
    
@@ -114,8 +114,8 @@ function checkUser(userInfoJsonStr) {//读取localStorage之后到这里.
                 userInfoIsReady(JSON.stringify(userInfoJsonObj));
             } else {
                 console.log("checkUser证实localstorage中的用户数据在服务器上不存在,进入登录页面.")
-                //showLogin();
-                tmpLoginForGetUserInfo();
+                showLogin();
+                //tmpLoginForGetUserInfo();
             }
         },
         error : function(data, textStatus) {//网线拔了后,浏览器会报jquery无网错误,但不会走到这里.
