@@ -193,12 +193,12 @@ function tmpLoginForGetUserInfo(){
 /**2017.11.17  叶夷  在这里判断如果是PC和ipad,则三个登录方式都显示，如果是移动端，则只有手机登录*/
 function showLoginMode(){
 	console.log("判断终端类型 "+userAgent);
-	//if(userAgent[0]=="Mobile"){
+	/*if(userAgent[0]=="Mobile"){
 		$("#login").children("div").eq(0).hide();
 		$("#login").children("div").eq(1).hide();
 		$("#login>div").css("width","60%");
 		$("#login>div").css("border-color","#b2b2b2");
-	//}
+	}*/
 }
 
 function hideLogin(){
