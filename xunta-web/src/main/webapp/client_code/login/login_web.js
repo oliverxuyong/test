@@ -19,19 +19,19 @@ function checkLocalStorage() {
         if(uid == null || name == "undefined"){//localStorage.getItem("uid") 如果不存在的话，默认值是null，
             //本地没有存储用户登陆信息或上次用户注销后则进入登陆页面
             console.log("localstorage中的用户数据无效或没有,进入登录页.")
-            //showLogin();
-            tmpLoginForGetUserInfo();
+            showLogin();
+            //tmpLoginForGetUserInfo();
         }else{//本地有存储用户登陆信息，读取信息后进入话题列表页面
 	        console.log("localstorage中的用户数据有效,下一步向服务器检证它是否存在.");
-	        /*2018.03.08  叶夷   这里因为临时用户的存在，所以判断localstorage中的用户数据有效的方法先注释
+	        //2018.03.08  叶夷   这里因为临时用户的存在，所以判断localstorage中的用户数据有效的方法先注释
             var status = compareTimestamp();//Fang 04 22  ***  这是个方法返回的是boolean,超过2天返回true，否则返回false. 变量名用的是status，因为想不出其他名字了。
             if(status == false){
                 //时间戳已过期。引导用户从新登陆
                 console.log("本地存储信息时间超过2天，删除本地数据后引导用户从新登陆");
-                //showLogin();
-                tmpLoginForGetUserInfo();
+                showLogin();
+                //tmpLoginForGetUserInfo();
                 return;
-            }*/
+            }
             var userInfoJsonStr = userInfoToJsonStr(localStorage.getItem("type"),localStorage.getItem("uid"),localStorage.getItem("name"),localStorage.getItem("image"),localStorage.getItem("unionid"));
             checkUser(userInfoJsonStr);//成功则返回到loginEng(),否则进入登录页面.
         }
